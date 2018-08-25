@@ -1,0 +1,23 @@
+language: python
+python:
+    - 3.7
+    - 3.6
+
+dist: xenial
+sudo: true
+
+# command to install dependencies
+install:
+    - pip3 install -r requirements.txt
+    - pip3 check
+    - make download
+
+# command to run tests
+script:
+    - make lint
+    - make test
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
