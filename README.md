@@ -33,16 +33,15 @@ Wechaty is a Bot SDK for Wechat **Personal** Account which can help you create a
 
 See more at [Wiki:Voice Of Developer](https://github.com/Chatie/wechaty/wiki/Voice%20Of%20Developer)
 
-## The World's Shortest ChatBot Code: 6 lines of Python
+## The World's Shortest Python ChatBot: 6 lines of Code
 
-```javascript
-
+```python
 from wechaty import Wechaty
 
 Wechaty.instance() // Global Instance
-.on('scan', (qrcode, status) => console.log(`Scan QR Code to login: ${status}\nhttps://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrcode)}`))
-.on('login',            user => console.log(`User ${user} logined`))
-.on('message',       message => console.log(`Message: ${message}`))
+.on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
+.on('login', lambda user: print('User {} logined'.format(user)))
+.on('message', lambda message: print('Message: {}'.format(message)))
 .start()
 ```
 
