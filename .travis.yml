@@ -10,7 +10,6 @@ sudo: true
 install:
     - pip3 install -r requirements.txt
     - pip3 check
-    - make download
 
 # command to run tests
 script:

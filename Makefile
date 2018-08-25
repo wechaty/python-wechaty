@@ -28,7 +28,7 @@ flake8:
 .PHONY: mypy
 mypy:
 	MYPYPATH=stubs/ mypy \
-		--python-version=3 \
+		--python-version=3.6 \
 		$(SOURCE_GLOB)
 
 .PHONY: install
