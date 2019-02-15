@@ -1,5 +1,8 @@
 # python-wechaty
 
+[![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
+[![Downloads](https://pepy.tech/badge/wechaty/month)](https://pepy.tech/project/wechaty)
+
 Python Wechaty
 
 ![Python Wechaty](https://chatie.github.io/python-wechaty/images/python-wechaty.png)
