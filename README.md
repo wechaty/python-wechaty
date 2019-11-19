@@ -5,7 +5,7 @@
 
 Python Wechaty
 
-![Python Wechaty](docs/images/python-wechaty.png)
+![Python Wechaty](https://wechaty.github.io/wechaty/images/python-wechaty.png)
 
 ## WORK IN PROGRESS
 
