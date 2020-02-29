@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""check version"""
 
 import re
 import sys
@@ -8,8 +9,8 @@ from typing import Tuple
 def version() -> Tuple[int, int, int]:
     """version"""
     try:
-        ver = re.findall('^\d+\.\d+\.\d+', sys.version)[0]
-        senior, minor, patch = re.findall('\d+', ver)
+        ver = re.findall(r'^\d+\.\d+\.\d+', sys.version)[0]
+        senior, minor, patch = re.findall(r'\d+', ver)
         return (int(senior), int(minor), int(patch))
 
     # pylint: disable=W0703
