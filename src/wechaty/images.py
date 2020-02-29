@@ -4,9 +4,6 @@ from typing import Optional,Type,TypeVar
 import asyncio
 from enum import IntEnum
 
-T = TypeVar("T")
-
-
 class ImageType(IntEnum):
     """
     docstring ...
@@ -29,7 +26,7 @@ class Image(Accessory):
 
 
     @staticmethod
-    def create(cls:Type[T],id:str) -> "Image":
+    def create(cls:Image,id:str) -> Image:
         """
         docstring
         :param cls:
@@ -37,7 +34,7 @@ class Image(Accessory):
         :return:
         """
         log.info(f"create static image : {id}")
-        return Image(id)
+        return cls(id)
 
     async def thumbnail(self) -> FileBox:
         """
@@ -45,7 +42,7 @@ class Image(Accessory):
         :return:
         """
         log.info(f"image thumbnail for {self.id}")
-        file_box = await self.puppet.messageImage(self.id, ImageType.Thumbnail)
+        file_box = await self.puppet.message_image(self.id, ImageType.Thumbnail)
         return file_box
 
     async def hd(self) -> FileBox:
@@ -54,7 +51,7 @@ class Image(Accessory):
         :return:
         """
         log.info(f"image hd for {self.id}")
-        file_box = await self.puppet.messageImage(self.id,ImageType.HD)
+        file_box = await self.puppet.message_image(self.id,ImageType.HD)
         return file_box
 
     async def artwork(self) -> FileBox:
@@ -63,7 +60,7 @@ class Image(Accessory):
         :return:
         """
         log.info(f"image artwork for {self.id}")
-        file_box = await self.puppet.messageImage(self.id, ImageType.Artwork)
+        file_box = await self.puppet.message_image(self.id, ImageType.Artwork)
         return file_box
 
 
