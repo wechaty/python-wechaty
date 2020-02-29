@@ -4,6 +4,7 @@ from typing import Optional,Type,TypeVar
 import asyncio
 from enum import IntEnum
 
+
 class ImageType(IntEnum):
     """
     docstring ...
