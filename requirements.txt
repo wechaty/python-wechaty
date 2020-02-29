@@ -4,4 +4,3 @@ mypy_extensions
 pycodestyle
 pylint
 pytest
-six==1.12.0
