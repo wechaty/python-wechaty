@@ -8,7 +8,7 @@
         , "--follow-imports=silent"
         , "--python-version=3"
     ]
-    , "python.linting.pep8Enabled": false
+    , "python.linting.pycodestyleEnabled": false
     , "python.linting.flake8Enabled": true
 
     , "alignment": {
