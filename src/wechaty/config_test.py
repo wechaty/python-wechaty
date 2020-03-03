@@ -1,6 +1,6 @@
-'''
+"""
 config unit test
-'''
+"""
 from typing import (
     Any,
     # Dict,
@@ -9,7 +9,7 @@ from typing import (
 import pytest   # type: ignore
 
 from .config import (
-    log,
+    LOG,
 )
 
 # pylint: disable=redefined-outer-name
@@ -25,14 +25,14 @@ def fixture_data() -> Iterable[str]:
 def test_config(
         data: Any,
 ) -> None:
-    '''
+    """
     Unit Test for config function
-    '''
+    """
     print(data)
 
     assert data == 'test', 'data should equals test'
 
 
 def test_log():
-    '''test'''
-    assert log, 'log should exist'
+    """test"""
+    assert LOG, 'log should exist'
