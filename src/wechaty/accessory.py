@@ -16,13 +16,22 @@ class Accessory:
     _puppet: Optional[Puppet] = None
     # static _wechaty property to doing ...
     _wechaty: Optional[Wechaty] = None
+    _counter: int = 0
 
-    def __str__(self):
+    def __init__(self, name: str = "accessory"):
+        """
+        initialize the accessory instance
+        """
+        self.name: str = name
+        # increase when Accessory is initialized
+        self._counter += 1
+
+    def __str__(self) -> str:
         """
         docstring
-        :return:
+        :return: the base accessory class name
         """
-        raise NotImplementedError
+        return "Accessory instance : %s" % self.name
 
     @classmethod
     def puppet(cls, value: Optional[Puppet] = None) -> Optional[Puppet]:
@@ -31,12 +40,17 @@ class Accessory:
         :return:
         """
         if value is None:
-            LOG.info("get puppet instance ...")
             if cls._puppet is None:
                 raise AttributeError("static puppet instance not found ...")
+            LOG.info("get puppet instance %s ...",
+                     cls._puppet.name)
             return cls._puppet
 
-        LOG.info("set puppet instance ...")
+        if cls._puppet is not None:
+            raise AttributeError("can't set puppet instance %s twice" %
+                                 cls._puppet.name)
+        LOG.info("set puppet instance %s ...",
+                 value.name)
         cls._puppet = value
         return None
 
@@ -52,14 +66,18 @@ class Accessory:
         :return:
         """
         if value is None:
-            LOG.info("get wechaty instance")
             if cls._wechaty is None:
                 raise AttributeError("wechaty instance not found")
+            LOG.info("get wechaty instance %s",
+                     cls._wechaty.name)
             return cls._wechaty
         if not isinstance(value, Wechaty):
             raise NameError(
                 "expected wechaty instance type is Wechaty, "
                 "but got %s" % value.__class__
             )
+        if cls._wechaty is not None:
+            raise AttributeError("can't set wechaty instance %s twice" %
+                                 cls._wechaty.name)
         cls._wechaty = value
         return None

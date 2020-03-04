@@ -24,11 +24,11 @@ class Wechaty:
     """
     docstring
     """
-    def __init__(self):
+    def __init__(self, name: str = "wechaty"):
         """
         docstring
         """
-        raise NotImplementedError
+        self.name = name
 
     _global_instance: Optional["Wechaty"] = None
 
