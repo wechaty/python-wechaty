@@ -1,6 +1,11 @@
 """
 docstring
 """
+from typing import Type, TypeVar
+
+T = TypeVar("T")
+
+
 # dummy class
 class FileBox:
     """
@@ -17,6 +22,15 @@ class FileBox:
     def to_file(self, file_path: str) -> None:
         """
         save the content to the file
+        :return:
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def from_qr_code(cls: Type[T], code:str) -> "FileBox":
+        """
+        create filebox from qrcode
+        :param code:
         :return:
         """
         raise NotImplementedError
