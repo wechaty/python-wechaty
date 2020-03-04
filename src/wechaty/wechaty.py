@@ -2,6 +2,7 @@
 wechaty instance
 """
 from typing import Optional
+from .config import LOG
 
 
 # pylint: disable=R0903
@@ -19,7 +20,6 @@ class WechatyOptions:
 
 
 # pylint: disable=R0903
-
 class Wechaty:
     """
     docstring
@@ -30,14 +30,17 @@ class Wechaty:
         """
         raise NotImplementedError
 
-    _global_instance: "Wechaty" = None
+    _global_instance: Optional["Wechaty"] = None
 
-    @classmethod
-    def instance(cls: "Wechaty") -> "Wechaty":
+    async def start(self) -> None:
         """
-        get or create global wechaty instance
+        start the wechaty
         :return:
         """
-        if cls._global_instance is None:
-            cls._global_instance = Wechaty()
-        return cls._global_instance
+        LOG.info("wechaty is starting ...")
+
+    async def stop(self) -> None:
+        """
+        stop the wechaty
+        """
+        LOG.info("wechaty is stoping ...")

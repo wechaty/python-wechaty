@@ -13,9 +13,9 @@ class Accessory:
     docstring
     """
     __metaclass__ = ABCMeta
-    _puppet: Puppet = None
+    _puppet: Optional[Puppet] = None
     # static _wechaty property to doing ...
-    _wechaty: Wechaty = None
+    _wechaty: Optional[Wechaty] = None
 
     def __str__(self):
         """
@@ -25,7 +25,7 @@ class Accessory:
         raise NotImplementedError
 
     @classmethod
-    def puppet(cls, value: Puppet = None) -> Optional[Puppet]:
+    def puppet(cls, value: Optional[Puppet] = None) -> Optional[Puppet]:
         """
         get/set global single instance of the puppet
         :return:
@@ -41,7 +41,7 @@ class Accessory:
         return None
 
     @classmethod
-    def wechaty(cls, value: Wechaty = None) -> Optional[Wechaty]:
+    def wechaty(cls, value: Optional[Wechaty] = None) -> Optional[Wechaty]:
         """
         get/set wechaty instance
 

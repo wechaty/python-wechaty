@@ -2,6 +2,8 @@
 interface for puppet
 """
 from enum import Enum
+# from typing import Awaitable
+from .file_box import FileBox
 
 class Puppet:
     """
@@ -9,7 +11,7 @@ class Puppet:
     """
 
     # pylint: disable=R0201
-    def message_image(self, message_id: int, image_type: Enum) -> None:
+    async def message_image(self, message_id: str, image_type: Enum) -> FileBox:
         """
         docstring
         :param message_id:
