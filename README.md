@@ -13,11 +13,11 @@ Work in progress...
 
 Please come back after 4 weeks...
 
-## CONNECTING CHATBOTS
+## Connecting Chatbots
 
 Wechaty is a Bot SDK for Wechat **Personal** Account which can help you create a bot in 6 lines of Python.
 
-## VOICE OF THE DEVELOPER
+## Voice of the Developers
 
 > "Wechaty is a great solution, I believe there would be much more users recognize it." [link](https://github.com/chatie/wechaty/pull/310#issuecomment-285574472)  
 > -- @Gcaufy, Tencent Engineer, Author of [WePY](https://github.com/Tencent/wepy)
@@ -48,34 +48,41 @@ Wechaty.instance() // Global Instance
 .start()
 ```
 
-## REQUIREMENTS
+## Requirements
 
-1. Python 3.6 or above
+1. Python 3.7 or above
 
-## INSTALL
+## Install
 
 ```shell
 pip3 install wechaty
 ```
 
-## USAGE
+## Usage
 
 WIP...
 
-## SEE ALSO
+## See Also
 
 - [Packaging Python Projects](https://packaging.python.org/tutorials/packaging-projects/)
 
-## AUTHOR
+### Static & Instance of Class
 
-[Huan LI](http://linkedin.com/in/zixia) \<zixia@zixia.net\>
+- [Static variables and methods in Python](https://radek.io/2011/07/21/static-variables-and-methods-in-python/)
 
-<a href="https://stackexchange.com/users/265499">
-  <img src="https://stackexchange.com/users/flair/265499.png" width="208" height="58" alt="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites" title="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites">
-</a>
+### Typings
 
-## COPYRIGHT & LICENSE
+- [PEP 526 -- Syntax for Variable Annotations - Class and instance variable annotations](https://www.python.org/dev/peps/pep-0526/#class-and-instance-variable-annotations)
+  - [Python Type Checking (Guide)](https://realpython.com/python-type-checking/) by [Geir Arne Hjelle](https://realpython.com/team/gahjelle/)
 
-* Code & Docs © 2018 Huan LI \<zixia@zixia.net\>
-* Code released under the Apache-2.0 License
-* Docs released under Creative Commons
+## Author
+
+[Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
+
+[![Profile of Huan LI (李卓桓) on StackOverflow](https://stackexchange.com/users/flair/265499.png)](https://stackexchange.com/users/265499)
+
+## Copyright & License
+
+- Code & Docs © 2020-now Huan LI \<zixia@zixia.net\>
+- Code released under the Apache-2.0 License
+- Docs released under Creative Commons
