@@ -1,8 +1,24 @@
 """
 wechaty instance
 """
-from typing import Optional
-from .config import LOG
+#
+# Python 3.7: PEP 563: Postponed Evaluation of Annotations
+#   https://docs.python.org/3.7/whatsnew/3.7.html#pep-563-postponed-evaluation-of-annotations
+from __future__ import annotations
+
+from typing import (
+    cast,
+    ClassVar,
+    Optional,
+    # Type,
+    # Union,
+)
+
+from .config import (
+    logging,
+)
+
+log = logging.getLogger('Wechaty')
 
 
 # pylint: disable=R0903
@@ -19,28 +35,42 @@ class WechatyOptions:
         self.profile: Optional[None or str] = None
 
 
-# pylint: disable=R0903
 class Wechaty:
     """
     docstring
     """
-    def __init__(self, name: str = "wechaty"):
+
+    _global_instance: ClassVar[Optional[Wechaty]] = None
+
+    def __init__(self):
         """
         docstring
         """
-        self.name = name
+        log.info('__init__()')
+        raise NotImplementedError
 
-    _global_instance: Optional["Wechaty"] = None
+    @classmethod
+    def instance(cls: Wechaty) -> Wechaty:
+        """
+        get or create global wechaty instance
+        :return:
+        """
+        log.info('instance()')
+
+        if cls._global_instance is None:
+            cls._global_instance = Wechaty()
+
+        return cast(Wechaty, cls._global_instance)
 
     async def start(self) -> None:
         """
         start the wechaty
         :return:
         """
-        LOG.info("wechaty is starting ...")
+        log.info("wechaty is starting ...")
 
     async def stop(self) -> None:
         """
         stop the wechaty
         """
-        LOG.info("wechaty is stoping ...")
+        log.info("wechaty is stoping ...")
