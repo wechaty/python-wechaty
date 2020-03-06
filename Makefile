@@ -3,6 +3,12 @@
 
 SOURCE_GLOB=$(wildcard bin/*.py src/*.py src/**/*.py tests/*.py)
 
+#
+# Huan(202003)
+# 	F811: https://github.com/PyCQA/pyflakes/issues/320#issuecomment-469337000
+#
+IGNORE_PEP=E272,F811
+
 .PHONY: all
 all : clean lint
 
@@ -11,28 +17,42 @@ clean:
 	rm -fr dist/*
 
 .PHONY: lint
-lint: pylint pycodestyle flake8 mypy
+lint: pylint pycodestyle flake8 mypy pytype
 
 .PHONY: pylint
 pylint:
-	pylint $(SOURCE_GLOB)
+	pylint \
+		--load-plugins pylint_quotes \
+		$(SOURCE_GLOB)
 
 .PHONY: pycodestyle
 pycodestyle:
-	pycodestyle --statistics --count $(SOURCE_GLOB)
+	pycodestyle \
+		--statistics \
+		--count \
+		--ignore="${IGNORE_PEP}" \
+		$(SOURCE_GLOB)
 
 .PHONY: flake8
 flake8:
-	flake8 $(SOURCE_GLOB)
+	flake8 \
+		--ignore="${IGNORE_PEP}" \
+		$(SOURCE_GLOB)
 
 .PHONY: mypy
 mypy:
 	MYPYPATH=stubs/ mypy \
 		$(SOURCE_GLOB)
 
+.PHONE: pytype
+pytype:
+	MYPYPATH=stubs/ pytype \
+		$(SOURCE_GLOB)
+
 .PHONY: install
 install:
 	pip3 install -r requirements.txt
+	pip3 install -r requirements-dev.txt
 
 .PHONY: pytest
 pytest:
@@ -59,3 +79,7 @@ dist:
 .PHONY: publish
 publish:
 	PATH=~/.local/bin:${PATH} twine upload dist/*
+
+.PHONY: demo
+demo:
+	PYTHONPATH=src/ python3 examples/demo.py
