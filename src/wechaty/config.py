@@ -24,7 +24,7 @@ import re
 from typing import Optional
 from wechaty_puppet.file_box import FileBox
 
-LOG = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 # log.debug('test logging debug')
 # log.info('test logging info')
@@ -44,7 +44,7 @@ def global_exception_handler(e: Exception) -> None:
     :param e: exception message
     :return:
     """
-    LOG.error("occur %s %s", e.__class__.__name__, str(e.args))
+    log.error("occur %s %s", e.__class__.__name__, str(e.args))
     print(e)
 
 
