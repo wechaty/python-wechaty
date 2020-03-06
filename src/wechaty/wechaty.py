@@ -23,7 +23,7 @@ limitations under the License.
 from __future__ import annotations
 
 from typing import (
-    cast,
+    # cast,
     ClassVar,
     Optional,
     # Type,
@@ -74,9 +74,10 @@ class Wechaty:
         log.info('instance()')
 
         if cls._global_instance is None:
-            cls._global_instance = Wechaty()
+            cls._global_instance = cls()
 
-        return cast(Wechaty, cls._global_instance)
+        # return cast(Wechaty, cls._global_instance)
+        return cls._global_instance
 
     async def start(self) -> None:
         """

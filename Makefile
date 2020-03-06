@@ -59,7 +59,7 @@ pytest:
 	PYTHONPATH=src/ pytest src/ tests/
 
 .PHONY: test
-test: check-version pytest
+test: check-version lint pytest
 
 .PHONY: check-version
 check-version:
