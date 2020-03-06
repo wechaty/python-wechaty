@@ -1,2 +1,2 @@
 """doc"""
-name = "wechaty"
+name = 'wechaty'

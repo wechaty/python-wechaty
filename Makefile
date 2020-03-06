@@ -7,7 +7,7 @@ SOURCE_GLOB=$(wildcard bin/*.py src/*.py src/**/*.py tests/*.py)
 # Huan(202003)
 # 	F811: https://github.com/PyCQA/pyflakes/issues/320#issuecomment-469337000
 #
-IGNORE_PEP=E272,F811
+IGNORE_PEP=E203,E221,E272,F811
 
 .PHONY: all
 all : clean lint

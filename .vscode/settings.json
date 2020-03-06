@@ -1,15 +1,26 @@
 {
   "python.pythonPath": "python3"
     , "python.linting.enabled": true
+
     , "python.linting.pylintEnabled": true
+    , "python.linting.pylintArgs": [
+		"--load-plugins",
+		"pylint_quotes"
+    ]
+
     , "python.linting.mypyEnabled": true
     , "python.linting.mypyArgs": [
         "--ignore-missing-imports"
         , "--follow-imports=silent"
         , "--python-version=3"
     ]
+
     , "python.linting.pycodestyleEnabled": false
+
     , "python.linting.flake8Enabled": true
+    , "python.linting.flake8Args": [
+        "--ignore=E203,E221,E272,F811,"
+    ]
 
     , "alignment": {
         "operatorPadding": "right"

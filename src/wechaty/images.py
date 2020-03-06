@@ -4,7 +4,6 @@ docstring
 from __future__ import annotations
 
 from enum import IntEnum
-import overrides
 from wechaty_puppet.file_box import FileBox
 from .accessory import Accessory
 from .config import (
@@ -28,7 +27,6 @@ class Image(Accessory):
     docstring ...
     """
 
-    @overrides
     def __str__(self):
         return 'image instance : %d' % self.id
 

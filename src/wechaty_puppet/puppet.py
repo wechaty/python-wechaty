@@ -1,8 +1,11 @@
 """
 interface for puppet
 """
+from __future__ import annotations
+
 from enum import Enum
 from .file_box import FileBox
+
 
 class Puppet:
     """
@@ -10,10 +13,14 @@ class Puppet:
     """
 
     def __init__(self):
-        self.name: str = "puppet"
+        self.name: str = 'puppet'
 
     # pylint: disable=R0201
-    async def message_image(self, message_id: str, image_type: Enum) -> FileBox:
+    async def message_image(
+            self,
+            message_id: str,
+            image_type: Enum
+    ) -> FileBox:
         """
         docstring
         :param message_id:
