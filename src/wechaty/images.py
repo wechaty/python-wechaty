@@ -1,11 +1,17 @@
 """
 docstring
 """
+from __future__ import annotations
+
 from enum import IntEnum
-from typing import Type, TypeVar
+import overrides
 from wechaty_puppet.file_box import FileBox
 from .accessory import Accessory
-from .config import LOG
+from .config import (
+    logging,
+)
+
+log = logging.getLogger('Image')
 
 
 class ImageType(IntEnum):
@@ -17,50 +23,49 @@ class ImageType(IntEnum):
     Artwork = 2
 
 
-T = TypeVar("T", bound="Image")
-
-
 class Image(Accessory):
     """
     docstring ...
     """
 
+    @overrides
     def __str__(self):
-        return "image instance : %d" % self.image_id
+        return 'image instance : %d' % self.id
 
     def __init__(self, image_id: str) -> None:
         """
         :param image_id:
         """
-        super(Image, self).__init__()
-        self.image_id = image_id
-        LOG.info("create image : %d", self.image_id)
+        super().__init__()
+        log.info('__init__(%d)', image_id)
+
+        self.id = image_id
         if self.puppet is None:
-            raise NotImplementedError("Image class can not be instanced"
-                                      " without a puppet!")
+            raise NotImplementedError('Image class can not be instanced'
+                                      ' without a puppet!')
 
     @classmethod
-    def create(cls: Type[T], image_id: str) -> T:
+    def create(cls: type, image_id: str) -> Image:
         """
         create image instance by image_id
         :param cls:
         :param image_id:
         :return:
         """
-        LOG.info("create static image : %d", image_id)
-        return cls(image_id)
+        log.info('@classmethod create(%s, %d)', cls, image_id)
+        obj = super().__new__(cls)
+        obj.__init__(image_id)
+        return obj
+        # return cls(image_id)
 
     async def thumbnail(self) -> FileBox:
         """
         docstring
         :return:
         """
-        LOG.info("image thumbnail for %d", self.image_id)
-        puppet = self.puppet()
-        if puppet is None:
-            raise AttributeError
-        file_box = await puppet.message_image(self.image_id,
-                                              ImageType.Thumbnail)
+        log.info('thumbnail() for %d', self.id)
+        file_box = await self.puppet() \
+            .message_image(self.id, ImageType.Thumbnail)
         return file_box
 
     async def hd(self) -> FileBox:
@@ -68,11 +73,9 @@ class Image(Accessory):
         docstring
         :return:
         """
-        LOG.info("image hd for %d", self.image_id)
-        puppet = self.puppet()
-        if puppet is None:
-            raise AttributeError
-        file_box = await puppet.message_image(self.image_id, ImageType.HD)
+        log.info('image hd for %d', self.id)
+        file_box = await self.puppet() \
+            .message_image(self.id, ImageType.HD)
         return file_box
 
     async def artwork(self) -> FileBox:
@@ -80,9 +83,7 @@ class Image(Accessory):
         docstring
         :return:
         """
-        LOG.info("image artwork for %d", self.image_id)
-        puppet = self.puppet()
-        if puppet is None:
-            raise AttributeError
-        file_box = await puppet.message_image(self.image_id, ImageType.Artwork)
+        log.info('image artwork for %d', self.id)
+        file_box = await self.puppet() \
+            .message_image(self.id, ImageType.Artwork)
         return file_box
