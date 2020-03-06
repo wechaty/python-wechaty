@@ -1,12 +1,8 @@
 """
 docstring
 """
-from typing import Type, TypeVar
-
-T = TypeVar("T")
 
 
-# dummy class
 class FileBox:
     """
     maintain the file content, which is sended by wechat
@@ -19,7 +15,7 @@ class FileBox:
         """
         raise NotImplementedError
 
-    def to_file(self, file_path: str) -> None:
+    async def to_file(self, file_path: str) -> None:
         """
         save the content to the file
         :return:

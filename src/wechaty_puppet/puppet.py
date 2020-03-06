@@ -2,7 +2,6 @@
 interface for puppet
 """
 from enum import Enum
-# from typing import Awaitable
 from .file_box import FileBox
 
 class Puppet:
@@ -29,4 +28,3 @@ class Puppet:
         :return:
         """
         raise NotImplementedError
-
