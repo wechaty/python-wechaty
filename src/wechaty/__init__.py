@@ -1,4 +1,7 @@
 """doc"""
+from wechaty_puppet import (
+    FileBox,
+)
 from .wechaty import (
     Wechaty
 )
@@ -6,5 +9,6 @@ from .wechaty import (
 name = 'wechaty'
 
 __all__ = [
+    'FileBox',
     'Wechaty',
 ]

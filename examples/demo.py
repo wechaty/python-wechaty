@@ -2,11 +2,11 @@
 """doc"""
 import asyncio
 
-from wechaty_puppet import FileBox
+from wechaty import FileBox
 
 
 async def main():
-    '''doc'''
+    """doc"""
     print('hello')
     await asyncio.sleep(1)
     print('world')
