@@ -251,6 +251,9 @@ notes=FIXME,XXX,TODO
 
 [BASIC]
 
+# Huan(202003)
+string-quote=single-avoid-escape
+
 # Naming hint for argument names
 argument-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
