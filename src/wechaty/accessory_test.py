@@ -4,8 +4,11 @@ accessory unit test
 from typing import (
     cast,
 )
-import pytest
+import pytest   # type: ignore
 
+from wechaty import (
+    Wechaty,
+)
 from wechaty_puppet import (
     Puppet,
 )
@@ -16,8 +19,8 @@ from .accessory import (
 EXPECTED_PUPPET1 = cast(Puppet, {'p': 1})
 EXPECTED_PUPPET2 = cast(Puppet, {'p': 2})
 
-EXPECTED_WECHATY1 = {'w': 1}
-EXPECTED_WECHATY2 = {'w': 1}
+EXPECTED_WECHATY1 = cast(Wechaty, {'w': 1})
+EXPECTED_WECHATY2 = cast(Wechaty, {'w': 1})
 
 
 def test_accessory_read_uninitialized_static_wechaty_puppet(
@@ -50,6 +53,15 @@ def test_accessory_read_initialized_class_wechaty_puppet(
     assert \
         accessory_class.wechaty == EXPECTED_WECHATY1, \
         'should get wechaty back'
+
+    accessory_instance = accessory_class()
+
+    assert \
+        accessory_instance.puppet == EXPECTED_PUPPET1, \
+        'should get puppet back by instance from static'
+    assert \
+        accessory_instance.wechaty == EXPECTED_WECHATY1, \
+        'should get wechaty back by instance from static'
 
 
 def test_accessory_read_uninitialized_instance_wechaty_puppet(

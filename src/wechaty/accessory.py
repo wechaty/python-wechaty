@@ -2,10 +2,10 @@
 docstring
 """
 # from abc import ABC
-# from typing import (
-#     overload,
-#     Optional,
-# )
+from typing import (
+    # overload,
+    Optional,
+)
 from wechaty_puppet import Puppet
 from .config import (
     logging
@@ -18,8 +18,8 @@ log = logging.getLogger('Accessory')
 class AccessoryMeta(type):
     """docs"""
 
-    _static_puppet : Puppet  = None
-    _static_wechaty: Wechaty = None
+    _static_puppet : Optional[Puppet]  = None
+    _static_wechaty: Optional[Wechaty] = None
 
     @property
     def puppet(cls) -> Puppet:
@@ -57,8 +57,8 @@ class Accessory(metaclass=AccessoryMeta):
     docstring
     """
 
-    _puppet : Puppet  = None
-    _wechaty: Wechaty = None
+    _puppet : Optional[Puppet]  = None
+    _wechaty: Optional[Wechaty] = None
 
     @property
     def puppet(self) -> Puppet:
