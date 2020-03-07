@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install -U setuptools
+          python -m pip install --upgrade pip
           make install
 
       - name: Test
