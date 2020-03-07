@@ -6,3 +6,4 @@ pylint
 pylint-quotes
 pytest
 pytype
+setuptools
