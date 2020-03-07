@@ -84,6 +84,30 @@ WIP...
 - [PEP 526 -- Syntax for Variable Annotations - Class and instance variable annotations](https://www.python.org/dev/peps/pep-0526/#class-and-instance-variable-annotations)
   - [Python Type Checking (Guide)](https://realpython.com/python-type-checking/) by [Geir Arne Hjelle](https://realpython.com/team/gahjelle/)
 
+## History
+
+### master
+
+### v0.1 (Mar 8, 2020)
+
+Welcome [@wj-Mcat](https://github.com/wj-Mcat) for joining the project!
+
+1. Starting translate TypeScript of Wechaty to Python
+1. DevOps Setup
+    1. Type Checking: mypy & pytype
+    1. Unit Testing: pytest
+    1. Linting: pylint, pycodestyle, and flake8
+    1. CI/CD: GitHub Actions
+1. Publish to PyPI automatically after the tests passed.
+
+### v0.0.1 (Aug 25, 2018)
+
+Project created, publish a empty module `wechaty` on PyPI.
+
+## Related Projects
+
+- [Wechaty](https://github.com/wechaty/wechaty) - WeChat Bot SDK for Individual Account in TypeScript
+
 ## Author
 
 [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
@@ -92,7 +116,7 @@ WIP...
 
 ## Copyright & License
 
-- Code & Docs © 2020-now Huan LI \<zixia@zixia.net\>
+- Code & Docs © 2018-now Huan LI \<zixia@zixia.net\>
 - Code released under the Apache-2.0 License
 - Docs released under Creative Commons
 
