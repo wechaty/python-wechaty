@@ -6,9 +6,7 @@ python:
 # command to install dependencies
 install:
     - pip3 install --upgrade six
-    - pip3 install -r requirements.txt
-    - pip3 install -r requirements-dev.txt
-    - pip3 check
+    - make install
 
 # command to run tests
 script:
