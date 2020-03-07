@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install setuptools
+          pip install -U setuptools
           make install
 
       - name: Test
