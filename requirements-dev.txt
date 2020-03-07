@@ -5,5 +5,3 @@ pycodestyle
 pylint
 pylint-quotes
 pytest
-pytype
-setuptools
