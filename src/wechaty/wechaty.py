@@ -1,7 +1,10 @@
 """
 Python Wechaty - https://github.com/wechaty/python-wechaty
 
-2020-now @copyright Wechaty
+Authors:    Huan LI (李卓桓) <https://github.com/huan>
+            Jingjing WU (吴京京) <https://github.com/wj-Mcat>
+
+2020-now @ Copyright Wechaty
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
