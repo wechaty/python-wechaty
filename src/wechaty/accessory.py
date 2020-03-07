@@ -1,8 +1,20 @@
 """
-docstring
-"""
-# pylint:disable=protected-access
+Python Wechaty - https://github.com/wechaty/python-wechaty
 
+2020-now @copyright Wechaty
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
 from typing import (
     # overload,
     # cast,
@@ -17,77 +29,37 @@ from .wechaty import Wechaty
 log = logging.getLogger('Accessory')
 
 
-#
-# Huan(202003):
-#   Create this AccessoryMeta class to
-#   implemente a property access behavior
-#   for the Accessory class
-#   by setting it as the `metaclass` of `Accessory`
-#
-class AccessoryMeta(type):
-    """docs"""
-
-    # https://stackoverflow.com/a/42029208/1123955
-    def __setattr__(cls, name, value):
-        # print('__setattr__', cls, name, value)
-        # print('super()', super())
-        if not hasattr(cls, name):     # would this create a new attribute?
-            raise AttributeError('Creating new attributes is not allowed!')
-
-        # https://stackoverflow.com/a/15751135/1123955
-        propobj = getattr(cls, name, None)
-
-        # print(propobj)
-        if isinstance(propobj, property):
-            # print("setting attr %s using property's fset'" % name)
-            if propobj.fset is None:
-                raise AttributeError("can't set attribute")
-            propobj.fset(cls, value)
-        else:
-            # print('setting attr %s to %s' % (name, value))
-            super().__setattr__(name, value)
-
-
-#
-# Huan(202003)
-#   The Python Class have different behavior compare to ES6 & Java/C++:
-#       If you have a static (@classmethod) in your class,
-#       and you have a instance method in your class,
-#       and they are same name...
-#       Then, the instance value will overwrite the static value.
-#       The same as the properties.
-#
-class Accessory(metaclass=AccessoryMeta):
+class Accessory:
     """
-    docstring
+    Translate the function from TypeScript to Python
+    See: https://github.com/wechaty/wechaty/blob/master/src/accessory.ts
     """
 
     _puppet : Optional[Puppet]  = None
     _wechaty: Optional[Wechaty] = None
 
-    @property
-    def puppet(self) -> Puppet:
+    @classmethod
+    def set_puppet(cls, new_puppet: Puppet):
+        """doc"""
+        if cls._puppet is not None:
+            raise AttributeError('can not set twice')
+        cls._puppet = new_puppet
+
+    @classmethod
+    def set_wechaty(cls, new_wechaty: Wechaty):
+        """doc"""
+        if cls._wechaty is not None:
+            raise AttributeError('can not set twice')
+        cls._wechaty = new_wechaty
+
+    def puppet(self):
         """doc"""
         if self._puppet is None:
-            raise AttributeError('_puppet not set')
+            raise AttributeError('puppet not set')
         return self._puppet
 
-    @puppet.setter
-    def puppet(self, new_puppet: Puppet) -> None:
-        if self._puppet is not None:
-            raise AttributeError('_puppet can not be set twice')
-
-        self._puppet = new_puppet
-
-    @property
-    def wechaty(self) -> Wechaty:
+    def wechaty(self):
         """doc"""
         if self._wechaty is None:
-            raise AttributeError('_wechaty not set')
+            raise AttributeError('wechaty not set')
         return self._wechaty
-
-    @wechaty.setter
-    def wechaty(self, new_wechaty: Wechaty) -> None:
-        if self._wechaty is not None:
-            raise AttributeError('_wechaty can not be set twice')
-        self._wechaty = new_wechaty
