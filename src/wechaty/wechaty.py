@@ -24,9 +24,10 @@ from __future__ import annotations
 
 from typing import (
     # cast,
-    ClassVar,
+    # ClassVar,
     Optional,
-    # Type,
+    TypeVar,
+    Type,
     # Union,
 )
 
@@ -51,12 +52,15 @@ class WechatyOptions:
         self.profile: Optional[None or str] = None
 
 
+T = TypeVar('T', bound='Wechaty')
+
+
 class Wechaty:
     """
     docstring
     """
 
-    _global_instance: ClassVar[Optional[Wechaty]] = None
+    _global_instance: Optional[T] = None
 
     def __init__(self):
         """
@@ -66,7 +70,7 @@ class Wechaty:
         raise NotImplementedError
 
     @classmethod
-    def instance(cls: Wechaty) -> Wechaty:
+    def instance(cls: Type[T]) -> T:
         """
         get or create global wechaty instance
         :return:

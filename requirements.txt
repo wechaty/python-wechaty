@@ -5,3 +5,5 @@ mypy_extensions
 pycodestyle
 pylint
 pytest
+pylint-quotes
+pytype

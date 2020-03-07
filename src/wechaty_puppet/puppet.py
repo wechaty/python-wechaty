@@ -5,6 +5,8 @@ from __future__ import annotations
 
 from enum import Enum
 from .file_box import FileBox
+from .contact import ContactQueryFilter
+from .url_link_payload import UrlLinkPayload
 
 
 class Puppet:
@@ -35,3 +37,92 @@ class Puppet:
         :return:
         """
         raise NotImplementedError
+
+    async def contact_search(self, query: str or ContactQueryFilter):
+        """
+        search
+        :param query:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def get_contact_payload(self, contact_id: str) -> Puppet:
+        """
+        get
+        :param contact_id:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def delete_contact_tag(self, tag_id: str) -> None:
+        """
+
+        :return:
+        """
+        raise NotImplementedError
+
+    async def tag_contact_add(self, tag_id: str, contact_id: str):
+        """
+
+        :param tag_id:
+        :param contact_id:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def tag_contact_remove(self, tag_id: str, contact_id: str):
+        """
+
+        :param tag_id:
+        :param contact_id:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def tag_contact_list(self):
+        """
+        get tag list
+        :return: tag_list
+        """
+        raise NotImplementedError
+
+    async def message_send_text(self, contact_id: str, message: str) -> str:
+        """
+        send text message
+        :param contact_id: person contact_id
+        :param message: message content
+        :return: none
+        """
+        raise NotImplementedError
+
+    async def message_send_contact(
+            self,
+            contact_id: str,
+            send_contact_id: str) -> str:
+        """
+        send contact message
+        :param contact_id: person contact_id
+        :param send_contact_id: been send contact_id
+        """
+        raise NotImplementedError
+
+    async def message_send_file(self, contact_id: str, file: FileBox) -> str:
+        """
+        send file
+        :param contact_id: person contact_id
+        :param file: filebox instance
+        """
+        raise NotImplementedError
+
+    async def message_send_url(
+            self,
+            contact_id: str,
+            url: UrlLinkPayload) -> str:
+        """
+        send url
+        :param contact_id: person contact_id
+        :param url: UrlLink instance
+        """
+        raise NotImplementedError
+    # async def message_send_mini_program(
+    #   self, contact_id: str, mini_program: )
