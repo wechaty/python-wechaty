@@ -2,7 +2,7 @@
 
 Python Wechaty - https://github.com/wechaty/python-wechaty
 
-2020-now @copyright wechaty
+2020-now @copyright Wechaty
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ from typing import (
     # cast,
     ClassVar,
     Optional,
-    # Type,
+    Type,
     # Union,
 )
 
@@ -66,7 +66,7 @@ class Wechaty:
         raise NotImplementedError
 
     @classmethod
-    def instance(cls: Wechaty) -> Wechaty:
+    def instance(cls: Type[Wechaty]) -> Wechaty:
         """
         get or create global wechaty instance
         :return:

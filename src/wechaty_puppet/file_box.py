@@ -3,6 +3,10 @@ docstring
 """
 from __future__ import annotations
 
+from typing import (
+    Type,
+)
+
 
 class FileBox:
     """
@@ -24,7 +28,7 @@ class FileBox:
         raise NotImplementedError
 
     @classmethod
-    def from_qr_code(cls: FileBox, code: str) -> FileBox:
+    def from_qr_code(cls: Type[FileBox], code: str) -> FileBox:
         """
         create filebox from qrcode
         :param code:
