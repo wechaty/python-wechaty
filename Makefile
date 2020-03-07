@@ -52,8 +52,8 @@ mypy:
 
 .PHONE: pytype
 pytype:
-	MYPYPATH=stubs/ pytype \
-		$(SOURCE_GLOB)
+	pytype src/
+	pytype examples/
 
 .PHONY: install
 install:
