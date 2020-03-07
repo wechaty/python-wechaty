@@ -7,6 +7,7 @@ python:
 install:
     - pip3 install --upgrade six
     - pip3 install -r requirements.txt
+    - pip3 install -r requirements-dev.txt
     - pip3 check
 
 # command to run tests
