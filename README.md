@@ -7,19 +7,17 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
 -->
 
-Python Wechaty
-
 ![Python Wechaty](https://wechaty.github.io/python-wechaty/images/python-wechaty.png)
+
+## Connecting Chatbots
+
+Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 6 lines of Python.
 
 ## WORK IN PROGRESS
 
 Work in progress...
 
 Please come back after 4 weeks...
-
-## Connecting Chatbots
-
-Wechaty is a Bot SDK for Wechat **Personal** Account which can help you create a bot in 6 lines of Python.
 
 ## Voice of the Developers
 
@@ -40,16 +38,24 @@ Wechaty is a Bot SDK for Wechat **Personal** Account which can help you create a
 
 See more at [Wiki:Voice Of Developer](https://github.com/Chatie/wechaty/wiki/Voice%20Of%20Developer)
 
+## Join Us
+
+Wechaty is used in many ChatBot projects by thousands of developers. If you want to talk with other developers, just scan the following QR Code in WeChat with secret code _python wechaty_, join our **Wechaty Python Developers' Home**.
+
+![Wechaty Python Developers' Home](https://wechaty.github.io/wechaty/images/bot-qr-code.png)
+
+Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
+
 ## The World's Shortest Python ChatBot: 6 lines of Code
 
 ```python
 from wechaty import Wechaty
 
 Wechaty.instance() // Global Instance
-.on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
-.on('login', lambda user: print('User {} logined'.format(user)))
-.on('message', lambda message: print('Message: {}'.format(message)))
-.start()
+  .on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
+  .on('login', lambda user: print('User {} logined'.format(user)))
+  .on('message', lambda message: print('Message: {}'.format(message)))
+  .start()
 ```
 
 ## Requirements
