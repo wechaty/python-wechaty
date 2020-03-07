@@ -1,4 +1,4 @@
-name: Python package
+name: PyPI
 
 on: [push, pull_request]
 
