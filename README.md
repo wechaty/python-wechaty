@@ -59,7 +59,7 @@ Wechaty.instance() // Global Instance
 
 ## Requirements
 
-1. Python 3.7 or above
+1. Python 3.7+
 
 ## Install
 
