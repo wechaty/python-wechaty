@@ -1,7 +1,10 @@
 # Makefile for Python Wechaty
-# Author: Huan LI <zixia@zixia.net> git.io/zixia
+#
+# 	GitHb: https://github.com/wechaty/python-wechaty
+# 	Author: Huan LI <zixia@zixia.net> git.io/zixia
+#
 
-SOURCE_GLOB=$(wildcard bin/*.py src/*.py src/**/*.py tests/*.py examples/*.py)
+SOURCE_GLOB=$(wildcard bin/*.py src/**/*.py tests/**/*.py examples/*.py)
 
 #
 # Huan(202003)
