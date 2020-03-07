@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install setuptools
-          run: make install
+          make install
 
       - name: Test
         run: make test
