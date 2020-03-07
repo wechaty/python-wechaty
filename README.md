@@ -1,8 +1,9 @@
 # python-wechaty
 
-![PyPI](https://img.shields.io/pypi/v/wechaty?color=blue)
-[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
+![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue)
 [![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
+![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)
 <!--
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
 -->
