@@ -1,5 +1,4 @@
 """
-
 Python Wechaty - https://github.com/wechaty/python-wechaty
 
 2020-now @copyright Wechaty
@@ -15,7 +14,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 """
 #
 # Python 3.7: PEP 563: Postponed Evaluation of Annotations
