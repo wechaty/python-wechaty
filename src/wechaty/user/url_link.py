@@ -18,7 +18,7 @@ class UrlLink:
         initialization
         :param payload:
         """
-        self.payload = payload
+        self.payload: UrlLinkPayload = payload
 
     @classmethod
     def create(cls: Type[T], url: str):

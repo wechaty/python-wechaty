@@ -4,10 +4,13 @@ interface for puppet
 from __future__ import annotations
 
 from enum import Enum
-from typing import Union
+from typing import Union, List
 from .file_box import FileBox
 from .url_link_payload import UrlLinkPayload
-from .contact import ContactQueryFilter
+from .contact import (
+    ContactQueryFilter,
+    ContactPayload
+)
 
 
 class Puppet:
@@ -39,7 +42,9 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def contact_search(self, query: Union[str, ContactQueryFilter]):
+    async def contact_search(
+            self,
+            query: Union[str, ContactQueryFilter] = None):
         """
         search
         :param query:
@@ -57,23 +62,33 @@ class Puppet:
 
     async def delete_contact_tag(self, tag_id: str) -> None:
         """
-
         :return:
+        """
+        raise NotImplementedError
+
+    async def delete_favorite_tag(self, tag_id: str) -> None:
+        """
+        delete favorite tag from favorite
         """
         raise NotImplementedError
 
     async def tag_contact_add(self, tag_id: str, contact_id: str):
         """
-
+        add tag to contact
         :param tag_id:
         :param contact_id:
         :return:
         """
         raise NotImplementedError
 
+    async def tag_favorite_add(self, tag_id: str, contact_id: str):
+        """
+        add tag to favorite
+        """
+        raise NotImplementedError
+
     async def tag_contact_remove(self, tag_id: str, contact_id: str):
         """
-
         :param tag_id:
         :param contact_id:
         :return:
@@ -127,3 +142,42 @@ class Puppet:
         raise NotImplementedError
     # async def message_send_mini_program(
     #   self, contact_id: str, mini_program: )
+
+    async def contact_alias(
+            self,
+            contact_id: str,
+            new_alias: str):
+        """
+        set contact alias
+        """
+        raise NotImplementedError
+
+    async def contact_payload_dirty(self, contact_id: str):
+        """
+        refresh contact payload
+        """
+        raise NotImplementedError
+
+    async def contact_payload(self, contact_id: str) -> ContactPayload:
+        """
+        get contact payload
+        """
+        raise NotImplementedError
+
+    async def contact_avatar(self, contact_id: str) -> FileBox:
+        """
+        get the avatar of the account
+        """
+        raise NotImplementedError
+
+    async def contact_tag_ids(self, contact_id: str) -> List[str]:
+        """
+        get tag_ids of the account
+        """
+        raise NotImplementedError
+
+    def self_id(self) -> str:
+        """
+        get self_id
+        """
+        raise NotImplementedError

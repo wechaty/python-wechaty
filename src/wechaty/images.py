@@ -66,8 +66,8 @@ class Image(Accessory):
         :return:
         """
         log.info('thumbnail() for %d', self.id)
-        file_box = await self.puppet() \
-            .message_image(self.id, ImageType.Thumbnail)
+        file_box = await self.puppet.message_image(
+            self.id, ImageType.Thumbnail)
         return file_box
 
     async def hd(self) -> FileBox:
@@ -76,8 +76,7 @@ class Image(Accessory):
         :return:
         """
         log.info('image hd for %d', self.id)
-        file_box = await self.puppet() \
-            .message_image(self.id, ImageType.HD)
+        file_box = await self.puppet.message_image(self.id, ImageType.HD)
         return file_box
 
     async def artwork(self) -> FileBox:
@@ -86,6 +85,5 @@ class Image(Accessory):
         :return:
         """
         log.info('image artwork for %d', self.id)
-        file_box = await self.puppet() \
-            .message_image(self.id, ImageType.Artwork)
+        file_box = await self.puppet.message_image(self.id, ImageType.Artwork)
         return file_box
