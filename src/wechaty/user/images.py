@@ -4,7 +4,7 @@ Python Wechaty - https://github.com/wechaty/python-wechaty
 
 GitHub:
     TypeScript: https://github.com/wechaty/wechaty/blob/master/src/user/image.ts
-    Python:     https://github.com/wechaty/python-wechaty/tree/master/src/wechaty
+    Python:     https://github.com/wechaty/python-wechaty/blob/master/src/wechaty/user/images.py
 
 Authors:    Huan LI (李卓桓) <https://github.com/huan>
             Jingjing WU (吴京京) <https://github.com/wj-Mcat>

@@ -102,21 +102,21 @@ The following diagram shows out that we can reuse almost everything in TypeScrip
 
 There's a 100 lines class named `Image` in charge of downloading the WeChat image to different sizes.
 
-It is a great example for demostrating how do we translate the TypeScript to Python in Wechaty Way:
+It is a great example for demonstrating how do we translate the TypeScript to Python in Wechaty Way:
 
 ### Image Class Source Code
 
 - TypeScript: <https://github.com/wechaty/wechaty/blob/master/src/user/image.ts>
 - Python: <https://github.com/wechaty/python-wechaty/blob/master/src/wechaty/user/images.py>
 
-If you are interested with the translation and want to look how it works, it will be a good start from reading and comparing those two `Image` class files in TypeScript and Python at the same time.
+If you are interested in the translation and want to look at how it works, it will be a good start from reading and comparing those two `Image` class files in TypeScript and Python at the same time.
 
 ## To-do List
 
 - TS: TypeScript
 - SLOC: Source Lines Of Code
 
-### Wechaty Modules
+### Wechaty Internal Modules
 
 1. [ ] Class Wechaty @wj-mCat
     - TS SLOC(1160): <https://github.com/wechaty/wechaty/blob/master/src/wechaty.ts>
@@ -189,7 +189,7 @@ If you are interested with the translation and want to look how it works, it wil
     - [ ] Unit Tests
     - [ ] Documentation
 
-### Support Core Modules
+### Wechaty External Modules
 
 1. [ ] Class FileBox
     - TS SLOC(638): <https://github.com/huan/file-box/blob/master/src/file-box.ts>
