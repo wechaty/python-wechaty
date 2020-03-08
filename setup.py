@@ -17,11 +17,11 @@ setuptools.setup(
     description='Wechaty is a Bot SDK for Wechat Personal Account',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/Chatie/python-wechaty',
+    url='https://github.com/wechaty/python-wechaty',
     packages=setuptools.find_packages('src'),
     package_dir={'': 'src'},
     classifiers=[
-        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
     ],

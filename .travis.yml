@@ -1,13 +1,11 @@
 language: python
 python:
     - 3.7
-    - 3.8
 
 # command to install dependencies
 install:
     - pip3 install --upgrade six
-    - pip3 install -r requirements.txt
-    - pip3 check
+    - make install
 
 # command to run tests
 script:

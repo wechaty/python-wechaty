@@ -1,9 +1,26 @@
 """
-docstring
+Python Wechaty - https://github.com/wechaty/python-wechaty
+
+Authors:    Huan LI (李卓桓) <https://github.com/huan>
+            Jingjing WU (吴京京) <https://github.com/wj-Mcat>
+
+2018-now @copyright Wechaty
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
-# from abc import ABC
 from typing import (
     # overload,
+    # cast,
     Optional,
 )
 from wechaty_puppet import Puppet
@@ -15,75 +32,37 @@ from .wechaty import Wechaty
 log = logging.getLogger('Accessory')
 
 
-class AccessoryMeta(type):
-    """docs"""
-
-    _static_puppet : Optional[Puppet]  = None
-    _static_wechaty: Optional[Wechaty] = None
-
-    @property
-    def puppet(cls) -> Puppet:
-        """doc"""
-        if cls._static_puppet is None:
-            raise AttributeError('static puppet not found ...')
-
-        return cls._static_puppet
-
-    @puppet.setter
-    def puppet(cls, new_puppet: Puppet) -> None:
-        if cls._static_puppet is not None:
-            raise AttributeError('static puppet can not be set twice')
-
-        cls._static_puppet = new_puppet
-
-    @property
-    def wechaty(cls) -> Wechaty:
-        """doc"""
-        if cls._static_wechaty is None:
-            raise AttributeError('static wechaty not found ...')
-        return cls._static_wechaty
-
-    @wechaty.setter
-    def wechaty(cls, new_wechaty) -> None:
-        if cls._static_wechaty is not None:
-            raise AttributeError(
-                'static wechaty can not be set twice'
-            )
-        cls._static_wechaty = new_wechaty
-
-
-class Accessory(metaclass=AccessoryMeta):
+class Accessory:
     """
-    docstring
+    Translate the function from TypeScript to Python
+    See: https://github.com/wechaty/wechaty/blob/master/src/accessory.ts
     """
 
     _puppet : Optional[Puppet]  = None
     _wechaty: Optional[Wechaty] = None
 
-    @property
-    def puppet(self) -> Puppet:
+    @classmethod
+    def set_puppet(cls, new_puppet: Puppet):
         """doc"""
-        if self._puppet is not None:
-            return self._puppet
+        if cls._puppet is not None:
+            raise AttributeError('can not set twice')
+        cls._puppet = new_puppet
 
-        return self.__class__.puppet
-
-    @puppet.setter
-    def puppet(self, new_puppet) -> None:
-        if self._puppet is not None:
-            raise AttributeError('puppet can not be set twice')
-
-        self._puppet = new_puppet
-
-    @property
-    def wechaty(self) -> Wechaty:
+    @classmethod
+    def set_wechaty(cls, new_wechaty: Wechaty):
         """doc"""
-        if self._wechaty is not None:
-            return self._wechaty
-        return self.__class__.wechaty
+        if cls._wechaty is not None:
+            raise AttributeError('can not set twice')
+        cls._wechaty = new_wechaty
 
-    @wechaty.setter
-    def wechaty(self, new_wechaty) -> None:
-        if self._wechaty is not None:
-            raise AttributeError('wechaty can not be set twice')
-        self._wechaty = new_wechaty
+    def puppet(self):
+        """doc"""
+        if self._puppet is None:
+            raise AttributeError('puppet not set')
+        return self._puppet
+
+    def wechaty(self):
+        """doc"""
+        if self._wechaty is None:
+            raise AttributeError('wechaty not set')
+        return self._wechaty

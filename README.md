@@ -1,21 +1,22 @@
-# python-wechaty
-
-[![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
-[![Downloads](https://pepy.tech/badge/wechaty/month)](https://pepy.tech/project/wechaty)
-
-Python Wechaty
+# python-wechaty [![Python 3.7](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/) [![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)](https://github.com/wechaty/python-wechaty/actions?query=workflow%3APyPI)
 
 ![Python Wechaty](https://wechaty.github.io/python-wechaty/images/python-wechaty.png)
+
+![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue)
+[![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
+<!--
+![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
+-->
+
+## Connecting Chatbots
+
+Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 6 lines of Python.
 
 ## WORK IN PROGRESS
 
 Work in progress...
 
 Please come back after 4 weeks...
-
-## Connecting Chatbots
-
-Wechaty is a Bot SDK for Wechat **Personal** Account which can help you create a bot in 6 lines of Python.
 
 ## Voice of the Developers
 
@@ -36,21 +37,29 @@ Wechaty is a Bot SDK for Wechat **Personal** Account which can help you create a
 
 See more at [Wiki:Voice Of Developer](https://github.com/Chatie/wechaty/wiki/Voice%20Of%20Developer)
 
+## Join Us
+
+Wechaty is used in many ChatBot projects by thousands of developers. If you want to talk with other developers, just scan the following QR Code in WeChat with secret code _python wechaty_, join our **Wechaty Python Developers' Home**.
+
+![Wechaty Python Developers' Home](https://wechaty.github.io/wechaty/images/bot-qr-code.png)
+
+Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
+
 ## The World's Shortest Python ChatBot: 6 lines of Code
 
 ```python
 from wechaty import Wechaty
 
 Wechaty.instance() // Global Instance
-.on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
-.on('login', lambda user: print('User {} logined'.format(user)))
-.on('message', lambda message: print('Message: {}'.format(message)))
-.start()
+  .on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
+  .on('login', lambda user: print('User {} logined'.format(user)))
+  .on('message', lambda message: print('Message: {}'.format(message)))
+  .start()
 ```
 
 ## Requirements
 
-1. Python 3.7 or above
+1. Python 3.7+
 
 ## Install
 
@@ -75,6 +84,30 @@ WIP...
 - [PEP 526 -- Syntax for Variable Annotations - Class and instance variable annotations](https://www.python.org/dev/peps/pep-0526/#class-and-instance-variable-annotations)
   - [Python Type Checking (Guide)](https://realpython.com/python-type-checking/) by [Geir Arne Hjelle](https://realpython.com/team/gahjelle/)
 
+## History
+
+### master
+
+### v0.1 (Mar 8, 2020)
+
+Welcome [@wj-Mcat](https://github.com/wj-Mcat) for joining the project!
+
+1. Starting translate TypeScript of Wechaty to Python
+1. DevOps Setup
+    1. Type Checking: mypy & pytype
+    1. Unit Testing: pytest
+    1. Linting: pylint, pycodestyle, and flake8
+    1. CI/CD: GitHub Actions
+1. Publish to PyPI automatically after the tests passed.
+
+### v0.0.1 (Aug 25, 2018)
+
+Project created, publish a empty module `wechaty` on PyPI.
+
+## Related Projects
+
+- [Wechaty](https://github.com/wechaty/wechaty) - WeChat Bot SDK for Individual Account in TypeScript
+
 ## Author
 
 [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
@@ -83,6 +116,7 @@ WIP...
 
 ## Copyright & License
 
-- Code & Docs © 2020-now Huan LI \<zixia@zixia.net\>
+- Code & Docs © 2018-now Huan LI \<zixia@zixia.net\>
 - Code released under the Apache-2.0 License
 - Docs released under Creative Commons
+

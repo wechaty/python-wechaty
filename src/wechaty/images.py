@@ -4,7 +4,12 @@ docstring
 from __future__ import annotations
 
 from enum import IntEnum
-from wechaty_puppet.file_box import FileBox
+from typing import (
+    Type,
+)
+
+from wechaty_puppet import FileBox
+
 from .accessory import Accessory
 from .config import (
     logging,
@@ -43,7 +48,7 @@ class Image(Accessory):
                                       ' without a puppet!')
 
     @classmethod
-    def create(cls: Image, image_id: str) -> Image:
+    def create(cls: Type[Image], image_id: str) -> Image:
         """
         create image instance by image_id
         :param cls:
@@ -62,7 +67,7 @@ class Image(Accessory):
         :return:
         """
         log.info('thumbnail() for %d', self.id)
-        file_box = await self.puppet \
+        file_box = await self.puppet() \
             .message_image(self.id, ImageType.Thumbnail)
         return file_box
 
@@ -72,7 +77,7 @@ class Image(Accessory):
         :return:
         """
         log.info('image hd for %d', self.id)
-        file_box = await self.puppet \
+        file_box = await self.puppet() \
             .message_image(self.id, ImageType.HD)
         return file_box
 
@@ -82,6 +87,6 @@ class Image(Accessory):
         :return:
         """
         log.info('image artwork for %d', self.id)
-        file_box = await self.puppet \
+        file_box = await self.puppet() \
             .message_image(self.id, ImageType.Artwork)
         return file_box

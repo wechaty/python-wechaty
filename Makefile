@@ -1,13 +1,19 @@
 # Makefile for Python Wechaty
-# Author: Huan LI <zixia@zixia.net> git.io/zixia
+#
+# 	GitHb: https://github.com/wechaty/python-wechaty
+# 	Author: Huan LI <zixia@zixia.net> git.io/zixia
+#
 
-SOURCE_GLOB=$(wildcard bin/*.py src/*.py src/**/*.py tests/*.py examples/*.py)
+SOURCE_GLOB=$(wildcard bin/*.py src/**/*.py tests/**/*.py examples/*.py)
 
 #
 # Huan(202003)
 # 	F811: https://github.com/PyCQA/pyflakes/issues/320#issuecomment-469337000
 #
-IGNORE_PEP=E203,E221,E272,F811
+IGNORE_PEP=E203,E221,E241,E272,F811
+
+# help scripts to find the right place of wechaty module
+export PYTHONPATH=src/
 
 .PHONY: all
 all : clean lint
@@ -46,8 +52,8 @@ mypy:
 
 .PHONE: pytype
 pytype:
-	MYPYPATH=stubs/ pytype \
-		$(SOURCE_GLOB)
+	pytype src/
+	pytype examples/
 
 .PHONY: install
 install:
@@ -56,7 +62,10 @@ install:
 
 .PHONY: pytest
 pytest:
-	PYTHONPATH=src/ pytest src/ tests/
+	pytest src/ tests/
+
+.PHONY: test-unit
+test-unit: pytest
 
 .PHONY: test
 test: check-version lint pytest
@@ -66,11 +75,11 @@ check-version:
 	./scripts/check_version.py
 
 code:
-	PYTHONPATH=src/ code .
+	code .
 
 .PHONY: run
 run:
-	PYTHONPATH=src/ python3 bin/run.py
+	python3 bin/run.py
 
 .PHONY: dist
 dist:
@@ -82,4 +91,4 @@ publish:
 
 .PHONY: demo
 demo:
-	PYTHONPATH=src/ python3 examples/demo.py
+	python3 examples/demo.py

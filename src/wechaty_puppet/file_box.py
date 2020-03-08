@@ -6,6 +6,10 @@ from typing import Type, TypeVar
 
 T = TypeVar('T', bound='FileBox')
 
+from typing import (
+    Type,
+)
+
 
 class FileBox:
     """
@@ -27,7 +31,7 @@ class FileBox:
         raise NotImplementedError
 
     @classmethod
-    def from_qr_code(cls: Type[T], code: str) -> T:
+    def from_qr_code(cls: Type[FileBox], code: str) -> FileBox:
         """
         create filebox from qrcode
         :param code:

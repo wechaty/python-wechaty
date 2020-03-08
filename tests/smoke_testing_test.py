@@ -8,11 +8,11 @@ Unit Test
 #     Iterable,
 # )
 
-# import pytest   # type: ignore
+import pytest   # type: ignore
 
 # from agent import Agent
 
 
-def smoke_testing_test() -> None:
+def test_smoke_testing() -> None:
     """ wechaty """
-    assert True, 'should True'
+    assert pytest, 'should True'

@@ -1,8 +1,10 @@
 """
-
 Python Wechaty - https://github.com/wechaty/python-wechaty
 
-2020-now @copyright wechaty
+Authors:    Huan LI (李卓桓) <https://github.com/huan>
+            Jingjing WU (吴京京) <https://github.com/wj-Mcat>
+
+2020-now @ Copyright Wechaty
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +17,6 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 """
 #
 # Python 3.7: PEP 563: Postponed Evaluation of Annotations
@@ -23,10 +24,10 @@ limitations under the License.
 from __future__ import annotations
 
 from typing import (
-    # cast,
-    # ClassVar,
-    Optional,
     TypeVar,
+    cast,
+    ClassVar,
+    Optional,
     Type,
     # Union,
 )
@@ -70,7 +71,7 @@ class Wechaty:
         raise NotImplementedError
 
     @classmethod
-    def instance(cls: Type[T]) -> T:
+    def instance(cls: Type[Wechaty]) -> Wechaty:
         """
         get or create global wechaty instance
         :return:
@@ -80,8 +81,9 @@ class Wechaty:
         if cls._global_instance is None:
             cls._global_instance = cls()
 
-        # return cast(Wechaty, cls._global_instance)
-        return cls._global_instance
+        # Huan(202003): how to remove cast?
+        return cast(Wechaty, cls._global_instance)
+        # return cls._global_instance
 
     async def start(self) -> None:
         """

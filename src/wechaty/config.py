@@ -20,8 +20,13 @@ limitations under the License.
 import logging
 import os
 import re
-from typing import Optional
-from wechaty_puppet.file_box import FileBox
+from typing import (
+    Optional,
+)
+
+from wechaty_puppet import (
+    FileBox,
+)
 
 log = logging.getLogger(__name__)
 
