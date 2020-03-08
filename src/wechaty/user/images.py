@@ -1,5 +1,25 @@
 """
-docstring
+Python Wechaty - https://github.com/wechaty/python-wechaty
+2020-now @ Copyright Wechaty
+
+GitHub:
+    TypeScript: https://github.com/wechaty/wechaty/blob/master/src/user/image.ts
+    Python:     https://github.com/wechaty/python-wechaty/tree/master/src/wechaty
+
+Authors:    Huan LI (李卓桓) <https://github.com/huan>
+            Jingjing WU (吴京京) <https://github.com/wj-Mcat>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 from __future__ import annotations
 
@@ -10,8 +30,8 @@ from typing import (
 
 from wechaty_puppet import FileBox
 
-from .accessory import Accessory
-from .config import (
+from ..accessory import Accessory
+from ..config import (
     logging,
 )
 
@@ -20,7 +40,7 @@ log = logging.getLogger('Image')
 
 class ImageType(IntEnum):
     """
-    docstring ...
+    User Image Type
     """
     Thumbnail = 0
     HD = 1
@@ -29,13 +49,16 @@ class ImageType(IntEnum):
 
 class Image(Accessory):
     """
-    docstring ...
+    User Image class
     """
 
     def __str__(self):
-        return 'image instance : %d' % self.id
+        return 'Image<%d>' % self.id
 
-    def __init__(self, image_id: str) -> None:
+    def __init__(
+            self,
+            image_id: str,
+    ) -> None:
         """
         :param image_id:
         """
@@ -55,11 +78,11 @@ class Image(Accessory):
         :param image_id:
         :return:
         """
-        log.info('@classmethod create(%s, %d)', cls, image_id)
-        obj = super().__new__(cls)
-        obj.__init__(image_id)
-        return obj
-        # return cls(image_id)
+        log.info('@classmethod create(%d)', image_id)
+        # obj = super().__new__(cls)
+        # obj.__init__(image_id)
+        # return obj
+        return cls(image_id)
 
     async def thumbnail(self) -> FileBox:
         """
@@ -76,7 +99,7 @@ class Image(Accessory):
         docstring
         :return:
         """
-        log.info('image hd for %d', self.id)
+        log.info('hd() for %d', self.id)
         file_box = await self.puppet \
             .message_image(self.id, ImageType.HD)
         return file_box
@@ -86,7 +109,7 @@ class Image(Accessory):
         docstring
         :return:
         """
-        log.info('image artwork for %d', self.id)
+        log.info('artwork() for %d', self.id)
         file_box = await self.puppet \
             .message_image(self.id, ImageType.Artwork)
         return file_box
