@@ -4,9 +4,10 @@ interface for puppet
 from __future__ import annotations
 
 from enum import Enum
+from typing import Union
 from .file_box import FileBox
-from .contact import ContactQueryFilter
 from .url_link_payload import UrlLinkPayload
+from .contact import ContactQueryFilter
 
 
 class Puppet:
@@ -38,7 +39,7 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def contact_search(self, query: str or ContactQueryFilter):
+    async def contact_search(self, query: Union[str, ContactQueryFilter]):
         """
         search
         :param query:

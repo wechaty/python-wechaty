@@ -5,6 +5,8 @@ from wechaty_puppet import (
 from .wechaty import (
     Wechaty
 )
+from .accessory import Accessory
+
 
 # Huan(202003): is that necessary to put "name" to `__all__`?
 name = 'wechaty'
@@ -12,4 +14,5 @@ name = 'wechaty'
 __all__ = [
     'FileBox',
     'Wechaty',
+    'Accessory'
 ]

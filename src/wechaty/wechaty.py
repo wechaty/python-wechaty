@@ -24,9 +24,8 @@ limitations under the License.
 from __future__ import annotations
 
 from typing import (
-    TypeVar,
-    cast,
-    ClassVar,
+    # TypeVar,
+    # cast,
     Optional,
     Type,
     # Union,
@@ -53,15 +52,12 @@ class WechatyOptions:
         self.profile: Optional[None or str] = None
 
 
-T = TypeVar('T', bound='Wechaty')
-
-
 class Wechaty:
     """
     docstring
     """
 
-    _global_instance: Optional[T] = None
+    _global_instance: Optional['Wechaty'] = None
 
     def __init__(self):
         """
@@ -71,7 +67,7 @@ class Wechaty:
         raise NotImplementedError
 
     @classmethod
-    def instance(cls: Type[Wechaty]) -> Wechaty:
+    def instance(cls: Type['Wechaty']) -> 'Wechaty':
         """
         get or create global wechaty instance
         :return:
@@ -82,7 +78,8 @@ class Wechaty:
             cls._global_instance = cls()
 
         # Huan(202003): how to remove cast?
-        return cast(Wechaty, cls._global_instance)
+        return cls._global_instance
+        # return cast(Wechaty, cls._global_instance)
         # return cls._global_instance
 
     async def start(self) -> None:

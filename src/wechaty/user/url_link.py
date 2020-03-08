@@ -3,7 +3,7 @@ UrlLink for Contact Message
 """
 from typing import Type, TypeVar
 import requests
-from src.wechaty.config import LOG
+from ..config import log
 from wechaty_puppet.url_link_payload import UrlLinkPayload
 
 T = TypeVar("T", bound="UrlLink")
@@ -22,9 +22,10 @@ class UrlLink:
 
     @classmethod
     def create(cls: Type[T], url: str):
-        LOG.info("create url_link for %s",
+        log.info("create url_link for %s",
                  url)
         res = requests.get(url)
+        return res
 
     def __str__(self):
         """

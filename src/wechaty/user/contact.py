@@ -2,22 +2,23 @@
 all contact component
 """
 
-from typing import Optional, List, Type, TypeVar, Dict, Any
+from typing import Optional, List, Type, TypeVar, Dict, Any, Union
 from collections import defaultdict
 from overrides import overrides
 from wechaty_puppet import (
-    ContactGender,
+    # ContactGender,
     ContactPayload,
     ContactQueryFilter,
-    ContactType
+    # ContactType
 )
-from wechaty_puppet.accessory import Accessory
-from wechaty.config import FileBox, log, qr_code_for_chatie
-from wechaty.types import Sayable
-from wechaty.user.mini_program import MiniProgram
-from wechaty.user.message import Message
-from wechaty.user.tag import Tag
-from wechaty.user.url_link import UrlLink
+from ..accessory import Accessory
+# from wechaty import Accessory
+from ..config import FileBox, log
+# from wechaty.types import Sayable
+# from wechaty.user.mini_program import MiniProgram
+from .message import Message
+from .tag import Tag
+from .url_link import UrlLink
 
 T = TypeVar('T', bound='Contact')
 
@@ -26,13 +27,14 @@ class Contact(Accessory):
     """
     contact object
     """
-    _pool: Dict[str, T] = defaultdict(T)
+    _pool: Dict[str, "Contact"] = defaultdict()
 
     def __init__(self, contact_id: str):
         """
         initialization
         """
         self.contact_id = contact_id
+        self.name = "Contact<%s>" % contact_id
         self.payload: Optional[ContactPayload] = None
 
     def get_id(self):
@@ -45,9 +47,9 @@ class Contact(Accessory):
     @overrides
     @classmethod
     async def say(
-            cls: Type[T],
+            cls: Type['Contact'],
             text: str,
-            reply_to: Optional[T or List[T]]) -> Optional[Message]:
+            reply_to: Union['Contact', List['Contact']]) -> Optional[Message]:
         """
         send message interface
         :param text:
@@ -90,7 +92,10 @@ class Contact(Accessory):
 
     async def find_all(
             self,
-            query: Optional[str or ContactQueryFilter]) -> List['Contact']:
+            query:
+            Optional[
+                Union[str, ContactQueryFilter]
+            ] = None) -> List['Contact']:
         """
         find all contact friends
         :param query:
@@ -211,11 +216,10 @@ class Contact(Accessory):
         else:
             log.info("unsupported tags %s", message)
             raise RuntimeError("unsupported tags")
-        
+
         if msg_id is not None:
             msg = self.wechaty.Message.load(msg_id)
             await msg.ready()
             return msg
 
         return None
-        

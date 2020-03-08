@@ -9,7 +9,6 @@ from typing import (
 )
 
 from wechaty_puppet import FileBox
-
 from .accessory import Accessory
 from .config import (
     logging,
