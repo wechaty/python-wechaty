@@ -60,9 +60,9 @@ def test_user_classes_should_share():
     child1 = user_class()
     child2 = user_class()
 
-    assert child1.wechaty() == EXPECTED_WECHATY1, \
+    assert child1.wechaty == EXPECTED_WECHATY1, \
         'child1 should get the wechaty from static value'
-    assert child2.wechaty() == EXPECTED_WECHATY1, \
+    assert child2.wechaty == EXPECTED_WECHATY1, \
         'child1 should get the wechaty from static value'
 
 
@@ -81,14 +81,14 @@ def test_indenpendent_user_classes_instances():
     user_class1_instance = user_class1()
     user_class2_instance = user_class2()
 
-    assert user_class1_instance.wechaty() == EXPECTED_WECHATY1, \
+    assert user_class1_instance.wechaty == EXPECTED_WECHATY1, \
         'class1 instance should get wechaty1'
-    assert user_class1_instance.puppet() == EXPECTED_PUPPET1, \
+    assert user_class1_instance.puppet == EXPECTED_PUPPET1, \
         'class1 instance should get puppet1'
 
-    assert user_class2_instance.wechaty() == EXPECTED_WECHATY2, \
+    assert user_class2_instance.wechaty == EXPECTED_WECHATY2, \
         'class2 instance should get wechaty2'
-    assert user_class2_instance.puppet() == EXPECTED_PUPPET2, \
+    assert user_class2_instance.puppet == EXPECTED_PUPPET2, \
         'class2 instance should get puppet2'
 
 
@@ -107,10 +107,10 @@ def test_accessory_read_initialized_class(
     accessory_instance = user_class()
 
     assert \
-        accessory_instance.puppet() == EXPECTED_PUPPET1, \
+        accessory_instance.puppet == EXPECTED_PUPPET1, \
         'should get puppet back by instance from static'
     assert \
-        accessory_instance.wechaty() == EXPECTED_WECHATY1, \
+        accessory_instance.wechaty == EXPECTED_WECHATY1, \
         'should get wechaty back by instance from static'
 
 
@@ -123,11 +123,11 @@ def test_accessory_read_uninitialized_instance(
     instance = user_class()
 
     with pytest.raises(Exception) as e:
-        assert instance.puppet()
+        assert instance.puppet
     assert str(e.value) == 'puppet not set'
 
     with pytest.raises(Exception) as e:
-        assert instance.wechaty()
+        assert instance.wechaty
     assert str(e.value) == 'wechaty not set'
 
 
@@ -145,10 +145,10 @@ def test_accessory_read_initialized_instance(
     accessory_instance = user_class()
 
     assert \
-        accessory_instance.puppet() == EXPECTED_PUPPET1, \
+        accessory_instance.puppet == EXPECTED_PUPPET1, \
         'should get puppet back'
     assert \
-        accessory_instance.wechaty() == EXPECTED_WECHATY1, \
+        accessory_instance.wechaty == EXPECTED_WECHATY1, \
         'should get wechaty back'
 
 

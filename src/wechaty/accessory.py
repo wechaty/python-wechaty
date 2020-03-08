@@ -55,13 +55,15 @@ class Accessory:
             raise AttributeError('can not set twice')
         cls._wechaty = new_wechaty
 
-    def puppet(self):
+    @property
+    def puppet(self) -> Puppet:
         """doc"""
         if self._puppet is None:
             raise AttributeError('puppet not set')
         return self._puppet
 
-    def wechaty(self):
+    @property
+    def wechaty(self) -> Wechaty:
         """doc"""
         if self._wechaty is None:
             raise AttributeError('wechaty not set')
