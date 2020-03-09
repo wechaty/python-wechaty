@@ -18,36 +18,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from typing import List
-from .tag import Tag
+from typing import Union, List, Optional
+from .user.message import Message
+from .user.contact import Contact
 
 
-# pylint: disable=R
-class Favorite:
+# pylint: disable=R0903
+class Sayable:
     """
-    favorite object which handle the url_link content
+    wechaty sayable interface
     """
-    def __init__(self, favorite_id: str):
-        self.favorite_id = favorite_id
+    async def say(
+            self, text: str,
+            reply_to: Union[Contact, List[Contact]]) -> Optional[Message]:
+        """
+        derived classes must implement this function
+        """
         raise NotImplementedError
 
-    def get_id(self):
-        """
-        get favorite_id
-        :return:
-        """
-        return self.favorite_id
 
-    async def tags(self) -> List[Tag]:
+# pylint: disable=R0903
+class Acceptable:
+    """
+    wechaty acceptable interface
+    """
+    async def accept(self):
         """
-        get favorite tags
+        derived classes must implement this function
         """
-        # TODO
-        return []
-
-    async def find_all(self) -> List[Tag]:
-        """
-        get all favorite tags
-        """
-        # TODO
-        return []
+        raise NotImplementedError

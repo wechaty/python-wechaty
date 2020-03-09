@@ -350,7 +350,7 @@ class Contact(Accessory):
         """
         sync the contact data
         """
-        await self.ready()
+        return self.ready()
 
     def is_self(self) -> bool:
         """
