@@ -59,6 +59,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
+          make install
 
       - name: Check Branch
         id: check-branch
