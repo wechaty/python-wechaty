@@ -19,7 +19,7 @@
 
       "python.linting.flake8Enabled": true,
       "python.linting.flake8Args": [
-        "--ignore=E203,E221,E241,E272,F811,"
+        "--ignore=E203,E221,E241,E272,E501,F811,"
     ],
 
     "alignment": {
