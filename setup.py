@@ -1,7 +1,6 @@
 """
 setup
 """
-import json
 import semver
 import setuptools
 
