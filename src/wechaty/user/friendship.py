@@ -18,16 +18,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from typing import Union, Optional, Type
+from typing import (
+    Union,
+    Optional,
+    # Type,
+)
 import json
-from ..config import log
+
 from wechaty_puppet.friendship import (
     FriendShipType,
     FriendshipSearchQueryFilter,
     FriendShipPayload
 )
-from ..types import Sayable, Acceptable
+
+from ..config import log
+from ..types import Acceptable
 from ..accessory import Accessory
+
 from .contact import Contact
 
 
@@ -41,8 +48,6 @@ class FriendShip(Accessory, Acceptable):
     """
 
     Type = FriendShipType
-
-    
 
     def __init__(self, friendship_id: str):
         """
@@ -154,7 +159,7 @@ class FriendShip(Accessory, Acceptable):
         log.info("accept friendship %s", self.friendship_id)
         if self.payload is None:
             raise Exception("payload not found")
-            
+
         if self.payload.type != FriendShipType.Receive:
             raise Exception(
                 "accept() need type to be FriendshipType.Receive,"
@@ -173,14 +178,14 @@ class FriendShip(Accessory, Acceptable):
                 "can't reload contact data %s",
                 str(e.args))
         await contact.sync()
-    
+
     def hello(self) -> str:
         """
         TODO ->
         Get verify message from
         """
         return self.payload.hello
-    
+
     def type(self) -> FriendShipType:
         """
         Return the Friendship Type
@@ -203,7 +208,7 @@ class FriendShip(Accessory, Acceptable):
                 "Friendship<${this.id}> needs to be ready. "
                 "Please call ready() before toJSON()", self.friendship_id)
         return json.dumps(self.payload)
-    
+
     @classmethod
     async def from_json(
             cls,
@@ -216,7 +221,7 @@ class FriendShip(Accessory, Acceptable):
             payload = FriendShipPayload.from_json(payload)
         else:
             log.info("Friendship', 'static fromJSON(%s)", json.dumps(payload))
-        
+
         await cls.get_puppet().friendship_payload(
             payload.contact_id,
             payload)
