@@ -110,7 +110,7 @@ def test_accessory_read_initialized_class(
         accessory_instance.puppet == EXPECTED_PUPPET1, \
         'should get puppet back by instance from static'
     assert \
-        accessory_instance.wechaty() == EXPECTED_WECHATY1, \
+        accessory_instance.wechaty == EXPECTED_WECHATY1, \
         'should get wechaty back by instance from static'
 
 
@@ -127,7 +127,7 @@ def test_accessory_read_uninitialized_instance(
     assert str(e.value) == 'puppet not set'
 
     with pytest.raises(Exception) as e:
-        assert instance.wechaty()
+        assert instance.wechaty
     assert str(e.value) == 'wechaty not set'
 
 
@@ -148,7 +148,7 @@ def test_accessory_read_initialized_instance(
         accessory_instance.puppet == EXPECTED_PUPPET1, \
         'should get puppet back'
     assert \
-        accessory_instance.wechaty() == EXPECTED_WECHATY1, \
+        accessory_instance.wechaty == EXPECTED_WECHATY1, \
         'should get wechaty back'
 
 

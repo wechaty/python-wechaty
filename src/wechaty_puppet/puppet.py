@@ -4,15 +4,20 @@ interface for puppet
 from __future__ import annotations
 
 from enum import Enum
-from typing import Union, List
+from typing import Union, List, Optional
 from .file_box import FileBox
 from .url_link_payload import UrlLinkPayload
 from .contact import (
     ContactQueryFilter,
     ContactPayload
 )
+from .friendship import (
+    FriendshipSearchQueryFilter,
+    FriendShipPayload
+)
 
 
+# pylint: disable=R0904
 class Puppet:
     """
     puppet interface class
@@ -179,5 +184,36 @@ class Puppet:
     def self_id(self) -> str:
         """
         get self_id
+        """
+        raise NotImplementedError
+
+    async def friendship_search(
+            self,
+            query_filter: FriendshipSearchQueryFilter) -> Optional[str]:
+        """
+        search friend by query
+        :params:
+        :return:
+        """
+        raise NotImplementedError
+
+    async def friendship_add(self, contact_id: str, hello: str):
+        """
+        add friendship with hello
+        """
+        raise NotImplementedError
+
+    def friendship_payload(
+            self,
+            friendship_id: str,
+            payload: Optional[FriendShipPayload]):
+        """
+        load friendship payload
+        """
+        raise NotImplementedError
+
+    def friendship_accept(self, friendship_id: str):
+        """
+        accept friendship
         """
         raise NotImplementedError

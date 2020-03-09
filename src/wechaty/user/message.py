@@ -13,3 +13,16 @@ class Message:
         initialization
         """
         raise NotImplementedError
+
+    @classmethod
+    def load(cls, msg_id: str) -> "Message":
+        """
+        load message
+        """
+        raise NotImplementedError
+
+    async def ready(self):
+        """
+        sync load message
+        """
+        raise NotImplementedError
