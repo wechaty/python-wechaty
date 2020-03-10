@@ -166,3 +166,19 @@ def test_accessory_set_twice(
     with pytest.raises(Exception) as e:
         user_class.set_wechaty(EXPECTED_WECHATY1)
     assert str(e.value) == 'can not set twice'
+
+
+def test_accessory_classmethod_access_puppet():
+    """
+    docstring
+    """
+    user_class1 = get_user_class()
+    user_class2 = get_user_class()
+
+    user_class1.set_wechaty(EXPECTED_WECHATY1)
+    assert user_class1.get_wechaty() == EXPECTED_WECHATY1 , \
+        'user_class1 should get the wechaty from static value'
+
+    user_class2.set_puppet(EXPECTED_PUPPET1)
+    assert user_class2.get_puppet() == EXPECTED_PUPPET1, \
+        'user_class2 should get the puppet from static value'

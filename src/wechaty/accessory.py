@@ -55,6 +55,20 @@ class Accessory:
             raise AttributeError('can not set twice')
         cls._wechaty = new_wechaty
 
+    @classmethod
+    def get_puppet(cls) -> Puppet:
+        """doc"""
+        if cls._puppet is None:
+            raise AttributeError('puppet not found')
+        return cls._puppet
+
+    @classmethod
+    def get_wechaty(cls) -> Wechaty:
+        """doc"""
+        if cls._wechaty is None:
+            raise AttributeError('wechaty not found')
+        return cls._wechaty
+
     @property
     def puppet(self) -> Puppet:
         """doc"""
