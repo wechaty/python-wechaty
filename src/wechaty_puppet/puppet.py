@@ -3,8 +3,10 @@ interface for puppet
 """
 from __future__ import annotations
 
+from abc import ABC
 from enum import Enum
 from typing import Union, List, Optional
+
 from .file_box import FileBox
 from .url_link_payload import UrlLinkPayload
 from .contact import (
@@ -18,7 +20,7 @@ from .friendship import (
 
 
 # pylint: disable=R0904
-class Puppet:
+class Puppet(ABC):
     """
     puppet interface class
     """

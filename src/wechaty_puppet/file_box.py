@@ -2,9 +2,10 @@
 docstring
 """
 from __future__ import annotations
-from typing import Type, TypeVar
 
-T = TypeVar('T', bound='FileBox')
+from typing import (
+    Type,
+)
 
 
 class FileBox:

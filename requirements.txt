@@ -1,9 +1,0 @@
-overrides
-flake8
-mypy
-mypy_extensions
-pycodestyle
-pylint
-pytest
-pylint-quotes
-pytype

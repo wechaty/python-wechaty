@@ -18,19 +18,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from typing import Union, List, Optional
+from typing import (
+    List,
+    Optional,
+    Union,
+)
+from abc import ABC
+
 from .user.message import Message
 from .user.contact import Contact
 
 
 # pylint: disable=R0903
-class Sayable:
+class Sayable(ABC):
     """
     wechaty sayable interface
     """
     async def say(
             self, text: str,
-            reply_to: Union[Contact, List[Contact]]) -> Optional[Message]:
+            reply_to: Union[Contact, List[Contact]]
+    ) -> Optional[Message]:
         """
         derived classes must implement this function
         """
@@ -38,11 +45,11 @@ class Sayable:
 
 
 # pylint: disable=R0903
-class Acceptable:
+class Acceptable(ABC):
     """
     wechaty acceptable interface
     """
-    async def accept(self):
+    async def accept(self) -> None:
         """
         derived classes must implement this function
         """

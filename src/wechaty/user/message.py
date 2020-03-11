@@ -1,6 +1,7 @@
 """
 message object which handle the message sending
 """
+from __future__ import annotations
 
 
 # pylint: disable=R0903
@@ -15,7 +16,7 @@ class Message:
         raise NotImplementedError
 
     @classmethod
-    def load(cls, msg_id: str) -> "Message":
+    def load(cls, msg_id: str) -> Message:
         """
         load message
         """

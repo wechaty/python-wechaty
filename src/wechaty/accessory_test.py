@@ -183,6 +183,9 @@ def test_accessory_classmethod_access_puppet():
     assert user_class2.get_puppet() == EXPECTED_PUPPET2, \
         'user_class2 should get the puppet from static value'
 
+    assert user_class1.get_puppet() != user_class2.get_puppet(), \
+        'user_class1 & user_class2 get_puppet() should be different'
+
 
 def test_accessory_classmethod_access_wechaty():
     """
@@ -198,3 +201,6 @@ def test_accessory_classmethod_access_wechaty():
     user_class2.set_wechaty(EXPECTED_WECHATY2)
     assert user_class2.get_wechaty() == EXPECTED_WECHATY2, \
         'user_class2 should get the puppet from static value'
+
+    assert user_class1.get_wechaty() != user_class2.get_wechaty(), \
+        'user_class1 & user_class2 get_wechaty() should be different'

@@ -24,7 +24,9 @@ from typing import (
     Optional,
 )
 
-from wechaty_puppet import FileBox
+from wechaty_puppet import (
+    FileBox,
+)
 
 log = logging.getLogger(__name__)
 

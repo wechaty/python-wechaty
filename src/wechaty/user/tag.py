@@ -1,8 +1,16 @@
 """
 Tag for Contact Message
 """
+from __future__ import annotations
+
+from typing import (
+    Dict,
+    # Optional,
+    Union,
+)
+
 from collections import defaultdict
-from typing import Dict, Optional, Union
+
 from wechaty.accessory import Accessory
 from wechaty.config import log
 from wechaty.user.contact import Contact
@@ -13,9 +21,12 @@ class Tag(Accessory):
     """
     tag object which handle the url_link content
     """
-    _pool: Dict[str, "Tag"] = defaultdict()
+    _pool: Dict[str, Tag] = defaultdict()
 
-    def __init__(self, tag_id: str):
+    def __init__(
+            self,
+            tag_id: str,
+    ) -> None:
         """
         initialization for tag base class
         :param tag_id:
@@ -28,7 +39,7 @@ class Tag(Accessory):
                 'Tag class can not be instanciated directly!'
                 'See: https://github.com/Chatie/wechaty/issues/1217')
 
-        if self.puppet() is None:
+        if self.puppet is None:
             raise NotImplementedError(
                 'Tag class can not be instanciated without a puppet!')
 
@@ -36,7 +47,10 @@ class Tag(Accessory):
         self.name: str = 'Tag <%s>' % tag_id
 
     @classmethod
-    def load(cls, tag_id: str) -> "Tag":
+    def load(
+            cls,
+            tag_id: str,
+    ) -> Tag:
         """
         load tag instance
         """
@@ -54,14 +68,17 @@ class Tag(Accessory):
         return new_tag
 
     @classmethod
-    def get(cls, tag_id: str) -> "Tag":
+    def get(cls, tag_id: str) -> Tag:
         """
         get tag objecr
         """
         log.info('load tag object %s', tag_id)
         return cls.load(tag_id)
 
-    def delete(self, target: Union[Contact, Favorite] = None):
+    def delete(
+            self,
+            target: Union[Contact, Favorite] = None,
+    ) -> None:
         """
         remove tag from contact or favorite
         :param target:
@@ -77,7 +94,10 @@ class Tag(Accessory):
         elif target is Favorite:
             self.puppet.delete_favorite_tag(self.tag_id)
 
-    def add(self, to: Union[Contact, Favorite]):
+    def add(
+            self,
+            to: Union[Contact, Favorite],
+    ) -> None:
         """
         add tag to contact or favorite
         :param to:
@@ -90,7 +110,10 @@ class Tag(Accessory):
             self.puppet.tag_favorite_add(self.tag_id, to.get_id())
         # to-do: tag_favorite_add
 
-    def remove(self, source: Union[Contact, Favorite]):
+    def remove(
+            self,
+            source: Union[Contact, Favorite],
+    ) -> None:
         """
         Remove this tag from Contact/Favorite
 

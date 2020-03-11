@@ -18,6 +18,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import annotations
+
 from typing import (
     Union,
     Optional,
@@ -66,7 +68,7 @@ class FriendShip(Accessory, Acceptable):
                 "Friendship class can not be instanciated without a puppet!")
 
     @classmethod
-    def load(cls, friendship_id: str) -> "FriendShip":
+    def load(cls, friendship_id: str) -> FriendShip:
         return cls(friendship_id)
 
     @classmethod
@@ -212,7 +214,8 @@ class FriendShip(Accessory, Acceptable):
     @classmethod
     async def from_json(
             cls,
-            payload: Union[str, FriendShipPayload]):
+            payload: Union[str, FriendShipPayload]
+    ) -> FriendShip:
         """
         create friendShip by friendshipJson
         """
