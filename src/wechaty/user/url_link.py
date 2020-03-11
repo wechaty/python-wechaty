@@ -1,19 +1,26 @@
 """
 UrlLink for Contact Message
 """
-from typing import Type, TypeVar
-import requests
-from ..config import log
-from wechaty_puppet.url_link_payload import UrlLinkPayload
+from __future__ import annotations
 
-T = TypeVar("T", bound="UrlLink")
+from typing import (
+    Type,
+)
+import requests
+
+from wechaty_puppet import UrlLinkPayload
+
+from ..config import log
 
 
 class UrlLink:
     """
     url_link object which handle the url_link content
     """
-    def __init__(self, payload: UrlLinkPayload):
+    def __init__(
+            self,
+            payload: UrlLinkPayload,
+    ):
         """
         initialization
         :param payload:
@@ -21,11 +28,18 @@ class UrlLink:
         self.payload: UrlLinkPayload = payload
 
     @classmethod
-    def create(cls: Type[T], url: str):
-        log.info("create url_link for %s",
-                 url)
+    def create(
+            cls: Type[UrlLink],
+            url: str,
+    ) -> UrlLink:
+        """doc"""
+        log.info('create url_link for %s', url)
         res = requests.get(url)
-        return res
+        payload = UrlLinkPayload(
+            title=res.content.__str__(),
+            url='https://github.com/wechaty/',
+        )
+        return UrlLink(payload)
 
     def __str__(self):
         """

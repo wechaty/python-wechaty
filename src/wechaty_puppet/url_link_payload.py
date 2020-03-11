@@ -3,14 +3,15 @@ UrlLinkPayload interface
 """
 from typing import Optional
 
+from dataclasses import dataclass
 
 # pylint: disable=R0903
+@dataclass
 class UrlLinkPayload:
     """
     UrlLinkPayload object
     """
-    def __init__(self):
-        self.title: str = ''
-        self.url: str = ''
-        self.thumbnail_url: Optional[str] = None
-        self.description: Optional[str] = None
+    title: str = ''
+    url: str = ''
+    thumbnail_url: Optional[str] = None
+    description: Optional[str] = None

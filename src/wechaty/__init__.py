@@ -1,16 +1,23 @@
 """doc"""
+
 from wechaty_puppet import (
     FileBox,
 )
 from .wechaty import Wechaty
 from .accessory import Accessory
-
-
-# Huan(202003): is that necessary to put "name" to `__all__`?
-name = 'wechaty'
+from .user import (
+    Contact,
+    Favorite,
+)
+from .config import (
+    logging,
+)
 
 __all__ = [
+    'logging',
+    'Accessory',
+    'Contact',
+    'Favorite',
     'FileBox',
     'Wechaty',
-    'Accessory'
 ]

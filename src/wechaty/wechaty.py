@@ -34,6 +34,13 @@ from typing import (
 from .config import (
     logging,
 )
+from .user import (
+    Contact,
+    Friendship,
+    Message,
+    Tag,
+)
+
 log = logging.getLogger('Wechaty')
 
 
@@ -63,17 +70,10 @@ class Wechaty:
         docstring
         """
         log.info('__init__()')
-        # pylint: disable=C0415
-        from .user import (
-            friendship,
-            tag,
-            message,
-            contact
-        )
-        self.Tag = tag.Tag
-        self.Contact = contact.Contact
-        self.FriendShip = friendship.FriendShip
-        self.Message = message.Message
+        self.Tag = Tag
+        self.Contact = Contact
+        self.Friendship = Friendship
+        self.Message = Message
 
     @classmethod
     def instance(cls: Type['Wechaty']) -> 'Wechaty':
@@ -90,6 +90,10 @@ class Wechaty:
         return cls._global_instance
         # return cast(Wechaty, cls._global_instance)
         # return cls._global_instance
+
+    async def name(self) -> str:
+        """name"""
+        return 'to be imp'
 
     async def start(self) -> None:
         """

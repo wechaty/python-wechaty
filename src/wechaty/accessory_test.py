@@ -5,25 +5,20 @@ Huan(202003):
 """
 from typing import (
     cast,
+    Any,
     Type,
 )
 import pytest   # type: ignore
 
-from wechaty import (
-    Wechaty,
-)
-from wechaty_puppet import (
-    Puppet,
-)
 from .accessory import (
     Accessory,
 )
 
-EXPECTED_PUPPET1 = cast(Puppet, {'p': 1})
-EXPECTED_PUPPET2 = cast(Puppet, {'p': 2})
+EXPECTED_PUPPET1 = cast(Any, {'p': 1})
+EXPECTED_PUPPET2 = cast(Any, {'p': 2})
 
-EXPECTED_WECHATY1 = cast(Wechaty, {'w': 1})
-EXPECTED_WECHATY2 = cast(Wechaty, {'w': 1})
+EXPECTED_WECHATY1 = cast(Any, {'w': 1})
+EXPECTED_WECHATY2 = cast(Any, {'w': 1})
 
 
 def get_user_class() -> Type[Accessory]:
@@ -183,6 +178,9 @@ def test_accessory_classmethod_access_puppet():
     assert user_class2.get_puppet() == EXPECTED_PUPPET2, \
         'user_class2 should get the puppet from static value'
 
+    assert user_class1.get_puppet() != user_class2.get_puppet(), \
+        'user_class1 & user_class2 get_puppet() should be different'
+
 
 def test_accessory_classmethod_access_wechaty():
     """
@@ -198,3 +196,6 @@ def test_accessory_classmethod_access_wechaty():
     user_class2.set_wechaty(EXPECTED_WECHATY2)
     assert user_class2.get_wechaty() == EXPECTED_WECHATY2, \
         'user_class2 should get the puppet from static value'
+
+    assert user_class1.get_wechaty() != user_class2.get_wechaty(), \
+        'user_class1 & user_class2 get_wechaty() should be different'

@@ -18,32 +18,45 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import annotations
 
-from typing import Optional, List, Type, TypeVar, Dict, Any, Union
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Type,
+    Union,
+)
+
 from collections import defaultdict
+
 from wechaty_puppet import (
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
     ContactType
 )
+
 from ..accessory import Accessory
 # from wechaty import Accessory
-from ..config import FileBox, log
+from ..config import (
+    FileBox,
+    log,
+)
+
 # from wechaty.types import Sayable
 # from wechaty.user.mini_program import MiniProgram
 from .message import Message
 from .tag import Tag
 from .url_link import UrlLink
 
-T = TypeVar('T', bound='Contact')
-
 
 class Contact(Accessory):
     """
     contact object
     """
-    _pool: Dict[str, "Contact"] = defaultdict()
+    _pool: Dict[str, Contact] = defaultdict()
 
     def __init__(self, contact_id: str, *args, **kwargs):
         """
@@ -63,8 +76,11 @@ class Contact(Accessory):
 
     @classmethod
     async def load(
-            cls: Type["Contact"],
-            contact_id: Optional[str], *args, **kwargs) -> "Contact":
+            cls        : Type[Contact],
+            contact_id : Optional[str],
+            # *args,
+            # **kwargs,
+    ) -> Contact:
         """
         load contact by contact_id
         :param contact_id:
@@ -81,12 +97,15 @@ class Contact(Accessory):
             return cls._pool[contact_id]
 
         # create new contact object
-        new_contact = cls(contact_id, *args, **kwargs)
+        new_contact = cls(contact_id)   # , *args, **kwargs)
         cls._pool[contact_id] = new_contact
         return new_contact
 
     @classmethod
-    async def find(cls: Type[T], query: Union[str, ContactQueryFilter]):
+    async def find(
+            cls   : Type[Contact],
+            query : Union[str, ContactQueryFilter],
+    ):
         """
         :param query:
         :return:
@@ -95,10 +114,10 @@ class Contact(Accessory):
 
     async def find_all(
             self,
-            query:
-            Optional[
+            query: Optional[
                 Union[str, ContactQueryFilter]
-            ] = None) -> List['Contact']:
+            ] = None
+    ) -> List['Contact']:
         """
         find all contact friends
         :param query:
@@ -220,7 +239,8 @@ class Contact(Accessory):
 
     async def alias(
             self,
-            new_alias: Optional[str] = None) -> Union[None, str]:
+            new_alias: Optional[str] = None
+    ) -> Union[None, str]:
         """
         get/set alias
         """
@@ -237,7 +257,7 @@ class Contact(Accessory):
             await self.puppet.contact_alias(self.contact_id, new_alias)
             await self.puppet.contact_payload_dirty(self.contact_id)
             self.payload = await self.puppet.contact_payload(self.contact_id)
-            
+
             if new_alias != self.payload.alias:
                 log.info(
                     'Contact alias(%s) sync with server fail: \
@@ -284,7 +304,7 @@ class Contact(Accessory):
         if self.payload is None:
             raise Exception("contact payload not found")
         return self.payload.type
-    
+
     def start(self) -> Optional[bool]:
         """
         check if it's a start account
@@ -292,7 +312,7 @@ class Contact(Accessory):
         if self.payload is None:
             return None
         return self.payload.start
-    
+
     def gender(self) -> ContactGender:
         """
         get contact gender info
