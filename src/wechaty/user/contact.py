@@ -209,6 +209,7 @@ class Contact(Accessory):
 
         return None
 
+    @property
     def name(self) -> str:
         """
         get contact name
