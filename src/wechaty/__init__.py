@@ -3,8 +3,8 @@
 from wechaty_puppet import (
     FileBox,
 )
-from .wechaty import Wechaty
 from .accessory import Accessory
+from .wechaty import Wechaty
 from .user import (
     Contact,
     Favorite,

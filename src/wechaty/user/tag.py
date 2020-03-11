@@ -11,16 +11,15 @@ from typing import (
 
 from collections import defaultdict
 
-from .. import (
+from ..accessory import (
     Accessory,
+)
+from ..config import (
     logging,
 )
 
-from . import (
-    Contact,
-    Favorite,
-)
-
+from .contact import Contact
+from .favorite import Favorite
 
 log = logging.getLogger('Tag')
 
@@ -35,14 +34,14 @@ class Tag(Accessory):
 
     def __init__(
             self,
-            id: str,
+            tag_id: str,
     ) -> None:
         """
         initialization for tag base class
         :param tag_id:
         """
         super(Tag, self).__init__()
-        log.info('create tag %s', id)
+        log.info('create tag %s', tag_id)
 
         if isinstance(self, Tag):
             raise AttributeError(
@@ -53,7 +52,7 @@ class Tag(Accessory):
             raise NotImplementedError(
                 'Tag class can not be instanciated without a puppet!')
 
-        self.tag_id = id
+        self.tag_id = tag_id
 
     @classmethod
     def load(

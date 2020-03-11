@@ -3,10 +3,12 @@ Huan(202003):
     Translated from TypeScript to Python
     See: https://github.com/wechaty/wechaty/blob/master/src/accessory.spec.ts
 """
+from __future__ import annotations
+
 from typing import (
-    cast,
     Any,
     Type,
+    cast,
 )
 import pytest   # type: ignore
 

@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import annotations
 
 from typing import (
-    Any,
+    TYPE_CHECKING,
     Dict,
     List,
     Optional,
@@ -48,8 +48,10 @@ from ..config import (
 # from wechaty.types import Sayable
 # from wechaty.user.mini_program import MiniProgram
 from .message import Message
-from .tag import Tag
 from .url_link import UrlLink
+
+if TYPE_CHECKING:
+    from .tag import Tag
 
 
 class Contact(Accessory):
@@ -191,7 +193,7 @@ class Contact(Accessory):
             identity = 'loading ...'
         return 'Contact <%s>' % identity
 
-    async def say(self, message: Any) -> Optional[Message]:
+    async def say(self, message: Message) -> Optional[Message]:
         """
         say something
         :param message: message content

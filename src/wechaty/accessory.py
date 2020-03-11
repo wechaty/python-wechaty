@@ -18,19 +18,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import annotations
+
 from typing import (
+    TYPE_CHECKING,
     # overload,
     # cast,
     Optional,
 )
-from wechaty_puppet import Puppet
-from .wechaty import (
-    Wechaty,
-)
+
 from .config import (
     logging
 )
-# from .wechaty import Wechaty
+
+if TYPE_CHECKING:
+    from wechaty_puppet import Puppet
+    from wechaty import Wechaty
+
+
 log = logging.getLogger('Accessory')
 
 
