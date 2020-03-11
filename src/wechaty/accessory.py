@@ -24,11 +24,13 @@ from typing import (
     Optional,
 )
 from wechaty_puppet import Puppet
+from .wechaty import (
+    Wechaty,
+)
 from .config import (
     logging
 )
-from .wechaty import Wechaty
-
+# from .wechaty import Wechaty
 log = logging.getLogger('Accessory')
 
 

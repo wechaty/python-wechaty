@@ -176,7 +176,7 @@ def test_accessory_classmethod_access_puppet():
     user_class2 = get_user_class()
 
     user_class1.set_puppet(EXPECTED_PUPPET1)
-    assert user_class1.get_wechaty() == EXPECTED_PUPPET1 , \
+    assert user_class1.get_puppet() == EXPECTED_PUPPET1 , \
         'user_class1 should get the puppet from static value'
 
     user_class2.set_puppet(EXPECTED_PUPPET2)

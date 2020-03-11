@@ -55,4 +55,8 @@ class FriendshipSearchQueryFilter:
     """
     friendship search query filter
     """
-    raise NotImplementedError
+    def __init__(self):
+        """
+        initialization
+        """
+        raise NotImplementedError
