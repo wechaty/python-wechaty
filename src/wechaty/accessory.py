@@ -31,9 +31,10 @@ from .config import (
     logging
 )
 
+# pylint:disable=R0401
 if TYPE_CHECKING:
     from wechaty_puppet import Puppet
-    from wechaty import Wechaty
+    from .wechaty import Wechaty
 
 
 log = logging.getLogger('Accessory')
