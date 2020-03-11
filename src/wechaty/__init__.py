@@ -3,9 +3,7 @@
 from wechaty_puppet import (
     FileBox,
 )
-from .wechaty import (
-    Wechaty
-)
+from .wechaty import Wechaty
 from .accessory import Accessory
 from .user import (
     Contact,
