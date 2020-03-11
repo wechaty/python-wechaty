@@ -20,22 +20,22 @@ Please come back after 4 weeks...
 
 ## Voice of the Developers
 
-> "Wechaty is a great solution, I believe there would be much more users recognize it." [link](https://github.com/chatie/wechaty/pull/310#issuecomment-285574472)  
-> -- @Gcaufy, Tencent Engineer, Author of [WePY](https://github.com/Tencent/wepy)
------
+> "Wechaty is a great solution, I believe there would be much more users recognize it." [link](https://github.com/Wechaty/wechaty/pull/310#issuecomment-285574472)  
+> &mdash; <cite>@Gcaufy, Tencent Engineer, Author of [WePY](https://github.com/Tencent/wepy)</cite>
+>
 > "太好用，好用的想哭"  
-> -- @xinbenlv, Google Engineer, Founder of HaoShiYou.org
------
+> &mdash; <cite>@xinbenlv, Google Engineer, Founder of HaoShiYou.org</cite>
+>
 > "最好的微信开发库" [link](http://weibo.com/3296245513/Ec4iNp9Ld?type=comment)  
-> -- @Jarvis, Baidu Engineer
------
+> &mdash; <cite>@Jarvis, Baidu Engineer</cite>
+>
 > "Wechaty让运营人员更多的时间思考如何进行活动策划、留存用户，商业变现" [link](http://mp.weixin.qq.com/s/dWHAj8XtiKG-1fIS5Og79g)  
-> -- @lijiarui, CEO of BotOrange.
------
-> "If you know js ... try Chatie/wechaty, it's easy to use."  
-> -- @Urinx Uri Lee, Author of [WeixinBot(Python)](https://github.com/Urinx/WeixinBot)
+> &mdash; <cite>@lijiarui, CEO of BotOrange.</cite>
+>
+> "If you know js ... try Wechaty, it's easy to use."  
+> &mdash; <cite>@Urinx Uri Lee, Author of [WeixinBot(Python)](https://github.com/Urinx/WeixinBot)</cite>
 
-See more at [Wiki:Voice Of Developer](https://github.com/Chatie/wechaty/wiki/Voice%20Of%20Developer)
+See more at [Wiki:Voice Of Developer](https://github.com/Wechaty/wechaty/wiki/Voice%20Of%20Developer)
 
 ## Join Us
 
