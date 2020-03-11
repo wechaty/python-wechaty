@@ -11,10 +11,18 @@ from typing import (
 
 from collections import defaultdict
 
-from wechaty.accessory import Accessory
-from wechaty.config import log
-from wechaty.user.contact import Contact
-from wechaty.user.favorite import Favorite
+from .. import (
+    Accessory,
+    logging,
+)
+
+from . import (
+    Contact,
+    Favorite,
+)
+
+
+log = logging.getLogger('Tag')
 
 
 class Tag(Accessory):
@@ -23,16 +31,18 @@ class Tag(Accessory):
     """
     _pool: Dict[str, Tag] = defaultdict()
 
+    tag_id: str
+
     def __init__(
             self,
-            tag_id: str,
+            id: str,
     ) -> None:
         """
         initialization for tag base class
         :param tag_id:
         """
         super(Tag, self).__init__()
-        log.info("create tag %s", tag_id)
+        log.info('create tag %s', id)
 
         if isinstance(self, Tag):
             raise AttributeError(
@@ -43,8 +53,7 @@ class Tag(Accessory):
             raise NotImplementedError(
                 'Tag class can not be instanciated without a puppet!')
 
-        self.tag_id: str = tag_id
-        self.name: str = 'Tag <%s>' % tag_id
+        self.tag_id = id
 
     @classmethod
     def load(
@@ -84,7 +93,7 @@ class Tag(Accessory):
         :param target:
         :return:
         """
-        log.info("delete tag %s", self.name)
+        log.info('delete tag %s', self.tag_id)
         #
         if target is None:
             raise Exception("target param is required")

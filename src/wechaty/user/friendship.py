@@ -27,10 +27,10 @@ from typing import (
 )
 import json
 
-from wechaty_puppet.friendship import (
-    FriendShipType,
+from wechaty_puppet import (
+    FriendshipType,
     FriendshipSearchQueryFilter,
-    FriendShipPayload
+    FriendshipPayload
 )
 
 from ..config import log
@@ -40,7 +40,7 @@ from ..accessory import Accessory
 from .contact import Contact
 
 
-class FriendShip(Accessory, Acceptable):
+class Friendship(Accessory, Acceptable):
     """
     Send, receive friend request, and friend confirmation events.
 
@@ -49,18 +49,18 @@ class FriendShip(Accessory, Acceptable):
     * 3. confirmation friendship(friend event)
     """
 
-    Type = FriendShipType
+    Type = FriendshipType
 
     def __init__(self, friendship_id: str):
         """
         initialization constructor for friendship
         """
         self.friendship_id = friendship_id
-        self._payload: Optional[FriendShipPayload] = None
+        self._payload: Optional[FriendshipPayload] = None
 
         log.info("Friendship constructor %s", friendship_id)
 
-        if self.__class__ is FriendShip:
+        if self.__class__ is Friendship:
             raise Exception(
                 "Friendship class can not be instanciated directly!")
         if self.puppet is None:
@@ -68,7 +68,7 @@ class FriendShip(Accessory, Acceptable):
                 "Friendship class can not be instanciated without a puppet!")
 
     @classmethod
-    def load(cls, friendship_id: str) -> FriendShip:
+    def load(cls, friendship_id: str) -> Friendship:
         return cls(friendship_id)
 
     @classmethod
@@ -108,7 +108,7 @@ class FriendShip(Accessory, Acceptable):
         raise NotImplementedError
 
     @property
-    def payload(self) -> FriendShipPayload:
+    def payload(self) -> FriendshipPayload:
         if self._payload is None:
             self.ready()
         if self._payload is None:
@@ -162,7 +162,7 @@ class FriendShip(Accessory, Acceptable):
         if self.payload is None:
             raise Exception("payload not found")
 
-        if self.payload.type != FriendShipType.Receive:
+        if self.payload.type != FriendshipType.Receive:
             raise Exception(
                 "accept() need type to be FriendshipType.Receive,"
                 "but it got a ' + Friendship.Type[this.payload.type]")
@@ -188,7 +188,7 @@ class FriendShip(Accessory, Acceptable):
         """
         return self.payload.hello
 
-    def type(self) -> FriendShipType:
+    def type(self) -> FriendshipType:
         """
         Return the Friendship Type
         * - FriendshipType.Unknown  </br>
@@ -197,7 +197,7 @@ class FriendShip(Accessory, Acceptable):
         * - FriendshipType.Verify   </br>
         """
         if self.payload is None:
-            return FriendShipType.Unknown
+            return FriendshipType.Unknown
         return self.payload.type
 
     def to_json(self) -> str:
@@ -214,20 +214,20 @@ class FriendShip(Accessory, Acceptable):
     @classmethod
     async def from_json(
             cls,
-            payload: Union[str, FriendShipPayload]
-    ) -> FriendShip:
+            payload: Union[str, FriendshipPayload]
+    ) -> Friendship:
         """
         create friendShip by friendshipJson
         """
         if isinstance(payload, str):
             log.info("Friendship', 'static fromJSON(%s)", payload)
-            payload = FriendShipPayload.from_json(payload)
+            payload = FriendshipPayload.from_json(payload)
         else:
             log.info("Friendship', 'static fromJSON(%s)", json.dumps(payload))
 
         await cls.get_puppet().friendship_payload(
             payload.contact_id,
             payload)
-        friendship = cls.get_wechaty().FriendShip.load(payload.contact_id)
+        friendship = cls.get_wechaty().Friendship.load(payload.contact_id)
         await friendship.ready()
         return friendship

@@ -18,21 +18,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import annotations
+
+from dataclasses import dataclass
 from enum import Enum
 
 
 # pylint: disable=R0903
-class FriendShipPayload:
+class FriendshipPayload:
     """
     friendship payload
     """
     def __init__(self):
-        self.type: FriendShipType = FriendShipType.Unknown
+        self.type: FriendshipType = FriendshipType.Unknown
         self.contact_id: str = ''
         self.hello: str = ''
 
     @classmethod
-    def from_json(cls, json_str: str) -> 'FriendShipPayload':
+    def from_json(cls, json_str: str) -> FriendshipPayload:
         """
         create friendship payload from json string
         """
@@ -40,7 +43,7 @@ class FriendShipPayload:
 
 
 # pylint: disable=R0903
-class FriendShipType(Enum):
+class FriendshipType(Enum):
     """
     friendship type
     """
@@ -51,8 +54,8 @@ class FriendShipType(Enum):
 
 
 # pylint: disable=R0903
+@dataclass
 class FriendshipSearchQueryFilter:
     """
     friendship search query filter
     """
-    raise NotImplementedError

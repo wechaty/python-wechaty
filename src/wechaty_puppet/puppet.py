@@ -15,7 +15,7 @@ from .contact import (
 )
 from .friendship import (
     FriendshipSearchQueryFilter,
-    FriendShipPayload
+    FriendshipPayload
 )
 
 
@@ -208,7 +208,7 @@ class Puppet(ABC):
     def friendship_payload(
             self,
             friendship_id: str,
-            payload: Optional[FriendShipPayload]):
+            payload: Optional[FriendshipPayload]):
         """
         load friendship payload
         """

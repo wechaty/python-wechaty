@@ -2,7 +2,7 @@
 """doc"""
 import asyncio
 
-from wechaty import FileBox
+from wechaty import Wechaty
 
 
 async def main():
@@ -10,8 +10,8 @@ async def main():
     print('hello')
     await asyncio.sleep(1)
     print('world')
-    f = FileBox()
-    print(await f.to_file('t.dat'))
+    bot = Wechaty()
+    print(bot.name())
 
 
 asyncio.run(main())

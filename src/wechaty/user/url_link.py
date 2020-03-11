@@ -8,7 +8,7 @@ from typing import (
 )
 import requests
 
-from wechaty_puppet.url_link_payload import UrlLinkPayload
+from wechaty_puppet import UrlLinkPayload
 
 from ..config import log
 
@@ -32,10 +32,14 @@ class UrlLink:
             cls: Type[UrlLink],
             url: str,
     ) -> UrlLink:
-        log.info("create url_link for %s",
-                 url)
+        """doc"""
+        log.info('create url_link for %s', url)
         res = requests.get(url)
-        return res
+        payload = UrlLinkPayload(
+            title=res.content.__str__(),
+            url='https://github.com/wechaty/',
+        )
+        return UrlLink(payload)
 
     def __str__(self):
         """

@@ -5,25 +5,20 @@ Huan(202003):
 """
 from typing import (
     cast,
+    Any,
     Type,
 )
 import pytest   # type: ignore
 
-from wechaty import (
-    Wechaty,
-)
-from wechaty_puppet import (
-    Puppet,
-)
 from .accessory import (
     Accessory,
 )
 
-EXPECTED_PUPPET1 = cast(Puppet, {'p': 1})
-EXPECTED_PUPPET2 = cast(Puppet, {'p': 2})
+EXPECTED_PUPPET1 = cast(Any, {'p': 1})
+EXPECTED_PUPPET2 = cast(Any, {'p': 2})
 
-EXPECTED_WECHATY1 = cast(Wechaty, {'w': 1})
-EXPECTED_WECHATY2 = cast(Wechaty, {'w': 1})
+EXPECTED_WECHATY1 = cast(Any, {'w': 1})
+EXPECTED_WECHATY2 = cast(Any, {'w': 1})
 
 
 def get_user_class() -> Type[Accessory]:
