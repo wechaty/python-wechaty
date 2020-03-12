@@ -263,6 +263,7 @@ Project created, publish a empty module `wechaty` on PyPI.
 
 - [Wechaty](https://github.com/wechaty/wechaty) - WeChat Bot SDK for Individual Account in TypeScript
 - [Go Wechaty](https://github.com/wechaty/go-wechaty) - Go WeChat Bot SDK for Individual Account
+- [Java Wechaty](https://github.com/wechaty/java-wechaty) - Java WeChat Bot SDK for Individual Account
 
 ## Author
 
