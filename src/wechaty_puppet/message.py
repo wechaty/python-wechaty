@@ -20,6 +20,7 @@ limitations under the License.
 """
 from __future__ import annotations
 from enum import Enum
+from typing import Optional
 
 
 class MessageType(Enum):
@@ -73,8 +74,8 @@ class MessagePayload:
 
         self.talker_id: str = talker_id
         self.text: str = text
-        self.to_id: str = to_id
-        self.room_id: str = room_id
+        self.to_id: Optional[str] = to_id
+        self.room_id: Optional[str] = room_id
 
 
 # pylint: disable=R0903
