@@ -186,6 +186,8 @@ class Friendship(Accessory, Acceptable):
         TODO ->
         Get verify message from
         """
+        if self.payload is None:
+            raise Exception("payload not found")
         return self.payload.hello
 
     def type(self) -> FriendshipType:

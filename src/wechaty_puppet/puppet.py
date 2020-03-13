@@ -17,6 +17,9 @@ from .friendship import (
     FriendshipSearchQueryFilter,
     FriendshipPayload
 )
+from .message import (
+    MessageQueryFilter
+)
 
 
 # pylint: disable=R0904
@@ -149,6 +152,14 @@ class Puppet(ABC):
         raise NotImplementedError
     # async def message_send_mini_program(
     #   self, contact_id: str, mini_program: )
+
+    async def message_search(
+            self,
+            query: Optional[MessageQueryFilter] = None) -> List[str]:
+        """
+        search message
+        """
+        raise NotImplementedError
 
     async def contact_alias(
             self,

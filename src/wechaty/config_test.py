@@ -13,6 +13,7 @@ from .config import (
     logging,
 )
 
+# pylint: disable=C0103
 log = logging.getLogger('ConfigTest')
 
 # pylint: disable=redefined-outer-name

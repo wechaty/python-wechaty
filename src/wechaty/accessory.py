@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from wechaty_puppet import Puppet
     from .wechaty import Wechaty
 
-
+# pylint: disable=C0103
 log = logging.getLogger('Accessory')
 
 
@@ -46,7 +46,7 @@ class Accessory:
     See: https://github.com/wechaty/wechaty/blob/master/src/accessory.ts
     """
 
-    _puppet : Optional[Puppet]  = None
+    _puppet: Optional[Puppet] = None
     _wechaty: Optional[Wechaty] = None
 
     @classmethod

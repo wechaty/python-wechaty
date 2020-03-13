@@ -10,8 +10,9 @@ from ..accessory import Accessory
 class Room(Accessory):
     """docs"""
 
-    def __init__(self) -> None:
+    def __init__(self, room_id: str) -> None:
         """docs"""
+        self.room_id = room_id
 
     async def quit(self) -> None:
         """docs"""
