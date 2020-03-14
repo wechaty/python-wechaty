@@ -11,7 +11,7 @@ async def main():
     await asyncio.sleep(1)
     print('world')
     bot = Wechaty()
-    print(bot.name())
+    print(await bot.name())
 
 
 asyncio.run(main())
