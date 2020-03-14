@@ -22,11 +22,14 @@ from __future__ import annotations
 from typing import (
     Optional,
     Union,
-    List
+    List,
+    TYPE_CHECKING,
 )
+
+from dataclasses import dataclass
 import json
 
-from wechaty_puppet.message import (
+from wechaty_puppet import (
     MessagePayload,
     MessageQueryFilter,
     MessageType
@@ -35,36 +38,29 @@ from wechaty_puppet.message import (
 from ..accessory import Accessory
 from ..config import (
     log,
-    FileBox
+    # FileBox
 )
-from .contact import Contact
+
 from .room import Room
-from .url_link import UrlLink
-from .mini_program import MiniProgram
-from .image import Image
+# from .url_link import UrlLink
+# from .mini_program import MiniProgram
+# from .image import Image
 from ..types import Sayable
 
+if TYPE_CHECKING:
+    from .contact import Contact
 
+
+@dataclass
 class MessageUserQueryFilter:
     """
     doc
     """
-    def __init__(
-            self,
-            text: Optional[str] = None,
-            room: Optional[Room] = None,
-            type: Optional[MessageType] = None,
-            talker: Optional[Contact] = None,
-            to: Optional[Contact] = None):
-        """
-        initialization
-        """
-        # from is a keyword in python, so we should change it
-        self.talker: Optional[Contact] = None
-        self.text: Optional[str] = text
-        self.room: Optional[Room] = None
-        self.type: Optional[MessageType] = None
-        self.to: Optional[Contact] = None
+    text  : Optional[str]         = None
+    room  : Optional[Room]        = None
+    type  : Optional[MessageType] = None
+    talker: Optional[Contact]     = None
+    to    : Optional[Contact]     = None
 
 
 def _convert_message(
@@ -75,7 +71,7 @@ def _convert_message(
     """
     if user_query is None:
         return None
-    
+
     query = MessageQueryFilter(text=user_query.text)
 
     if user_query.room is not None:
@@ -112,14 +108,13 @@ class Message(Accessory, Sayable):
         self.message_id = message_id
         self._message_payload: Optional[MessagePayload] = None
 
-
         # TODO -> check if it's Message class
         if not issubclass(self.__class__, Message):
             raise Exception("Message class can not be instanciated directly!")
 
         if self.puppet is None:
             raise Exception("Message class can not be instanciated without a puppet!")
-    
+
     @property
     def payload(self) -> Optional[MessagePayload]:
         """
@@ -134,7 +129,7 @@ class Message(Accessory, Sayable):
         if self.payload is None:
             raise Exception("MessagePayload not found ...")
         return self.payload.type
-    
+
     def __str__(self) -> str:
         """
         format string for message
@@ -217,7 +212,7 @@ class Message(Accessory, Sayable):
         if talker_id is None:
             return None
         return self.wechaty.Contact.load(talker_id)
-    
+
     def to(self) -> Optional[Contact]:
         """
         get message reply to
@@ -239,7 +234,7 @@ class Message(Accessory, Sayable):
         if room_id is None:
             return None
         return self.wechaty.Room.load(room_id)
-    
+
     def text(self) -> str:
         """
         get message text
