@@ -20,7 +20,7 @@ EXPECTED_PUPPET1 = cast(Any, {'p': 1})
 EXPECTED_PUPPET2 = cast(Any, {'p': 2})
 
 EXPECTED_WECHATY1 = cast(Any, {'w': 1})
-EXPECTED_WECHATY2 = cast(Any, {'w': 1})
+EXPECTED_WECHATY2 = cast(Any, {'w': 2})
 
 
 def get_user_class() -> Type[Accessory]:
