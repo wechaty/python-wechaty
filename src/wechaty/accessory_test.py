@@ -20,7 +20,7 @@ EXPECTED_PUPPET1 = cast(Any, {'p': 1})
 EXPECTED_PUPPET2 = cast(Any, {'p': 2})
 
 EXPECTED_WECHATY1 = cast(Any, {'w': 1})
-EXPECTED_WECHATY2 = cast(Any, {'w': 1})
+EXPECTED_WECHATY2 = cast(Any, {'w': 2})
 
 
 def get_user_class() -> Type[Accessory]:
@@ -119,13 +119,13 @@ def test_accessory_read_uninitialized_instance(
 
     instance = user_class()
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception) as exception:
         assert instance.puppet
-    assert str(e.value) == 'puppet not set'
+    assert str(exception.value) == 'puppet not set'
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception) as exception:
         assert instance.wechaty
-    assert str(e.value) == 'wechaty not set'
+    assert str(exception.value) == 'wechaty not set'
 
 
 def test_accessory_read_initialized_instance(
@@ -155,14 +155,14 @@ def test_accessory_set_twice(
     """doc"""
     user_class.set_puppet(EXPECTED_PUPPET1)
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception) as exception:
         user_class.set_puppet(EXPECTED_PUPPET1)
-    assert str(e.value) == 'can not set twice'
+    assert str(exception.value) == 'can not set twice'
 
     user_class.set_wechaty(EXPECTED_WECHATY1)
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception) as exception:
         user_class.set_wechaty(EXPECTED_WECHATY1)
-    assert str(e.value) == 'can not set twice'
+    assert str(exception.value) == 'can not set twice'
 
 
 def test_accessory_classmethod_access_puppet():
@@ -175,7 +175,7 @@ def test_accessory_classmethod_access_puppet():
     user_class1.set_puppet(EXPECTED_PUPPET1)
     user_class2.set_puppet(EXPECTED_PUPPET2)
 
-    assert user_class1.get_puppet() == EXPECTED_PUPPET1 , \
+    assert user_class1.get_puppet() == EXPECTED_PUPPET1, \
         'user_class1 should get the puppet from static value'
 
     assert user_class2.get_puppet() == EXPECTED_PUPPET2, \
@@ -195,7 +195,7 @@ def test_accessory_classmethod_access_wechaty():
     user_class1.set_wechaty(EXPECTED_WECHATY1)
     user_class2.set_wechaty(EXPECTED_WECHATY2)
 
-    assert user_class1.get_wechaty() == EXPECTED_WECHATY1 , \
+    assert user_class1.get_wechaty() == EXPECTED_WECHATY1, \
         'user_class1 should get the wechaty from static value'
 
     assert user_class2.get_wechaty() == EXPECTED_WECHATY2, \

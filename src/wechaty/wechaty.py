@@ -39,8 +39,10 @@ from .user import (
     Friendship,
     Message,
     Tag,
+    Room
 )
 
+# pylint: disable=C0103
 log = logging.getLogger('Wechaty')
 
 
@@ -74,9 +76,10 @@ class Wechaty:
         self.Contact = Contact
         self.Friendship = Friendship
         self.Message = Message
+        self.Room = Room
 
     @classmethod
-    def instance(cls: Type['Wechaty']) -> 'Wechaty':
+    def instance(cls: Type[Wechaty]) -> Wechaty:
         """
         get or create global wechaty instance
         :return:

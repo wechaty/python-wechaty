@@ -29,6 +29,7 @@ from wechaty_puppet import (
     FileBox,
 )
 
+# pylint: disable=C0103
 log = logging.getLogger(__name__)
 
 # log.debug('test logging debug')
@@ -43,14 +44,14 @@ DATA_PATH = os.path.realpath(
 )
 
 
-def global_exception_handler(e: Exception) -> None:
+def global_exception_handler(exception: Exception) -> None:
     """
     handle the global exception
-    :param e: exception message
+    :param exception: exception message
     :return:
     """
-    log.error('occur %s %s', e.__class__.__name__, str(e.args))
-    print(e)
+    log.error('occur %s %s', exception.__class__.__name__, str(exception.args))
+    print(exception)
 
 
 class DefaultSetting(dict):
@@ -82,6 +83,7 @@ class Config:
     """
     store python-wechaty configuration
     """
+    # pylint: disable=R0913
     def __init__(self,
                  api_host: Optional[str] = None,
                  token: Optional[str] = None,
@@ -105,7 +107,7 @@ class Config:
             else DefaultSetting.default_protocol
 
         if token is None:
-            raise AttributeError("token can't be None")
+            raise AttributeError('token can"t be None')
 
         self.name = name
         self.debug = debug
@@ -116,7 +118,8 @@ class Config:
 
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
-chatie_official_account_id = 'gh_051c89260e5d'
+# chatie_official_account_id = 'gh_051c89260e5d'
+# CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
 
 
 def qr_code_for_chatie() -> FileBox:

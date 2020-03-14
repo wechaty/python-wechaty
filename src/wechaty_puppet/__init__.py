@@ -15,6 +15,11 @@ from .friendship        import (
     FriendshipSearchQueryFilter,
     FriendshipPayload
 )
+from .message import (
+    MessagePayload,
+    MessageQueryFilter,
+    MessageType,
+)
 
 __all__ = [
     'Puppet',
@@ -26,5 +31,10 @@ __all__ = [
     'FriendshipType',
     'FriendshipSearchQueryFilter',
     'FriendshipPayload',
-    'UrlLinkPayload'
+
+    'MessagePayload',
+    'MessageQueryFilter',
+    'MessageType',
+
+    'UrlLinkPayload',
 ]
