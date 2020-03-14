@@ -18,15 +18,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import annotations
+
 from typing import (
     List,
     Optional,
     Union,
+    TYPE_CHECKING,
 )
 from abc import ABC
 
-from .user.message import Message
-from .user.contact import Contact
+if TYPE_CHECKING:
+    from .user import (
+        Message,
+        Contact,
+    )
 
 
 # pylint: disable=R0903
