@@ -2,7 +2,6 @@
 
 ![Python Wechaty](https://wechaty.github.io/python-wechaty/images/python-wechaty.png)
 
-[![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/Wechaty/wechaty)
 ![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue)
 [![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
 <!--
@@ -10,6 +9,8 @@
 -->
 
 ## Connecting Chatbots
+
+[![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/Wechaty/wechaty)
 
 Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 6 lines of Python.
 
