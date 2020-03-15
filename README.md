@@ -1,5 +1,6 @@
 # python-wechaty [![Python 3.7](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/) [![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)](https://github.com/wechaty/python-wechaty/actions?query=workflow%3APyPI)
 
+[![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/Wechaty/wechaty)
 ![Python Wechaty](https://wechaty.github.io/python-wechaty/images/python-wechaty.png)
 
 ![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue)
