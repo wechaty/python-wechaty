@@ -243,7 +243,9 @@ pip3 install wechaty
 
 ## History
 
-### master
+### v0.4 (Mar 15, 2020) master
+
+1 Add a friendly exception message for PyPI users. [#24](https://github.com/wechaty/python-wechaty/issues/24)
 
 ### v0.1 (Mar 8, 2020)
 
