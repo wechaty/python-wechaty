@@ -13,7 +13,7 @@ class Wechaty:
         """WIP Warning"""
         print('''
 
-Hello Python Wechaty user,
+Dear Python Wechaty user,
 
     Thank you very much for using Python Wechaty!
 
