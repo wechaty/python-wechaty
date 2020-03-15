@@ -9,9 +9,10 @@ async def main():
     """doc"""
     print('hello')
     await asyncio.sleep(1)
-    print('world')
     bot = Wechaty()
-    print(bot.name())
+    name = await bot.name()
+    print(name)
+    print('world')
 
 
 asyncio.run(main())
