@@ -39,7 +39,8 @@ from .user import (
     Friendship,
     Message,
     Tag,
-    Room
+    Room,
+    Image
 )
 
 # pylint: disable=C0103
@@ -77,6 +78,7 @@ class Wechaty:
         self.Friendship = Friendship
         self.Message = Message
         self.Room = Room
+        self.Image = Image
 
     @classmethod
     def instance(cls: Type[Wechaty]) -> Wechaty:

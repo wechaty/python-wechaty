@@ -20,6 +20,12 @@ from .message import (
     MessageQueryFilter,
     MessageType,
 )
+from .room import (
+    RoomQueryFilter
+)
+from .mini_program import (
+    MiniProgramPayload
+)
 
 __all__ = [
     'Puppet',
@@ -37,4 +43,8 @@ __all__ = [
     'MessageType',
 
     'UrlLinkPayload',
+
+    'RoomQueryFilter',
+
+    'MiniProgramPayload'
 ]
