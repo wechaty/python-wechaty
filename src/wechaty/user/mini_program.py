@@ -43,14 +43,6 @@ class MiniProgram:
         """
         log.info('MiniProgram created')
         # TODO -> create default mini_program payload
-        """
-        self.app_id = app_id
-        self.description = description
-        self.page_path = page_path
-        self.thumb_key = thumb_key
-        self.thumb_url = thumb_url
-        self.title = title
-        self.user_name = user_name"""
         default_mini_program = {
             "app_id": "todo",
             "description": "todo",
