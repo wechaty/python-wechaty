@@ -20,7 +20,9 @@ limitations under the License.
 """
 from __future__ import annotations
 from enum import Enum
+from typing import List
 from typing import Optional
+from datetime import datetime
 
 
 class MessageType(Enum):
@@ -45,6 +47,8 @@ class MessageType(Enum):
     Text = 6
     Video = 7
     Url = 8
+    Recalled = 9
+    MiniProgram = 10
 
 
 # pylint: disable=R0903
@@ -59,7 +63,8 @@ class MessagePayload:
             text: str,
             to_id: str = None,
             room_id: str = None,
-            message_type: MessageType = MessageType.Unknown):
+            message_type: MessageType = MessageType.Unknown,
+            mention_ids: List[str] = None):
         """
         initialization
 
@@ -76,6 +81,8 @@ class MessagePayload:
         self.text: str = text
         self.to_id: Optional[str] = to_id
         self.room_id: Optional[str] = room_id
+        self.mention_ids: Optional[List[str]] = mention_ids
+        self.timestamp: datetime = datetime.now()
 
 
 # pylint: disable=R0903
