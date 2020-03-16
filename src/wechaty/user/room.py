@@ -112,9 +112,9 @@ class Room(Accessory, Sayable):
     @classmethod
     def load(cls, room_id: str) -> Room:
         """
-
+        doc
         """
-        pass
+        return Room(room_id)
 
     async def ready(self):
         """

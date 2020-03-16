@@ -38,9 +38,11 @@ from .message import (
     MessageQueryFilter,
     MessagePayload
 )
+
 from .room import (
     RoomQueryFilter
 )
+
 from .mini_program import (
     MiniProgramPayload
 )
