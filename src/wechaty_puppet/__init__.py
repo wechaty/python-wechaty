@@ -20,6 +20,9 @@ from .message import (
     MessageQueryFilter,
     MessageType,
 )
+from .room import (
+    RoomQueryFilter
+)
 
 __all__ = [
     'Puppet',
@@ -37,4 +40,6 @@ __all__ = [
     'MessageType',
 
     'UrlLinkPayload',
+
+    'RoomQueryFilter'
 ]
