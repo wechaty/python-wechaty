@@ -21,12 +21,24 @@ from ..accessory import Accessory
 if TYPE_CHECKING:
     from wechaty_puppet import (
         FileBox,
-        RoomQueryFilter
+        RoomQueryFilter as PuppetRoomQueryFilter
     )
     from .contact import Contact
     from .url_link import UrlLink
     from .mini_program import MiniProgram
     from .message import Message
+
+
+# pylint: disable=R0903
+class RoomQueryFilter:
+    """
+    python-wechaty room query filter
+    """
+    def transfer(self) -> PuppetRoomQueryFilter:
+        """
+        convert python-wechaty RoomQueryFilter to PuppetRoomQueryFilter
+        """
+        return PuppetRoomQueryFilter()
 
 
 class Room(Accessory, Sayable):
@@ -40,24 +52,24 @@ class Room(Accessory, Sayable):
         self.room_id = room_id
 
     async def say(
-            self,
-            text: str,
-            reply_to: Union[
-                str,
-                Contact,
-                List[Contact],
-                FileBox,
-                UrlLink,
-                MiniProgram]) -> Optional[Message]:
+        self,
+        text: str,
+        reply_to: Union[
+            str,
+            Contact,
+            List[Contact],
+            FileBox,
+            UrlLink,
+            MiniProgram]) -> Optional[Message]:
         """
         """
         pass
 
     @classmethod
     async def create(
-            cls,
-            contacts: List[Contact],
-            topic: str = None) -> Room:
+        cls,
+        contacts: List[Contact],
+        topic: str = None) -> Room:
         """
         create room instance
         """
@@ -92,7 +104,9 @@ class Room(Accessory, Sayable):
         """
         log.info('Room find_all <%s>', json.dumps(query))
 
-        room_ids = await cls.get_puppet().room_search(query)
+        puppet_query = query.transfer() if query is not None else None
+        room_ids = await cls.get_puppet().room_search(puppet_query)
+
         rooms = [cls.load(room_id) for room_id in room_ids]
 
         room_result = []
@@ -108,6 +122,14 @@ class Room(Accessory, Sayable):
                     exception.args
                 )
         return room_result
+
+    @classmethod
+    def find(cls, query: Union[str, RoomQueryFilter]):
+        """
+        Try to find a room by filter: {topic: string | RegExp}. If get many, return the first one.
+        :return:
+        """
+        raise NotImplementedError
 
     @classmethod
     def load(cls, room_id: str) -> Room:
