@@ -52,4 +52,4 @@ class RoomPayload:
         """
         initialization for room payload
         """
-        raise NotImplementedError
+        self.topic: str = None
