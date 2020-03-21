@@ -27,6 +27,7 @@ from typing import (
 )
 
 from dataclasses import dataclass
+from datetime import datetime
 import json
 
 from wechaty_puppet import (
@@ -43,12 +44,18 @@ from ..config import (
 
 from .room import Room
 # from .url_link import UrlLink
-# from .mini_program import MiniProgram
+from .mini_program import MiniProgram
 # from .image import Image
 from ..types import Sayable
 
 if TYPE_CHECKING:
     from .contact import Contact
+    from .url_link import UrlLink
+    from .image import Image
+
+    from wechaty_puppet import (
+        FileBox
+    )
 
 
 @dataclass
@@ -245,7 +252,39 @@ class Message(Accessory, Sayable):
             return ''
         return self.payload.text
 
-    # TODO -> toRecalled
+    async def to_recalled(self) -> Message:
+        """
+        Get the recalled message
+        """
+        if self.message_type() != MessageType.Recalled:
+            raise Exception(
+                "Can not call toRecalled() on message which is not"
+                " recalled type.")
+
+        origin_message_id = self.text()
+        if origin_message_id is None:
+            raise Exception("Can not find recalled message")
+
+        log.info("get recall message <%s>", origin_message_id)
+        try:
+            message = self.wechaty.Message.load(origin_message_id)
+            await message.ready()
+            return message
+        except Exception as exception:
+            error_info = "can't load or ready message payload {}".format(
+                str(exception.args)
+            )
+
+            log.error(error_info)
+            raise Exception(error_info)
+
+    async def recall(self) -> bool:
+        """
+        Recall a message.
+        """
+        log.info('Message recall')
+        recall_result = await self.puppet.message_recall(self.message_id)
+        return recall_result
 
     @classmethod
     def load(cls, message_id: str) -> Message:
@@ -254,14 +293,263 @@ class Message(Accessory, Sayable):
         """
         return cls(message_id)
 
+    def type(self) -> MessageType:
+        """
+        Get the type from the message.
+        :return:
+        """
+        if self.payload is None:
+            raise Exception('payload not found')
+        return self.payload.type
+
+    def is_self(self) -> bool:
+        """
+        Check if a message is sent by self
+        :return:
+        """
+        user_id = self.puppet.self_id()
+        talker = self.talker()
+        if talker is None:
+            return False
+        return talker.contact_id == user_id
+
+    async def mention_list(self) -> List[Contact]:
+        """
+        Get message mentioned contactList.
+        :return:
+        """
+        log.info("Message mention_list")
+        room = self.room()
+        if self.type() != MessageType.Text or room is None:
+            return []
+        """
+        Use mention list if mention list is available
+        otherwise, process the message and get the mention list
+        """
+        if self.payload is not None and self.payload.mention_ids is not None:
+            async def id_to_contact(contact_id) -> Contact:
+                contact = await self.wechaty.Contact.load(contact_id)
+                await contact.ready()
+                return contact
+            # TODO -> change to python async best practice
+            contacts = [
+                await id_to_contact(contact_id)
+                for contact_id in self.payload.mention_ids]
+            return contacts
+
+        # TODO -> have to check that mention_id is not in room situation
+        return []
+
+    async def mention_text(self) -> str:
+        """
+        get mention text
+        :return:
+        """
+        text = self.text()
+        room = self.room()
+
+        mention_list = await self.mention_list()
+
+        if room is None or len(mention_list) <= 0:
+            return text
+
+        async def get_alias_or_name(member: Contact) -> str:
+            if room is not None:
+                alias = await room.alias(member)
+                if alias is not None:
+                    return alias
+            return member.name
+
+        # TODO -> change to python async best practice
+        # flake8: disable=F841
+        mention_names = [
+            await get_alias_or_name(member)
+            for member in mention_list]
+        # TOD -> need to remove
+        reversed(mention_names)
+        """
+        const textWithoutMention = mentionNameList.reduce((prev, cur) => {
+            const escapedCur = escapeRegExp(cur)
+            const regex = new RegExp(`@${escapedCur}(\u2005|\u0020|$)`)
+            return prev.replace(regex, '')
+        }, text)
+        """
+        # import re
+        # from functools import reduce
+        # def reg_replace(pre, cur) -> str:
+        #     regex =
+        return ''
+
+    async def mention_self(self) -> bool:
+        """
+        Check if a message is mention self.
+        :return:
+        """
+        self_id = self.puppet.self_id()
+
+        # check and ready for message payload
+        self.ready()
+
+        # check by mention_ids not mention_list
+        if self.payload is None or self.payload.mention_ids is None:
+            return False
+        return self_id in self.payload.mention_ids
+
     async def ready(self):
         """
         sync load message
         """
-        raise NotImplementedError
+        log.info('Message ready()')
+        if self.is_ready():
+            return
 
-    def is_ready(self):
+        payload = await self.puppet.message_payload(self.message_id)
+
+        if self.payload is None:
+            raise Exception("payload not found")
+
+        self._message_payload = payload
+
+        if self.payload.talker_id is not None:
+            await self.wechaty.Contact.load(self.payload.talker_id)
+        if self.payload.room_id is not None:
+            await self.wechaty.Room.load(self.payload.room_id)
+        if self.payload.to_id is not None:
+            await self.wechaty.Contact.load(self.payload.to_id)
+
+    def is_ready(self) -> bool:
         """
         check message is ready
         """
-        raise NotImplementedError
+        return self.payload is not None
+
+    async def forward(self, to: Union[Room, Contact]):
+        """
+        doc
+        :param to:
+        :return:
+        """
+        log.info('Message forward <%s>', to)
+        if to is None:
+            raise Exception("to param not found")
+        try:
+            if isinstance(to, Room):
+                to_id = to.room_id
+            elif isinstance(to, Contact):
+                to_id = to.contact_id
+            else:
+                raise Exception(
+                    'expected type is <Room, Contact>, but get <%s>',
+                    to.__class__)
+            await self.puppet.message_forward(to_id, self.message_id)
+        except Exception as exception:
+            log.error(
+                'Message forward error <%s>',
+                exception.args
+            )
+
+    def date(self) -> datetime:
+        """
+        Message sent date
+        :return:
+        """
+        if self.payload is None:
+            raise Exception("payload not found")
+        return self.payload.timestamp
+
+    def age(self) -> int:
+        """
+        Returns the message age in seconds.
+        :return:
+        """
+        if self.payload is None:
+            raise Exception("Message payload not found")
+        return (datetime.now() - self.payload.timestamp).seconds // 1000
+
+    async def to_file_box(self) -> FileBox:
+        """
+        Extract the Media File from the Message, and put it into the FileBox.
+        """
+        log.info('Message to FileBox')
+        if self.type() == MessageType.Text:
+            raise Exception('text message can"t convert to FileBox')
+        file_box = await self.puppet.message_file(self.message_id)
+        return file_box
+
+    def to_image(self) -> Image:
+        """
+        Extract the Image File from the Message, so that we can use
+        different image sizes.
+        :return:
+        """
+        log.info('Message to Image() for message %s', self.message_id)
+        if self.type() != MessageType.Image:
+            raise Exception(
+                'current message type: %s, not image type',
+                self.type()
+            )
+        return self.wechaty.Image.create(self.message_id)
+
+    async def to_contact(self) -> Contact:
+        """
+        Get Share Card of the Message
+        Extract the Contact Card from the Message, and encapsulate it into Contact class
+        :return:
+        """
+        log.info('Message to Contact')
+        if self.type() != MessageType.Contact:
+            raise Exception(
+                'current message type: %s, not contact type',
+                self.type()
+            )
+
+        contact_id = await self.puppet.message_contact(self.message_id)
+        if contact_id is None:
+            raise Exception(
+                'can not get Contact id by message: %s',
+                self.message_id)
+
+        contact = self.wechaty.Contact.load(contact_id)
+        await contact.ready()
+        return contact
+
+    async def to_url_link(self) -> UrlLink:
+        """
+        get url_link from message
+        :return:
+        """
+        log.info('Message to UrlLink')
+        if self.type() != MessageType.Url:
+            raise Exception(
+                'current message type: %s, not url type',
+                self.type()
+            )
+
+        payload = await self.puppet.message_url(self.message_id)
+        if payload is None:
+            raise Exception(
+                'can not get url_link_payload by message: %s',
+                self.message_id)
+        return UrlLink(payload)
+
+    async def to_mini_program(self) -> MiniProgram:
+        """
+        get message mini_program
+        :return:
+        """
+        log.info('Message to MiniProgram <%s>', self.message_id)
+
+        if self.payload is None:
+            raise Exception('payload not found')
+
+        if self.type() != MessageType.MiniProgram:
+            raise Exception('not a mini_program type message')
+
+        payload = await self.puppet.message_mini_program(self.message_id)
+
+        if payload is None:
+            raise Exception(
+                'no miniProgram payload for message %s',
+                self.message_id
+            )
+        return MiniProgram(payload)
