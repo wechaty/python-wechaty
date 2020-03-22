@@ -40,7 +40,8 @@ from .message import (
 )
 
 from .room import (
-    RoomQueryFilter
+    RoomQueryFilter,
+    RoomPayload
 )
 
 from .mini_program import (
@@ -351,5 +352,41 @@ class Puppet(ABC):
     async def contact_signature(self, signature: str):
         """
         change signature
+        """
+        raise NotImplementedError
+
+    async def room_validate(self, room_id: str) -> bool:
+        """
+        check if the room is validate
+        """
+        raise NotImplementedError
+
+    async def room_payload_dirty(self, room_id: str):
+        """
+        reset room dirty status
+        """
+        raise NotImplementedError
+
+    async def room_member_payload_dirty(self, room_id: str):
+        """
+        reset room member payload status
+        """
+        raise NotImplementedError
+
+    async def room_payload(self, room_id: str) -> Union[None, RoomPayload]:
+        """
+        get room payload
+        """
+        raise NotImplementedError
+
+    async def room_members(self, room_id: str) -> List[str]:
+        """
+        get room members
+        """
+        raise NotImplementedError
+
+    async def room_add(self, room_id: str, contact_id: str):
+        """
+        add contact to a room
         """
         raise NotImplementedError
