@@ -38,14 +38,19 @@ class RoomInvitation(Accessory, Acceptable):
     """
 
     def __init__(self, room_invitation_id: str):
-        log.info("initialization ()")
+        """
+        initialization
+        """
         if self.puppet is None:
             raise Exception(
                 'RoomInvitation class can not be instanciated directly!'
             )
         self.invitation_id: str = room_invitation_id
+        log.info("__init__ () <%s>", self)
 
     def __str__(self):
+        # this function should not have to log info
+        # log.info('__str__ ()')
         msg = self.invitation_id if self.invitation_id is not None \
             else "loading"
         return "RoomInvitation <%s>" % msg
@@ -72,7 +77,7 @@ class RoomInvitation(Accessory, Acceptable):
 
     @classmethod
     def load(cls, room_invitation_id: str) -> RoomInvitation:
-        log.info("load RoomInvitation <%s>", room_invitation_id)
+        log.info("load () <%s>", room_invitation_id)
 
         invitation = RoomInvitation(room_invitation_id)
         return invitation
@@ -104,7 +109,7 @@ class RoomInvitation(Accessory, Acceptable):
         """
         get the inviter of the invitation
         """
-        log.info('inviter <%s>', self)
+        log.info('inviter () <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         contact = self.wechaty.Contact.load(payload.inviter_id)
         return contact
@@ -129,7 +134,7 @@ class RoomInvitation(Accessory, Acceptable):
         """
         get the members of the room invitation
         """
-        log.info('get Members () <%s>', self)
+        log.info('member_list () <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         member_ids = payload.member_ids
 
@@ -146,7 +151,7 @@ class RoomInvitation(Accessory, Acceptable):
         """
         get the date of the room invitation
         """
-        log.info('invitation date () <%s>', self)
+        log.info('date () <%s>', self)
         payload = await self.puppet.\
             room_invitation_payload(self.invitation_id)
         return payload.date
@@ -155,7 +160,7 @@ class RoomInvitation(Accessory, Acceptable):
         """
         get the age of the invitation timespan
         """
-        log.info('age of the invitation () <%s>', self)
+        log.info('age () <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         seconds = (datetime.now() - payload.date).seconds
         return seconds // 1000
