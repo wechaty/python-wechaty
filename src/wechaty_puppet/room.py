@@ -19,6 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
+from typing import Optional
 
 
 # pylint: disable=R0903
@@ -26,11 +27,11 @@ class RoomQueryFilter:
     """
     query filter for room
     """
-    def __init__(self):
+    def __init__(self, query: str = None):
         """
         initialization
         """
-        raise NotImplementedError
+        self.query: Optional[str] = query
 
 
 class RoomMemberQueryFilter:
@@ -53,3 +54,12 @@ class RoomPayload:
         initialization for room payload
         """
         self.topic: str = None
+        self.owner_id: str = None
+
+
+class RoomMemberPayload:
+    """
+    room member payload
+    """
+    def __init__(self):
+        self.room_alias: str = None

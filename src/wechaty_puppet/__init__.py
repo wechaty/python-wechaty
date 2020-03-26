@@ -22,7 +22,9 @@ from .message import (
 )
 from .room import (
     RoomQueryFilter,
-    RoomPayload
+    RoomPayload,
+    RoomMemberQueryFilter,
+    RoomMemberPayload,
 )
 from .mini_program import (
     MiniProgramPayload
@@ -47,6 +49,8 @@ __all__ = [
 
     'RoomQueryFilter',
     'RoomPayload',
+    'RoomMemberQueryFilter',
+    'RoomMemberPayload',
 
     'MiniProgramPayload'
 ]
