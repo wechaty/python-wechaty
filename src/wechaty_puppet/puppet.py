@@ -43,6 +43,10 @@ from .room import (
     RoomQueryFilter
 )
 
+from .room_invitation import (
+    RoomInvitationPayload
+)
+
 from .mini_program import (
     MiniProgramPayload
 )
@@ -333,6 +337,18 @@ class Puppet(ABC):
     async def room_search(self, query: RoomQueryFilter = None) -> List[str]:
         """
         search room by query filter
+        """
+        raise NotImplementedError
+
+    async def room_invitation_payload(self, room_invitation_id: str) -> RoomInvitationPayload:
+        """
+        get room invitation payload
+        """
+        raise NotImplementedError
+
+    async def room_invitation_accept(self, room_invitation_id: str):
+        """
+        get room invitation payload
         """
         raise NotImplementedError
 
