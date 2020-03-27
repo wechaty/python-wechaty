@@ -54,7 +54,7 @@ __all__ = [
     'RoomPayload',
     'RoomMemberQueryFilter',
     'RoomMemberPayload',
-  
+
     'RoomInvitationPayload',
 
     'MiniProgramPayload'
