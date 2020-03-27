@@ -26,6 +26,9 @@ from .room import (
     RoomMemberQueryFilter,
     RoomMemberPayload,
 )
+from .room_invitation import (
+    RoomInvitationPayload
+)
 from .mini_program import (
     MiniProgramPayload
 )
@@ -51,6 +54,8 @@ __all__ = [
     'RoomPayload',
     'RoomMemberQueryFilter',
     'RoomMemberPayload',
+
+    'RoomInvitationPayload',
 
     'MiniProgramPayload'
 ]
