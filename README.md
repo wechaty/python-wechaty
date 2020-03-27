@@ -1,8 +1,8 @@
-# python-wechaty [![Python 3.7](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/) [![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)](https://github.com/wechaty/python-wechaty/actions?query=workflow%3APyPI)
+# python-wechaty ![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue) [![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)](https://github.com/wechaty/python-wechaty/actions?query=workflow%3APyPI)
 
 ![Python Wechaty](https://wechaty.github.io/python-wechaty/images/python-wechaty.png)
 
-![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue)
+[![Python 3.7](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
 <!--
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)

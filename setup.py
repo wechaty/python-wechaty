@@ -1,11 +1,19 @@
 """
 setup
 """
+import os
+
 import semver
 import setuptools
 
+
 def versioning(version: str) -> str:
-    """version to specification"""
+    """
+    version to specification
+
+    X.Y.Z -> X.Y.devZ
+
+    """
     sem_ver = semver.parse(version)
 
     major = sem_ver['major']
@@ -30,13 +38,21 @@ def setup() -> None:
     with open('README.md', 'r') as fh:
         long_description = fh.read()
 
-    version = '0.0.0'
-    with open('VERSION', 'r') as fh:
-        version = versioning(fh.readline())
+    __version__ = '0.0.0'
+    with open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'VERSION'
+            )
+    ) as fh:
+        # Get X.Y.Z
+        __version__ = fh.read().strip()
+        # versioning from X.Y.Z to X.Y.devZ
+        __version__ = versioning(__version__)
 
     setuptools.setup(
         name='wechaty',
-        version=version,
+        version=__version__,
         author='Huan LI (李卓桓)',
         author_email='zixia@zixia.net',
         description='Wechaty is a Bot SDK for Wechat Personal Account',
