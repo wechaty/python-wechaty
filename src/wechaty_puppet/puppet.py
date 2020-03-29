@@ -40,7 +40,13 @@ from .message import (
 )
 
 from .room import (
-    RoomQueryFilter
+    RoomQueryFilter,
+    RoomPayload,
+    RoomMemberPayload
+)
+
+from .room_invitation import (
+    RoomInvitationPayload
 )
 
 from .mini_program import (
@@ -336,6 +342,18 @@ class Puppet(ABC):
         """
         raise NotImplementedError
 
+    async def room_invitation_payload(self, room_invitation_id: str) -> RoomInvitationPayload:
+        """
+        get room invitation payload
+        """
+        raise NotImplementedError
+
+    async def room_invitation_accept(self, room_invitation_id: str):
+        """
+        get room invitation payload
+        """
+        raise NotImplementedError
+
     async def contact_self_qr_code(self) -> str:
         """
         get login qrcode
@@ -351,5 +369,97 @@ class Puppet(ABC):
     async def contact_signature(self, signature: str):
         """
         change signature
+        """
+        raise NotImplementedError
+
+    async def room_validate(self, room_id: str) -> bool:
+        """
+        check if the room is validate
+        """
+        raise NotImplementedError
+
+    async def room_payload_dirty(self, room_id: str):
+        """
+        reset room dirty status
+        """
+        raise NotImplementedError
+
+    async def room_member_payload_dirty(self, room_id: str):
+        """
+        reset room member payload status
+        """
+        raise NotImplementedError
+
+    async def room_payload(self, room_id: str) -> Union[None, RoomPayload]:
+        """
+        get room payload
+        """
+        raise NotImplementedError
+
+    async def room_members(self, room_id: str) -> List[str]:
+        """
+        get room members
+        """
+        raise NotImplementedError
+
+    async def room_add(self, room_id: str, contact_id: str):
+        """
+        add contact to a room
+        """
+        raise NotImplementedError
+
+    async def room_delete(self, room_id: str, contact_id: str):
+        """
+        delete room
+        """
+        raise NotImplementedError
+
+    async def room_quit(self, room_id: str):
+        """
+        quit from
+        """
+        raise NotImplementedError
+
+    async def room_topic(self, room_id: str, new_topic: str):
+        """
+        set room topic
+        """
+        raise NotImplementedError
+
+    async def room_announce(
+            self,
+            room_id: str,
+            announcement: str = None) -> str:
+        """
+        set/get room announcement
+        """
+        raise NotImplementedError
+
+    async def room_qr_code(self, room_id: str) -> str:
+        """
+        get room_qrcode
+        """
+        raise NotImplementedError
+
+    async def room_member_payload(
+            self,
+            room_id: str,
+            contact_id: str) -> RoomMemberPayload:
+        """
+        get room member payload
+        """
+        raise NotImplementedError
+
+    async def room_member_search(
+            self,
+            query: RoomMemberPayload = None) -> List[str]:
+        """
+        room member search
+        """
+        raise NotImplementedError
+
+    async def room_avatar(self, room_id: str) -> FileBox:
+        """
+        get the avatar of the room
         """
         raise NotImplementedError

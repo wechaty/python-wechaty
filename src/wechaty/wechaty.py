@@ -37,7 +37,8 @@ from .user import (
     Message,
     Tag,
     Room,
-    Image
+    Image,
+    RoomInvitation
 )
 
 log = logging.getLogger('Wechaty')
@@ -75,6 +76,7 @@ class Wechaty:
         self.Message = Message
         self.Room = Room
         self.Image = Image
+        self.RoomInvitation = RoomInvitation
 
     @classmethod
     def instance(cls: Type[Wechaty]) -> Wechaty:

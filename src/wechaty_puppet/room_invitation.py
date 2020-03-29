@@ -19,47 +19,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
-from typing import Optional
+
+from typing import List
+from dataclasses import dataclass
+from datetime import datetime
 
 
 # pylint: disable=R0903
-class RoomQueryFilter:
+@dataclass
+class RoomInvitationPayload:
     """
-    query filter for room
+    room invitation payload
     """
-    def __init__(self, query: str = None):
-        """
-        initialization
-        """
-        self.query: Optional[str] = query
+    invitation_id: str
+    inviter_id: str
+    topic: str
+    member_count: int
 
+    member_ids: List[str]
+    # member_id_list: List[str]
 
-class RoomMemberQueryFilter:
-    """
-    query filter for room member
-    """
-    def __init__(self):
-        """
-        initialization for RoomMemberQueryFilter
-        """
-        raise NotImplementedError
-
-
-class RoomPayload:
-    """
-    room payload
-    """
-    def __init__(self):
-        """
-        initialization for room payload
-        """
-        self.topic: str = None
-        self.owner_id: str = None
-
-
-class RoomMemberPayload:
-    """
-    room member payload
-    """
-    def __init__(self):
-        self.room_alias: str = None
+    date: datetime

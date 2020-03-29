@@ -21,7 +21,13 @@ from .message import (
     MessageType,
 )
 from .room import (
-    RoomQueryFilter
+    RoomQueryFilter,
+    RoomPayload,
+    RoomMemberQueryFilter,
+    RoomMemberPayload,
+)
+from .room_invitation import (
+    RoomInvitationPayload
 )
 from .mini_program import (
     MiniProgramPayload
@@ -45,6 +51,11 @@ __all__ = [
     'UrlLinkPayload',
 
     'RoomQueryFilter',
+    'RoomPayload',
+    'RoomMemberQueryFilter',
+    'RoomMemberPayload',
+
+    'RoomInvitationPayload',
 
     'MiniProgramPayload'
 ]

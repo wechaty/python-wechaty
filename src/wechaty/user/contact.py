@@ -79,7 +79,7 @@ class Contact(Accessory):
         return self.contact_id
 
     @classmethod
-    async def load(
+    def load(
             cls        : Type[Contact],
             contact_id : Optional[str],
             # *args,
