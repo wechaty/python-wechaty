@@ -24,9 +24,12 @@ from typing import (
     TYPE_CHECKING,
     List,
 )
+import logging
 
 if TYPE_CHECKING:
     from .tag import Tag
+
+log = logging.getLogger('Favorite')
 
 
 # pylint: disable=R
@@ -43,6 +46,7 @@ class Favorite:
         get favorite_id
         :return:
         """
+        log.info('get_id() <%s>', self)
         return self.favorite_id
 
     async def tags(self) -> List[Tag]:

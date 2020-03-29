@@ -23,9 +23,9 @@ from __future__ import annotations
 from typing import (
     Union,
     Optional,
-    # Type,
 )
 import json
+import logging
 
 from wechaty_puppet import (
     FriendshipType,
@@ -33,11 +33,12 @@ from wechaty_puppet import (
     FriendshipPayload
 )
 
-from ..config import log
 from ..types import Acceptable
 from ..accessory import Accessory
 
 from .contact import Contact
+
+log = logging.getLogger('FriendShip')
 
 
 class Friendship(Accessory, Acceptable):

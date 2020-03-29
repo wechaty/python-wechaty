@@ -30,7 +30,7 @@ from wechaty_puppet import (
 )
 
 # pylint: disable=C0103
-log = logging.getLogger(__name__)
+log = logging.getLogger('Config')
 
 # log.debug('test logging debug')
 # log.info('test logging info')
