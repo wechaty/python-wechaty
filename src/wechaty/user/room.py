@@ -13,8 +13,7 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-
-from ..config import log
+import logging
 from ..types import Sayable
 from ..accessory import Accessory
 
@@ -27,6 +26,8 @@ if TYPE_CHECKING:
     from .url_link import UrlLink
     from .mini_program import MiniProgram
     from .message import Message
+
+log = logging.getLogger('Room')
 
 
 class Room(Accessory, Sayable):

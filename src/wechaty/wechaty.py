@@ -30,10 +30,7 @@ from typing import (
     Type,
     # Union,
 )
-
-from .config import (
-    logging,
-)
+import logging
 from .user import (
     Contact,
     Friendship,
@@ -43,7 +40,6 @@ from .user import (
     Image
 )
 
-# pylint: disable=C0103
 log = logging.getLogger('Wechaty')
 
 

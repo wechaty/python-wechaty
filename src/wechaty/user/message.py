@@ -29,7 +29,7 @@ from typing import (
 from dataclasses import dataclass
 from datetime import datetime
 import json
-
+import logging
 from wechaty_puppet import (
     MessagePayload,
     MessageQueryFilter,
@@ -37,15 +37,9 @@ from wechaty_puppet import (
 )
 
 from ..accessory import Accessory
-from ..config import (
-    log,
-    # FileBox
-)
 
 from .room import Room
-# from .url_link import UrlLink
 from .mini_program import MiniProgram
-# from .image import Image
 from ..types import Sayable
 
 if TYPE_CHECKING:
@@ -56,6 +50,8 @@ if TYPE_CHECKING:
     from wechaty_puppet import (
         FileBox
     )
+
+log = logging.getLogger('Message')
 
 
 @dataclass
