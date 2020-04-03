@@ -30,20 +30,17 @@ from typing import (
     Type,
     # Union,
 )
-
-from .config import (
-    logging,
-)
+import logging
 from .user import (
     Contact,
     Friendship,
     Message,
     Tag,
     Room,
-    Image
+    Image,
+    RoomInvitation
 )
 
-# pylint: disable=C0103
 log = logging.getLogger('Wechaty')
 
 
@@ -79,6 +76,7 @@ class Wechaty:
         self.Message = Message
         self.Room = Room
         self.Image = Image
+        self.RoomInvitation = RoomInvitation
 
     @classmethod
     def instance(cls: Type[Wechaty]) -> Wechaty:

@@ -20,45 +20,23 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-    List,
-)
-import logging
-
-if TYPE_CHECKING:
-    from .tag import Tag
-
-log = logging.getLogger('Favorite')
+from typing import List
+from dataclasses import dataclass
+from datetime import datetime
 
 
-# pylint: disable=R
-class Favorite:
+# pylint: disable=R0903
+@dataclass
+class RoomInvitationPayload:
     """
-    favorite object which handle the url_link content
+    room invitation payload
     """
-    def __init__(self, favorite_id: str):
-        self.favorite_id = favorite_id
-        raise NotImplementedError
+    invitation_id: str
+    inviter_id: str
+    topic: str
+    member_count: int
 
-    def get_id(self):
-        """
-        get favorite_id
-        :return:
-        """
-        log.info('get_id() <%s>', self)
-        return self.favorite_id
+    member_ids: List[str]
+    # member_id_list: List[str]
 
-    async def tags(self) -> List[Tag]:
-        """
-        get favorite tags
-        """
-        # TODO
-        return []
-
-    async def find_all(self) -> List[Tag]:
-        """
-        get all favorite tags
-        """
-        # TODO
-        return []
+    date: datetime

@@ -26,17 +26,13 @@ from typing import (
     # cast,
     Optional,
 )
-
-from .config import (
-    logging
-)
+import logging
 
 # pylint:disable=R0401
 if TYPE_CHECKING:
     from wechaty_puppet import Puppet
     from .wechaty import Wechaty
 
-# pylint: disable=C0103
 log = logging.getLogger('Accessory')
 
 

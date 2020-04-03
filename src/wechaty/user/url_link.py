@@ -7,10 +7,10 @@ from typing import (
     Type,
 )
 import requests
-
+import logging
 from wechaty_puppet import UrlLinkPayload
 
-from ..config import log
+log = logging.getLogger('UrlLink')
 
 
 class UrlLink:

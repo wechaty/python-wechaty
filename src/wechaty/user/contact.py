@@ -30,6 +30,7 @@ from typing import (
 )
 
 from collections import defaultdict
+import logging
 
 from wechaty_puppet import (
     ContactGender,
@@ -42,7 +43,6 @@ from ..accessory import Accessory
 # from wechaty import Accessory
 from ..config import (
     FileBox,
-    log,
 )
 
 # from wechaty.types import Sayable
@@ -52,6 +52,8 @@ from .url_link import UrlLink
 
 if TYPE_CHECKING:
     from .tag import Tag
+
+log = logging.getLogger('Contact')
 
 
 class Contact(Accessory):
@@ -77,7 +79,7 @@ class Contact(Accessory):
         return self.contact_id
 
     @classmethod
-    async def load(
+    def load(
             cls        : Type[Contact],
             contact_id : Optional[str],
             # *args,
