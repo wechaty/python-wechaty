@@ -14,14 +14,11 @@ from collections import defaultdict
 from ..accessory import (
     Accessory,
 )
-from ..config import (
-    logging,
-)
-
 from .contact import Contact
 from .favorite import Favorite
+from ..log import WechatyLogger
 
-log = logging.getLogger('Tag')
+log = WechatyLogger('Tag')
 
 
 class Tag(Accessory):

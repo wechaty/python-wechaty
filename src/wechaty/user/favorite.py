@@ -24,12 +24,12 @@ from typing import (
     TYPE_CHECKING,
     List,
 )
-import logging
+from ..log import WechatyLogger
 
 if TYPE_CHECKING:
     from .tag import Tag
 
-log = logging.getLogger('Favorite')
+log = WechatyLogger('Favorite')
 
 
 # pylint: disable=R

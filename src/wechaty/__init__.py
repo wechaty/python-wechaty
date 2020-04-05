@@ -9,12 +9,8 @@ from .user import (
     Contact,
     Favorite,
 )
-from .config import (
-    logging,
-)
 
 __all__ = [
-    'logging',
     'Accessory',
     'Contact',
     'Favorite',

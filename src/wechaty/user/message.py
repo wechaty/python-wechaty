@@ -29,7 +29,6 @@ from typing import (
 from dataclasses import dataclass
 from datetime import datetime
 import json
-import logging
 from wechaty_puppet import (
     MessagePayload,
     MessageQueryFilter,
@@ -41,6 +40,7 @@ from ..accessory import Accessory
 from .room import Room
 from .mini_program import MiniProgram
 from ..types import Sayable
+from ..log import WechatyLogger
 
 if TYPE_CHECKING:
     from .contact import Contact
@@ -51,7 +51,7 @@ if TYPE_CHECKING:
         FileBox
     )
 
-log = logging.getLogger('Message')
+log = WechatyLogger('Message')
 
 
 @dataclass
@@ -168,7 +168,7 @@ class Message(Accessory, Sayable):
             return None
 
         if len(messages) > 1:
-            log.warn(
+            log.warning(
                 'Message findAll() got more than one(%d) result',
                 len(messages))
         return messages[0]

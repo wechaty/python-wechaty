@@ -30,7 +30,6 @@ from typing import (
 )
 
 from collections import defaultdict
-import logging
 
 from wechaty_puppet import (
     ContactGender,
@@ -49,11 +48,12 @@ from ..config import (
 # from wechaty.user.mini_program import MiniProgram
 from .message import Message
 from .url_link import UrlLink
+from ..log import WechatyLogger
 
 if TYPE_CHECKING:
     from .tag import Tag
 
-log = logging.getLogger('Contact')
+log = WechatyLogger('Contact')
 
 
 class Contact(Accessory):

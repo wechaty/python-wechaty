@@ -18,7 +18,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import logging
 import os
 import re
 from typing import (
@@ -28,9 +27,7 @@ from typing import (
 from wechaty_puppet import (
     FileBox,
 )
-
-# pylint: disable=C0103
-log = logging.getLogger('Config')
+from .log import WechatyLogger
 
 # log.debug('test logging debug')
 # log.info('test logging info')
@@ -42,6 +39,8 @@ DATA_PATH = os.path.realpath(
         '../data',
     ),
 )
+
+log = WechatyLogger('Config')
 
 
 def global_exception_handler(exception: Exception) -> None:

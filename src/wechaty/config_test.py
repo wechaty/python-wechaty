@@ -8,13 +8,10 @@ from typing import (
 )
 
 import pytest   # type: ignore
-
-from .config import (
-    logging,
-)
+from .log import WechatyLogger
 
 # pylint: disable=C0103
-log = logging.getLogger('ConfigTest')
+log = WechatyLogger('ConfigTest')
 
 # pylint: disable=redefined-outer-name
 
@@ -39,4 +36,4 @@ def test_config(
 
 def test_log():
     """test"""
-    assert logging, 'log should exist'
+    assert WechatyLogger, 'log should exist'

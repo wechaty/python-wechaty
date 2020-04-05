@@ -25,7 +25,6 @@ from typing import (
     Optional,
 )
 import json
-import logging
 
 from wechaty_puppet import (
     FriendshipType,
@@ -35,10 +34,10 @@ from wechaty_puppet import (
 
 from ..types import Acceptable
 from ..accessory import Accessory
-
+from ..log import WechatyLogger
 from .contact import Contact
 
-log = logging.getLogger('FriendShip')
+log = WechatyLogger('FriendShip')
 
 
 class Friendship(Accessory, Acceptable):

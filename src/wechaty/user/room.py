@@ -30,9 +30,9 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-import logging
 from ..types import Sayable
 from ..accessory import Accessory
+from ..log import WechatyLogger
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from .mini_program import MiniProgram
     from .message import Message
 
-log = logging.getLogger('Room')
+log = WechatyLogger('Room')
 
 
 def _build_room_query(query: Union[str, RoomQueryFilter] = None) -> RoomQueryFilter:
@@ -131,7 +131,7 @@ class Room(Accessory, Sayable):
                 await room.ready()
                 room_result.append(room)
             except Exception as exception:
-                log.warn(
+                log.warning(
                     'Room findAll() room.ready() rejection: %s',
                     exception.args
                 )
@@ -154,13 +154,13 @@ class Room(Accessory, Sayable):
             return None
 
         if len(rooms) > 1:
-            log.warn('Room find() got more than one(%d) result', len(rooms))
+            log.warning('Room find() got more than one(%d) result', len(rooms))
 
         for index, room in enumerate(rooms):
             valid = await cls.get_puppet().room_validate(room.room_id)
 
             if valid:
-                log.warn(
+                log.warning(
                     'Room find() confirm room[#%d] with id=%d '
                     'is valid result, return it.',
                     index,
@@ -323,7 +323,7 @@ class Room(Accessory, Sayable):
         log.info('Room topic (%s)', new_topic)
 
         if not self.is_ready():
-            log.warn('Room topic() room not ready')
+            log.warning('Room topic() room not ready')
             raise Exception('Room not ready')
 
         if new_topic is None:
@@ -345,7 +345,7 @@ class Room(Accessory, Sayable):
             await self.puppet.room_topic(self.room_id, new_topic)
             return new_topic
         except Exception as exception:
-            log.warn(
+            log.warning(
                 'Room topic(newTopic=%s) exception: %s',
                 new_topic,
                 exception

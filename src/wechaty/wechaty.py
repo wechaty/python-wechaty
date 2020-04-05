@@ -88,11 +88,7 @@ class Wechaty:
 
         if cls._global_instance is None:
             cls._global_instance = cls()
-
-        # Huan(202003): how to remove cast?
         return cls._global_instance
-        # return cast(Wechaty, cls._global_instance)
-        # return cls._global_instance
 
     async def name(self) -> str:
         """name"""
