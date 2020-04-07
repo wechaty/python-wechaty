@@ -39,13 +39,9 @@ from wechaty_puppet import (
 )
 
 from ..accessory import Accessory
-# from wechaty import Accessory
 from ..config import (
     FileBox,
 )
-
-# from wechaty.types import Sayable
-# from wechaty.user.mini_program import MiniProgram
 from .message import Message
 from .url_link import UrlLink
 from ..log import WechatyLogger
@@ -78,6 +74,7 @@ class Contact(Accessory):
         """
         return self.contact_id
 
+    @log
     @classmethod
     def load(
             cls        : Type[Contact],
