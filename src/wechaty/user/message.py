@@ -125,6 +125,7 @@ class Message(Accessory, Sayable):
         """
         return self._message_payload
 
+    @log
     def message_type(self) -> MessageType:
         """
         get message type
@@ -152,6 +153,7 @@ class Message(Accessory, Sayable):
         raise NotImplementedError
 
     @classmethod
+    @log
     async def find(
             cls,
             # need return type annotation
@@ -159,7 +161,6 @@ class Message(Accessory, Sayable):
         """
         Find message in cache
         """
-        log.info("Message find <%s>", json.dumps(query))
         if isinstance(query, str):
             query = MessageUserQueryFilter(text=query)
 
@@ -174,14 +175,13 @@ class Message(Accessory, Sayable):
         return messages[0]
 
     @classmethod
+    @log
     async def find_all(
             cls,
             query: MessageUserQueryFilter = None) -> List[Message]:
         """
         Find messages in cache
         """
-        log.info("Message find all <%s>", json.dumps(query))
-
         # use query_filter to change query filter type
         query_filter: Optional[MessageQueryFilter] = None
         if query is not None:
@@ -309,12 +309,12 @@ class Message(Accessory, Sayable):
             return False
         return talker.contact_id == user_id
 
+    @log
     async def mention_list(self) -> List[Contact]:
         """
         Get message mentioned contactList.
         :return:
         """
-        log.info("Message mention_list")
         room = self.room()
         if self.type() != MessageType.Text or room is None:
             return []
@@ -391,6 +391,7 @@ class Message(Accessory, Sayable):
             return False
         return self_id in self.payload.mention_ids
 
+    @log
     async def ready(self):
         """
         sync load message
@@ -419,13 +420,13 @@ class Message(Accessory, Sayable):
         """
         return self.payload is not None
 
+    @log
     async def forward(self, to: Union[Room, Contact]):
         """
         doc
         :param to:
         :return:
         """
-        log.info('Message forward <%s>', to)
         if to is None:
             raise Exception("to param not found")
         try:
@@ -462,11 +463,11 @@ class Message(Accessory, Sayable):
             raise Exception("Message payload not found")
         return (datetime.now() - self.payload.timestamp).seconds // 1000
 
+    @log
     async def to_file_box(self) -> FileBox:
         """
         Extract the Media File from the Message, and put it into the FileBox.
         """
-        log.info('Message to FileBox')
         if self.type() == MessageType.Text:
             raise Exception('text message can"t convert to FileBox')
         file_box = await self.puppet.message_file(self.message_id)
@@ -486,13 +487,13 @@ class Message(Accessory, Sayable):
             )
         return self.wechaty.Image.create(self.message_id)
 
+    @log
     async def to_contact(self) -> Contact:
         """
         Get Share Card of the Message
         Extract the Contact Card from the Message, and encapsulate it into Contact class
         :return:
         """
-        log.info('Message to Contact')
         if self.type() != MessageType.Contact:
             raise Exception(
                 'current message type: %s, not contact type',
@@ -509,12 +510,12 @@ class Message(Accessory, Sayable):
         await contact.ready()
         return contact
 
+    @log
     async def to_url_link(self) -> UrlLink:
         """
         get url_link from message
         :return:
         """
-        log.info('Message to UrlLink')
         if self.type() != MessageType.Url:
             raise Exception(
                 'current message type: %s, not url type',

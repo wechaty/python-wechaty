@@ -192,6 +192,7 @@ class Contact(Accessory):
             identity = 'loading ...'
         return 'Contact <%s>' % identity
 
+    @log
     async def say(self, message: Message) -> Optional[Message]:
         """
         say something
@@ -238,6 +239,7 @@ class Contact(Accessory):
             return self.payload.name
         return ''
 
+    @log
     async def alias(
             self,
             new_alias: Optional[str] = None
@@ -245,7 +247,6 @@ class Contact(Accessory):
         """
         get/set alias
         """
-        log.info("Contact alias <%s>", new_alias)
         if self.payload is None:
             raise Exception("Contact payload not found ...")
 
@@ -270,6 +271,7 @@ class Contact(Accessory):
                 new_alias, str(e.args))
         return None
 
+    @log
     def is_friend(self) -> Optional[bool]:
         """
         Check if contact is friend
@@ -280,6 +282,7 @@ class Contact(Accessory):
             return None
         return self.payload.friend
 
+    @log
     def is_offical(self) -> bool:
         """
         Check if it's a offical account
@@ -290,6 +293,7 @@ class Contact(Accessory):
             return False
         return self.payload.type == ContactType.Offical
 
+    @log
     def is_personal(self) -> bool:
         """
         Check if it's a personal account
@@ -298,6 +302,7 @@ class Contact(Accessory):
             return False
         return self.payload.type == ContactType.Personal
 
+    @log
     def type(self) -> ContactType:
         """
         get contact type
@@ -306,6 +311,7 @@ class Contact(Accessory):
             raise Exception("contact payload not found")
         return self.payload.type
 
+    @log
     def start(self) -> Optional[bool]:
         """
         check if it's a start account
@@ -314,6 +320,7 @@ class Contact(Accessory):
             return None
         return self.payload.start
 
+    @log
     def gender(self) -> ContactGender:
         """
         get contact gender info
@@ -322,6 +329,7 @@ class Contact(Accessory):
             return self.payload.gender
         return ContactGender.Unkonwn
 
+    @log
     def province(self) -> Optional[str]:
         """
         get the province of the account
@@ -330,6 +338,7 @@ class Contact(Accessory):
             return None
         return self.payload.province
 
+    @log
     def city(self) -> Optional[str]:
         """
         get the city of the account
@@ -338,6 +347,7 @@ class Contact(Accessory):
             return None
         return self.payload.city
 
+    @log
     async def avatar(self) -> Optional[FileBox]:
         """
         get the avatar of the account
@@ -350,11 +360,11 @@ class Contact(Accessory):
                 str(e.args))
             return None
 
+    @log
     async def tags(self) -> List[Tag]:
         """
         Get all tags of contact
         """
-        log.info("load contact tags for %s", self)
         try:
             contact_ids = await self.puppet.contact_tag_ids(self.contact_id)
             tags = [

@@ -72,6 +72,7 @@ class Friendship(Accessory, Acceptable):
         return cls(friendship_id)
 
     @classmethod
+    @log
     async def search(
             cls,
             query_filter: FriendshipSearchQueryFilter) -> Optional[Contact]:
@@ -82,7 +83,6 @@ class Friendship(Accessory, Acceptable):
         * Remeber not to do this too frequently, or your account
         * may be blocked.
         """
-        log.info("Friendship serach query %s", json.dumps(query_filter))
         contact_id = await cls.get_puppet().friendship_search(query_filter)
         if contact_id is None:
             return None
@@ -91,19 +91,19 @@ class Friendship(Accessory, Acceptable):
         return contact
 
     @classmethod
+    @log
     async def add(cls, contact: Contact, hello: str):
         """
         add friendship
         """
-        log.info("Add Friendship (%s, %s)", contact.contact_id, hello)
         await cls.get_puppet().friendship_add(contact.contact_id, hello)
 
     @classmethod
+    @log
     async def delete(cls, contact: Contact):
         """
         delete friendship
         """
-        log.info("delete friendship (%s)", contact.contact_id)
         # this is a dangerous action
         raise NotImplementedError
 
@@ -126,12 +126,14 @@ class Friendship(Accessory, Acceptable):
             str(self._payload.type),
             self.payload.contact_id)
 
+    @log
     def is_ready(self) -> bool:
         """
         check if friendship is ready
         """
         return self.puppet is None or self.payload is None
 
+    @log
     async def ready(self):
         """
         load friendship payload
@@ -145,6 +147,7 @@ class Friendship(Accessory, Acceptable):
                 "can't not load friendship payload %s",
                 self.friendship_id)
 
+    @log
     def contact(self) -> Contact:
         """
         get the contact of the friendship
@@ -190,6 +193,7 @@ class Friendship(Accessory, Acceptable):
             raise Exception("payload not found")
         return self.payload.hello
 
+    @log
     def type(self) -> FriendshipType:
         """
         Return the Friendship Type
@@ -202,11 +206,11 @@ class Friendship(Accessory, Acceptable):
             return FriendshipType.Unknown
         return self.payload.type
 
+    @log
     def to_json(self) -> str:
         """
         dumps the friendship
         """
-        log.info("Friendship to_json")
         if not self.is_ready():
             raise Exception(
                 "Friendship<${this.id}> needs to be ready. "
@@ -214,6 +218,7 @@ class Friendship(Accessory, Acceptable):
         return json.dumps(self.payload)
 
     @classmethod
+    @log
     async def from_json(
             cls,
             payload: Union[str, FriendshipPayload]
@@ -222,10 +227,7 @@ class Friendship(Accessory, Acceptable):
         create friendShip by friendshipJson
         """
         if isinstance(payload, str):
-            log.info("Friendship', 'static fromJSON(%s)", payload)
             payload = FriendshipPayload.from_json(payload)
-        else:
-            log.info("Friendship', 'static fromJSON(%s)", json.dumps(payload))
 
         await cls.get_puppet().friendship_payload(
             payload.contact_id,

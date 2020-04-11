@@ -106,9 +106,8 @@ class Room(Accessory, Sayable):
             )
             raise Exception("Room create error")
 
-
-
     @classmethod
+    @log
     async def find_all(
             cls,
             query: Union[str, RoomQueryFilter] = None) -> List[Room]:
@@ -117,7 +116,6 @@ class Room(Accessory, Sayable):
         :param query:
         :return:
         """
-        log.info('Room find_all <%s>', json.dumps(query))
         room_query = _build_room_query(query)
         room_ids = await cls.get_puppet().room_search(room_query)
 
@@ -138,6 +136,7 @@ class Room(Accessory, Sayable):
         return room_result
 
     @classmethod
+    @log
     async def find(
             cls,
             query: Union[str, RoomQueryFilter] = None) -> Union[None, Room]:
@@ -146,8 +145,6 @@ class Room(Accessory, Sayable):
         return the first one.
         :return:
         """
-        log.info('Room find <%s>', json.dumps(query))
-
         rooms = await cls.find_all(query)
 
         if rooms is None or len(rooms) < 1:
@@ -239,6 +236,7 @@ class Room(Accessory, Sayable):
                     'Room ready() member.ready() rejection: %s', exception
                 )
 
+    @log
     async def say(
             self,
             some_thing: Union[str, Contact, FileBox, MiniProgram, UrlLink],
@@ -247,8 +245,7 @@ class Room(Accessory, Sayable):
         """
         Room Say(%s, %s)
         """
-        log.info("Room say <%s, %s>", some_thing, args)
-
+        # log.info("Room say <%s, %s>", some_thing, args)
         msg_id = None
 
         # TODO -> if is str: logic should be viewed
@@ -290,38 +287,38 @@ class Room(Accessory, Sayable):
 
     # async def on(self, event: str, listener: Callable):
 
+    @log
     async def add(self, contact: Contact):
         """
         Add contact in a room
         """
-        log.info('Room add <%s>', contact)
-
+        # log.info('Room add <%s>', contact)
         await self.puppet.room_add(self.room_id, contact.contact_id)
 
+    @log
     async def delete(self, contact: Contact):
         """
         delete room
         """
-        log.info('Room delete<%s>', contact)
-
+        # log.info('Room delete<%s>', contact)
         if contact is None or contact.contact_id is None:
             raise Exception('Contact is none or contact_id not found')
         await self.puppet.room_delete(self.room_id, contact.contact_id)
 
+    @log
     async def quit(self):
         """
         Add contact in a room
         """
-        log.info('Room quit <%s>', self)
-
+        # log.info('Room quit <%s>', self)
         await self.puppet.room_quit(self.room_id)
 
+    @log
     async def topic(self, new_topic: str = None) -> Optional[str]:
         """
         get/set room topic
         """
-        log.info('Room topic (%s)', new_topic)
-
+        # log.info('Room topic (%s)', new_topic)
         if not self.is_ready():
             log.warning('Room topic() room not ready')
             raise Exception('Room not ready')
@@ -352,14 +349,14 @@ class Room(Accessory, Sayable):
             )
         return None
 
+    @log
     async def announce(self, text: str = None) -> Optional[str]:
         """
         SET/GET announce from the room
 
         It only works when bot is the owner of the room.
         """
-
-        log.info('Room announce (%s)', text)
+        # log.info('Room announce (%s)', text)
 
         if text is None:
             announcement = await self.puppet.room_announce(self.room_id)
@@ -367,13 +364,14 @@ class Room(Accessory, Sayable):
         await self.puppet.room_announce(self.room_id, text)
         return None
 
+    @log
     async def qrcode(self) -> str:
         """
         TODO -> need to rewrite this function later
         Get QR Code Value of the Room from the room, which can be used as
         scan and join the room.
         """
-        log.info('Room qr_code')
+        # log.info('Room qr_code')
         qr_code_value = await self.puppet.room_qr_code(self.room_id)
         return qr_code_value
 
@@ -403,13 +401,14 @@ class Room(Accessory, Sayable):
 
         return contact.contact_id in member_ids
 
+    @log
     async def member_all(
         self, query: Union[str, RoomQueryFilter] = None
     ) -> List[Contact]:
         """
         Find all contacts in a room
         """
-        log.info('room member all (%s)', json.dumps(query))
+        # log.info('room member all (%s)', json.dumps(query))
         if query is None:
             members = await self.member_list()
             return members
@@ -420,12 +419,12 @@ class Room(Accessory, Sayable):
         ]
         return contacts
 
+    @log
     async def member_list(self) -> List[Contact]:
         """
         Get all room member from the room
         """
-        log.info('Get room <%s> all members', self)
-
+        # log.info('Get room <%s> all members', self)
         member_ids = await self.puppet.room_members(self.room_id)
         if member_ids is None or len(member_ids) < 1:
             raise Exception(
@@ -438,24 +437,25 @@ class Room(Accessory, Sayable):
 
         return contacts
 
+    @log
     async def member(
         self, query: Union[str, RoomQueryFilter] = None
     ) -> Optional[Contact]:
         """
         Find all contacts in a room, if get many, return the first one.
         """
-        log.info('Room member search <%s>', query)
-
+        # log.info('Room member search <%s>', query)
         members = await self.member_all(query)
         if members is None or len(members) < 1:
             return None
         return members[0]
 
+    @log
     async def owner(self) -> Optional[Contact]:
         """
         get room owner
         """
-        log.info('Room <%s> owner', self)
+        # log.info('Room <%s> owner', self)
         if self.payload is None or self.payload.owner_id is None:
             # raise Exception('Room <%s> payload or payload.owner_id not found')
             return None
@@ -463,11 +463,11 @@ class Room(Accessory, Sayable):
         contact = self.wechaty.Contact.load(self.payload.owner_id)
         return contact
 
+    @log
     async def avatar(self) -> FileBox:
         """
         get the avatar of the room
         """
-        log.info('Room <%s> avatar', self)
-
+        # log.info('Room <%s> avatar', self)
         avatar = await self.puppet.room_avatar(self.room_id)
         return avatar

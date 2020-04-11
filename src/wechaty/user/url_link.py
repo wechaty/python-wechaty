@@ -28,6 +28,7 @@ class UrlLink:
         self.payload: UrlLinkPayload = payload
 
     @classmethod
+    @log
     def create(
             cls: Type[UrlLink],
             url: str,

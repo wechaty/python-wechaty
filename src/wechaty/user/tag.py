@@ -80,6 +80,7 @@ class Tag(Accessory):
         log.info('load tag object %s', tag_id)
         return cls.load(tag_id)
 
+    @log
     def delete(
             self,
             target: Union[Contact, Favorite] = None,
@@ -89,7 +90,7 @@ class Tag(Accessory):
         :param target:
         :return:
         """
-        log.info('delete tag %s', self.tag_id)
+        # log.info('delete tag %s', self.tag_id)
         #
         if target is None:
             raise Exception("target param is required")
@@ -99,6 +100,7 @@ class Tag(Accessory):
         elif target is Favorite:
             self.puppet.delete_favorite_tag(self.tag_id)
 
+    @log
     def add(
             self,
             to: Union[Contact, Favorite],
@@ -108,7 +110,7 @@ class Tag(Accessory):
         :param to:
         :return:
         """
-        log.info('add tag to %s', str(to))
+        # log.info('add tag to %s', str(to))
         if to is Contact:
             self.puppet.tag_contact_add(self.tag_id, to.get_id())
         elif to is Favorite:

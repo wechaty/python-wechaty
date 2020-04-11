@@ -41,14 +41,15 @@ class Favorite:
         self.favorite_id = favorite_id
         raise NotImplementedError
 
+    @log
     def get_id(self):
         """
         get favorite_id
         :return:
         """
-        log.info('get_id() <%s>', self)
         return self.favorite_id
 
+    @log
     async def tags(self) -> List[Tag]:
         """
         get favorite tags

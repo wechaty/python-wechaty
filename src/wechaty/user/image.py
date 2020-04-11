@@ -69,6 +69,7 @@ class Image(Accessory):
                                       ' without a puppet!')
 
     @classmethod
+    @log
     def create(cls: Type[Image], image_id: str) -> Image:
         """
         create image instance by image_id
@@ -76,7 +77,7 @@ class Image(Accessory):
         :param image_id:
         :return:
         """
-        log.info('@classmethod create(%d)', image_id)
+        # log.info('@classmethod create(%d)', image_id)
         # obj = super().__new__(cls)
         # obj.__init__(image_id)
         # return obj
@@ -97,6 +98,7 @@ class Image(Accessory):
         docstring
         :return:
         """
+        # need to show custom self.id property
         log.info('hd() for %d', self.id)
         file_box = await self.puppet \
             .message_image(self.id, ImageType.HD)

@@ -55,11 +55,12 @@ class RoomInvitation(Accessory, Acceptable):
             else "loading"
         return "RoomInvitation <%s>" % msg
 
+    @log
     async def to_str(self):
         """
         get room invitation string format description with async way
         """
-        log.info("to_str()")
+        # log.info("to_str()")
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         if payload is None:
             log.error('<%s> NotFound', self)
@@ -76,17 +77,18 @@ class RoomInvitation(Accessory, Acceptable):
         ])
 
     @classmethod
+    @log
     def load(cls, room_invitation_id: str) -> RoomInvitation:
-        log.info("load () <%s>", room_invitation_id)
-
+        # log.info("load () <%s>", room_invitation_id)
         invitation = RoomInvitation(room_invitation_id)
         return invitation
 
+    @log
     async def accept(self):
         """
         accept the room invitation
         """
-        log.info("accept() <%s>", self)
+        # log.info("accept() <%s>", self)
         await self.puppet.room_invitation_accept(self.invitation_id)
         inviter = await self.inviter()
         topic = await self.topic()
@@ -105,36 +107,40 @@ class RoomInvitation(Accessory, Acceptable):
             )
             raise exception
 
+    @log
     async def inviter(self) -> Contact:
         """
         get the inviter of the invitation
         """
-        log.info('inviter() <%s>', self)
+        # log.info('inviter() <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         contact = self.wechaty.Contact.load(payload.inviter_id)
         return contact
 
+    @log
     async def topic(self) -> str:
         """
         get the topic of the intivation
         """
-        log.info('topic() <%s>', self)
+        # log.info('topic() <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         return payload.topic
 
+    @log
     async def member_count(self) -> int:
         """
         get the number of the invitation members
         """
-        log.info('member_count() <%s>', self)
+        # log.info('member_count() <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         return payload.member_count
 
+    @log
     async def member_list(self) -> List[Contact]:
         """
         get the members of the room invitation
         """
-        log.info('member_list() <%s>', self)
+        # log.info('member_list() <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         member_ids = payload.member_ids
 
@@ -147,25 +153,28 @@ class RoomInvitation(Accessory, Acceptable):
             await member.ready()
         return members
 
+    @log
     async def date(self) -> datetime:
         """
         get the date of the room invitation
         """
-        log.info('date() <%s>', self)
+        # log.info('date() <%s>', self)
         payload = await self.puppet.\
             room_invitation_payload(self.invitation_id)
         return payload.date
 
+    @log
     async def age(self) -> int:
         """
         get the age of the invitation timespan
         """
-        log.info('age() <%s>', self)
+        # log.info('age() <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         seconds = (datetime.now() - payload.date).seconds
         return seconds // 1000
 
     @classmethod
+    @log
     async def from_json(
             cls,
             payload: Union[str, RoomInvitationPayload]
@@ -173,10 +182,10 @@ class RoomInvitation(Accessory, Acceptable):
         """
         Load the room invitation info from disk
         """
-        if isinstance(payload, str):
-            log.info('from_json() <%s>', payload)
-        else:
-            log.info('from_json() <%s>', json.dumps(payload))
+        # if isinstance(payload, str):
+        #     log.info('from_json() <%s>', payload)
+        # else:
+        #     log.info('from_json() <%s>', json.dumps(payload))
 
         if isinstance(payload, str):
             params = json.loads(payload)
@@ -191,10 +200,10 @@ class RoomInvitation(Accessory, Acceptable):
         return cls.get_wechaty().RoomInvitation.\
             load(invitation_payload.invitation_id)
 
+    @log
     async def to_json(self) -> str:
         """
         Get the room invitation info when listened on room-invite event
         """
-        log.info('to_json() <%s>', self)
         payload = await self.puppet.room_invitation_payload(self.invitation_id)
         return json.dumps(payload)
