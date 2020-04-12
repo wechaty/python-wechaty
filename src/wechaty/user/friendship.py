@@ -114,6 +114,7 @@ class Friendship(Accessory, Acceptable):
 
         if self.is_ready():
             raise Exception("can't load friendship payload")
+        assert self._payload is not None
         return self._payload
 
     def __str__(self) -> str:
