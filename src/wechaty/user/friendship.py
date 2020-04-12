@@ -109,9 +109,10 @@ class Friendship(Accessory, Acceptable):
 
     @property
     def payload(self) -> FriendshipPayload:
-        if self._payload is None:
+        if self.is_ready():
             self.ready()
-        if self._payload is None:
+
+        if self.is_ready():
             raise Exception("can't load friendship payload")
         return self._payload
 
@@ -130,7 +131,9 @@ class Friendship(Accessory, Acceptable):
         """
         check if friendship is ready
         """
-        return self.puppet is None or self.payload is None
+        if self.puppet is None:
+            raise Exception('Friendship Puppet not found')
+        return self.payload is None
 
     @log
     async def ready(self):
@@ -174,8 +177,6 @@ class Friendship(Accessory, Acceptable):
 
         # reset contact data
         try:
-            # TODO -> some other logical code
-            # do something
             await contact.ready()
         except Exception as e:
             log.info(
@@ -185,7 +186,6 @@ class Friendship(Accessory, Acceptable):
 
     def hello(self) -> str:
         """
-        TODO ->
         Get verify message from
         """
         if self.payload is None:
