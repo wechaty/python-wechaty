@@ -230,7 +230,7 @@ class Room(Accessory, Sayable):
 
         for contact in contacts:
             try:
-                contact.ready()
+                await contact.ready()
             except Exception as exception:
                 log.error(
                     'Room ready() member.ready() rejection: %s', exception

@@ -93,7 +93,7 @@ class RoomInvitation(Accessory, Acceptable):
         inviter = await self.inviter()
         topic = await self.topic()
         try:
-            inviter.ready()
+            await inviter.ready()
             log.info(
                 'accept() with room(%s) & inviter(%s) ready())',
                 topic,

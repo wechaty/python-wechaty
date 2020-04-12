@@ -140,7 +140,7 @@ class Contact(Accessory):
         for contact in contacts:
             try:
                 if isinstance(contact, Contact):
-                    contact.ready()
+                    await contact.ready()
                     contact_result_list.append(contact)
             # pylint : disbale=broad-except
             except RuntimeError as e:
@@ -160,7 +160,7 @@ class Contact(Accessory):
         """
         return self.payload is not None and self.payload.name is not None
 
-    def ready(self):
+    async def ready(self):
         """
         load contact object from puppet
         :return:
@@ -382,7 +382,7 @@ class Contact(Accessory):
         """
         sync the contact data
         """
-        return self.ready()
+        await self.ready()
 
     def is_self(self) -> bool:
         """

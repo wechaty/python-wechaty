@@ -120,7 +120,6 @@ class Friendship(Accessory, Acceptable):
         string format for Friendship
         """
         if self._payload is None:
-            # TODO -> get constructor name of the friendship
             return "Friendship"
         return "Friendship # {0} <{1}>".format(
             str(self._payload.type),
@@ -161,7 +160,7 @@ class Friendship(Accessory, Acceptable):
         """
         accept friendship
         """
-        log.info("accept friendship %s", self.friendship_id)
+        log.info("accept() <%s>", self.friendship_id)
         if self.payload is None:
             raise Exception("payload not found")
 
@@ -177,7 +176,7 @@ class Friendship(Accessory, Acceptable):
         try:
             # TODO -> some other logical code
             # do something
-            contact.ready()
+            await contact.ready()
         except Exception as e:
             log.info(
                 "can't reload contact data %s",
