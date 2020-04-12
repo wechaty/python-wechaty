@@ -29,6 +29,7 @@ from typing import (
 from dataclasses import dataclass
 from datetime import datetime
 import json
+import asyncio
 from wechaty_puppet import (
     MessagePayload,
     MessageQueryFilter,
@@ -112,11 +113,14 @@ class Message(Accessory, Sayable):
         self._message_payload: Optional[MessagePayload] = None
 
         # TODO -> check if it's Message class
+        # check if message can be instanciated directly!
         if not issubclass(self.__class__, Message):
             raise Exception("Message class can not be instanciated directly!")
 
         if self.puppet is None:
-            raise Exception("Message class can not be instanciated without a puppet!")
+            raise Exception(
+                "Message class can not be instanciated without a puppet!"
+            )
 
     @property
     def payload(self) -> Optional[MessagePayload]:
@@ -140,8 +144,25 @@ class Message(Accessory, Sayable):
         """
         if self.payload is not None:
             return self.__class__.__name__
-        # TODO -> check condition string format
-        return ''
+        room_msg = ''
+        if self.room() is not None:
+            room_msg = f'@👥 {self.room()} : '
+
+        talker_msg = ''
+        if self.talker() is not None:
+            talker_msg = f'🗣 {self.talker()}'
+
+        msg = f'Message #{self.type()} [{room_msg}{talker_msg}]'
+        if self.type() == MessageType.Text or \
+                self.type() == MessageType.Unknown:
+            msg += f'\t {self.text()[:70]}'
+        else:
+            log.warning(
+                'Message toString() for message type: MessageType(%s)',
+                self.type().name
+            )
+
+        return msg
 
     async def say(
             self, text: str,
@@ -191,10 +212,10 @@ class Message(Accessory, Sayable):
         try:
             messages = [cls.load(message_id) for message_id in message_ids]
 
-            # TODO:multi process for load message instance
-            async def load_message(msg: Message):
-                await msg.ready()
-            messages = [await load_message(message) for message in messages]
+            await_ready = [message.ready() for message in messages]
+            # gather the task with parallel method
+            await asyncio.gather(*await_ready)
+
             return list(filter(lambda msg: msg.is_ready(), messages))
         except Exception as e:
             log.error(
