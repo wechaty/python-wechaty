@@ -89,6 +89,16 @@ dist:
 publish:
 	PATH=~/.local/bin:${PATH} twine upload dist/*
 
-.PHONY: demo
-demo:
-	python3 examples/demo.py
+.PHONY: bot
+bot:
+	python3 examples/ding-dong-bot.py
+
+.PHONY: version
+version:
+	@newVersion=$$(awk -F. '{print $$1"."$$2"."$$3+1}' < VERSION) \
+		&& echo $${newVersion} > VERSION \
+		&& echo VERSION = \'$${newVersion}\' > src/version.py \
+		&& git add VERSION src/version.py \
+		&& git commit -m "$${newVersion}" > /dev/null \
+		&& git tag "v$${newVersion}" \
+		&& echo "Bumped version to $${newVersion}"
