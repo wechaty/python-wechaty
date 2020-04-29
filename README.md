@@ -269,6 +269,10 @@ Project created, publish a empty module `wechaty` on PyPI.
 - [Go Wechaty](https://github.com/wechaty/go-wechaty) - Go WeChat Bot SDK for Individual Account
 - [Java Wechaty](https://github.com/wechaty/java-wechaty) - Java WeChat Bot SDK for Individual Account
 
+## Maintainers
+
+1. [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
+
 ## Author
 
 [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
