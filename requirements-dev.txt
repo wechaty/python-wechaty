@@ -7,3 +7,7 @@ pylint-quotes
 pytest
 pytype
 semver
+grpclib
+pyee
+requests
+qrcode
