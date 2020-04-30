@@ -272,6 +272,7 @@ Project created, publish a empty module `wechaty` on PyPI.
 ## Maintainers
 
 1. [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
+1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯鸿)
 
 ## Author
 
