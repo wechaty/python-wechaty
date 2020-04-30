@@ -19,7 +19,7 @@ async def do_some_thing():
     print(friends)
     print('dong some thing')
 
-bot = Wechaty(token='donut-test-user-6005').on('message', message)
+bot = Wechaty(token='your-token-here').on('message', message)
 
 
 async def main():
