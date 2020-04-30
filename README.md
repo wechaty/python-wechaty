@@ -245,7 +245,8 @@ pip3 install wechaty
 
 ### v0.4 (Mar 15, 2020) master
 
-1 Add a friendly exception message for PyPI users. [#24](https://github.com/wechaty/python-wechaty/issues/24)
+1. Add a friendly exception message for PyPI users. [#24](https://github.com/wechaty/python-wechaty/issues/24)
+1. Welcome [@huangaszaq](https://github.com/huangaszaq) for joining the project!
 
 ### v0.1 (Mar 8, 2020)
 
