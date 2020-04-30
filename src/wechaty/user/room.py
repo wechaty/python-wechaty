@@ -31,15 +31,15 @@ from typing import (
 )
 import json
 import logging
-from ..types import Sayable
+from wechaty_puppet import RoomMemberPayload
 from ..accessory import Accessory
+
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
         FileBox,
         RoomQueryFilter,
-        RoomPayload,
-        RoomMemberQueryFilter
+        RoomPayload
     )
     from .contact import Contact
     from .url_link import UrlLink
@@ -58,7 +58,7 @@ def _build_room_query(query: Union[str, RoomQueryFilter] = None) -> RoomQueryFil
     return RoomQueryFilter(query)
 
 
-class Room(Accessory, Sayable):
+class Room(Accessory):
     """
     All wechat rooms(groups) will be encapsulated as a Room.
     """
@@ -69,44 +69,42 @@ class Room(Accessory, Sayable):
         self.room_id = room_id
         self.payload: Optional[RoomPayload] = None
 
-        if self.__class__ is Room:
-            raise Exception('Room class can not be instanciated directly!')
+        # if self.__class__ is Room:
+        #     raise Exception('Room class can not be instanciated directly!')
 
         if self.puppet is None:
             raise Exception(
                 'Room class can not be instanciated without a puppet!')
 
     @classmethod
-    async def create(
-        cls,
-        contacts: List[Contact],
-        topic: str = None) -> Room:
+    async def create(cls, contacts: List[Contact], topic: str) -> Room:
         """
         create room instance
         """
-        if not hasattr(contacts, "__len__"):
+        if not hasattr(contacts, '__len__'):
             raise Exception('contacts should be list type')
         if len(contacts) < 2:
-            raise Exception('contactList need at least 2 contact to create a new room')
+            raise Exception(
+                'contactList need at least 2 contact to create a new room'
+            )
 
         log.info(
-            "Room create <%s, %s>",
-            ",".join([contact.contact_id for contact in contacts]),
+            'Room create <%s, %s>',
+            ','.join([contact.contact_id for contact in contacts]),
             topic
         )
 
         try:
             contact_ids = list(map(lambda x: x.contact_id, contacts))
-            room_id = await cls.get_puppet().room_create(contact_ids, topic)
-            return cls.load(room_id)
+            create_response = await cls.get_puppet().\
+                room_create(contact_ids=contact_ids, topic=topic)
+            return cls.load(room_id=create_response.id)
         except Exception as exception:
             log.error(
-                "Room create error <%s>",
+                'Room create error <%s>',
                 str(exception.args)
             )
-            raise Exception("Room create error")
-
-
+            raise Exception('Room create error')
 
     @classmethod
     async def find_all(
@@ -118,10 +116,8 @@ class Room(Accessory, Sayable):
         :return:
         """
         log.info('Room find_all <%s>', json.dumps(query))
-        room_query = _build_room_query(query)
-        room_ids = await cls.get_puppet().room_search(room_query)
-
-        rooms = [cls.load(room_id) for room_id in room_ids]
+        room_search_response = await cls.get_puppet().room_list()
+        rooms = [cls.load(room_id) for room_id in room_search_response.ids]
 
         room_result = []
         # TODO -> chang to more efficient way
@@ -130,8 +126,9 @@ class Room(Accessory, Sayable):
             try:
                 await room.ready()
                 room_result.append(room)
+            # pylint:disable=W0703
             except Exception as exception:
-                log.warn(
+                log.warning(
                     'Room findAll() room.ready() rejection: %s',
                     exception.args
                 )
@@ -154,26 +151,26 @@ class Room(Accessory, Sayable):
             return None
 
         if len(rooms) > 1:
-            log.warn('Room find() got more than one(%d) result', len(rooms))
+            log.warning('Room find() got more than one(%d) result', len(rooms))
 
         for index, room in enumerate(rooms):
-            valid = await cls.get_puppet().room_validate(room.room_id)
+            # TODO -> room_valid function is not implemented in puppet
+            # this code need to be changed later
+            valid = cls.get_puppet() is None
 
             if valid:
-                log.warn(
+                log.warning(
                     'Room find() confirm room[#%d] with id=%d '
                     'is valid result, return it.',
                     index,
                     room.room_id
                 )
                 return room
-            else:
-                log.info(
-                    'Room find() confirm room[#%d] with id=%d '
-                    'is INVALID result, try next',
-                    index,
-                    room.room_id
-                )
+            log.info(
+                'Room find() confirm room[#%d] with id=%d '
+                'is INVALID result, try next',
+                index,
+                room.room_id)
         log.info('Room find() got %d rooms but no one is valid.', len(rooms))
         return None
 
@@ -215,25 +212,29 @@ class Room(Accessory, Sayable):
         Please not to use `ready()` at the user land.
         """
         if self.is_ready():
-           return
+            return
 
         if force_sync:
-            await self.puppet.room_payload_dirty(self.room_id)
-            await self.puppet.room_member_payload_dirty(self.room_id)
+            pass
+            # TODO -> *_dirty method is not implemented in puppet
+            # await self.puppet.room_payload_dirty(self.room_id)
+            # await self.puppet.room_member_payload_dirty(self.room_id)
 
-        self.payload = self.puppet.room_payload(self.room_id)
+        payload_response = await self.puppet.room_payload(id=self.room_id)
+        self.payload = RoomPayload(payload_response)
 
         if self.payload is None:
             raise Exception('Room Payload can"t be ready')
 
-        member_ids = await self.puppet.room_members(self.room_id)
+        response = await self.puppet.room_member_list(id=self.room_id)
 
         contacts = [
-            self.wechaty.Contact.load(member_id) for member_id in member_ids]
+            self.wechaty.Contact.load(member_id) for member_id in response.member_ids]
 
         for contact in contacts:
             try:
-                contact.ready()
+                await contact.ready()
+            # pylint:disable=W0703
             except Exception as exception:
                 log.error(
                     'Room ready() member.ready() rejection: %s', exception
@@ -242,37 +243,42 @@ class Room(Accessory, Sayable):
     async def say(
             self,
             some_thing: Union[str, Contact, FileBox, MiniProgram, UrlLink],
-            *args
-    ) -> Union[None, Message]:
+            *args) -> Union[None, Message]:
         """
         Room Say(%s, %s)
         """
-        log.info("Room say <%s, %s>", some_thing, args)
-
-        msg_id = None
+        log.info('Room say <%s, %s>', some_thing, args)
 
         # TODO -> if is str: logic should be viewed
-        if isinstance(some_thing, FileBox):
-            msg_id = await self.puppet.message_send_file(
-                self.room_id, some_thing
+        if isinstance(some_thing, str):
+            # TODO -> need to implement mention_ids later
+            text_response = await self.puppet.message_send_text(
+                conversation_id=self.room_id, text=some_thing
             )
+            msg_id = text_response.id
+        elif isinstance(some_thing, FileBox):
+            file_response = await self.puppet.message_send_file(
+                conversation_id=self.room_id, filebox=some_thing.data
+            )
+            msg_id = file_response.id
         elif isinstance(some_thing, Contact):
-            msg_id = await self.puppet.message_send_contact(
-                # pytype: disable=attribute-error
-                self.room_id, some_thing.contact_id
+            contact_response = await self.puppet.message_send_contact(
+                conversation_id=self.room_id, contact_id=some_thing.contact_id
             )
+            msg_id = contact_response.id
         elif isinstance(some_thing, UrlLink):
-            msg_id = await self.puppet.message_send_url(
-                # pytype: disable=attribute-error
-                self.room_id, some_thing.payload
+            url_response = await self.puppet.message_send_url(
+                conversation_id=self.room_id, url_link=some_thing.payload.url
             )
+            msg_id = url_response.id
         elif isinstance(some_thing, MiniProgram):
-            msg_id = await self.puppet.message_send_mini_program(
-                # pytype: disable=attribute-error
-                self.room_id, some_thing.payload
+            # TODO -> mini_program key is not clear
+            mini_program_response = await self.puppet.message_send_mini_program(
+                conversation_id=self.room_id, mini_program=some_thing.thumb_url
             )
+            msg_id = mini_program_response.id
         else:
-            raise Exception('arg unsupported: ' + some_thing)
+            raise Exception('arg unsupported: ', some_thing)
 
         if msg_id is not None:
             msg = self.wechaty.Message.load(msg_id)
@@ -280,13 +286,13 @@ class Room(Accessory, Sayable):
             return msg
         return None
 
-    """
-    TODO -> sayTemplateStringsArray
-    """
+    # '''
+    # TODO -> sayTemplateStringsArray
+    # '''
 
-    """
-    TODO -> Event emit : on
-    """
+    # '''
+    # TODO -> Event emit : on
+    # '''
 
     # async def on(self, event: str, listener: Callable):
 
@@ -296,7 +302,9 @@ class Room(Accessory, Sayable):
         """
         log.info('Room add <%s>', contact)
 
-        await self.puppet.room_add(self.room_id, contact.contact_id)
+        await self.puppet.room_add(
+            id=self.room_id, contact_id=contact.contact_id
+        )
 
     async def delete(self, contact: Contact):
         """
@@ -306,7 +314,9 @@ class Room(Accessory, Sayable):
 
         if contact is None or contact.contact_id is None:
             raise Exception('Contact is none or contact_id not found')
-        await self.puppet.room_delete(self.room_id, contact.contact_id)
+        await self.puppet.room_del(
+            id=self.room_id, contact_id=contact.contact_id
+        )
 
     async def quit(self):
         """
@@ -314,7 +324,7 @@ class Room(Accessory, Sayable):
         """
         log.info('Room quit <%s>', self)
 
-        await self.puppet.room_quit(self.room_id)
+        await self.puppet.room_quit(id=self.room_id)
 
     async def topic(self, new_topic: str = None) -> Optional[str]:
         """
@@ -323,7 +333,7 @@ class Room(Accessory, Sayable):
         log.info('Room topic (%s)', new_topic)
 
         if not self.is_ready():
-            log.warn('Room topic() room not ready')
+            log.warning('Room topic() room not ready')
             raise Exception('Room not ready')
 
         if new_topic is None:
@@ -331,21 +341,29 @@ class Room(Accessory, Sayable):
                 return self.payload.topic
 
             # 获取名称之间的结合
-            member_ids = await self.puppet.room_members(self.room_id)
+            room_member_response = await \
+                self.puppet.room_member_list(id=self.room_id)
             # filter member_ids
-            member_ids = [member_id for member_id in member_ids
-                          if member_id != self.puppet.self_id()]
-            members: List[Contact] = list(
-                map(lambda x: self.wechaty.Contact.load(x), member_ids)
-            )
+            member_ids = [member_id for member_id in
+                          room_member_response.member_ids
+                          if member_id != self.wechaty.contact_id]
+
+            members: List[Contact] = [
+                self.wechaty.Contact.load(member_id)
+                for member_id in member_ids]
+
+            # members: List[Contact] = list(
+            #     map(lambda x: self.wechaty.Contact.load(x), member_ids)
+            # )
             names = [member.name for member in members]
             return ','.join(names)
 
         try:
-            await self.puppet.room_topic(self.room_id, new_topic)
+            await self.puppet.room_topic(id=self.room_id, topic=new_topic)
             return new_topic
+        # pylint:disable=W0703
         except Exception as exception:
-            log.warn(
+            log.warning(
                 'Room topic(newTopic=%s) exception: %s',
                 new_topic,
                 exception
@@ -362,9 +380,9 @@ class Room(Accessory, Sayable):
         log.info('Room announce (%s)', text)
 
         if text is None:
-            announcement = await self.puppet.room_announce(self.room_id)
-            return announcement
-        await self.puppet.room_announce(self.room_id, text)
+            response = await self.puppet.room_announce(id=self.room_id)
+            return response.text
+        await self.puppet.room_announce(id=self.room_id, text=text)
         return None
 
     async def qrcode(self) -> str:
@@ -374,8 +392,8 @@ class Room(Accessory, Sayable):
         scan and join the room.
         """
         log.info('Room qr_code')
-        qr_code_value = await self.puppet.room_qr_code(self.room_id)
-        return qr_code_value
+        response = await self.puppet.room_q_r_code(id=self.room_id)
+        return response.qrcode
 
     async def alias(self, member: Contact) -> Optional[str]:
         """
@@ -383,11 +401,11 @@ class Room(Accessory, Sayable):
         """
         if member is None:
             raise Exception('member can"t be none')
-        member_payload = await self.puppet.room_member_payload(
-            self.room_id,
-            member.contact_id
+        response = await self.puppet.room_member_payload(
+            id=self.room_id, member_id=member.contact_id
         )
-        if member_payload is not None\
+        member_payload = RoomMemberPayload(response)
+        if member_payload is not None \
                 and member_payload.room_alias is not None:
             return member_payload.room_alias
         return None
@@ -397,15 +415,12 @@ class Room(Accessory, Sayable):
         Check if the room has member `contact`, the return is a Promise and
         must be `await`-ed
         """
-        member_ids = await self.puppet.room_members(self.room_id)
-        if member_ids is None:
-            return False
-
-        return contact.contact_id in member_ids
+        response = await self.puppet.room_member_list(id=self.room_id)
+        return contact.contact_id in response.member_ids
 
     async def member_all(
-        self, query: Union[str, RoomQueryFilter] = None
-    ) -> List[Contact]:
+            self,
+            query: Union[str, RoomQueryFilter] = None) -> List[Contact]:
         """
         Find all contacts in a room
         """
@@ -414,9 +429,10 @@ class Room(Accessory, Sayable):
             members = await self.member_list()
             return members
 
-        contact_ids = await self.puppet.room_member_search()
+        response = await self.puppet.room_member_list(id=self.room_id)
         contacts = [
-            self.wechaty.Contact.load(contact_id) for contact_id in contact_ids
+            self.wechaty.Contact.load(contact_id)
+            for contact_id in response.member_ids
         ]
         return contacts
 
@@ -426,21 +442,23 @@ class Room(Accessory, Sayable):
         """
         log.info('Get room <%s> all members', self)
 
-        member_ids = await self.puppet.room_members(self.room_id)
-        if member_ids is None or len(member_ids) < 1:
+        response = await self.puppet.room_member_list(id=self.room_id)
+        if response.member_ids is None or len(response.member_ids) < 1:
             raise Exception(
-                'Room <%s> member not found or room not found',
-                self
+                'Room <%s> member not found or room not found'
+                % self
             )
 
         contacts = [
-            self.wechaty.Contact.load(member_id) for member_id in member_ids]
+            self.wechaty.Contact.load(member_id)
+            for member_id in response.member_ids
+        ]
 
         return contacts
 
     async def member(
-        self, query: Union[str, RoomQueryFilter] = None
-    ) -> Optional[Contact]:
+            self,
+            query: Union[str, RoomQueryFilter] = None) -> Optional[Contact]:
         """
         Find all contacts in a room, if get many, return the first one.
         """
@@ -467,7 +485,7 @@ class Room(Accessory, Sayable):
         """
         get the avatar of the room
         """
-        log.info('Room <%s> avatar', self)
+        log.info('avatar() <%s>', self)
 
-        avatar = await self.puppet.room_avatar(self.room_id)
-        return avatar
+        response = await self.puppet.room_avatar(id=self.room_id)
+        return FileBox.from_data(response.filebox)

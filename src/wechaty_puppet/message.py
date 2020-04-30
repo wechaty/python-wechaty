@@ -20,69 +20,89 @@ limitations under the License.
 """
 from __future__ import annotations
 from enum import Enum
-from typing import List
+from typing import List, Type
 from typing import Optional
 from datetime import datetime
 
+from dataclasses import dataclass
 
-class MessageType(Enum):
-    """
-    doc
-    * - MessageType.Unknown     </br>
-    * - MessageType.Attachment  </br>
-    * - MessageType.Audio       </br>
-    * - MessageType.Contact     </br>
-    * - MessageType.Emoticon    </br>
-    * - MessageType.Image       </br>
-    * - MessageType.Text        </br>
-    * - MessageType.Video       </br>
-    * - MessageType.Url         </br>
-    """
-    Unknown = 0
-    Attachment = 1
-    Audio = 2
-    Contact = 3
-    Emoticon = 4
-    Image = 5
-    Text = 6
-    Video = 7
-    Url = 8
-    Recalled = 9
-    MiniProgram = 10
+from chatie_grpc.wechaty import (
+    MessagePayloadResponse,
+    MessageType
+)
+
+
+# use MessageType of chatie_grpc instead
+
+# class MessageType(Enum):
+#     """
+#     doc
+#     * - MessageType.Unknown     </br>
+#     * - MessageType.Attachment  </br>
+#     * - MessageType.Audio       </br>
+#     * - MessageType.Contact     </br>
+#     * - MessageType.Emoticon    </br>
+#     * - MessageType.Image       </br>
+#     * - MessageType.Text        </br>
+#     * - MessageType.Video       </br>
+#     * - MessageType.Url         </br>
+#     """
+#     Unknown = 0
+#     Attachment = 1
+#     Audio = 2
+#     Contact = 3
+#     Emoticon = 4
+#     Image = 5
+#     Text = 6
+#     Video = 7
+#     Url = 8
+#     Recalled = 9
+#     MiniProgram = 10
 
 
 # pylint: disable=R0903
+@dataclass()
 class MessagePayload:
     """
     doc
     """
-    # pylint: disable=R0913
-    def __init__(
-            self,
-            talker_id: str,
-            text: str,
-            to_id: str = None,
-            room_id: str = None,
-            message_type: MessageType = MessageType.Unknown,
-            mention_ids: List[str] = None):
-        """
-        initialization
+    id: str
+    filename: str
+    text: str
+    timestamp: float
+    type: MessageType
+    from_id: str
+    room_id: str
+    to_id: str
+    mention_ids: List[str]
 
-        :parameter
-        ------------------------------------------------------
-        talker_id:
-            required; talker_id refer to who send the message.
-        text:
-            required; message content
+    @classmethod
+    def from_puppet_response(cls, response: MessagePayloadResponse):
         """
-        self.type: MessageType = message_type
-
-        self.talker_id: str = talker_id
-        self.text: str = text
-        self.to_id: Optional[str] = to_id
-        self.room_id: Optional[str] = room_id
-        self.mention_ids: Optional[List[str]] = mention_ids
-        self.timestamp: datetime = datetime.now()
+        create message payload from puppet response
+        :param response:
+            id: str = betterproto.string_field(1)
+            filename: str = betterproto.string_field(2)
+            text: str = betterproto.string_field(3)
+            timestamp: int = betterproto.uint64_field(4)
+            type: "MessageType" = betterproto.enum_field(5)
+            from_id: str = betterproto.string_field(6)
+            room_id: str = betterproto.string_field(7)
+            to_id: str = betterproto.string_field(8)
+            mention_ids: List[str] = betterproto.string_field(9)
+        :return:
+        """
+        return cls(
+            id=response.id,
+            filename=response.filename,
+            text=response.text,
+            timestamp=response.timestamp,
+            type=response.type,
+            from_id=response.from_id,
+            room_id=response.room_id,
+            to_id=response.to_id,
+            mention_ids=response.mention_ids
+        )
 
 
 # pylint: disable=R0903

@@ -19,8 +19,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
-from wechaty_puppet import MiniProgramPayload
+
 import logging
+
+from chatie_grpc.wechaty import MessageMiniProgramResponse
+from wechaty_puppet import MiniProgramPayload
+
 
 log = logging.getLogger('MiniProgram')
 
@@ -45,16 +49,8 @@ class MiniProgram:
         """
         log.info('MiniProgram created')
         # TODO -> create default mini_program payload
-        default_mini_program = {
-            "app_id": "todo",
-            "description": "todo",
-            "page_path": "todo",
-            "thumb_key": "",
-            "thumb_url": "",
-            "title": "",
-            "user_name": ""
-        }
-        payload = MiniProgramPayload(*default_mini_program)
+        response = MessageMiniProgramResponse()
+        payload = MiniProgramPayload(response)
         return MiniProgram(payload)
 
     @property

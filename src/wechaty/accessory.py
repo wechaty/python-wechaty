@@ -30,7 +30,7 @@ import logging
 
 # pylint:disable=R0401
 if TYPE_CHECKING:
-    from wechaty_puppet import Puppet
+    from chatie_grpc.wechaty import PuppetStub
     from .wechaty import Wechaty
 
 log = logging.getLogger('Accessory')
@@ -42,11 +42,11 @@ class Accessory:
     See: https://github.com/wechaty/wechaty/blob/master/src/accessory.ts
     """
 
-    _puppet: Optional[Puppet] = None
+    _puppet: Optional[PuppetStub] = None
     _wechaty: Optional[Wechaty] = None
 
     @classmethod
-    def set_puppet(cls, new_puppet: Puppet):
+    def set_puppet(cls, new_puppet: PuppetStub):
         """doc"""
         if cls._puppet is not None:
             raise AttributeError('can not set twice')
@@ -60,7 +60,7 @@ class Accessory:
         cls._wechaty = new_wechaty
 
     @classmethod
-    def get_puppet(cls) -> Puppet:
+    def get_puppet(cls) -> PuppetStub:
         """doc"""
         if cls._puppet is None:
             raise AttributeError('puppet not found')
@@ -74,7 +74,7 @@ class Accessory:
         return cls._wechaty
 
     @property
-    def puppet(self) -> Puppet:
+    def puppet(self) -> PuppetStub:
         """doc"""
         if self._puppet is None:
             raise AttributeError('puppet not set')

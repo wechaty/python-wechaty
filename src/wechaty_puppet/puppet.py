@@ -23,6 +23,7 @@ from __future__ import annotations
 from abc import ABC
 from enum import Enum
 from typing import Union, List, Optional
+from chatie_grpc.wechaty import PuppetStub
 
 from .file_box import FileBox
 from .url_link_payload import UrlLinkPayload
@@ -55,13 +56,14 @@ from .mini_program import (
 
 
 # pylint: disable=R0904
-class Puppet(ABC):
+class Puppet:
     """
     puppet interface class
     """
 
-    def __init__(self):
+    def __init__(self, puppet_stub: PuppetStub):
         self.name: str = 'puppet'
+        self.puppet_stub = puppet_stub
 
     # pylint: disable=R0201
     async def message_image(

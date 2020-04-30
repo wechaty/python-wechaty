@@ -6,8 +6,9 @@ from __future__ import annotations
 from typing import (
     Type,
 )
-import requests
 import logging
+import requests
+
 from wechaty_puppet import UrlLinkPayload
 
 log = logging.getLogger('UrlLink')
@@ -35,10 +36,13 @@ class UrlLink:
         """doc"""
         log.info('create url_link for %s', url)
         res = requests.get(url)
-        payload = UrlLinkPayload(
-            title=res.content.__str__(),
-            url='https://github.com/wechaty/',
-        )
+
+        payload = UrlLinkPayload(url)
+        payload.title = res.content.title().decode(encoding='utf-8')
+        payload.url = url
+
+        # TODO -> get description, thumbnail_url of a website
+
         return UrlLink(payload)
 
     def __str__(self):
@@ -46,7 +50,7 @@ class UrlLink:
         UrlLink string format output
         :return:
         """
-        return "UrlLink<%s>" % self.payload.url
+        return 'UrlLink<%s>' % self.payload.url
 
     def title(self) -> str:
         """
@@ -55,16 +59,16 @@ class UrlLink:
         """
         return self.payload.title
 
-    def thumbnail_url(self):
+    def thumbnail_url(self) -> str:
         """
         get thumbnail url
         :return:
         """
         return self.payload.thumbnail_url
 
-    def description(self):
+    def description(self) -> str:
         """
         get description
         :return:
         """
-        self.payload.description
+        return self.payload.description

@@ -1,17 +1,32 @@
-#!/usr/bin/env python3.8
 """doc"""
 import asyncio
-
 from wechaty import Wechaty
+from wechaty.user import Message
+
+
+async def message(msg: Message):
+    """back on message"""
+    print('tick ...')
+    print(bot)
+    from_contact = msg.talker()
+    text = msg.text()
+    if from_contact is not None and text == 'ding':
+        await from_contact.say('dong')
+    print(msg)
+
+
+async def do_some_thing():
+    """do some thing"""
+    friends = await bot.Contact.find_all()
+    print(friends)
+    print('dong some thing')
+
+bot = Wechaty(token='donut-test-user-6005').on('message', message)
 
 
 async def main():
     """doc"""
-    print('hello')
-    await asyncio.sleep(1)
-    print('world')
-    bot = Wechaty()
-    print(await bot.name())
-
+    await bot.start()
+    await do_some_thing()
 
 asyncio.run(main())

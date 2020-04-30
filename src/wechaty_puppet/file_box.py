@@ -13,6 +13,9 @@ class FileBox:
     maintain the file content, which is sended by wechat
     """
 
+    def __init__(self):
+        self.data: str = None
+
     def to_json(self) -> dict:
         """
         dump the file content to json object
@@ -23,6 +26,15 @@ class FileBox:
     async def to_file(self, file_path: str) -> None:
         """
         save the content to the file
+        :return:
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def from_data(cls: Type[FileBox], data: str) -> FileBox:
+        """
+        create filebox from base64string
+        :param data:
         :return:
         """
         raise NotImplementedError

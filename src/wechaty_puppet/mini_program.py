@@ -20,30 +20,29 @@ limitations under the License.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+from chatie_grpc.wechaty import MessageMiniProgramResponse
+
 
 # pylint: disable=R0903
+
+@dataclass
 class MiniProgramPayload:
     """
     mini_program payload
     """
     # pylint: disable=R0913
 
-    def __init__(
-            self,
-            app_id: str,
-            description: str,
-            page_path: str,
-            thumb_key: str,
-            thumb_url: str,
-            title: str,
-            user_name: str):
+    app_id: str
+    description: str
+    page_path: str
+    thumb_key: str
+    thumb_url: str
+    title: str
+    user_name: str
+
+    def __init__(self, response: MessageMiniProgramResponse):
         """
         initialization
         """
-        self.app_id = app_id
-        self.description = description
-        self.page_path = page_path
-        self.thumb_key = thumb_key
-        self.thumb_url = thumb_url
-        self.title = title
-        self.user_name = user_name
+        self.app_id = response.mini_program

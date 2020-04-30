@@ -3,39 +3,37 @@ wechaty-puppet contact module interfaces
 """
 from enum import Enum
 from typing import Optional
+from dataclasses import dataclass
 
 
 # pylint: disable=R0903
-class ContactGender(Enum):
-    """
-    type for contact person
-    """
-    Male = 0
-    Female = 1
-    Unkonwn = 2
+from chatie_grpc.wechaty import (
+    ContactPayloadResponse,
+    ContactGender,
+    ContactType
+)
 
 
 # pylint: disable=R0903
 # pylint: disable=R0902
+@dataclass
 class ContactPayload:
     """
     payload for contact person
     """
-    def __init__(self):
+    def __init__(self, response: ContactPayloadResponse):
         """
         initialization
         """
-        self.name: Optional[str] = None
-        self.alias: Optional[str] = None
-        self.friend: Optional[bool] = None
-        self.start: Optional[bool] = None
-        self.type: ContactType = ContactType.Unkonwn
-        # default value : false
-        self.start: bool = False
-        self.gender: ContactGender = ContactGender.Unkonwn
-        self.province: Optional[str] = None
-        self.city: Optional[str] = None
-        self.weixin: Optional[str] = None
+        self.name: str = response.name
+        self.alias: str = response.alias
+        self.friend: bool = response.friend
+        self.start: bool = response.star
+        self.type: ContactType = response.type
+        self.gender: ContactGender = response.gender
+        self.province: str = response.province
+        self.city: str = response.city
+        self.weixin: str = response.weixin
 
 
 # pylint: disable=R0903
@@ -48,13 +46,3 @@ class ContactQueryFilter:
         initialization
         """
         raise NotImplementedError
-
-
-# pylint: disable=R0903
-class ContactType(Enum):
-    """
-    contact person type
-    """
-    Unkonwn = 0
-    Offical = 1
-    Personal = 2

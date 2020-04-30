@@ -56,13 +56,14 @@ if TYPE_CHECKING:
 log = logging.getLogger('Contact')
 
 
+# pylint:disable=R0904
 class Contact(Accessory):
     """
     contact object
     """
     _pool: Dict[str, Contact] = defaultdict()
 
-    def __init__(self, contact_id: str, *args, **kwargs):
+    def __init__(self, contact_id: str):
         """
         initialization
         """
@@ -79,60 +80,55 @@ class Contact(Accessory):
         return self.contact_id
 
     @classmethod
-    def load(
-            cls        : Type[Contact],
-            contact_id : Optional[str],
-            # *args,
-            # **kwargs,
-    ) -> Contact:
+    def load(cls: Type[Contact], contact_id: Optional[str]) -> Contact:
         """
         load contact by contact_id
         :param contact_id:
         :return: created contact instance
         """
         if contact_id is None:
-            raise AttributeError("contact_id can't be None")
+            raise AttributeError('contact_id can"t be None')
         # create new contact and set to pool
-        if cls is Contact:
-            raise PermissionError(
-                "can't be created from abstract Contact class")
+
+        # if cls is Contact:
+        #     raise PermissionError(
+        #         'can"t be created from abstract Contact class')
 
         if contact_id in cls._pool:
             return cls._pool[contact_id]
 
         # create new contact object
-        new_contact = cls(contact_id)   # , *args, **kwargs)
+        new_contact = cls(contact_id)  # , *args, **kwargs)
         cls._pool[contact_id] = new_contact
         return new_contact
 
     @classmethod
-    async def find(
-            cls   : Type[Contact],
-            query : Union[str, ContactQueryFilter],
-    ):
+    async def find(cls: Type[Contact], query: Union[str, ContactQueryFilter]) \
+            -> Optional[Contact]:
         """
+        find a single target contact
         :param query:
         :return:
         """
-        raise NotImplementedError
+        log.info('find() <%s, %s>', cls, query)
+        contact_list = await cls.find_all(query)
+        if len(contact_list) == 0:
+            return None
+        return contact_list[0]
 
-    async def find_all(
-            self,
-            query: Optional[
-                Union[str, ContactQueryFilter]
-            ] = None
-    ) -> List['Contact']:
+    @classmethod
+    async def find_all(cls: Type[Contact],
+                       query: Optional[Union[str, ContactQueryFilter]] = None
+                       ) -> List[Contact]:
         """
         find all contact friends
         :param query:
         :return:
         """
-        log.info('Contact : <%s> find all, with queries : %s',
-                 self.name,
-                 str(query))
+        log.info('find_all() <%s, %s>', cls, query)
 
-        contact_ids = await self.puppet.contact_search(query)
-        contacts = [Contact.load(contact_id) for contact_id in contact_ids]
+        contact_list_response = await cls.get_puppet().contact_list()
+        contacts = [Contact.load(contact_id) for contact_id in contact_list_response.ids]
 
         # async load
         batch_size = 16
@@ -140,19 +136,27 @@ class Contact(Accessory):
         contacts = contacts[:batch_size * (len(contacts) // batch_size)]
 
         contact_result_list: List[Contact] = []
+
         for contact in contacts:
             try:
-                if isinstance(contact, Contact):
-                    contact.ready()
-                    contact_result_list.append(contact)
-            # pylint : disbale=broad-except
-            except RuntimeError as e:
-                name = ""
-                if isinstance(contact, Contact):
-                    name = contact.name
-                log.info(
-                    'contact<%s> exception : %s',
-                    name, str(e.args))
+                await contact.ready()
+                contact_result_list.append(contact)
+            except RuntimeError as exception:
+                log.info('load contact occur exception: %s', exception.args)
+
+        # for contact in contacts:
+        #     try:
+        #         if isinstance(contact, Contact):
+        #             await contact.ready()
+        #             contact_result_list.append(contact)
+        #     # pylint : disbale=broad-except
+        #     except RuntimeError as e:
+        #         name = ''
+        #         if isinstance(contact, Contact):
+        #             name = contact.name
+        #         log.info(
+        #             'contact<%s> exception : %s',
+        #             name, str(e.args))
 
         return contact_result_list
 
@@ -163,27 +167,30 @@ class Contact(Accessory):
         """
         return self.payload is not None and self.payload.name is not None
 
-    def ready(self):
+    async def ready(self, force_sync: bool = False):
         """
         load contact object from puppet
         :return:
         """
         log.info('load contact %s', self.name)
-        try:
-            self.payload = self.puppet.get_contact_payload(self.contact_id)
-        except Exception as e:
-            log.info("can't load contact %s payload, message : %s",
-                     self.name,
-                     str(e.args))
+        if force_sync or self.is_ready():
+            try:
+                contact_response = await self.puppet.\
+                    contact_payload(id=self.contact_id)
+                self.payload = ContactPayload(contact_response)
+            except IOError as e:
+                log.info('can"t load contact %s payload, message : %s',
+                         self.name,
+                         str(e.args))
 
-            raise AttributeError("can't load contact payload")
+                raise IOError('can"t load contact payload')
 
     def __str__(self):
         """
         get contact string representation
         """
         if self.payload is None:
-            return self.__init__.__name__
+            return 'Contact <{}>'.format(self.contact_id)
 
         if self.payload.name is not None:
             identity = self.payload.name
@@ -195,35 +202,53 @@ class Contact(Accessory):
             identity = 'loading ...'
         return 'Contact <%s>' % identity
 
-    async def say(self, message: Message) -> Optional[Message]:
+    async def say(self,
+                  message: Union[str, Message, Contact, UrlLink]
+                  ) -> Optional[Message]:
         """
         say something
         :param message: message content
         """
-        msg_id = None
         if isinstance(message, str):
             # say text
-            msg_id = await self.puppet.message_send_text(
-                self.contact_id, message)
+            text_response = await self.puppet.message_send_text(
+                conversation_id=self.contact_id,
+                text=message
+            )
+            if text_response.id is None:
+                raise AttributeError('message_send_text response is invalid')
+            msg_id = text_response.id
         elif isinstance(message, Contact):
-            msg_id = await self.puppet.message_send_contact(
-                self.contact_id, message.contact_id
+            message_response = await self.puppet.message_send_contact(
+                conversation_id=self.contact_id,
+                contact_id=message.contact_id
             )
-        elif isinstance(message, FileBox):
-            msg_id = await self.puppet.message_send_file(
-                self.contact_id, message
-            )
+            if message_response.id is None:
+                raise AttributeError(
+                    'message_send_contact response is invalid')
+            msg_id = message_response.id
+        # TODO -> need to impl fileBox
+        # elif isinstance(message, FileBox):
+        #     msg_id = await self.puppet.message_send_file(
+        #         conversation_id=self.contact_id,
+        #         filebox=
+        #     )
         elif isinstance(message, UrlLink):
-            msg_id = await self.puppet.message_send_url(
-                self.contact_id, message.payload
+            # TODO -> need to impl details for UrlLink
+            url_response = await self.puppet.message_send_url(
+                conversation_id=self.contact_id,
+                url_link=message.description()
             )
+            if url_response is None or url_response.id is None:
+                raise Exception('message_send_url response is invalid')
+            msg_id = url_response.id
         # elif isinstance(message, MiniProgram):
         #     msg_id = await self.puppet.message_send_mini_program(
         #         self.contact_id, message.payload)
 
         else:
-            log.info("unsupported tags %s", message)
-            raise RuntimeError("unsupported tags")
+            log.info('unsupported tags %s', message)
+            raise RuntimeError('unsupported tags')
 
         if msg_id is not None:
             msg = self.wechaty.Message.load(msg_id)
@@ -241,36 +266,38 @@ class Contact(Accessory):
             return self.payload.name
         return ''
 
-    async def alias(
-            self,
-            new_alias: Optional[str] = None
-    ) -> Union[None, str]:
+    async def alias(self,
+                    new_alias: Optional[str] = None
+                    ) -> Union[None, str]:
         """
         get/set alias
         """
-        log.info("Contact alias <%s>", new_alias)
+        log.info('Contact alias <%s>', new_alias)
+        if not self.is_ready():
+            await self.ready()
+
         if self.payload is None:
-            raise Exception("Contact payload not found ...")
+            raise Exception('can"t load contact payload <%s>' % self)
 
         if new_alias is None:
+            await self.ready()
             if self.payload.alias is None:
                 return ''
             return self.payload.alias
 
         try:
-            await self.puppet.contact_alias(self.contact_id, new_alias)
-            await self.puppet.contact_payload_dirty(self.contact_id)
-            self.payload = await self.puppet.contact_payload(self.contact_id)
-
+            await self.puppet.contact_alias(id=self.contact_id)
+            await self.ready(force_sync=True)
             if new_alias != self.payload.alias:
                 log.info(
                     'Contact alias(%s) sync with server fail: \
                     set(%s) is not equal to get(%s)',
                     new_alias, new_alias, self.payload.alias)
-        except Exception as e:
+        # pylint:disable=W0703
+        except Exception as exception:
             log.info(
                 'Contact alias(%s) rejected: %s',
-                new_alias, str(e.args))
+                new_alias, str(exception.args))
         return None
 
     def is_friend(self) -> Optional[bool]:
@@ -291,7 +318,7 @@ class Contact(Accessory):
         """
         if self.payload is None:
             return False
-        return self.payload.type == ContactType.Offical
+        return self.payload.type == ContactType.CONTACT_TYPE_OFFICIAL
 
     def is_personal(self) -> bool:
         """
@@ -299,14 +326,14 @@ class Contact(Accessory):
         """
         if self.payload is None:
             return False
-        return self.payload.type == ContactType.Personal
+        return self.payload.type == ContactType.CONTACT_TYPE_PERSONAL
 
     def type(self) -> ContactType:
         """
         get contact type
         """
         if self.payload is None:
-            raise Exception("contact payload not found")
+            raise Exception('contact payload not found')
         return self.payload.type
 
     def start(self) -> Optional[bool]:
@@ -323,7 +350,7 @@ class Contact(Accessory):
         """
         if self.payload is not None:
             return self.payload.gender
-        return ContactGender.Unkonwn
+        return ContactGender.CONTACT_GENDER_UNSPECIFIED
 
     def province(self) -> Optional[str]:
         """
@@ -346,29 +373,35 @@ class Contact(Accessory):
         get the avatar of the account
         """
         try:
-            return await self.puppet.contact_avatar(self.contact_id)
-        except Exception as e:
+            avatar_response = await self.puppet\
+                .contact_avatar(id=self.contact_id)
+            if avatar_response is None or avatar_response.filebox is None:
+                return None
+            return FileBox.from_data(data=avatar_response.filebox)
+        # pylint:disable=W0703
+        except Exception as exception:
             log.error(
-                "load contact avatar error %s",
-                str(e.args))
+                'load contact avatar error %s',
+                str(exception.args))
             return None
 
     async def tags(self) -> List[Tag]:
         """
         Get all tags of contact
         """
-        log.info("load contact tags for %s", self)
+        log.info('load contact tags for %s', self)
         try:
-            contact_ids = await self.puppet.contact_tag_ids(self.contact_id)
+            tag_contact_response = await self.puppet.tag_contact_list(contact_id=self.contact_id)
             tags = [
                 self.wechaty.Tag.load(contact_id)
                 for contact_id
-                in contact_ids]
+                in tag_contact_response.ids]
             return tags
-        except Exception as e:
+        # pylint:disable=W0703
+        except Exception as exception:
             log.error(
-                "load contact tags error %s",
-                str(e.args))
+                'load contact tags error %s',
+                str(exception.args))
             return []
 
     async def sync(self):
@@ -381,7 +414,8 @@ class Contact(Accessory):
         """
         check if it's the self account
         """
-        self_id = self.puppet.self_id()
+        # TODO -> self_id method is not implemented in PuppetStub
+        self_id = self.puppet.contact_self_name()
         if self_id is None:
             return False
         return self.contact_id == self_id

@@ -23,10 +23,11 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from enum import IntEnum
 from typing import (
     Type,
 )
+
+from chatie_grpc.wechaty import ImageType
 
 from wechaty_puppet import FileBox
 
@@ -36,15 +37,6 @@ from ..config import (
 )
 
 log = logging.getLogger('Image')
-
-
-class ImageType(IntEnum):
-    """
-    User Image Type
-    """
-    Thumbnail = 0
-    HD = 1
-    Artwork = 2
 
 
 class Image(Accessory):
@@ -89,27 +81,30 @@ class Image(Accessory):
         docstring
         :return:
         """
-        log.info('thumbnail() for %d', self.id)
-        file_box = await self.puppet \
-            .message_image(self.id, ImageType.Thumbnail)
-        return file_box
+        log.info('thumbnail() for <%d>', self.id)
+        file_box_response = await self.puppet.message_image(
+            id=self.id, type=ImageType.IMAGE_TYPE_THUMBNAIL
+        )
+        return FileBox.from_data(file_box_response.filebox)
 
     async def hd(self) -> FileBox:
         """
         docstring
         :return:
         """
-        log.info('hd() for %d', self.id)
-        file_box = await self.puppet \
-            .message_image(self.id, ImageType.HD)
-        return file_box
+        log.info('hd() for <%d>', self.id)
+        file_box_response = await self.puppet.message_image(
+            id=self.id, type=ImageType.IMAGE_TYPE_HD
+        )
+        return FileBox.from_data(file_box_response.filebox)
 
     async def artwork(self) -> FileBox:
         """
         docstring
         :return:
         """
-        log.info('artwork() for %d', self.id)
-        file_box = await self.puppet \
-            .message_image(self.id, ImageType.Artwork)
-        return file_box
+        log.info('artwork() for <%d>', self.id)
+        file_box_response = await self.puppet.message_image(
+            id=self.id, type=ImageType.IMAGE_TYPE_ARTWORK
+        )
+        return FileBox.from_data(file_box_response.filebox)
