@@ -6,8 +6,6 @@ from wechaty.user import Message
 
 async def message(msg: Message):
     """back on message"""
-    print('tick ...')
-    print(bot)
     from_contact = msg.talker()
     text = msg.text()
     if from_contact is not None and text == 'ding':
