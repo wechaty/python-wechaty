@@ -136,6 +136,11 @@ class MessagePayloadTo:
 
 
 @dataclass
+class EventMessagePayload:
+    message_id: str
+
+
+@dataclass
 class MessagePayload:
     id: str
     mention_ids: List[str]

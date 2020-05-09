@@ -24,6 +24,8 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional
 
+from wechaty_puppet import MessageType
+
 
 class ScanStatus(Enum):
     """
@@ -61,6 +63,14 @@ class EventLogoutPayload(EventPayloadBase):
 @dataclass
 class EventMessagePayload(EventPayloadBase):
     message_id: str
+    type: Optional[str] = None
+    from_id: Optional[str] = None
+    filename: Optional[str] = None
+    text: Optional[str] = None
+    timestamp: Optional[float] = None
+    room_id: Optional[str] = None
+    to_id: Optional[str] = None
+    mention_ids: Optional[List[str]] = None
 
 
 @dataclass

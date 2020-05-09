@@ -29,9 +29,9 @@ class PuppetOptions:
     """
     option to config puppet
     """
+    token: Optional[str] = None
     end_point: Optional[str] = None
     timeout: Optional[str] = None
-    token: Optional[str] = None
 
 
 CHAT_EVENT_DICT = {

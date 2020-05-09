@@ -23,12 +23,15 @@ async def do_some_thing():
 
 
 # puppet_options = PuppetOptions(token='your-token-here')
-hostie_puppet = HostiePuppet(PuppetOptions('your-token-here'), 'hostie-puppet')
-bot = Wechaty(hostie_puppet).on('message', message)
 
+bot: Wechaty = None
 
 async def main():
     """doc"""
+    hostie_puppet = HostiePuppet(PuppetOptions('donut-test-user-6005'),
+                                 'hostie-puppet')
+    global bot
+    bot = Wechaty(hostie_puppet).on('message', message)
     await bot.start()
     await do_some_thing()
 

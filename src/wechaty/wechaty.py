@@ -287,8 +287,9 @@ class Wechaty:
         start wechaty bot
         :return:
         """
-
+        await self.init_puppet()
         await self.init_puppet_event_bridge(self.puppet)
+        await self.puppet.start()
 
     # pylint: disable=R0912,R0915,R0914
     async def init_puppet_event_bridge(self, puppet: Puppet):
@@ -312,11 +313,11 @@ class Wechaty:
 
                 puppet.on('error', error_listener)
 
-            elif event_name == 'heartbeat':
+            elif event_name == 'heart-beat':
                 def heartbeat_listener(payload: EventHeartbeatPayload):
                     self.event_stream.emit('heartbeat', payload.data)
 
-                puppet.on('heartbeat', heartbeat_listener)
+                puppet.on('heart-beat', heartbeat_listener)
 
             elif event_name == 'friendship':
                 async def friendship_listener(payload: EventFriendshipPayload):
@@ -330,6 +331,7 @@ class Wechaty:
             elif event_name == 'login':
                 async def login_listener(payload: EventLoginPayload):
                     # TODO -> should to ContactSelf
+                    log.info('login() <%s>', payload)
                     contact = self.Contact.load(payload.contact_id)
                     await contact.ready()
                     self.emit('login', Contact)

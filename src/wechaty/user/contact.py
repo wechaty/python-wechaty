@@ -174,7 +174,7 @@ class Contact(Accessory):
         :return:
         """
         log.info('load contact %s', self.name)
-        if force_sync or self.is_ready():
+        if force_sync or not self.is_ready():
             try:
                 payload = await self.puppet.contact_payload(
                     self.contact_id)
@@ -374,8 +374,8 @@ class Contact(Accessory):
         """
         log.info('load contact tags for %s', self)
         tag_ids = await self.puppet.tag_contact_list(self.contact_id)
-        tags = [self.wechaty.Tag.load(contact_id)
-                for contact_id in tag_ids]
+        tags = [self.wechaty.Tag.load(tag_id)
+                for tag_id in tag_ids]
         return tags
 
     async def sync(self):

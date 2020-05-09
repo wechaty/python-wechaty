@@ -69,6 +69,7 @@ class ContactPayload:
     name: str
     avatar: str
 
+    address: Optional[str] = None
     alias: Optional[str] = None
     city: Optional[str] = None
     friend: Optional[bool] = None

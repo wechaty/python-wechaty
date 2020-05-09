@@ -109,14 +109,6 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def get_contact_payload(self, contact_id: str) -> ContactPayload:
-        """
-        get
-        :param contact_id:
-        :return:
-        """
-        raise NotImplementedError
-
     async def tag_contact_delete(self, tag_id: str) -> None:
         """
         :return:
