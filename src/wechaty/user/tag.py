@@ -83,10 +83,7 @@ class Tag(Accessory):
         log.info('load tag object %s', tag_id)
         return cls.load(tag_id)
 
-    def delete(
-            self,
-            target: Union[Contact, Favorite] = None,
-    ) -> None:
+    async def delete(self, target: Union[Contact, Favorite] = None):
         """
         remove tag from contact or favorite
         :param target:
@@ -95,33 +92,32 @@ class Tag(Accessory):
         log.info('delete tag %s', self.tag_id)
         #
         if target is None:
-            raise Exception("target param is required")
+            raise Exception('target param is required')
 
         if target is Contact:
-            self.puppet.delete_contact_tag(self.tag_id)
+            await self.puppet.tag_contact_delete(tag_id=self.tag_id)
         elif target is Favorite:
-            self.puppet.delete_favorite_tag(self.tag_id)
+            # TODO -> tag_favorite_delete not implement
+            pass
+            # await self.puppet.tag_contact_delete()
 
-    def add(
-            self,
-            to: Union[Contact, Favorite],
-    ) -> None:
+    async def add(self, to: Union[Contact, Favorite]):
         """
         add tag to contact or favorite
         :param to:
         :return:
         """
         log.info('add tag to %s', str(to))
-        if to is Contact:
-            self.puppet.tag_contact_add(self.tag_id, to.get_id())
-        elif to is Favorite:
-            self.puppet.tag_favorite_add(self.tag_id, to.get_id())
-        # to-do: tag_favorite_add
+        if isinstance(to, Contact):
+            await self.puppet.tag_contact_add(
+                tag_id=self.tag_id, contact_id=to.contact_id
+            )
+        elif isinstance(to, Favorite):
+            # TODO -> tag_favorite_add not implement
+            pass
+            # self.puppet.tag_favorite_add(self.tag_id, to)
 
-    def remove(
-            self,
-            source: Union[Contact, Favorite],
-    ) -> None:
+    def remove(self, source: Union[Contact, Favorite]):
         """
         Remove this tag from Contact/Favorite
 
@@ -131,14 +127,16 @@ class Tag(Accessory):
         :param source:
         :return:
         """
-        log.info("remove tag for %s with %s",
+        log.info('remove tag for %s with %s',
                  self.tag_id,
                  str(source))
         try:
-            if source is isinstance(source, Contact):
-                self.puppet.tag_contact_remove(self.tag_id, source.get_id())
-            # elif source is isinstance(source, Favorite):
-            #     pass
+            if isinstance(source, Contact):
+                self.puppet.tag_contact_remove(
+                    tag_id=self.tag_id, contact_id=source.contact_id)
+            elif isinstance(source, Favorite):
+                # TODO -> tag_favorite_remove not implement
+                pass
         except Exception as e:
             log.info('remove exception %s', str(e.args))
             raise RuntimeError('remove error')

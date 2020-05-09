@@ -25,10 +25,13 @@ clean:
 .PHONY: lint
 lint: pylint pycodestyle flake8 mypy pytype
 
+
+# disable: TODO list temporay
 .PHONY: pylint
 pylint:
 	pylint \
 		--load-plugins pylint_quotes \
+		--disable=W0511 \
 		$(SOURCE_GLOB)
 
 .PHONY: pycodestyle
@@ -52,8 +55,8 @@ mypy:
 
 .PHONE: pytype
 pytype:
-	pytype src/
-	pytype examples/
+	pytype src/ --disable=import-error
+	pytype examples/ --disable=import-error
 
 .PHONY: install
 install:

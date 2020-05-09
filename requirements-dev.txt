@@ -7,3 +7,7 @@ pylint-quotes
 pytest
 pytype==2020.2.20
 semver
+grpclib
+pyee
+requests
+qrcode

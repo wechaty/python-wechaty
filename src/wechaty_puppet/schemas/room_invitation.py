@@ -20,23 +20,23 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 from datetime import datetime
 
 
-# pylint: disable=R0903
 @dataclass
 class RoomInvitationPayload:
     """
     room invitation payload
     """
-    invitation_id: str
+    id: str
     inviter_id: str
     topic: str
-    member_count: int
-
+    timestamp: float
+    avatar: str
+    invitation: str
+    receiver_id: str
     member_ids: List[str]
-    # member_id_list: List[str]
-
+    member_count: int
     date: datetime

@@ -39,7 +39,6 @@ class Favorite:
     """
     def __init__(self, favorite_id: str):
         self.favorite_id = favorite_id
-        raise NotImplementedError
 
     def get_id(self):
         """
@@ -53,12 +52,12 @@ class Favorite:
         """
         get favorite tags
         """
-        # TODO
+        # TODO -> favorite tags
         return []
 
-    async def find_all(self) -> List[Tag]:
+    async def find_all(self):
         """
         get all favorite tags
         """
-        # TODO
-        return []
+        # TODO -> find_all
+        return

@@ -24,38 +24,9 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-# pylint: disable=R0903
-class FriendshipPayload:
-    """
-    friendship payload
-    """
-    def __init__(self):
-        self.type: FriendshipType = FriendshipType.Unknown
-        self.contact_id: str = ''
-        self.hello: str = ''
-
-    @classmethod
-    def from_json(cls, json_str: str) -> FriendshipPayload:
-        """
-        create friendship payload from json string
-        """
-        raise NotImplementedError
-
-
-# pylint: disable=R0903
-class FriendshipType(Enum):
-    """
-    friendship type
-    """
-    Unknown = 0
-    Receive = 1
-    Confirm = 2
-    Verify = 3
-
-
-# pylint: disable=R0903
 @dataclass
-class FriendshipSearchQueryFilter:
-    """
-    friendship search query filter
-    """
+class ImageType(Enum):
+    Unknown = 0
+    Thumbnail = 1
+    HD = 2
+    Artwork = 3

@@ -21,45 +21,16 @@ limitations under the License.
 from __future__ import annotations
 from typing import Optional
 
-
-# pylint: disable=R0903
-class RoomQueryFilter:
-    """
-    query filter for room
-    """
-    def __init__(self, query: str = None):
-        """
-        initialization
-        """
-        self.query: Optional[str] = query
+from dataclasses import dataclass
 
 
-class RoomMemberQueryFilter:
+@dataclass
+class UrlLinkPayload:
     """
-    query filter for room member
+    UrlLinkPayload object
     """
-    def __init__(self):
-        """
-        initialization for RoomMemberQueryFilter
-        """
-        raise NotImplementedError
+    url: str
+    title: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    description: Optional[str] = None
 
-
-class RoomPayload:
-    """
-    room payload
-    """
-    def __init__(self):
-        """
-        initialization for room payload
-        """
-        self.topic: str = None
-        self.owner_id: str = None
-
-
-class RoomMemberPayload:
-    """
-    room member payload
-    """
-    def __init__(self):
-        self.room_alias: str = None
