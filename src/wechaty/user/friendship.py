@@ -29,7 +29,6 @@ import logging
 
 from wechaty_puppet import (
     FriendshipType,
-    FriendshipSearchQueryFilter,
     FriendshipPayload
 )
 
@@ -78,9 +77,8 @@ class Friendship(Accessory, Acceptable):
         return cls(friendship_id)
 
     @classmethod
-    async def search(
-            cls,
-            query_filter: FriendshipSearchQueryFilter) -> Optional[Contact]:
+    async def search(cls, weixin: Optional[str] = None,
+                     phone: Optional[str] = None) -> Optional[Contact]:
         """
         * Search a Friend by phone or weixin.
         *
@@ -88,21 +86,12 @@ class Friendship(Accessory, Acceptable):
         * Remeber not to do this too frequently, or your account
         * may be blocked.
         """
-        log.info('search() <%s, %s>', cls, query_filter)
-
-        if query_filter.weixin is not None:
-            search_response = await cls.get_puppet().friendship_search_weixin(
-                weixin=query_filter.weixin
-            )
-        elif query_filter.phone is not None:
-            search_response = await cls.get_puppet().friendship_search_phone(
-                phone=query_filter.phone
-            )
-        else:
-            raise Exception(
-                'query_filter weixin/phone params should not be none'
-            )
-        contact = cls.get_wechaty().Contact.load(search_response.contact_id)
+        log.info('search() <%s, %s>', cls, weixin, phone)
+        friend_id = await cls.get_puppet().friendship_search(weixin=weixin,
+                                                             phone=phone)
+        if friend_id is None:
+            return None
+        contact = cls.get_wechaty().Contact.load(friend_id)
         await contact.ready()
         return contact
 
@@ -211,6 +200,8 @@ class Friendship(Accessory, Acceptable):
         """
         if self.payload is None:
             raise Exception('payload not found')
+        if self.payload.hello is None:
+            return ''
         return self.payload.hello
 
     def type(self) -> FriendshipType:
@@ -235,17 +226,19 @@ class Friendship(Accessory, Acceptable):
     @classmethod
     async def from_json(
             cls,
-            payload: Union[str, FriendshipPayload]
+            json_data: Union[str, FriendshipPayload]
     ) -> Friendship:
         """
         create friendShip by friendshipJson
         """
-        log.info('from_json() <%s>', payload)
-        if isinstance(payload, str):
-            payload = FriendshipPayload.from_json(payload)
+        log.info('from_json() <%s>', json_data)
+        if isinstance(json_data, str):
+            payload = FriendshipPayload(**json.loads(json_data))
+        else:
+            payload = json_data
 
         await cls.get_puppet().friendship_payload(
-            id=payload.id, payload=json.dumps(payload)
+            friendship_id=payload.id, payload=payload
         )
         friendship = cls.get_wechaty().Friendship.load(payload.contact_id)
         await friendship.ready()

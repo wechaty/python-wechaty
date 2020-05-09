@@ -95,7 +95,7 @@ class Tag(Accessory):
             raise Exception('target param is required')
 
         if target is Contact:
-            await self.puppet.tag_contact_delete(id=self.tag_id)
+            await self.puppet.tag_contact_delete(tag_id=self.tag_id)
         elif target is Favorite:
             # TODO -> tag_favorite_delete not implement
             pass
@@ -110,7 +110,7 @@ class Tag(Accessory):
         log.info('add tag to %s', str(to))
         if isinstance(to, Contact):
             await self.puppet.tag_contact_add(
-                id=self.tag_id, contact_id=to.contact_id
+                tag_id=self.tag_id, contact_id=to.contact_id
             )
         elif isinstance(to, Favorite):
             # TODO -> tag_favorite_add not implement
@@ -133,8 +133,7 @@ class Tag(Accessory):
         try:
             if isinstance(source, Contact):
                 self.puppet.tag_contact_remove(
-                    id=self.tag_id, contact_id=source.contact_id
-                )
+                    tag_id=self.tag_id, contact_id=source.contact_id)
             elif isinstance(source, Favorite):
                 # TODO -> tag_favorite_remove not implement
                 pass

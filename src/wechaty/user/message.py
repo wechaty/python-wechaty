@@ -26,15 +26,13 @@ from typing import (
     TYPE_CHECKING,
 )
 
-from dataclasses import dataclass
 from datetime import datetime
-import json
 import logging
 from wechaty_puppet import (
     MessagePayload,
     MessageQueryFilter,
     MessageType,
-    UrlLinkPayload, MiniProgramPayload)
+)
 
 from ..accessory import Accessory
 
@@ -55,46 +53,7 @@ if TYPE_CHECKING:
 log = logging.getLogger('Message')
 
 
-@dataclass
-class MessageUserQueryFilter:
-    """
-    doc
-    """
-    text: Optional[str] = None
-    room: Optional[Room] = None
-    type: Optional[MessageType] = None
-    talker: Optional[Contact] = None
-    to: Optional[Contact] = None
-
-
-def _convert_message(user_query: MessageUserQueryFilter = None
-                     ) -> Optional[MessageQueryFilter]:
-    """
-    convert wechaty message_user_query_filter
-        to wechaty_puppet message_query_filter
-    """
-    if user_query is None:
-        return None
-
-    query = MessageQueryFilter(text=user_query.text)
-
-    if user_query.room is not None:
-        query.room_id = user_query.room.room_id
-
-    if user_query.talker is not None:
-        query.talker_id = user_query.talker.contact_id
-
-    if user_query.type is not None:
-        query.type = user_query.type
-
-    if user_query.to is not None:
-        query.to_id = user_query.to.contact_id
-
-    return query
-
-
-# pylint: disable=R0903
-# pylint: disable=R0904
+# pylint: disable=R0904,R0903
 class Message(Accessory):
     """
     All wechat messages will be encapsulated as a Message.
@@ -111,7 +70,7 @@ class Message(Accessory):
             self.__class__.__name__,
             message_id)
         self.message_id = message_id
-        self._message_payload: Optional[MessagePayload] = None
+        self._payload: Optional[MessagePayload] = None
 
         # TODO -> check if it's Message class
         if not issubclass(self.__class__, Message):
@@ -127,7 +86,7 @@ class Message(Accessory):
         """
         get message payload
         """
-        return self._message_payload
+        return self._payload
 
     def message_type(self) -> MessageType:
         """
@@ -146,44 +105,71 @@ class Message(Accessory):
         # TODO -> check condition string format
         return ''
 
-    async def say(self, text: str,
-                  reply_to: Union[str, Contact, FileBox, UrlLink, MiniProgram]
-                  ) -> Optional[Message]:
+    async def say(self, msg: Optional[Union[str, Contact, FileBox,
+                                            UrlLink, MiniProgram]] = None,
+                  mention_ids: Optional[List[str]] = None) -> Message:
         """
         send message
         """
-        log.info('say() <%s, %s>', text, reply_to)
-        return None
-        # talker = self.talker()
-        # room = self.room()
-        #
-        # if talker is not None:
-        #     conversation_id = talker.contact_id
-        # elif room is not None:
-        #     conversation_id = room.room_id
-        # else:
-        #     raise Exception('neither room nor from?')
-        #
-        # msg_id = None
-        # if reply_to is str:
-        #     # TODO -> check for the mention_ids in the reply text
-        #     msg_id = await self.puppet.message_send_text(
-        #         conversation_id=conversation_id,
-        #         text=reply_to
-        #     )
-        # raise NotImplementedError
+        log.info('say() <%s>', msg)
+
+        room = self.room()
+        if room is not None:
+            conversation_id = room.room_id
+        else:
+            talker = self.talker()
+            if talker is None:
+                raise ValueError(f'Message must be from room/contact')
+            conversation_id = talker.contact_id
+
+        if isinstance(msg, str):
+            message_id = await self.puppet.message_send_text(
+                conversation_id=conversation_id,
+                message=msg,
+                mention_ids=mention_ids)
+        elif isinstance(msg, Contact):
+            message_id = await self.puppet.message_send_contact(
+                conversation_id=conversation_id, contact_id=msg.contact_id)
+        elif isinstance(msg, FileBox):
+            message_id = await self.puppet.message_send_file(
+                conversation_id=conversation_id, file=msg)
+        elif isinstance(msg, UrlLink):
+            message_id = await self.puppet.message_send_url(
+                conversation_id=conversation_id, url=msg.payload.url)
+        elif isinstance(msg, MiniProgram):
+            message_id = await self.puppet.message_send_mini_program(
+                conversation_id=conversation_id,
+                mini_program=msg.payload)
+        else:
+            raise ValueError(f'message type should be str, '
+                             f'Contact/FileBox/UrlLink/MiniProgram')
+
+        message = self.load(message_id)
+        await message.ready()
+        return message
 
     @classmethod
-    async def find(cls, query: Union[str, MessageUserQueryFilter]
+    async def find(cls, talker_id: Optional[str] = None,
+                   message_id: Optional[str] = None,
+                   room_id: Optional[str] = None,
+                   text: Optional[str] = None,
+                   to_id: Optional[str] = None,
+                   message_type: Optional[MessageType] = None
                    ) -> Optional[Message]:
         """
         Find message in cache
         """
-        log.info('Message find <%s>', json.dumps(query))
-        if isinstance(query, str):
-            query = MessageUserQueryFilter(text=query)
+        log.info('Message find all <%s, %s, %s, <%s, %s, %s>', talker_id,
+                 message_id, room_id, text, to_id, message_type)
 
-        messages = await cls.find_all(query)
+        messages = await cls.find_all(
+            talker_id=talker_id,
+            message_id=message_id,
+            room_id=room_id,
+            text=text,
+            to_id=to_id,
+            message_type=message_type
+        )
         if messages is None or len(messages) < 1:
             return None
 
@@ -194,34 +180,30 @@ class Message(Accessory):
         return messages[0]
 
     @classmethod
-    async def find_all(cls, query: MessageUserQueryFilter = None
+    async def find_all(cls, talker_id: Optional[str] = None,
+                       message_id: Optional[str] = None,
+                       room_id: Optional[str] = None,
+                       text: Optional[str] = None,
+                       to_id: Optional[str] = None,
+                       message_type: Optional[MessageType] = None
                        ) -> List[Message]:
         """
         Find messages in cache
         """
-        log.info('Message find all <%s>', json.dumps(query))
-        return []
+        log.info('Message find all <%s, %s, %s, <%s, %s, %s>', talker_id,
+                 message_id, room_id, text, to_id, message_type)
 
-        # puppet don't implement message_search method
-        # use query_filter to change query filter type
-        # query_filter: Optional[MessageQueryFilter] = None
-        # if query is not None:
-        #     query_filter = _convert_message(query)
-        #
-        # message_ids = await cls.get_puppet().message_payload(query_filter)
-        # try:
-        #     messages = [cls.load(message_id) for message_id in message_ids]
-        #
-        #     # TODO:multi process for load message instance
-        #     async def load_message(msg: Message):
-        #         await msg.ready()
-        #     messages = [await load_message(message) for message in messages]
-        #     return list(filter(lambda msg: msg.is_ready(), messages))
-        # except Exception as e:
-        #     log.error(
-        #         'Message findAll() rejected: %s',
-        #         json.dumps(e.args))
-        #     return []
+        query_filter = MessageQueryFilter(
+            from_id=talker_id,
+            id=message_id,
+            room_id=room_id,
+            text=text,
+            to_id=to_id,
+            type=message_type
+        )
+        message_ids = await cls.get_puppet().message_search(query_filter)
+        messages = [cls.load(message_id) for message_id in message_ids]
+        return messages
 
     def talker(self) -> Optional[Contact]:
         """
@@ -273,7 +255,7 @@ class Message(Accessory):
         """
         Get the recalled message
         """
-        if self.message_type() != MessageType.MESSAGE_TYPE_RECALLED:
+        if self.message_type() != MessageType.Recalled:
             raise Exception(
                 'Can not call toRecalled() on message which is not'
                 ' recalled type.')
@@ -300,8 +282,8 @@ class Message(Accessory):
         Recall a message.
         """
         log.info('Message recall')
-        recall_response = await self.puppet.message_recall(id=self.message_id)
-        return recall_response.success
+        success = await self.puppet.message_recall(self.message_id)
+        return success
 
     @classmethod
     def load(cls, message_id: str) -> Message:
@@ -337,7 +319,7 @@ class Message(Accessory):
         """
         log.info('Message mention_list')
         room = self.room()
-        if self.type() != MessageType.MESSAGE_TYPE_TEXT or room is None:
+        if self.type() != MessageType.Text or room is None:
             return []
 
         # Use mention list if mention list is available
@@ -421,9 +403,7 @@ class Message(Accessory):
         if self.is_ready():
             return
 
-        payload_response = await self.puppet.message_payload(id=self.message_id)
-        self._message_payload = MessagePayload.from_puppet_response(
-            payload_response)
+        self._payload = await self.puppet.message_payload(self.message_id)
 
         if self.payload is None:
             raise Exception('payload not found')
@@ -459,17 +439,16 @@ class Message(Accessory):
                 raise Exception(
                     'expected type is <Room, Contact>, but get <%s>'
                     % to.__class__)
-            # TODO -> can't understand forward function
-            # in order to remove lint tools error
             print(to_id)
-            # forward function is not implemented in puppet
-            # await self.puppet.message_forward(to_id, self.message_id)
+            await self.puppet.message_forward(to_id, self.message_id)
+
         # pylint:disable=W0703
         except Exception as exception:
             log.error(
                 'Message forward error <%s>',
                 exception.args
             )
+            raise exception
 
     def date(self) -> datetime:
         """
@@ -479,7 +458,7 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('payload not found')
 
-        time = datetime.fromtimestamp(self.payload.timestamp)
+        time = datetime.fromtimestamp(self.payload.time_stamp)
         return time
 
     def age(self) -> int:
@@ -496,10 +475,10 @@ class Message(Accessory):
         Extract the Media File from the Message, and put it into the FileBox.
         """
         log.info('Message to FileBox')
-        if self.type() == MessageType.MESSAGE_TYPE_TEXT:
+        if self.type() == MessageType.Text:
             raise Exception('text message can"t convert to FileBox')
-        file_box_response = await self.puppet.message_file(id=self.message_id)
-        return FileBox.from_data(file_box_response.filebox)
+        file_box = await self.puppet.message_file(self.message_id)
+        return file_box
 
     def to_image(self) -> Image:
         """
@@ -508,7 +487,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to Image() for message %s', self.message_id)
-        if self.type() != MessageType.MESSAGE_TYPE_IMAGE:
+        if self.type() != MessageType.Image:
             raise Exception(
                 'current message type: %s, not image type'
                 % self.type()
@@ -518,22 +497,18 @@ class Message(Accessory):
     async def to_contact(self) -> Contact:
         """
         Get Share Card of the Message
-        Extract the Contact Card from the Message, and encapsulate it into Contact class
+        Extract the Contact Card from the Message, and encapsulate it into
+         Contact class
         :return:
         """
         log.info('Message to Contact')
-        if self.type() != MessageType.MESSAGE_TYPE_CONTACT:
+        if self.type() != MessageType.Contact:
             raise Exception(
                 'current message type: %s, not contact type'
                 % self.type()
             )
 
-        contact_response = await self.puppet.message_contact(id=self.message_id)
-        contact_id = contact_response.id
-        if contact_id is None:
-            raise Exception(
-                'can not get Contact id by message: %s'
-                % self.message_id)
+        contact_id = await self.puppet.message_contact(self.message_id)
 
         contact = self.wechaty.Contact.load(contact_id)
         await contact.ready()
@@ -545,13 +520,12 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to UrlLink')
-        if self.type() != MessageType.MESSAGE_TYPE_URL:
+        if self.type() != MessageType.Url:
             raise Exception(
                 'current message type: %s, not url type'
                 % self.type()
             )
-        payload_response = await self.puppet.message_url(id=self.message_id)
-        payload = UrlLinkPayload(payload_response.url_link)
+        payload = await self.puppet.message_url(self.message_id)
         if payload is None:
             raise Exception(
                 'can not get url_link_payload by message: %s'
@@ -568,12 +542,11 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('payload not found')
 
-        if self.type() != MessageType.MESSAGE_TYPE_MINI_PROGRAM:
+        if self.type() != MessageType.MiniProgram:
             raise Exception('not a mini_program type message')
 
-        payload_response = await self.puppet.message_mini_program(
-            id=self.message_id)
-        payload = MiniProgramPayload(payload_response)
+        payload = await self.puppet.message_mini_program(
+            self.message_id)
         if payload is None:
             raise Exception(
                 'no miniProgram payload for message %s'

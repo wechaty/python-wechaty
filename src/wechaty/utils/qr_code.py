@@ -3,8 +3,7 @@
 qr_code helper utils
 """
 import platform
-# mypy:disable=missing-imports
-import qrcode
+import qrcode   # type: ignore
 
 
 def qr_terminal(data: str, version=None):

@@ -37,12 +37,10 @@ class UrlLink:
         log.info('create url_link for %s', url)
         res = requests.get(url)
 
-        payload = UrlLinkPayload(url)
-        payload.title = res.content.title().decode(encoding='utf-8')
-        payload.url = url
-
+        payload = UrlLinkPayload(
+            title=res.content.title().decode("utf-8"),
+            url=url)
         # TODO -> get description, thumbnail_url of a website
-
         return UrlLink(payload)
 
     def __str__(self):
@@ -57,6 +55,8 @@ class UrlLink:
         get UrlLink title
         :return:
         """
+        if self.payload.title is None:
+            return ''
         return self.payload.title
 
     def thumbnail_url(self) -> str:
@@ -64,6 +64,8 @@ class UrlLink:
         get thumbnail url
         :return:
         """
+        if self.payload.thumbnail_url is None:
+            return ''
         return self.payload.thumbnail_url
 
     def description(self) -> str:
@@ -71,4 +73,6 @@ class UrlLink:
         get description
         :return:
         """
+        if self.payload.description is None:
+            return ''
         return self.payload.description

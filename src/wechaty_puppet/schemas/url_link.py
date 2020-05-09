@@ -19,30 +19,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
+from typing import Optional
 
 from dataclasses import dataclass
-from chatie_grpc.wechaty import MessageMiniProgramResponse
 
-
-# pylint: disable=R0903
 
 @dataclass
-class MiniProgramPayload:
+class UrlLinkPayload:
     """
-    mini_program payload
+    UrlLinkPayload object
     """
-    # pylint: disable=R0913
+    url: str
+    title: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    description: Optional[str] = None
 
-    app_id: str
-    description: str
-    page_path: str
-    thumb_key: str
-    thumb_url: str
-    title: str
-    user_name: str
-
-    def __init__(self, response: MessageMiniProgramResponse):
-        """
-        initialization
-        """
-        self.app_id = response.mini_program

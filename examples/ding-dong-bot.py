@@ -2,6 +2,8 @@
 import asyncio
 from wechaty import Wechaty
 from wechaty.user import Message
+from wechaty_puppet import PuppetOptions
+from wechaty_puppet_hostie import HostiePuppet
 
 
 async def message(msg: Message):
@@ -19,7 +21,10 @@ async def do_some_thing():
     print(friends)
     print('dong some thing')
 
-bot = Wechaty(token='your-token-here').on('message', message)
+
+# puppet_options = PuppetOptions(token='your-token-here')
+hostie_puppet = HostiePuppet(PuppetOptions('your-token-here'), 'hostie-puppet')
+bot = Wechaty(hostie_puppet).on('message', message)
 
 
 async def main():

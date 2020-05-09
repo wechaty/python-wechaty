@@ -20,56 +20,54 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from abc import ABC
-from enum import Enum
-from typing import Union, List, Optional
-from chatie_grpc.wechaty import PuppetStub
+from typing import List, Optional
 
-from .file_box import FileBox
-from .url_link_payload import UrlLinkPayload
-from .contact import (
-    ContactQueryFilter,
+from wechaty_puppet.file_box import FileBox
+from wechaty_puppet.schemas.contact import (
     ContactPayload,
 )
-from .friendship import (
-    FriendshipSearchQueryFilter,
+from wechaty_puppet.schemas.friendship import (
     FriendshipPayload
 )
-from .message import (
+from wechaty_puppet.schemas.image import ImageType
+from wechaty_puppet.schemas.message import (
     MessageQueryFilter,
     MessagePayload
 )
-
-from .room import (
+from wechaty_puppet.schemas.mini_program import (
+    MiniProgramPayload
+)
+# pylint: disable=R0904
+from wechaty_puppet.schemas.puppet import PuppetOptions
+from wechaty_puppet.schemas.room import (
     RoomQueryFilter,
     RoomPayload,
     RoomMemberPayload
 )
-
-from .room_invitation import (
+from wechaty_puppet.schemas.room_invitation import (
     RoomInvitationPayload
 )
-
-from .mini_program import (
-    MiniProgramPayload
-)
+from wechaty_puppet.schemas.url_link import UrlLinkPayload
+from wechaty_puppet.state_switch import StateSwitch
 
 
-# pylint: disable=R0904
 class Puppet:
     """
     puppet interface class
+
+    TODO -> StateSwitch schema
+
     """
 
-    def __init__(self, puppet_stub: PuppetStub):
-        self.name: str = 'puppet'
-        self.puppet_stub = puppet_stub
+    def __init__(self, options: PuppetOptions, name: str = 'puppet'):
+        self.name: str = name
+        self.state: StateSwitch = StateSwitch(name)
+        self.options = options
 
-    # pylint: disable=R0201
     async def message_image(
             self,
             message_id: str,
-            image_type: Enum
+            image_type: ImageType
     ) -> FileBox:
         """
         docstring
@@ -79,24 +77,39 @@ class Puppet:
         """
         raise NotImplementedError
 
-    def start(self) -> None:
+    def on(self, event_name: str, caller):
+        """
+        register event on puppet
+        """
+        raise NotImplementedError
+
+    def listener_count(self, event_name: str) -> int:
+        """
+        get the count of a specific event listener
+        """
+        raise NotImplementedError
+
+    async def start(self) -> None:
         """
         start the puppet
         :return:
         """
         raise NotImplementedError
 
-    async def contact_search(
-            self,
-            query: Union[str, ContactQueryFilter] = None):
+    async def stop(self):
         """
-        search
-        :param query:
+        stop the puppet
         :return:
         """
         raise NotImplementedError
 
-    async def get_contact_payload(self, contact_id: str) -> Puppet:
+    async def contact_list(self) -> List[str]:
+        """
+        get all contact list
+        """
+        raise NotImplementedError
+
+    async def get_contact_payload(self, contact_id: str) -> ContactPayload:
         """
         get
         :param contact_id:
@@ -104,13 +117,13 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def delete_contact_tag(self, tag_id: str) -> None:
+    async def tag_contact_delete(self, tag_id: str) -> None:
         """
         :return:
         """
         raise NotImplementedError
 
-    async def delete_favorite_tag(self, tag_id: str) -> None:
+    async def tag_favorite_delete(self, tag_id: str) -> None:
         """
         delete favorite tag from favorite
         """
@@ -139,59 +152,62 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def tag_contact_list(self):
+    async def tag_contact_list(self, contact_id: Optional[str] = None) -> List[str]:
         """
         get tag list
         :return: tag_list
         """
         raise NotImplementedError
 
-    async def message_send_text(self, conversation_id: str, message: str) -> str:
+    async def message_send_text(self, conversation_id: str, message: str,
+                                mention_ids: List[str] = None) -> str:
         """
         send text message
+        :param mention_ids:
         :param conversation_id: person contact_id or room_id
         :param message: message content
-        :return: none
+        :return: message_id
         """
         raise NotImplementedError
 
     async def message_send_contact(
             self,
             contact_id: str,
-            send_contact_id: str) -> str:
+            conversation_id: str) -> str:
         """
         send contact message
+        :param conversation_id:
         :param contact_id: person contact_id
-        :param send_contact_id: been send contact_id
         """
         raise NotImplementedError
 
-    async def message_send_file(self, contact_id: str, file: FileBox) -> str:
+    async def message_send_file(self, conversation_id: str, file: FileBox
+                                ) -> str:
         """
         send file
-        :param contact_id: person contact_id
+        :param conversation_id:
         :param file: filebox instance
         """
         raise NotImplementedError
 
     async def message_send_url(
             self,
-            contact_id: str,
-            url: UrlLinkPayload) -> str:
+            conversation_id: str,
+            url: str) -> str:
         """
         send url
-        :param contact_id: person contact_id
+        :param conversation_id:
         :param url: UrlLink instance
         """
         raise NotImplementedError
 
     async def message_send_mini_program(
             self,
-            contact_id: str,
+            conversation_id: str,
             mini_program: MiniProgramPayload) -> str:
         """
         send mini_program message
-        :param contact_id:
+        :param conversation_id:
         :param mini_program:
         :return:
         """
@@ -262,10 +278,8 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def contact_alias(
-            self,
-            contact_id: str,
-            new_alias: str):
+    async def contact_alias(self, contact_id: str,
+                            alias: Optional[str] = None) -> str:
         """
         set contact alias
         """
@@ -283,7 +297,9 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def contact_avatar(self, contact_id: str) -> FileBox:
+    async def contact_avatar(self, contact_id: str,
+                             file_box: Optional[FileBox] = None
+                             ) -> FileBox:
         """
         get the avatar of the account
         """
@@ -301,9 +317,9 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def friendship_search(
-            self,
-            query_filter: FriendshipSearchQueryFilter) -> Optional[str]:
+    async def friendship_search(self, weixin: Optional[str] = None,
+                                phone: Optional[str] = None
+                                ) -> Optional[str]:
         """
         search friend by query
         :params:
@@ -317,22 +333,30 @@ class Puppet:
         """
         raise NotImplementedError
 
-    def friendship_payload(
+    async def friendship_payload(
             self,
             friendship_id: str,
-            payload: Optional[FriendshipPayload]):
+            payload: Optional[FriendshipPayload] = None) -> FriendshipPayload:
         """
         load friendship payload
         """
         raise NotImplementedError
 
-    def friendship_accept(self, friendship_id: str):
+    async def friendship_accept(self, friendship_id: str):
         """
         accept friendship
         """
         raise NotImplementedError
 
-    async def room_create(self, contact_ids: List[str], topic: str = None):
+    async def room_list(self) -> List[str]:
+        """
+        get room list
+        :return:
+        """
+        raise NotImplementedError
+
+    async def room_create(self, contact_ids: List[str], topic: str = None
+                          ) -> str:
         """
         create room with contact_ids and topic
         """
@@ -344,7 +368,9 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def room_invitation_payload(self, room_invitation_id: str) -> RoomInvitationPayload:
+    async def room_invitation_payload(self, room_invitation_id: str,
+                                      payload: Optional[RoomInvitationPayload]
+                                      = None) -> RoomInvitationPayload:
         """
         get room invitation payload
         """
@@ -374,25 +400,7 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def room_validate(self, room_id: str) -> bool:
-        """
-        check if the room is validate
-        """
-        raise NotImplementedError
-
-    async def room_payload_dirty(self, room_id: str):
-        """
-        reset room dirty status
-        """
-        raise NotImplementedError
-
-    async def room_member_payload_dirty(self, room_id: str):
-        """
-        reset room member payload status
-        """
-        raise NotImplementedError
-
-    async def room_payload(self, room_id: str) -> Union[None, RoomPayload]:
+    async def room_payload(self, room_id: str) -> RoomPayload:
         """
         get room payload
         """
@@ -449,14 +457,6 @@ class Puppet:
             contact_id: str) -> RoomMemberPayload:
         """
         get room member payload
-        """
-        raise NotImplementedError
-
-    async def room_member_search(
-            self,
-            query: RoomMemberPayload = None) -> List[str]:
-        """
-        room member search
         """
         raise NotImplementedError
 

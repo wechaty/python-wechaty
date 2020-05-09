@@ -31,7 +31,8 @@ from typing import (
 )
 import json
 import logging
-from wechaty_puppet import RoomMemberPayload
+from pyee import AsyncIOEventEmitter    # type: ignore
+# from wechaty_puppet import RoomMemberPayload
 from ..accessory import Accessory
 
 
@@ -47,15 +48,6 @@ if TYPE_CHECKING:
     from .message import Message
 
 log = logging.getLogger('Room')
-
-
-def _build_room_query(query: Union[str, RoomQueryFilter] = None) -> RoomQueryFilter:
-    """
-    transfer user custom query data to RoomQueryFilter data
-    """
-    if isinstance(query, RoomQueryFilter):
-        return query
-    return RoomQueryFilter(query)
 
 
 class Room(Accessory):
@@ -75,6 +67,21 @@ class Room(Accessory):
         if self.puppet is None:
             raise Exception(
                 'Room class can not be instanciated without a puppet!')
+
+    _event_stream: AsyncIOEventEmitter = AsyncIOEventEmitter()
+
+    def on(self, event_name: str, func):
+        """
+        listen event for contact
+        event_name:
+        """
+        self._event_stream.on(event_name, func)
+
+    def emit(self, event_name: str, *args, **kwargs):
+        """
+        emit event for a specific
+        """
+        self._event_stream.emit(event_name, *args, **kwargs)
 
     @classmethod
     async def create(cls, contacts: List[Contact], topic: str) -> Room:
@@ -96,9 +103,9 @@ class Room(Accessory):
 
         try:
             contact_ids = list(map(lambda x: x.contact_id, contacts))
-            create_response = await cls.get_puppet().\
+            room_id = await cls.get_puppet().\
                 room_create(contact_ids=contact_ids, topic=topic)
-            return cls.load(room_id=create_response.id)
+            return cls.load(room_id=room_id)
         except Exception as exception:
             log.error(
                 'Room create error <%s>',
@@ -107,17 +114,15 @@ class Room(Accessory):
             raise Exception('Room create error')
 
     @classmethod
-    async def find_all(
-            cls,
-            query: Union[str, RoomQueryFilter] = None) -> List[Room]:
+    async def find_all(cls, room_id: Optional[str] = None,
+                       topic: Optional[str] = None) -> List[Room]:
         """
         find room by query filter
-        :param query:
-        :return:
         """
-        log.info('Room find_all <%s>', json.dumps(query))
-        room_search_response = await cls.get_puppet().room_list()
-        rooms = [cls.load(room_id) for room_id in room_search_response.ids]
+        log.info('Room find_all <%s, %s>', room_id, topic)
+        query_filter = RoomQueryFilter(id=room_id, topic=topic)
+        room_ids = await cls.get_puppet().room_search(query_filter)
+        rooms = [cls.load(room_id) for room_id in room_ids]
 
         room_result = []
         # TODO -> chang to more efficient way
@@ -135,17 +140,15 @@ class Room(Accessory):
         return room_result
 
     @classmethod
-    async def find(
-            cls,
-            query: Union[str, RoomQueryFilter] = None) -> Union[None, Room]:
+    async def find(cls, room_id: Optional[str] = None,
+                   topic: Optional[str] = None) -> Union[None, Room]:
         """
         Try to find a room by filter: {topic: string | RegExp}. If get many,
         return the first one.
-        :return:
         """
-        log.info('Room find <%s>', json.dumps(query))
+        log.info('Room find <%s, %s>', room_id, topic)
 
-        rooms = await cls.find_all(query)
+        rooms = await cls.find_all(room_id, topic)
 
         if rooms is None or len(rooms) < 1:
             return None
@@ -220,16 +223,15 @@ class Room(Accessory):
             # await self.puppet.room_payload_dirty(self.room_id)
             # await self.puppet.room_member_payload_dirty(self.room_id)
 
-        payload_response = await self.puppet.room_payload(id=self.room_id)
-        self.payload = RoomPayload(payload_response)
+        self.payload = await self.puppet.room_payload(self.room_id)
 
         if self.payload is None:
             raise Exception('Room Payload can"t be ready')
 
-        response = await self.puppet.room_member_list(id=self.room_id)
+        member_ids = await self.puppet.room_members(self.room_id)
 
         contacts = [
-            self.wechaty.Contact.load(member_id) for member_id in response.member_ids]
+            self.wechaty.Contact.load(member_id) for member_id in member_ids]
 
         for contact in contacts:
             try:
@@ -240,43 +242,41 @@ class Room(Accessory):
                     'Room ready() member.ready() rejection: %s', exception
                 )
 
-    async def say(
-            self,
-            some_thing: Union[str, Contact, FileBox, MiniProgram, UrlLink],
-            *args) -> Union[None, Message]:
+    async def say(self,
+                  some_thing: Union[str, Contact,
+                                    FileBox, MiniProgram, UrlLink],
+                  mention_ids: List[str]) -> Union[None, Message]:
         """
         Room Say(%s, %s)
         """
-        log.info('Room say <%s, %s>', some_thing, args)
+        log.info('Room say <%s, %s>', some_thing, mention_ids)
 
-        # TODO -> if is str: logic should be viewed
         if isinstance(some_thing, str):
-            # TODO -> need to implement mention_ids later
-            text_response = await self.puppet.message_send_text(
-                conversation_id=self.room_id, text=some_thing
+            msg_id = await self.puppet.message_send_text(
+                conversation_id=self.room_id, message=some_thing,
+                mention_ids=mention_ids
             )
-            msg_id = text_response.id
         elif isinstance(some_thing, FileBox):
-            file_response = await self.puppet.message_send_file(
-                conversation_id=self.room_id, filebox=some_thing.data
+            msg_id = await self.puppet.message_send_file(
+                conversation_id=self.room_id,
+                file=some_thing
             )
-            msg_id = file_response.id
         elif isinstance(some_thing, Contact):
-            contact_response = await self.puppet.message_send_contact(
-                conversation_id=self.room_id, contact_id=some_thing.contact_id
+            msg_id = await self.puppet.message_send_contact(
+                conversation_id=self.room_id,
+                contact_id=some_thing.contact_id
             )
-            msg_id = contact_response.id
         elif isinstance(some_thing, UrlLink):
-            url_response = await self.puppet.message_send_url(
-                conversation_id=self.room_id, url_link=some_thing.payload.url
+            msg_id = await self.puppet.message_send_url(
+                conversation_id=self.room_id,
+                url=some_thing.payload.url
             )
-            msg_id = url_response.id
         elif isinstance(some_thing, MiniProgram):
             # TODO -> mini_program key is not clear
-            mini_program_response = await self.puppet.message_send_mini_program(
-                conversation_id=self.room_id, mini_program=some_thing.thumb_url
+            msg_id = await self.puppet.message_send_mini_program(
+                conversation_id=self.room_id,
+                mini_program=some_thing.payload
             )
-            msg_id = mini_program_response.id
         else:
             raise Exception('arg unsupported: ', some_thing)
 
@@ -302,9 +302,7 @@ class Room(Accessory):
         """
         log.info('Room add <%s>', contact)
 
-        await self.puppet.room_add(
-            id=self.room_id, contact_id=contact.contact_id
-        )
+        await self.puppet.room_add(self.room_id, contact.contact_id)
 
     async def delete(self, contact: Contact):
         """
@@ -314,9 +312,7 @@ class Room(Accessory):
 
         if contact is None or contact.contact_id is None:
             raise Exception('Contact is none or contact_id not found')
-        await self.puppet.room_del(
-            id=self.room_id, contact_id=contact.contact_id
-        )
+        await self.puppet.room_delete(self.room_id, contact.contact_id)
 
     async def quit(self):
         """
@@ -324,7 +320,7 @@ class Room(Accessory):
         """
         log.info('Room quit <%s>', self)
 
-        await self.puppet.room_quit(id=self.room_id)
+        await self.puppet.room_quit(self.room_id)
 
     async def topic(self, new_topic: str = None) -> Optional[str]:
         """
@@ -341,16 +337,19 @@ class Room(Accessory):
                 return self.payload.topic
 
             # 获取名称之间的结合
-            room_member_response = await \
-                self.puppet.room_member_list(id=self.room_id)
+            room_member_ids = await \
+                self.puppet.room_members(self.room_id)
             # filter member_ids
             member_ids = [member_id for member_id in
-                          room_member_response.member_ids
+                          room_member_ids
                           if member_id != self.wechaty.contact_id]
 
             members: List[Contact] = [
                 self.wechaty.Contact.load(member_id)
                 for member_id in member_ids]
+
+            for member in members:
+                await member.ready()
 
             # members: List[Contact] = list(
             #     map(lambda x: self.wechaty.Contact.load(x), member_ids)
@@ -359,7 +358,7 @@ class Room(Accessory):
             return ','.join(names)
 
         try:
-            await self.puppet.room_topic(id=self.room_id, topic=new_topic)
+            await self.puppet.room_topic(self.room_id, new_topic)
             return new_topic
         # pylint:disable=W0703
         except Exception as exception:
@@ -370,30 +369,30 @@ class Room(Accessory):
             )
         return None
 
-    async def announce(self, text: str = None) -> Optional[str]:
+    async def announce(self, announce_text: str = None) -> Optional[str]:
         """
         SET/GET announce from the room
 
         It only works when bot is the owner of the room.
         """
 
-        log.info('Room announce (%s)', text)
+        log.info('Room announce (%s)', announce_text)
 
-        if text is None:
-            response = await self.puppet.room_announce(id=self.room_id)
-            return response.text
-        await self.puppet.room_announce(id=self.room_id, text=text)
+        if announce_text is None:
+            announce = await self.puppet.room_announce(self.room_id)
+            return announce
+        await self.puppet.room_announce(self.room_id, announce_text)
         return None
 
-    async def qrcode(self) -> str:
+    async def qr_code(self) -> str:
         """
         TODO -> need to rewrite this function later
         Get QR Code Value of the Room from the room, which can be used as
         scan and join the room.
         """
-        log.info('Room qr_code')
-        response = await self.puppet.room_q_r_code(id=self.room_id)
-        return response.qrcode
+        log.info('qr_code()')
+        qr_code_str = await self.puppet.room_qr_code(self.room_id)
+        return qr_code_str
 
     async def alias(self, member: Contact) -> Optional[str]:
         """
@@ -401,13 +400,12 @@ class Room(Accessory):
         """
         if member is None:
             raise Exception('member can"t be none')
-        response = await self.puppet.room_member_payload(
-            id=self.room_id, member_id=member.contact_id
-        )
-        member_payload = RoomMemberPayload(response)
-        if member_payload is not None \
-                and member_payload.room_alias is not None:
-            return member_payload.room_alias
+        room_member_payload = await self.puppet.room_member_payload(
+            room_id=self.room_id, contact_id=member.contact_id)
+
+        if room_member_payload is not None \
+                and room_member_payload.room_alias is not None:
+            return room_member_payload.room_alias
         return None
 
     async def has(self, contact: Contact) -> bool:
@@ -415,24 +413,27 @@ class Room(Accessory):
         Check if the room has member `contact`, the return is a Promise and
         must be `await`-ed
         """
-        response = await self.puppet.room_member_list(id=self.room_id)
-        return contact.contact_id in response.member_ids
+        member_ids = await self.puppet.room_members(self.room_id)
+        return contact.contact_id in member_ids
 
     async def member_all(
             self,
             query: Union[str, RoomQueryFilter] = None) -> List[Contact]:
         """
         Find all contacts in a room
+
+        # TODO -> need to refactoring this function
+
         """
         log.info('room member all (%s)', json.dumps(query))
         if query is None:
             members = await self.member_list()
             return members
 
-        response = await self.puppet.room_member_list(id=self.room_id)
+        contact_ids = await self.puppet.room_members(self.room_id)
         contacts = [
             self.wechaty.Contact.load(contact_id)
-            for contact_id in response.member_ids
+            for contact_id in contact_ids
         ]
         return contacts
 
@@ -442,16 +443,10 @@ class Room(Accessory):
         """
         log.info('Get room <%s> all members', self)
 
-        response = await self.puppet.room_member_list(id=self.room_id)
-        if response.member_ids is None or len(response.member_ids) < 1:
-            raise Exception(
-                'Room <%s> member not found or room not found'
-                % self
-            )
-
+        member_ids = await self.puppet.room_members(self.room_id)
         contacts = [
             self.wechaty.Contact.load(member_id)
-            for member_id in response.member_ids
+            for member_id in member_ids
         ]
 
         return contacts
@@ -461,6 +456,9 @@ class Room(Accessory):
             query: Union[str, RoomQueryFilter] = None) -> Optional[Contact]:
         """
         Find all contacts in a room, if get many, return the first one.
+
+        # TODO -> need to refactoring this function
+
         """
         log.info('Room member search <%s>', query)
 
@@ -487,5 +485,5 @@ class Room(Accessory):
         """
         log.info('avatar() <%s>', self)
 
-        response = await self.puppet.room_avatar(id=self.room_id)
-        return FileBox.from_data(response.filebox)
+        avatar = await self.puppet.room_avatar(self.room_id)
+        return avatar
