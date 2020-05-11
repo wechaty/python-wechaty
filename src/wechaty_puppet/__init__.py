@@ -1,6 +1,46 @@
 """
 doc
 """
+
+# message module
+from chatie_grpc.wechaty import (   # type: ignore
+
+    # Message
+    MessageType,
+    MessagePayloadResponse as MessagePayload,
+
+    # Contact
+    ContactGender,
+    ContactType,
+    ContactPayloadResponse as ContactPayload,
+
+    # Message
+    # Friendship
+    FriendshipType,
+    FriendshipPayloadResponse as FriendshipPayload,
+
+    # Room
+    RoomPayloadResponse as RoomPayload,
+    RoomMemberPayloadResponse as RoomMemberPayload,
+
+    # UrlLink
+
+    # RoomInvitation
+    RoomInvitationPayloadResponse as RoomInvitationPayload,
+
+    # Image
+    ImageType,
+
+    # Event
+    EventType,
+
+    # MiniProgram
+
+    # MessageContactResponse,
+    # MessageFileResponse,
+    # MessageImageResponse
+)
+
 from .puppet import (
     Puppet,
     PuppetOptions
@@ -8,36 +48,23 @@ from .puppet import (
 from .file_box import FileBox
 
 from .schemas.message import (
-    MessagePayload,
     MessageQueryFilter,
-    MessageType,
 )
 
 from .schemas.contact import (
-    ContactGender,
-    ContactQueryFilter,
-    ContactType,
-    ContactPayload
+    ContactQueryFilter
 )
 
 from .schemas.friendship import (
-    FriendshipType,
-    FriendshipPayload,
     FriendshipSearchCondition
 )
 
 from .schemas.room import (
     RoomQueryFilter,
-    RoomPayload,
     RoomMemberQueryFilter,
-    RoomMemberPayload,
 )
 
 from .schemas.url_link import UrlLinkPayload
-
-from .schemas.room_invitation import (
-    RoomInvitationPayload
-)
 
 from .schemas.mini_program import MiniProgramPayload
 
@@ -48,11 +75,13 @@ from .schemas.event import (
     EventReadyPayload,
     EventLogoutPayload,
     EventResetPayload,
-    EventPayloadBase,
+
     EventRoomTopicPayload,
     EventRoomLeavePayload,
     EventRoomJoinPayload,
     EventRoomInvitePayload,
+
+
     EventMessagePayload,
     EventHeartbeatPayload,
     EventFriendshipPayload,
@@ -101,7 +130,9 @@ __all__ = [
     'EventRoomJoinPayload',
     'EventRoomLeavePayload',
     'EventRoomTopicPayload',
-    'EventPayloadBase',
-    'EventErrorPayload'
+    'EventErrorPayload',
+
+    'ImageType',
+    'EventType'
 
 ]

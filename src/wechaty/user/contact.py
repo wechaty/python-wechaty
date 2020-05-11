@@ -204,12 +204,14 @@ class Contact(Accessory):
             identity = 'loading ...'
         return 'Contact <%s>' % identity
 
-    async def say(self, message: Union[str, Message, Contact, UrlLink]
+    async def say(self, message: Union[str, Message, FileBox, Contact, UrlLink]
                   ) -> Optional[Message]:
         """
         say something
         :param message: message content
         """
+        if not self.is_ready():
+            await self.ready()
         if isinstance(message, str):
             # say text
             msg_id = await self.puppet.message_send_text(

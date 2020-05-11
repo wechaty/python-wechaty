@@ -1,5 +1,7 @@
+"""
+doc
+"""
 from dataclasses import is_dataclass
-from typing import Type
 
 
 def get_common_attributes(response: dict, payload) -> dict:

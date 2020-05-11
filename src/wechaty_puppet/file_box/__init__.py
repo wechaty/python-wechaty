@@ -2,23 +2,23 @@ from .file_box import FileBox
 
 from .type import (
     FileBoxType,
-    FileBoxQrCodeOptions,
-    FileBoxBase64Options,
-    FileBoxBufferOptions,
-    FileBoxStreamOptions,
+    FileBoxOptionsQrCode,
+    FileBoxOptionsBase64,
+    FileBoxOptionsBuffer,
+    FileBoxOptionsStream,
     FileBoxOptionsBase,
-    FileBoxFileOptions,
-    FileBoxUrlOptions
+    FileBoxOptionsFile,
+    FileBoxOptionsUrl
 )
 
 __all__ = [
     'FileBox',
-    'FileBoxUrlOptions',
-    'FileBoxFileOptions',
+    'FileBoxOptionsUrl',
+    'FileBoxOptionsFile',
     'FileBoxOptionsBase',
-    'FileBoxStreamOptions',
-    'FileBoxBufferOptions',
-    'FileBoxBase64Options',
-    'FileBoxQrCodeOptions',
+    'FileBoxOptionsStream',
+    'FileBoxOptionsBuffer',
+    'FileBoxOptionsBase64',
+    'FileBoxOptionsQrCode',
     'FileBoxType'
 ]

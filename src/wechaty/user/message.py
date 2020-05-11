@@ -40,9 +40,9 @@ from .room import Room
 from .mini_program import MiniProgram
 # TODO -> remove Sayable interface temporary
 # from ..types import Sayable
+from .contact import Contact
 
 if TYPE_CHECKING:
-    from .contact import Contact
     from .url_link import UrlLink
     from .image import Image
 
@@ -205,7 +205,7 @@ class Message(Accessory):
         messages = [cls.load(message_id) for message_id in message_ids]
         return messages
 
-    def talker(self) -> Optional[Contact]:
+    def talker(self) -> Contact:
         """
         get message talker
 
@@ -216,7 +216,7 @@ class Message(Accessory):
             raise Exception('Message payload not found ...')
         talker_id = self.payload.from_id
         if talker_id is None:
-            return None
+            raise ValueError(f'message must be from Contact')
         return self.wechaty.Contact.load(talker_id)
 
     def to(self) -> Optional[Contact]:
@@ -237,7 +237,7 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('Message payload not found ...')
         room_id = self.payload.room_id
-        if room_id is None:
+        if room_id is None or room_id == '':
             return None
         return self.wechaty.Room.load(room_id)
 

@@ -33,15 +33,15 @@ import json
 import logging
 from pyee import AsyncIOEventEmitter    # type: ignore
 # from wechaty_puppet import RoomMemberPayload
+from wechaty_puppet import (
+    FileBox,
+    RoomQueryFilter,
+    RoomPayload
+)
 from ..accessory import Accessory
 
-
 if TYPE_CHECKING:
-    from wechaty_puppet import (
-        FileBox,
-        RoomQueryFilter,
-        RoomPayload
-    )
+
     from .contact import Contact
     from .url_link import UrlLink
     from .mini_program import MiniProgram
@@ -245,7 +245,8 @@ class Room(Accessory):
     async def say(self,
                   some_thing: Union[str, Contact,
                                     FileBox, MiniProgram, UrlLink],
-                  mention_ids: List[str]) -> Union[None, Message]:
+                  mention_ids: Optional[List[str]] = None
+                  ) -> Union[None, Message]:
         """
         Room Say(%s, %s)
         """

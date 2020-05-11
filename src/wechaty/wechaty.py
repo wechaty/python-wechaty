@@ -309,7 +309,8 @@ class Wechaty:
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
                 def error_listener(payload: EventErrorPayload):
-                    self.event_stream.emit('error', payload.data)
+                    print(payload)
+                    self.event_stream.emit('error', payload)
 
                 puppet.on('error', error_listener)
 
