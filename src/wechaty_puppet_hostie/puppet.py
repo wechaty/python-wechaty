@@ -620,8 +620,9 @@ class HostiePuppet(Puppet):
         # data = response.json()
         # if 'ip' not in data or data['ip'] == '0.0.0.0':
         #     raise Exception("can't find hostie server address")
-
+        log.info('init puppet hostie')
         data = {'ip': '40.115.156.60'}
+        log.debug('get puppet ip address : <%s>', data)
 
         channel = Channel(host=data['ip'], port=8788)
         puppet_stub = PuppetStub(channel)
@@ -649,7 +650,9 @@ class HostiePuppet(Puppet):
         #     self.puppet_stub.start(),
         #     loop
         # )
+        log.info('stopping the puppet ...')
         await self.puppet_stub.stop()
+        log.info('starting the puppet ...')
         await self.puppet_stub.start()
         await self._listen_for_event()
         return None
@@ -676,30 +679,36 @@ class HostiePuppet(Puppet):
         listen event from hostie with heartbeat
         """
         # listen event from grpclib
+        log.info('listening the event from the puppet ...')
         async for response in self.puppet_stub.event():
             if response is not None:
+                log.debug('receive event: <%s>', response)
                 payload_data: dict = json.loads(response.payload)
                 if response.type == int(EventType.EVENT_TYPE_SCAN):
+                    log.debug('receiving scan info <%s>', response)
                     # create qr_code
                     payload = EventScanPayload(**payload_data)
                     self._event_stream.emit('scan', payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_DONG):
+                    log.debug('receiving dong info <%s>', response)
                     payload = EventDongPayload(**payload_data)
                     self._event_stream.emit('dong', payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_MESSAGE):
                     # payload = get_message_payload_from_response(response)
+                    log.debug('receiving message info <%s>', response)
                     event_message_payload = EventMessagePayload(
                         message_id=payload_data['messageId'])
                     self._event_stream.emit('message', event_message_payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_HEARTBEAT):
-                    print('heartbeating ...')
+                    log.debug('receving heartbeat info <%s>', response)
                     payload = EventHeartbeatPayload(**payload_data)
                     self._event_stream.emit('heartbeat', payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_ERROR):
+                    log.info('receving error info <%s>', response)
                     payload = EventErrorPayload(**payload_data)
                     self._event_stream.emit('error', payload)
 

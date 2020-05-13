@@ -315,7 +315,7 @@ class Wechaty:
             self._watchdog.on('reset', reset_bot)
             self._watchdog.feed(food)
             while True:
-                print(f'bot tick <{datetime.now()}> ...')
+                log.debug('bot tick <%s>', datetime.now())
                 wait_food = await self._watchdog.sleep()
                 await self.puppet.ding('#ding')
                 if not wait_food:
@@ -324,9 +324,8 @@ class Wechaty:
 
         loop = asyncio.get_event_loop()
         asyncio.run_coroutine_threadsafe(start_watchdog(), loop)
-        print("starting ...")
+        log.info('starting ...')
         await self.puppet.start()
-        print("starting end ...")
 
     async def restart(self):
         """restart the wechaty bot"""
@@ -342,12 +341,9 @@ class Wechaty:
         log.info('init_puppet_event_brideg() <%s>', puppet)
         event_names = PUPPET_EVENT_DICT.keys()
         for event_name in event_names:
-            log.info('initPuppetEventBridge() puppet.on(%s) (listenerCount:%s) '
-                     'registering...',
-                     event_name, puppet.listener_count(event_name))
             if event_name == 'dong':
                 def dong_listener(payload: EventDongPayload):
-                    print('receive dong event ...')
+                    log.info('receive dong event <%s>', payload)
                     self.event_stream.emit('dong', payload.data)
                     # feed food to the dog
                     food = WatchdogFood(timeout=3)
@@ -356,7 +352,7 @@ class Wechaty:
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
                 def error_listener(payload: EventErrorPayload):
-                    print(payload)
+                    log
                     self.event_stream.emit('error', payload)
 
                 puppet.on('error', error_listener)
@@ -502,6 +498,10 @@ class Wechaty:
                 pass
             else:
                 raise ValueError(f'event_name <{event_name}> unsupported!')
+
+            log.info('initPuppetEventBridge() puppet.on(%s) (listenerCount:%s) '
+                     'registering...',
+                     event_name, puppet.listener_count(event_name))
 
     def add_listener_function(self, event: str, listener):
         """add listener function to event emitter"""

@@ -1,15 +1,20 @@
 """doc"""
 import asyncio
 from typing import Optional, Union
-
+import logging
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
 from wechaty_puppet import PuppetOptions, FileBox
 from wechaty_puppet_hostie import HostiePuppet
 
 
+logging.basicConfig(level=logging.INFO, filename='./log.txt')
+log = logging.getLogger("DingDongBot")
+
+
 async def message(msg: Message):
     """back on message"""
+    log.info(msg)
     from_contact = msg.talker()
     text = msg.text()
     room = msg.room()
@@ -25,15 +30,11 @@ async def message(msg: Message):
         #     name='ding-dong.jpg')
         # await conversationer.say(file_box)
 
-    print(msg)
-
 
 async def do_some_thing():
     """do some thing"""
     friends = await bot.Contact.find_all()
-    print(friends)
-    print('dong some thing')
-
+    log.info(friends)
 
 # puppet_options = PuppetOptions(token='your-token-here')
 
@@ -50,16 +51,5 @@ async def main():
     await bot.start()
     await do_some_thing()
 
-
-async def aa():
-    """doc"""
-    await asyncio.sleep(1)
-    print("aaa")
-
-
-async def bb():
-    """doc"""
-    await asyncio.sleep(1)
-    print('bbb')
 
 asyncio.run(main())

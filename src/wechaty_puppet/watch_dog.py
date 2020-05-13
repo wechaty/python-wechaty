@@ -36,7 +36,7 @@ log = logging.getLogger("Watchdog")
 @dataclass
 class WatchdogFood:
     timeout: float
-    type: Optional[Any] = None
+    data: Optional[Any] = None
 
 
 class Watchdog(AsyncIOEventEmitter):
@@ -80,38 +80,36 @@ class Watchdog(AsyncIOEventEmitter):
         self._last_feed = datetime.now()
         self.emit('feed', food, self._last_feed)
 
-    async def sleep(self) -> bool:
+    async def sleep(self):
         """dog can sleep"""
         if self._last_food is not None and self._last_feed is not None:
             await asyncio.sleep(self._last_food.timeout)
-            timeout = (datetime.now() - self._last_feed).seconds
-            if timeout > self.default_timeout:
-                self.emit('reset', self._last_food, self._last_feed)
-                return False
-            else:
-                self.emit('sleep')
-        return True
+            self.emit('sleep', self._last_food, self._last_feed)
+
+    def starved_to_death(self) -> bool:
+        """check the dog health status"""
+        timeout = (datetime.now() - self._last_feed).seconds
+        if timeout > self.default_timeout:
+            self.emit('death', self._last_food, self._last_feed)
+            return True
+        return False
 
 
 async def main():
     """example code of the watchdog"""
-    def dog_food() -> bool:
-        print("can get the food")
-        return True
 
-    food = WatchdogFood(data=dog_food, timeout=1)
+    food = WatchdogFood(data={"food_name": "apple"}, timeout=1)
     dog = Watchdog(3)
 
-    def reset(food, time):
-        print('reset the dog')
-
-    dog.on('reset', reset)
+    dog.on('feed', lambda x,_: print('eating food')). \
+        on('sleep', lambda x,_: print('eat or not, go to sleep')).\
+        on('death', lambda x,_: print('dog is starved to death'))
     dog.feed(food)
     while True:
-        has_no_food = await dog.sleep()
-        print("eating food ...")
-        if has_no_food:
+        await dog.sleep()
+        is_death = dog.starved_to_death()
+        if is_death:
             break
-    print("all done ...")
 
-# asyncio.run(main())
+
+asyncio.run(main())
