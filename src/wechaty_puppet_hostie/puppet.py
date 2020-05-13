@@ -36,7 +36,7 @@ from wechaty_puppet import (
     EventScanPayload,
     EventReadyPayload,
 
-    # EventDongPayload,
+    EventDongPayload,
     EventRoomTopicPayload,
     EventRoomLeavePayload,
     EventRoomJoinPayload,
@@ -662,6 +662,14 @@ class HostiePuppet(Puppet):
         await self.puppet_stub.stop()
         await self.channel.close()
 
+    async def ding(self, data: str = ""):
+        """
+        set the ding event
+        :param data:
+        :return:
+        """
+        await self.puppet_stub.ding(data=data)
+
     # pylint: disable=R0912,R0915
     async def _listen_for_event(self):
         """
@@ -676,9 +684,9 @@ class HostiePuppet(Puppet):
                     payload = EventScanPayload(**payload_data)
                     self._event_stream.emit('scan', payload)
 
-                # elif response.type == int(EventType.EVENT_TYPE_DONG):
-                #     payload = EventDongPayload(**payload_data)
-                #     self._event_stream.emit('dong', payload)
+                elif response.type == int(EventType.EVENT_TYPE_DONG):
+                    payload = EventDongPayload(**payload_data)
+                    self._event_stream.emit('dong', payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_MESSAGE):
                     # payload = get_message_payload_from_response(response)
@@ -687,6 +695,7 @@ class HostiePuppet(Puppet):
                     self._event_stream.emit('message', event_message_payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_HEARTBEAT):
+                    print('heartbeating ...')
                     payload = EventHeartbeatPayload(**payload_data)
                     self._event_stream.emit('heartbeat', payload)
 

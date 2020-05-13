@@ -47,11 +47,12 @@ from ..config import (
 
 # from wechaty.types import Sayable
 # from wechaty.user.mini_program import MiniProgram
-from .message import Message
+
 from .url_link import UrlLink
 
 if TYPE_CHECKING:
     from .tag import Tag
+    from .message import Message
 
 log = logging.getLogger('Contact')
 

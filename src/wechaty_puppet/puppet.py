@@ -77,6 +77,14 @@ class Puppet:
         """
         raise NotImplementedError
 
+    async def ding(self, data: Optional[str] = None):
+        """
+        set the ding event
+        :param data:
+        :return:
+        """
+        raise NotImplementedError
+
     def on(self, event_name: str, caller):
         """
         register event on puppet

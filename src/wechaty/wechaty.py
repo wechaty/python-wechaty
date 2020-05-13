@@ -23,6 +23,8 @@ limitations under the License.
 #   https://docs.python.org/3.7/whatsnew/3.7.html#pep-563-postponed-evaluation-of-annotations
 from __future__ import annotations
 
+import asyncio
+import threading
 import logging
 from datetime import datetime
 from typing import (
@@ -52,6 +54,7 @@ from wechaty_puppet import (
 from wechaty_puppet.schemas.event import ScanStatus
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT
 from wechaty_puppet.state_switch import StateSwitch
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
 from .user import (
     Contact,
     Friendship,
@@ -67,6 +70,8 @@ from .utils import (
 
 log = logging.getLogger('Wechaty')
 log.setLevel(logging.INFO)
+
+DEFAULT_TIMEOUT = 60
 
 
 # pylint: disable=R0903
@@ -118,6 +123,8 @@ class Wechaty:
 
         self.state = StateSwitch()
         self._ready_state = StateSwitch()
+
+        self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
     def __str__(self):
         return 'Wechaty<{0}, {1}>'.format(self.name(), self.contact_id)
@@ -289,6 +296,42 @@ class Wechaty:
         """
         await self.init_puppet()
         await self.init_puppet_event_bridge(self.puppet)
+
+        async def start_watchdog():
+            async def dog_food() -> bool:
+                try:
+                    await self.puppet.ding('ding')
+                    return True
+                except Exception as exception:
+                    log.info('can"t send ding to the bot')
+                return False
+
+            food = WatchdogFood(timeout=3)
+
+            async def reset_bot(food, time):
+                await self.stop()
+                await self.start()
+
+            self._watchdog.on('reset', reset_bot)
+            self._watchdog.feed(food)
+            while True:
+                print(f'bot tick <{datetime.now()}> ...')
+                wait_food = await self._watchdog.sleep()
+                await self.puppet.ding('#ding')
+                if not wait_food:
+                    await self.restart()
+                    break
+
+        loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(start_watchdog(), loop)
+        print("starting ...")
+        await self.puppet.start()
+        print("starting end ...")
+
+    async def restart(self):
+        """restart the wechaty bot"""
+        log.info('restarting the bot ...')
+        await self.puppet.stop()
         await self.puppet.start()
 
     # pylint: disable=R0912,R0915,R0914
@@ -304,7 +347,11 @@ class Wechaty:
                      event_name, puppet.listener_count(event_name))
             if event_name == 'dong':
                 def dong_listener(payload: EventDongPayload):
+                    print('receive dong event ...')
                     self.event_stream.emit('dong', payload.data)
+                    # feed food to the dog
+                    food = WatchdogFood(timeout=3)
+                    self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
