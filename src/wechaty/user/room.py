@@ -228,6 +228,8 @@ class Room(Accessory):
         if self.payload is None:
             raise Exception('Room Payload can"t be ready')
 
+        return
+
         member_ids = await self.puppet.room_members(self.room_id)
 
         contacts = [

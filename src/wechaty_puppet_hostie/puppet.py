@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import logging
 from typing import Optional, List, Tuple
+import requests
 
 from chatie_grpc.wechaty import (  # type: ignore
     PuppetStub,
@@ -605,8 +606,7 @@ class HostiePuppet(Puppet):
     async def room_avatar(self, room_id: str) -> FileBox:
         pass
 
-    @staticmethod
-    def init_puppet() -> Tuple[Channel, PuppetStub]:
+    def init_puppet(self) -> Tuple[Channel, PuppetStub]:
         """
         start puppet channelcontact_self_qr_code
         """
@@ -654,6 +654,7 @@ class HostiePuppet(Puppet):
         await self.puppet_stub.stop()
         log.info('starting the puppet ...')
         await self.puppet_stub.start()
+        log.info('puppet has started ...')
         await self._listen_for_event()
         return None
 
@@ -671,6 +672,7 @@ class HostiePuppet(Puppet):
         :param data:
         :return:
         """
+        log.info('send ding info to hostie ...')
         await self.puppet_stub.ding(data=data)
 
     # pylint: disable=R0912,R0915
@@ -682,7 +684,7 @@ class HostiePuppet(Puppet):
         log.info('listening the event from the puppet ...')
         async for response in self.puppet_stub.event():
             if response is not None:
-                log.debug('receive event: <%s>', response)
+                log.info('receive event: <%s>', response)
                 payload_data: dict = json.loads(response.payload)
                 if response.type == int(EventType.EVENT_TYPE_SCAN):
                     log.debug('receiving scan info <%s>', response)

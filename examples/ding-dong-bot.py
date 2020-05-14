@@ -8,7 +8,7 @@ from wechaty_puppet import PuppetOptions, FileBox
 from wechaty_puppet_hostie import HostiePuppet
 
 
-logging.basicConfig(level=logging.INFO, filename='./log.txt')
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("DingDongBot")
 
 
@@ -44,12 +44,12 @@ bot: Optional[Wechaty] = None
 async def main():
     """doc"""
     token = open('../token.txt').readlines()[0]
+    token = token.replace('\n', '')
     hostie_puppet = HostiePuppet(PuppetOptions(token))
     # pylint: disable=W0603
     global bot
     bot = Wechaty(hostie_puppet).on('message', message)
     await bot.start()
-    await do_some_thing()
 
 
 asyncio.run(main())

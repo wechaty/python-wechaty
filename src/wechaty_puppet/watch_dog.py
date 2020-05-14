@@ -54,11 +54,11 @@ class Watchdog(AsyncIOEventEmitter):
         self.name = name
         self.timer = None
 
-    def on(self, event, f=None) -> Watchdog:
-        """listen for the watchdog event"""
-        log.info('watchdog <%s> <%s> registered', event, f)
-        super().on(event, f)
-        return self
+    # def on(self, event, f=None) -> Watchdog:
+    #     """listen for the watchdog event"""
+    #     log.info('watchdog <%s> <%s> registered', event, f)
+    #     super().on(event, f)
+    #     return self
 
     def _start_timer(self, timeout: int):
         """start the timer to record watchdog"""
@@ -83,6 +83,8 @@ class Watchdog(AsyncIOEventEmitter):
     async def sleep(self):
         """dog can sleep"""
         if self._last_food is not None and self._last_feed is not None:
+            log.debug('sleep at <%s>, last_feed_time: <%s>, timeout: <%>',
+                      datetime.now(), self._last_feed, self.default_timeout)
             await asyncio.sleep(self._last_food.timeout)
             self.emit('sleep', self._last_food, self._last_feed)
 
@@ -112,4 +114,4 @@ async def main():
             break
 
 
-asyncio.run(main())
+# asyncio.run(main())

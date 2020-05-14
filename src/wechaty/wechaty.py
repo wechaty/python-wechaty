@@ -312,13 +312,17 @@ class Wechaty:
                 await self.stop()
                 await self.start()
 
-            self._watchdog.on('reset', reset_bot)
+            async def ask_for_food(last_food, last_feed):
+                log.info('dog ask for food ...')
+                await self.puppet.ding()
+
+            self._watchdog.on('sleep', ask_for_food)
             self._watchdog.feed(food)
             while True:
-                log.debug('bot tick <%s>', datetime.now())
-                wait_food = await self._watchdog.sleep()
-                await self.puppet.ding('#ding')
-                if not wait_food:
+                log.info('bot tick <%s>', datetime.now())
+                await self._watchdog.sleep()
+                is_death = self._watchdog.starved_to_death()
+                if is_death:
                     await self.restart()
                     break
 
@@ -330,8 +334,9 @@ class Wechaty:
     async def restart(self):
         """restart the wechaty bot"""
         log.info('restarting the bot ...')
-        await self.puppet.stop()
-        await self.puppet.start()
+        # await self.puppet.stop()
+        # await self.puppet.start()
+        await self.start()
 
     # pylint: disable=R0912,R0915,R0914
     async def init_puppet_event_bridge(self, puppet: Puppet):
