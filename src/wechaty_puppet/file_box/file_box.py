@@ -27,6 +27,14 @@ from .type import (
     Metadata, FileBoxType)
 
 
+class FileBoxEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return str(obj, encoding='utf-8')
+
+        return json.JSONEncoder.default(self, obj)
+
+
 class FileBox:
     """
     # TODO -> need to implement pipeable
@@ -97,7 +105,8 @@ class FileBox:
         for key in self.__dict__:
             if getattr(self, key) is not None:
                 json_data[key] = getattr(self,key)
-        data = json.dumps(json_data)
+
+        data = json.dumps(json_data, cls=FileBoxEncoder, indent=4)
         return data
 
     def to_file(self, file_path: str) -> None:
