@@ -610,18 +610,17 @@ class HostiePuppet(Puppet):
         """
         start puppet channelcontact_self_qr_code
         """
-        # response = requests.get(
-        #     f'https://api.chatie.io/v0/hosties/{self.options.token}'
-        # )
-        #
-        # if response.status_code != 200:
-        #     raise Exception('hostie server is invalid ... ')
-        #
-        # data = response.json()
-        # if 'ip' not in data or data['ip'] == '0.0.0.0':
-        #     raise Exception("can't find hostie server address")
+        response = requests.get(
+            f'https://api.chatie.io/v0/hosties/{self.options.token}'
+        )
+
+        if response.status_code != 200:
+            raise Exception('hostie server is invalid ... ')
+
+        data = response.json()
+        if 'ip' not in data or data['ip'] == '0.0.0.0':
+            raise Exception("can't find hostie server address")
         log.info('init puppet hostie')
-        data = {'ip': '40.115.156.60'}
         log.debug('get puppet ip address : <%s>', data)
 
         channel = Channel(host=data['ip'], port=8788)
@@ -666,13 +665,13 @@ class HostiePuppet(Puppet):
         await self.puppet_stub.stop()
         await self.channel.close()
 
-    async def ding(self, data: str = ""):
+    async def ding(self, data: Optional[str] = ''):
         """
         set the ding event
         :param data:
         :return:
         """
-        log.info('send ding info to hostie ...')
+        log.debug('send ding info to hostie ...')
         await self.puppet_stub.ding(data=data)
 
     # pylint: disable=R0912,R0915

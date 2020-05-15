@@ -22,13 +22,18 @@ from __future__ import annotations
 
 from typing import List, Optional
 
+from chatie_grpc.wechaty import (   # type: ignore
+    FriendshipPayloadResponse as FriendshipPayload
+)
+
 from wechaty_puppet.file_box import FileBox
 from wechaty_puppet.schemas.contact import (
     ContactPayload,
 )
-from wechaty_puppet.schemas.friendship import (
-    FriendshipPayload
-)
+
+# from wechaty_puppet.schemas.friendship import (
+#     FriendshipPayload
+# )
 from wechaty_puppet.schemas.image import ImageType
 from wechaty_puppet.schemas.message import (
     MessageQueryFilter,

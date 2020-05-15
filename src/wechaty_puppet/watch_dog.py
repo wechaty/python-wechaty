@@ -21,21 +21,20 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
-from asyncio import coroutine
-from collections import Callable
 import logging
+from dataclasses import dataclass
+from datetime import datetime
 from typing import Optional, Any
 
-from pyee import AsyncIOEventEmitter
-from datetime import datetime
-from dataclasses import dataclass
+from pyee import AsyncIOEventEmitter    # type: ignore
 
-log = logging.getLogger("Watchdog")
+log = logging.getLogger('Watchdog')
 
 
 @dataclass
 class WatchdogFood:
-    timeout: float
+    """watchdog food interface"""
+    timeout: int
     data: Optional[Any] = None
 
 
@@ -83,13 +82,15 @@ class Watchdog(AsyncIOEventEmitter):
     async def sleep(self):
         """dog can sleep"""
         if self._last_food is not None and self._last_feed is not None:
-            log.debug('sleep at <%s>, last_feed_time: <%s>, timeout: <%>',
+            log.debug('sleep at <%s>, last_feed_time: <%s>, timeout: <%s>',
                       datetime.now(), self._last_feed, self.default_timeout)
             await asyncio.sleep(self._last_food.timeout)
             self.emit('sleep', self._last_food, self._last_feed)
 
     def starved_to_death(self) -> bool:
         """check the dog health status"""
+        if self._last_feed is None:
+            raise ValueError('dog has not be feed food')
         timeout = (datetime.now() - self._last_feed).seconds
         if timeout > self.default_timeout:
             self.emit('death', self._last_food, self._last_feed)
@@ -100,12 +101,12 @@ class Watchdog(AsyncIOEventEmitter):
 async def main():
     """example code of the watchdog"""
 
-    food = WatchdogFood(data={"food_name": "apple"}, timeout=1)
+    food = WatchdogFood(data={'food_name': 'apple'}, timeout=1)
     dog = Watchdog(3)
 
-    dog.on('feed', lambda x,_: print('eating food')). \
-        on('sleep', lambda x,_: print('eat or not, go to sleep')).\
-        on('death', lambda x,_: print('dog is starved to death'))
+    dog.on('feed', lambda x, _: print('eating food')). \
+        on('sleep', lambda x, _: print('eat or not, go to sleep')).\
+        on('death', lambda x, _: print('dog is starved to death'))
     dog.feed(food)
     while True:
         await dog.sleep()

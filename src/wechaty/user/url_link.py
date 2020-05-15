@@ -50,6 +50,7 @@ class UrlLink:
         """
         return 'UrlLink<%s>' % self.payload.url
 
+    @property
     def title(self) -> str:
         """
         get UrlLink title
@@ -59,6 +60,7 @@ class UrlLink:
             return ''
         return self.payload.title
 
+    @property
     def thumbnail_url(self) -> str:
         """
         get thumbnail url
@@ -68,6 +70,7 @@ class UrlLink:
             return ''
         return self.payload.thumbnail_url
 
+    @property
     def description(self) -> str:
         """
         get description
@@ -76,3 +79,13 @@ class UrlLink:
         if self.payload.description is None:
             return ''
         return self.payload.description
+
+    @property
+    def url(self) -> str:
+        """
+        get url
+        :return:
+        """
+        if self.payload.url is None:
+            return ''
+        return self.payload.url

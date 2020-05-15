@@ -24,7 +24,6 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
-import threading
 import logging
 from datetime import datetime
 from typing import (
@@ -298,22 +297,12 @@ class Wechaty:
         await self.init_puppet_event_bridge(self.puppet)
 
         async def start_watchdog():
-            async def dog_food() -> bool:
-                try:
-                    await self.puppet.ding('ding')
-                    return True
-                except Exception as exception:
-                    log.info('can"t send ding to the bot')
-                return False
 
             food = WatchdogFood(timeout=3)
 
-            async def reset_bot(food, time):
-                await self.stop()
-                await self.start()
-
             async def ask_for_food(last_food, last_feed):
-                log.info('dog ask for food ...')
+                log.debug('dog ask for food <%s> <%s> ...',
+                          last_food, last_feed)
                 await self.puppet.ding()
 
             self._watchdog.on('sleep', ask_for_food)
@@ -357,7 +346,6 @@ class Wechaty:
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
                 def error_listener(payload: EventErrorPayload):
-                    log
                     self.event_stream.emit('error', payload)
 
                 puppet.on('error', error_listener)

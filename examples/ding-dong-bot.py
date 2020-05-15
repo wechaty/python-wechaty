@@ -1,15 +1,15 @@
 """doc"""
 import asyncio
-from typing import Optional, Union
 import logging
+from typing import Optional, Union
+
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
-from wechaty_puppet import PuppetOptions, FileBox
+from wechaty_puppet import PuppetOptions
 from wechaty_puppet_hostie import HostiePuppet
 
-
 logging.basicConfig(level=logging.INFO)
-log = logging.getLogger("DingDongBot")
+log = logging.getLogger('DingDongBot')
 
 
 async def message(msg: Message):
@@ -28,6 +28,11 @@ async def message(msg: Message):
         #     'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/'
         #     'u=1116676390,2305043183&fm=26&gp=0.jpg',
         #     name='ding-dong.jpg')
+        # content = open('log.txt', 'rb').read()
+        # base64_str = base64.b64encode(content)
+        # file_box = FileBox.from_file('ding-dong-icon.png', name='ding-dong.png')
+        # file_box = FileBox.from_base64(base64=base64_str, name='log.txt')
+        # file_box = FileBox.from_base64(base64=base64_str, name='log.txt')
         # await conversationer.say(file_box)
 
 

@@ -38,6 +38,7 @@ from wechaty_puppet import (
     RoomQueryFilter,
     RoomPayload
 )
+# from wechaty.utils import type_check
 from ..accessory import Accessory
 
 if TYPE_CHECKING:
@@ -54,7 +55,7 @@ class Room(Accessory):
     """
     All wechat rooms(groups) will be encapsulated as a Room.
     """
-    _pool: Dict[str, Room] = defaultdict()
+    _pool: Dict[str, 'Room'] = defaultdict()
 
     def __init__(self, room_id: str) -> None:
         """docs"""
@@ -272,10 +273,11 @@ class Room(Accessory):
         elif isinstance(some_thing, UrlLink):
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.room_id,
-                url=some_thing.payload.url
+                url=some_thing.url
             )
         elif isinstance(some_thing, MiniProgram):
             # TODO -> mini_program key is not clear
+            assert some_thing.payload is not None
             msg_id = await self.puppet.message_send_mini_program(
                 conversation_id=self.room_id,
                 mini_program=some_thing.payload
