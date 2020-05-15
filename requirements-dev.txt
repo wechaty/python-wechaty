@@ -11,3 +11,4 @@ grpclib
 pyee
 requests
 qrcode
+betterproto
