@@ -21,14 +21,17 @@ limitations under the License.
 
 from __future__ import annotations
 
+import collections
 from enum import Enum
-import abc
 from dataclasses import dataclass
 
 from typing import (
-    Type,
-    Optional
+    Optional,
+    Any, Dict
 )
+
+
+Metadata = Dict[str, Any]
 
 
 class FileBoxType(Enum):
@@ -57,7 +60,7 @@ class FileBoxOptionsBase:
 
 
 @dataclass
-class FileBoxUrlOptions(FileBoxOptionsBase):
+class FileBoxOptionsUrl(FileBoxOptionsBase):
     """
     url file-box options
     """
@@ -67,16 +70,16 @@ class FileBoxUrlOptions(FileBoxOptionsBase):
 
 
 @dataclass
-class FileBoxFileOptions(FileBoxOptionsBase):
+class FileBoxOptionsFile(FileBoxOptionsBase):
     """
     file file-box options
     """
-    path: str = ''
+    path: Optional[str] = None
     type: FileBoxType = FileBoxType.File
 
 
 @dataclass
-class FileBoxBufferOptions(FileBoxOptionsBase):
+class FileBoxOptionsBuffer(FileBoxOptionsBase):
     """
     file file-box options
     """
@@ -86,7 +89,7 @@ class FileBoxBufferOptions(FileBoxOptionsBase):
 
 
 @dataclass
-class FileBoxStreamOptions(FileBoxOptionsBase):
+class FileBoxOptionsStream(FileBoxOptionsBase):
     """
     stream file-box options
     """
@@ -96,7 +99,7 @@ class FileBoxStreamOptions(FileBoxOptionsBase):
 
 
 @dataclass
-class FileBoxQrCodeOptions(FileBoxOptionsBase):
+class FileBoxOptionsQrCode(FileBoxOptionsBase):
     """
     qr-code file-box options
     """
@@ -105,7 +108,7 @@ class FileBoxQrCodeOptions(FileBoxOptionsBase):
 
 
 @dataclass
-class FileBoxBase64Options(FileBoxOptionsBase):
+class FileBoxOptionsBase64(FileBoxOptionsBase):
     """
     base64 file-box options
     """

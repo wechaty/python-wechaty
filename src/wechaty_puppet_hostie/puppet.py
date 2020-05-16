@@ -20,16 +20,13 @@ limitations under the License.
 """
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
-from typing import Optional, List, Dict, Tuple
-
+from typing import Optional, List, Tuple
 import requests
-from chatie_grpc.wechaty import ImageType as ChatieImageType  # type: ignore
+
 from chatie_grpc.wechaty import (  # type: ignore
     PuppetStub,
-    EventType,
 )
 # pylint: disable=E0401
 from grpclib.client import Channel
@@ -38,32 +35,31 @@ from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty_puppet import (
     EventScanPayload,
-    EventLoginPayload,
-    EventMessagePayload,
     EventReadyPayload,
+
     EventDongPayload,
     EventRoomTopicPayload,
     EventRoomLeavePayload,
     EventRoomJoinPayload,
     EventRoomInvitePayload,
+
+    EventMessagePayload,
     EventLogoutPayload,
+    EventLoginPayload,
     EventFriendshipPayload,
     EventHeartbeatPayload,
     EventErrorPayload,
     EventResetPayload,
     FileBox, RoomMemberPayload, RoomPayload, RoomInvitationPayload,
     RoomQueryFilter, FriendshipPayload, ContactPayload, MessagePayload,
-    MessageQueryFilter)
+    MessageQueryFilter
+)
+from wechaty_puppet import ImageType, EventType
 from wechaty_puppet import Puppet
-from wechaty_puppet.schemas.image import ImageType
 from wechaty_puppet.schemas.mini_program import MiniProgramPayload
 from wechaty_puppet.schemas.puppet import PuppetOptions
 # pylint: disable=R0904
 from wechaty_puppet.schemas.url_link import UrlLinkPayload
-from .contact import get_contact_payload_from_response
-from .message import get_message_payload_from_response
-
-from .utils import get_common_attributes
 
 log = logging.getLogger('HostiePuppet')
 
@@ -104,16 +100,9 @@ class HostiePuppet(Puppet):
         :return:
         """
 
-        image_type_map: Dict[ImageType, ChatieImageType] = {
-            ImageType.Artwork: ChatieImageType.IMAGE_TYPE_ARTWORK,
-            ImageType.Thumbnail: ChatieImageType.IMAGE_TYPE_THUMBNAIL,
-            ImageType.Unknown: ChatieImageType.IMAGE_TYPE_UNSPECIFIED,
-            ImageType.HD: ChatieImageType.IMAGE_TYPE_HD,
-        }
-
         response = await self.puppet_stub.message_image(
             id=message_id,
-            type=image_type_map[image_type])
+            type=image_type)
         if response is None:
             # TODO -> need to refactor the raised error
             raise ValueError('response is invalid')
@@ -247,7 +236,7 @@ class HostiePuppet(Puppet):
         """
         response = await self.puppet_stub.message_send_file(
             conversation_id=conversation_id,
-            filebox=file.to_base64()
+            filebox=file.to_json_str()
         )
         return response.id
 
@@ -305,8 +294,7 @@ class HostiePuppet(Puppet):
         :return:
         """
         response = await self.puppet_stub.message_payload(id=message_id)
-        payload = MessagePayload(**response.to_dict())
-        return payload
+        return response
 
     async def message_forward(self, to_id: str, message_id: str):
         """
@@ -385,8 +373,7 @@ class HostiePuppet(Puppet):
         :return:
         """
         response = await self.puppet_stub.contact_payload(id=contact_id)
-        payload = get_contact_payload_from_response(response)
-        return payload
+        return response
 
     async def contact_avatar(self, contact_id: str,
                              file_box: Optional[FileBox] = None) -> FileBox:
@@ -565,6 +552,8 @@ class HostiePuppet(Puppet):
         :param room_id:
         :return:
         """
+        response = await self.puppet_stub.room_payload(id=room_id)
+        return response
 
     async def room_members(self, room_id: str) -> List[str]:
         """
@@ -572,7 +561,8 @@ class HostiePuppet(Puppet):
         :param room_id:
         :return:
         """
-        return []
+        response = await self.puppet_stub.room_member_list(id=room_id)
+        return response.member_ids
 
     async def room_add(self, room_id: str, contact_id: str):
         pass
@@ -623,12 +613,15 @@ class HostiePuppet(Puppet):
         response = requests.get(
             f'https://api.chatie.io/v0/hosties/{self.options.token}'
         )
+
         if response.status_code != 200:
             raise Exception('hostie server is invalid ... ')
 
         data = response.json()
         if 'ip' not in data or data['ip'] == '0.0.0.0':
             raise Exception("can't find hostie server address")
+        log.info('init puppet hostie')
+        log.debug('get puppet ip address : <%s>', data)
 
         channel = Channel(host=data['ip'], port=8788)
         puppet_stub = PuppetStub(channel)
@@ -656,11 +649,11 @@ class HostiePuppet(Puppet):
         #     self.puppet_stub.start(),
         #     loop
         # )
-        try:
-            await self.puppet_stub.stop()
-        except Exception as exception:
-            pass
+        log.info('stopping the puppet ...')
+        await self.puppet_stub.stop()
+        log.info('starting the puppet ...')
         await self.puppet_stub.start()
+        log.info('puppet has started ...')
         await self._listen_for_event()
         return None
 
@@ -672,79 +665,96 @@ class HostiePuppet(Puppet):
         await self.puppet_stub.stop()
         await self.channel.close()
 
+    async def ding(self, data: Optional[str] = ''):
+        """
+        set the ding event
+        :param data:
+        :return:
+        """
+        log.debug('send ding info to hostie ...')
+        await self.puppet_stub.ding(data=data)
+
     # pylint: disable=R0912,R0915
     async def _listen_for_event(self):
         """
         listen event from hostie with heartbeat
         """
         # listen event from grpclib
+        log.info('listening the event from the puppet ...')
         async for response in self.puppet_stub.event():
             if response is not None:
+                log.info('receive event: <%s>', response)
                 payload_data: dict = json.loads(response.payload)
-                if response.type == EventType.EVENT_TYPE_SCAN.value:
+                if response.type == int(EventType.EVENT_TYPE_SCAN):
+                    log.debug('receiving scan info <%s>', response)
                     # create qr_code
                     payload = EventScanPayload(**payload_data)
                     self._event_stream.emit('scan', payload)
 
-                elif response.type == EventType.EVENT_TYPE_DONG.value:
+                elif response.type == int(EventType.EVENT_TYPE_DONG):
+                    log.debug('receiving dong info <%s>', response)
                     payload = EventDongPayload(**payload_data)
                     self._event_stream.emit('dong', payload)
 
-                elif response.type == EventType.EVENT_TYPE_MESSAGE.value:
-                    payload = get_message_payload_from_response(response)
-                    self._event_stream.emit('message', payload)
+                elif response.type == int(EventType.EVENT_TYPE_MESSAGE):
+                    # payload = get_message_payload_from_response(response)
+                    log.debug('receiving message info <%s>', response)
+                    event_message_payload = EventMessagePayload(
+                        message_id=payload_data['messageId'])
+                    self._event_stream.emit('message', event_message_payload)
 
-                elif response.type == EventType.EVENT_TYPE_HEARTBEAT.value:
+                elif response.type == int(EventType.EVENT_TYPE_HEARTBEAT):
+                    log.debug('receving heartbeat info <%s>', response)
                     payload = EventHeartbeatPayload(**payload_data)
                     self._event_stream.emit('heartbeat', payload)
 
-                elif response.type == EventType.EVENT_TYPE_ERROR.value:
+                elif response.type == int(EventType.EVENT_TYPE_ERROR):
+                    log.info('receving error info <%s>', response)
                     payload = EventErrorPayload(**payload_data)
                     self._event_stream.emit('error', payload)
 
-                elif response.type == EventType.EVENT_TYPE_FRIENDSHIP.value:
+                elif response.type == int(EventType.EVENT_TYPE_FRIENDSHIP):
                     payload = EventFriendshipPayload(**payload_data)
                     self._event_stream.emit('friendship', payload)
 
-                elif response.type == EventType.EVENT_TYPE_ROOM_JOIN.value:
+                elif response.type == int(EventType.EVENT_TYPE_ROOM_JOIN):
                     payload = EventRoomJoinPayload(**payload_data)
                     self._event_stream.emit('room-join', payload)
 
-                elif response.type == EventType.EVENT_TYPE_ROOM_INVITE.value:
+                elif response.type == int(EventType.EVENT_TYPE_ROOM_INVITE):
                     payload = EventRoomInvitePayload(**payload_data)
                     self._event_stream.emit('room-invite', payload)
 
-                elif response.type == EventType.EVENT_TYPE_ROOM_LEAVE.value:
+                elif response.type == int(EventType.EVENT_TYPE_ROOM_LEAVE):
                     payload = EventRoomLeavePayload(**payload_data)
                     self._event_stream.emit('room-leave', payload)
 
-                elif response.type == EventType.EVENT_TYPE_ROOM_TOPIC.value:
+                elif response.type == int(EventType.EVENT_TYPE_ROOM_TOPIC):
                     payload = EventRoomTopicPayload(**payload_data)
                     self._event_stream.emit('room-topic', payload)
 
-                elif response.type == EventType.EVENT_TYPE_ROOM_TOPIC.value:
+                elif response.type == int(EventType.EVENT_TYPE_ROOM_TOPIC):
                     payload = EventRoomTopicPayload(**payload_data)
                     self._event_stream.emit('room-topic', payload)
 
-                elif response.type == EventType.EVENT_TYPE_READY.value:
+                elif response.type == int(EventType.EVENT_TYPE_READY):
                     payload = EventReadyPayload(**payload_data)
                     self._event_stream.emit('ready', payload)
 
-                elif response.type == EventType.EVENT_TYPE_RESET.value:
+                elif response.type == int(EventType.EVENT_TYPE_RESET):
                     payload = EventResetPayload(**payload_data)
                     self._event_stream.emit('reset', payload)
 
-                elif response.type == EventType.EVENT_TYPE_LOGIN.value:
-                    payload = EventLoginPayload(
-                        contact_id=payload_data.get('contactId', None)
-                    )
-                    self._event_stream.emit('login', payload)
+                elif response.type == int(EventType.EVENT_TYPE_LOGIN):
+                    event_login_payload = EventLoginPayload(
+                        contact_id=payload_data['contactId'])
+                    self._event_stream.emit('login', event_login_payload)
 
-                elif response.type == EventType.EVENT_TYPE_LOGOUT.value:
+                elif response.type == int(EventType.EVENT_TYPE_LOGOUT):
                     payload = EventLogoutPayload(
-                        contact_id=payload_data["contactId"]
+                        contact_id=payload_data['contactId']
                     )
                     self._event_stream.emit('logout', payload)
 
-                elif response.type == EventType.EVENT_TYPE_UNSPECIFIED.value:
+                elif response.type == int(EventType.EVENT_TYPE_UNSPECIFIED):
                     pass

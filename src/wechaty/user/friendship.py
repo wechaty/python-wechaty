@@ -23,6 +23,7 @@ from __future__ import annotations
 from typing import (
     Union,
     Optional,
+    TYPE_CHECKING
 )
 import json
 import logging
@@ -31,11 +32,13 @@ from wechaty_puppet import (
     FriendshipType,
     FriendshipPayload
 )
+# from wechaty.utils import type_check
 
 from ..types import Acceptable
 from ..accessory import Accessory
 
-from .contact import Contact
+if TYPE_CHECKING:
+    from .contact import Contact
 
 log = logging.getLogger('FriendShip')
 
@@ -149,8 +152,8 @@ class Friendship(Accessory, Acceptable):
         """
         if not self.is_ready():
             friendship_search_response = await self.puppet.friendship_payload(
-                id=self.friendship_id)
-            self._payload = FriendshipPayload(friendship_search_response)
+                friendship_id=self.friendship_id)
+            self._payload = friendship_search_response
         if self.payload is None:
             raise Exception('can"t not load friendship payload %s'
                             % self.friendship_id)
@@ -178,14 +181,14 @@ class Friendship(Accessory, Acceptable):
                 'accept() need type to be FriendshipType.Receive,'
                 'but it got a " + Friendship.Type[this.payload.type]')
         log.info('friendship accept to %s', self.payload.contact_id)
-        await self.puppet.friendship_accept(id=self.friendship_id)
+        await self.puppet.friendship_accept(friendship_id=self.friendship_id)
         contact = self.contact()
 
         # reset contact data
         try:
             # TODO -> some other logical code
             # do something
-            contact.ready()
+            await contact.ready()
         # pylint:disable=W0703
         except Exception as e:
             log.info(

@@ -2,24 +2,37 @@
 docstring
 """
 from __future__ import annotations
+
+import json
+
 import requests
 import os
 from collections import defaultdict
+import mimetypes
 from typing import (
     Type,
     Optional,
-    Union
+    Union,
+    Dict, Any
 )
 
 from .type import (
-    FileBoxFileOptions,
-    FileBoxUrlOptions,
-    FileBoxStreamOptions,
-    FileBoxBufferOptions,
-    FileBoxQrCodeOptions,
-    FileBoxBase64Options,
-    FileBoxOptionsBase
-)
+    FileBoxOptionsFile,
+    FileBoxOptionsUrl,
+    FileBoxOptionsStream,
+    FileBoxOptionsBuffer,
+    FileBoxOptionsQrCode,
+    FileBoxOptionsBase64,
+    FileBoxOptionsBase,
+    Metadata, FileBoxType)
+
+
+class FileBoxEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return str(obj, encoding='utf-8')
+
+        return json.JSONEncoder.default(self, obj)
 
 
 class FileBox:
@@ -29,31 +42,72 @@ class FileBox:
     """
 
     def __init__(self, options: FileBoxOptionsBase):
-        self.box_type = options.type
+
+
+
+        self.mimeType: Optional[str] = None
+
+        self._metadata: Metadata = defaultdict()
+
         self.name = options.name
+        self.boxType:int = options.type.value[0]
 
-        self.mimi_type: Optional[str] = None
+        if isinstance(options, FileBoxOptionsFile):
+            self.localPath = options.path
 
-        self.options = options
+        elif isinstance(options, FileBoxOptionsBuffer):
+            self.buffer = options.buffer
 
-        self._metadata: dict = defaultdict()
+        elif isinstance(options, FileBoxOptionsUrl):
+            self.remoteUrl = options.url
+            self.headers = options.headers
 
-    def metadata(self, data: Optional[dict] = None) -> dict:
+        elif isinstance(options, FileBoxOptionsStream):
+            # TODO -> need to get into detail for stream sending
+            pass
+
+        elif isinstance(options, FileBoxOptionsQrCode):
+            self.qrCode = options.qr_code
+
+        elif isinstance(options, FileBoxOptionsBase64):
+            self.base64 = options.base64
+
+    @property
+    def metadata(self) -> dict:
         """
-        set/get meta data for file-box
+        get meta data for file-box
         """
-        if data is None:
-            return self._metadata
-        self._metadata.update(data)
         return self._metadata
 
-    @classmethod
-    def to_json(cls) -> dict:
+    @metadata.setter
+    def metadata(self, data: Metadata):
+        """
+        set meta data for file-box
+        :param data:
+        :return:
+        """
+        self._metadata.update(data)
+
+    def type(self) -> FileBoxType:
+        """get filebox type"""
+        return FileBoxType(self.boxType)
+
+    def sync_remote_name(self):
+        """sync remote name"""
+        pass
+
+    def to_json_str(self) -> str:
         """
         dump the file content to json object
         :return:
         """
-        raise NotImplementedError
+        json_data = {}
+        for key in self.__dict__:
+            if getattr(self, key) is not None:
+                json_data[key] = getattr(self,key)
+
+        data = json.dumps(json_data, cls=FileBoxEncoder, indent=4)
+        return data
 
     def to_file(self, file_path: str) -> None:
         """
@@ -67,7 +121,8 @@ class FileBox:
         transfer file-box to base64 string
         :return:
         """
-        raise NotImplementedError
+        # TODO -> need to implement other data format
+        return ''
 
     @classmethod
     def from_url(cls: Type[FileBox], url: str, name: Optional[str],
@@ -79,7 +134,7 @@ class FileBox:
             response = requests.get(url)
             # TODO -> should get the name of the file
             name = response.content.title().decode(encoding='utf-8')
-        options = FileBoxUrlOptions(name=name, url=url, headers=headers)
+        options = FileBoxOptionsUrl(name=name, url=url, headers=headers)
         return cls(options)
 
     @classmethod
@@ -93,7 +148,7 @@ class FileBox:
         if name is None:
             name = os.path.basename(path)
 
-        options = FileBoxFileOptions(name=name, path=path)
+        options = FileBoxOptionsFile(name=name, path=path)
         return cls(options)
 
     @classmethod
@@ -103,7 +158,7 @@ class FileBox:
 
         TODO -> need to implement stream detials
         """
-        options = FileBoxStreamOptions(name=name, stream=stream)
+        options = FileBoxOptionsStream(name=name, stream=stream)
         return cls(options)
 
     @classmethod
@@ -113,7 +168,7 @@ class FileBox:
 
         TODO -> need to implement buffer detials
         """
-        options = FileBoxBufferOptions(name=name, buffer=buffer)
+        options = FileBoxOptionsBuffer(name=name, buffer=buffer)
         return cls(options)
 
     @classmethod
@@ -127,9 +182,9 @@ class FileBox:
         :param name: name the file name of the base64 data
         :return:
         """
-        base64_name = '' if name is None else name
+        base64_name = 'default_file_name' if name is None else name
         # TODO -> file name is required ?
-        options = FileBoxBase64Options(name=base64_name, base64=base64)
+        options = FileBoxOptionsBase64(name=base64_name, base64=base64)
         return FileBox(options)
 
     @classmethod
@@ -137,7 +192,7 @@ class FileBox:
         """
         create file-box from base64 str
         """
-        options = FileBoxQrCodeOptions(name='qrcode.png', qr_code=qr_code)
+        options = FileBoxOptionsQrCode(name='qrcode.png', qr_code=qr_code)
         return cls(options)
 
     @classmethod

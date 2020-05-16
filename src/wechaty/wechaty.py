@@ -23,6 +23,7 @@ limitations under the License.
 #   https://docs.python.org/3.7/whatsnew/3.7.html#pep-563-postponed-evaluation-of-annotations
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import datetime
 from typing import (
@@ -52,6 +53,7 @@ from wechaty_puppet import (
 from wechaty_puppet.schemas.event import ScanStatus
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT
 from wechaty_puppet.state_switch import StateSwitch
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
 from .user import (
     Contact,
     Friendship,
@@ -67,6 +69,8 @@ from .utils import (
 
 log = logging.getLogger('Wechaty')
 log.setLevel(logging.INFO)
+
+DEFAULT_TIMEOUT = 60
 
 
 # pylint: disable=R0903
@@ -118,6 +122,8 @@ class Wechaty:
 
         self.state = StateSwitch()
         self._ready_state = StateSwitch()
+
+        self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
     def __str__(self):
         return 'Wechaty<{0}, {1}>'.format(self.name(), self.contact_id)
@@ -289,7 +295,37 @@ class Wechaty:
         """
         await self.init_puppet()
         await self.init_puppet_event_bridge(self.puppet)
+
+        async def start_watchdog():
+
+            food = WatchdogFood(timeout=3)
+
+            async def ask_for_food(last_food, last_feed):
+                log.debug('dog ask for food <%s> <%s> ...',
+                          last_food, last_feed)
+                await self.puppet.ding()
+
+            self._watchdog.on('sleep', ask_for_food)
+            self._watchdog.feed(food)
+            while True:
+                log.info('bot tick <%s>', datetime.now())
+                await self._watchdog.sleep()
+                is_death = self._watchdog.starved_to_death()
+                if is_death:
+                    await self.restart()
+                    break
+
+        loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(start_watchdog(), loop)
+        log.info('starting ...')
         await self.puppet.start()
+
+    async def restart(self):
+        """restart the wechaty bot"""
+        log.info('restarting the bot ...')
+        # await self.puppet.stop()
+        # await self.puppet.start()
+        await self.start()
 
     # pylint: disable=R0912,R0915,R0914
     async def init_puppet_event_bridge(self, puppet: Puppet):
@@ -299,17 +335,18 @@ class Wechaty:
         log.info('init_puppet_event_brideg() <%s>', puppet)
         event_names = PUPPET_EVENT_DICT.keys()
         for event_name in event_names:
-            log.info('initPuppetEventBridge() puppet.on(%s) (listenerCount:%s) '
-                     'registering...',
-                     event_name, puppet.listener_count(event_name))
             if event_name == 'dong':
                 def dong_listener(payload: EventDongPayload):
+                    log.info('receive dong event <%s>', payload)
                     self.event_stream.emit('dong', payload.data)
+                    # feed food to the dog
+                    food = WatchdogFood(timeout=3)
+                    self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
                 def error_listener(payload: EventErrorPayload):
-                    self.event_stream.emit('error', payload.data)
+                    self.event_stream.emit('error', payload)
 
                 puppet.on('error', error_listener)
 
@@ -454,6 +491,10 @@ class Wechaty:
                 pass
             else:
                 raise ValueError(f'event_name <{event_name}> unsupported!')
+
+            log.info('initPuppetEventBridge() puppet.on(%s) (listenerCount:%s) '
+                     'registering...',
+                     event_name, puppet.listener_count(event_name))
 
     def add_listener_function(self, event: str, listener):
         """add listener function to event emitter"""

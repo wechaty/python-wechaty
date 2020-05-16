@@ -27,6 +27,7 @@ from typing import (
 import logging
 
 if TYPE_CHECKING:
+
     from .tag import Tag
 
 log = logging.getLogger('Favorite')

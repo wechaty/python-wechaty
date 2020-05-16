@@ -33,15 +33,16 @@ import json
 import logging
 from pyee import AsyncIOEventEmitter    # type: ignore
 # from wechaty_puppet import RoomMemberPayload
+from wechaty_puppet import (
+    FileBox,
+    RoomQueryFilter,
+    RoomPayload
+)
+# from wechaty.utils import type_check
 from ..accessory import Accessory
 
-
 if TYPE_CHECKING:
-    from wechaty_puppet import (
-        FileBox,
-        RoomQueryFilter,
-        RoomPayload
-    )
+
     from .contact import Contact
     from .url_link import UrlLink
     from .mini_program import MiniProgram
@@ -54,7 +55,7 @@ class Room(Accessory):
     """
     All wechat rooms(groups) will be encapsulated as a Room.
     """
-    _pool: Dict[str, Room] = defaultdict()
+    _pool: Dict[str, 'Room'] = defaultdict()
 
     def __init__(self, room_id: str) -> None:
         """docs"""
@@ -228,6 +229,8 @@ class Room(Accessory):
         if self.payload is None:
             raise Exception('Room Payload can"t be ready')
 
+        return
+
         member_ids = await self.puppet.room_members(self.room_id)
 
         contacts = [
@@ -245,7 +248,8 @@ class Room(Accessory):
     async def say(self,
                   some_thing: Union[str, Contact,
                                     FileBox, MiniProgram, UrlLink],
-                  mention_ids: List[str]) -> Union[None, Message]:
+                  mention_ids: Optional[List[str]] = None
+                  ) -> Union[None, Message]:
         """
         Room Say(%s, %s)
         """
@@ -269,10 +273,11 @@ class Room(Accessory):
         elif isinstance(some_thing, UrlLink):
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.room_id,
-                url=some_thing.payload.url
+                url=some_thing.url
             )
         elif isinstance(some_thing, MiniProgram):
             # TODO -> mini_program key is not clear
+            assert some_thing.payload is not None
             msg_id = await self.puppet.message_send_mini_program(
                 conversation_id=self.room_id,
                 mini_program=some_thing.payload

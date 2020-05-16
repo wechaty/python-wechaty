@@ -7,9 +7,11 @@ from typing import (
     Dict,
     # Optional,
     Union,
+    TYPE_CHECKING
 )
 
 from collections import defaultdict
+# from wechaty.utils import type_check
 
 from ..accessory import (
     Accessory,
@@ -18,8 +20,9 @@ from ..config import (
     logging,
 )
 
-from .contact import Contact
-from .favorite import Favorite
+if TYPE_CHECKING:
+    from .contact import Contact
+    from .favorite import Favorite
 
 log = logging.getLogger('Tag')
 
@@ -28,7 +31,7 @@ class Tag(Accessory):
     """
     tag object which handle the url_link content
     """
-    _pool: Dict[str, Tag] = defaultdict()
+    _pool: Dict[str, 'Tag'] = defaultdict()
 
     tag_id: str
 

@@ -33,19 +33,20 @@ from wechaty_puppet import (
     MessageQueryFilter,
     MessageType,
 )
+# from wechaty.utils import type_check
 
 from ..accessory import Accessory
 
-from .room import Room
 from .mini_program import MiniProgram
 # TODO -> remove Sayable interface temporary
 # from ..types import Sayable
 
+
 if TYPE_CHECKING:
-    from .contact import Contact
     from .url_link import UrlLink
     from .image import Image
-
+    from .contact import Contact
+    from .room import Room
     from wechaty_puppet import (
         FileBox
     )
@@ -105,8 +106,7 @@ class Message(Accessory):
         # TODO -> check condition string format
         return ''
 
-    async def say(self, msg: Optional[Union[str, Contact, FileBox,
-                                            UrlLink, MiniProgram]] = None,
+    async def say(self, msg: Union[str, Contact, FileBox, UrlLink, MiniProgram],
                   mention_ids: Optional[List[str]] = None) -> Message:
         """
         send message
@@ -127,6 +127,7 @@ class Message(Accessory):
                 conversation_id=conversation_id,
                 message=msg,
                 mention_ids=mention_ids)
+
         elif isinstance(msg, Contact):
             message_id = await self.puppet.message_send_contact(
                 conversation_id=conversation_id, contact_id=msg.contact_id)
@@ -135,8 +136,9 @@ class Message(Accessory):
                 conversation_id=conversation_id, file=msg)
         elif isinstance(msg, UrlLink):
             message_id = await self.puppet.message_send_url(
-                conversation_id=conversation_id, url=msg.payload.url)
+                conversation_id=conversation_id, url=msg.url)
         elif isinstance(msg, MiniProgram):
+            assert msg.payload is not None
             message_id = await self.puppet.message_send_mini_program(
                 conversation_id=conversation_id,
                 mini_program=msg.payload)
@@ -205,7 +207,7 @@ class Message(Accessory):
         messages = [cls.load(message_id) for message_id in message_ids]
         return messages
 
-    def talker(self) -> Optional[Contact]:
+    def talker(self) -> Contact:
         """
         get message talker
 
@@ -216,7 +218,7 @@ class Message(Accessory):
             raise Exception('Message payload not found ...')
         talker_id = self.payload.from_id
         if talker_id is None:
-            return None
+            raise ValueError(f'message must be from Contact')
         return self.wechaty.Contact.load(talker_id)
 
     def to(self) -> Optional[Contact]:
@@ -237,7 +239,7 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('Message payload not found ...')
         room_id = self.payload.room_id
-        if room_id is None:
+        if room_id is None or room_id == '':
             return None
         return self.wechaty.Room.load(room_id)
 

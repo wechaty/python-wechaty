@@ -38,6 +38,7 @@ from wechaty_puppet import (
     ContactQueryFilter,
     ContactType
 )
+# from wechaty.utils import type_check
 
 from ..accessory import Accessory
 # from wechaty import Accessory
@@ -45,47 +46,34 @@ from ..config import (
     FileBox,
 )
 
-# from wechaty.types import Sayable
-# from wechaty.user.mini_program import MiniProgram
-from .message import Message
-from .url_link import UrlLink
 
 if TYPE_CHECKING:
+    # pytype: disable=pyi-error
     from .tag import Tag
+    # pytype: disable=pyi-error
+    from .message import Message
+    # pytype: disable=pyi-error
+    from .url_link import UrlLink
 
 log = logging.getLogger('Contact')
 
 
 # pylint:disable=R0904
-class Contact(Accessory):
+class Contact(Accessory, AsyncIOEventEmitter):
     """
     contact object
     """
-    _pool: Dict[str, Contact] = defaultdict()
+    _pool: Dict[str, 'Contact'] = {}
 
     def __init__(self, contact_id: str):
         """
         initialization
         """
+        super().__init__()
         self.contact_id: str = contact_id
         # name = "Contact<" + contact_id  + ">"
         # self.name: str = "default_acontact"
         self.payload: Optional[ContactPayload] = None
-
-    _event_stream: AsyncIOEventEmitter = AsyncIOEventEmitter()
-
-    def on(self, event_name: str, func):
-        """
-        listen event for contact
-        event_name:
-        """
-        self._event_stream.on(event_name, func)
-
-    def emit(self, event_name: str, *args, **kwargs):
-        """
-        emit event for a specific
-        """
-        self._event_stream.emit(event_name, *args, **kwargs)
 
     def get_id(self):
         """
@@ -204,12 +192,14 @@ class Contact(Accessory):
             identity = 'loading ...'
         return 'Contact <%s>' % identity
 
-    async def say(self, message: Union[str, Message, Contact, UrlLink]
+    async def say(self, message: Union[str, Message, FileBox, Contact, UrlLink]
                   ) -> Optional[Message]:
         """
         say something
         :param message: message content
         """
+        if not self.is_ready():
+            await self.ready()
         if isinstance(message, str):
             # say text
             msg_id = await self.puppet.message_send_text(
@@ -222,17 +212,17 @@ class Contact(Accessory):
                 conversation_id=self.contact_id
             )
 
-        # TODO -> need to impl fileBox
         elif isinstance(message, FileBox):
             msg_id = await self.puppet.message_send_file(
                 conversation_id=self.contact_id,
                 file=message
             )
+
         elif isinstance(message, UrlLink):
-            # TODO -> need to impl details for UrlLink
+            # use this way to resolve circulation dependency import
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.contact_id,
-                url=message.payload.url
+                url=message.url
             )
         # elif isinstance(message, MiniProgram):
         #     msg_id = await self.puppet.message_send_mini_program(
