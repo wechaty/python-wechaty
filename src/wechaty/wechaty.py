@@ -88,7 +88,7 @@ class WechatyOptions:
 
 
 # pylint:disable=R0902,R0904
-class Wechaty:
+class Wechaty(AsyncIOEventEmitter):
     """
     docstring
     """
@@ -105,7 +105,7 @@ class Wechaty:
         docstring
         """
         log.info('__init__()')
-
+        super().__init__()
         self.Tag = Tag
         self.Contact = Contact
         self.Friendship = Friendship
@@ -150,12 +150,15 @@ class Wechaty:
             return 'default_puppet'
         return self._name
 
-    def on(self, event: str, listener) -> Wechaty:
+    def on(self, event, f=None):
         """
-        listen event for puppet
+        listen wechaty event
+        :param event:
+        :param f:
+        :return:
         """
-        self.event_stream.on(event, listener)
-        return self
+        log.info('on() listen event <%s> with <%s>', event, f)
+        super().on(event, f)
 
     def emit(self, event_name: str, *args, **kwargs):
         """
@@ -163,130 +166,107 @@ class Wechaty:
         """
         self.event_stream.emit(event_name, *args, **kwargs)
 
-    def on_dong(self, listener: Callable[[str], None]) -> Wechaty:
-        """
-        listen dong event for puppet
-
-        this is friendly for code typing
-        """
-        self.event_stream.on('dong', listener)
-        return self
-
-    def on_error(self, listener: Callable[[str], None]) -> Wechaty:
+    async def on_error(self, payload: EventErrorPayload):
         """
         listen error event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('error', listener)
+        pass
 
-        return self
-
-    def on_heartbeat(self, listener: Callable[[str], None]) -> Wechaty:
+    async def on_heartbeat(self, payload: EventHeartbeatPayload):
         """
         listen heartbeat event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('heartbeat', listener)
+        pass
 
-        return self
-
-    def on_friendship(self, listener: Callable[[Friendship], None]) -> Wechaty:
+    async def on_friendship(self, friendship: Friendship):
         """
         listen friendship event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('friendship', listener)
-        return self
+        pass
 
-    def on_login(self, listener: Callable[[Contact], None]) -> Wechaty:
+    async def on_login(self, contact: Contact):
         """
         listen login event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('login', listener)
-        return self
+        pass
 
-    def on_logout(self, listener: Callable[[str], None]) -> Wechaty:
+    async def on_logout(self, contact: Contact):
         """
         listen logout event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('logout', listener)
-        return self
+        pass
 
-    def on_message(self, listener: Callable[[Message], None]) -> Wechaty:
+    async def on_message(self, msg: Message):
         """
         listen message event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('message', listener)
-        return self
+        pass
 
-    def on_ready(self, listener: Callable[[None], None]) -> Wechaty:
+    async def on_ready(self):
         """
         listen ready event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('ready', listener)
-        return self
+        pass
 
-    def on_room_invite(self, listener: Callable[[RoomInvitation], None]
-                       ) -> Wechaty:
+    async def on_room_invite(self, room_invitation: RoomInvitation):
         """
         listen room_invitation event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('room_invite', listener)
-        return self
+        pass
 
-    def on_room_join(self,
-                     listener: Callable[[Room, List[Contact],
-                                         Contact, datetime], None]) -> Wechaty:
+    async def on_room_join(self, room: Room, invitees: List[Contact],
+                     inviter: Contact, date: datetime):
         """
         listen room_join event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('room_join', listener)
-        return self
+        pass
 
-    def on_room_leave(self, listener: Callable[[Room, List[Contact], Contact,
-                                                datetime], None]) -> Wechaty:
+    async def on_room_leave(self, room: Room, leavers: List[Contact],
+                      remover: Contact, date: datetime):
         """
         listen room_leave event for puppet
 
+        room, leavers, remover, date
+
         this is friendly for code typing
         """
-        self.event_stream.on('room_leave', listener)
-        return self
+        pass
 
-    def on_room_topic(self, listener: Callable[[Room, str, str, Contact,
-                                                datetime], None]) -> Wechaty:
+    async def on_room_topic(self, room: Room, new_topic: str, old_topic: str,
+                      changer: Contact, date: datetime):
         """
         listen room_topic event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('room_topic', listener)
-        return self
+        pass
 
-    def on_scan(self, listener: Callable[[str, ScanStatus, str], None]
-                ) -> Wechaty:
+    async def on_scan(self, status: ScanStatus, qr_code: Optional[str] = None,
+                data: Optional[str] = None):
         """
         listen scan event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('scan', listener)
-        return self
+        pass
 
     async def start(self):
         """
@@ -347,6 +327,7 @@ class Wechaty:
             elif event_name == 'error':
                 def error_listener(payload: EventErrorPayload):
                     self.event_stream.emit('error', payload)
+                    self.on_error(payload)
 
                 puppet.on('error', error_listener)
 
