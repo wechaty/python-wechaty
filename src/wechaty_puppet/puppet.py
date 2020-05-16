@@ -435,7 +435,8 @@ class Puppet:
         """
         raise NotImplementedError
 
-    async def room_topic(self, room_id: str, new_topic: str):
+    async def room_topic(self, room_id: str,
+                         new_topic: Optional[str] = None) -> Optional[str]:
         """
         set room topic
         """
@@ -444,7 +445,7 @@ class Puppet:
     async def room_announce(
             self,
             room_id: str,
-            announcement: str = None) -> str:
+            announcement: Optional[str] = None) -> Optional[str]:
         """
         set/get room announcement
         """
