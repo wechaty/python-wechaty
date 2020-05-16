@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import (
     Optional,
     Type,
-    Dict,
+    Any,
     Union,
     TypeVar
 )
@@ -12,7 +12,7 @@ from typing import (
 
 @dataclass
 class StorageNopOptions:
-    placeholder: Optional = None
+    placeholder: Optional[Any] = None
 
 
 StorageFileOptions = Type[StorageNopOptions]
@@ -32,33 +32,39 @@ class StorageObsOptions:
     secretAccessKey: str
     server: str
     bucket: str
-
+    accessKeyId = ""
+    secretAccessKey = ""
+    server = ""
+    bucket = ""
 
 # TODO
 @dataclass
-class StorageFileOptionsExtends(StorageFileOptions):
-    type: Optional = "file"
+class StorageBackendOptionsBase:
+    type: Optional[Any] = None
 
 
 @dataclass
-class StorageNopOptionsExtends(StorageNopOptions):
-    type: Optional = "nop"
+class StorageFileOptionsExtends(StorageBackendOptionsBase, StorageFileOptions):
+    type = "file"
 
 
 @dataclass
-class StorageObsOptionsExtends(StorageObsOptions):
-    type: Optional = "obs"
+class StorageNopOptionsExtends(StorageBackendOptionsBase, StorageNopOptions):
+    type = "nop"
 
 
-# StorageBackendOptions = Union[StorageFileOptionsExtends,
-#                               StorageNopOptionsExtends,
-#                               StorageObsOptionsExtends]
-StorageBackendOptions = TypeVar('StorageBackendOptions', StorageFileOptionsExtends,
-                                StorageNopOptionsExtends, StorageObsOptionsExtends, Dict)
+@dataclass
+class StorageObsOptionsExtends(StorageBackendOptionsBase, StorageObsOptions):
+    type = "obs"
+
+
+StorageBackendOptions = Union[StorageBackendOptionsBase, StorageFileOptionsExtends,
+                              StorageNopOptionsExtends, StorageObsOptionsExtends]
 
 from .file import StorageFile
 from .nop import StorageNop
 from .obs import StorageObs
+
 # from .s3 import StorageS3
 
 BACKEND_DICT = {"file": StorageFile,
@@ -70,3 +76,4 @@ nop = TypeVar('nop')
 obs = TypeVar('obs')
 
 StorageBackendType = Union[file, nop, obs]
+

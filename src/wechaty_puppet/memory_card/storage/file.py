@@ -48,7 +48,7 @@ class StorageFile(StorageBackend):
           }
         }))
         """
-        buffer: str = None
+        buffer: str = ""
         text = str(buffer)
 
         payload: MemoryCardPayload = {}

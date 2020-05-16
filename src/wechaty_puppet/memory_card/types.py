@@ -11,7 +11,7 @@ from .async_map_type import AsyncMap
 
 PayloadDataType = Union[int, str]
 
-MemoryCardPayload = TypeVar("MemoryCardPayload", Dict[str, PayloadDataType], Dict)
+MemoryCardPayload = Union[Dict[str, PayloadDataType], Dict]
 
 # # TODO
 # @dataclass

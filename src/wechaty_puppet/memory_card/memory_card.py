@@ -7,7 +7,8 @@ import re
 from typing import (
     Optional,
     List,
-    Union
+    Union,
+    Any
 )
 
 from dataclasses import dataclass
@@ -39,9 +40,10 @@ class multiplexprop:
 
 @dataclass
 class MemoryCardOptions:
-    name: Optional[str]
-    storageOptions: Optional[StorageBackendOptions]
-    multiplex: Optional = None
+    # TODO name: Optional[str]
+    name: Optional[str] = None
+    storageOptions: Optional[StorageBackendOptions] = None
+    multiplex: Optional[multiplexprop] = None
 
 
 @dataclass
@@ -65,24 +67,32 @@ class MemoryCard(AsyncMap):
         card = MemoryCard(jsonObj.options)
         return card
 
+    # @classmethod
+    # def multiplex(cls, memory: MemoryCard, name: str) -> MemoryCard:
+    #     log.info('MemoryCard', 'static multiplex(%s, %s)' % (memory, name))
+    #     mpMemory = cls(memory.options)
+    #     return mpMemory
+
     name: Optional[str] = None
 
     parent: Optional[MemoryCard] = None
     payload: Optional[MemoryCardPayload] = None
     storage: Optional[StorageBackend] = None
-    multiplexNameList: List[str]
+    multiplexNameList = List[str]
 
     options: Optional[MemoryCardOptions] = None
 
-    def __init__(self, options: Optional[Union[str, MemoryCardOptions]]):
+    def __init__(self, options: MemoryCardOptions):
         super().__init__()
         log.info('MemoryCard', 'constructor(%s)' % json.dumps(options))
 
-        if type(options) == str:
-            options = {self.name, options}
-
+        # if type(options) == str:
+        #     options = {self.name, options}
+        #     self.name = options
+        # else:
+        #     self.name = options.name
+        self.name = options.name
         self.options = options
-        self.name = options and options.name
 
         if options and options.multiplex:
             self.parent = options.multiplex.parent
@@ -96,16 +106,22 @@ class MemoryCard(AsyncMap):
             self.payload = None
 
             self.multiplexNameList = []
-            self.storage = self._getStorage()
+            self.storage = self.__getStorage()
 
     def toString(self):
-        pass
+        mpString = ""
+        if len(self.multiplexNameList) > 0:
+            mpString = ''.join(map(lambda multiplexName: ".multiplex" + multiplexName, self.multiplexNameList))
+
+        name = str(self.options.name) if (self.options and self.options.name) else ""
+
+        return "MemoryCard <{0} >{1}".format(name, mpString)
 
     @property
     def version(self) -> str:
         return VERSION
 
-    def _getStorage(self):
+    def __getStorage(self):
         log.info('MemoryCard', 'getStorage() for storage type: %s',
                  (self.options
                   and self.options.storageOptions
@@ -138,7 +154,8 @@ class MemoryCard(AsyncMap):
                 raise Exception('multiplex memory no parent')
             return self.parent.save()
 
-        log.info('MemoryCard', '<%s>%s save() to %s' % (self.name and '', self.multiplexPath(), self.storage and None,))
+        log.info('MemoryCard', '<%s>%s save() to %s' % (self.name and '', self._multiplexPath(),
+                                                        self.storage and None,))
 
         if not self.payload:
             raise Exception('no payload, please call load() first.')
@@ -149,40 +166,38 @@ class MemoryCard(AsyncMap):
 
         await self.storage.save(self.payload)
 
-    def isMultiplexKey(self, key: str) -> bool:
+    def _isMultiplexKey(self, key: str) -> bool:
         if NAMESPACE_MULTIPLEX_SEPRATOR_REGEX.match(key) and NAMESPACE_KEY_SEPRATOR_REGEX.match(key):
-            namespace = self.multiplexNamespace()
+            namespace = self._multiplexNamespace()
             return key.startswith(namespace)
 
-    def multiplexNamespace(self) -> str:
+    def _multiplexNamespace(self) -> str:
         if not self.isMultiplex():
             raise Exception('not a multiplex memory')
         namespace = NAMESPACE_MULTIPLEX_SEPRATOR + NAMESPACE_MULTIPLEX_SEPRATOR.join(self.multiplexNameList)
         return namespace
 
-    def resolveKey(self, name: str) -> str:
+    def _resolveKey(self, name: str) -> str:
         if self.isMultiplex():
-            namespace = self.multiplexNamespace()
+            namespace = self._multiplexNamespace()
             return NAMESPACE_KEY_SEPRATOR.join([namespace, name])
         else:
             return name
 
-    @classmethod
-    def isMultiplex(cls) -> bool:
-        return len(cls.multiplexNameList) > 0
+    def isMultiplex(self) -> bool:
+        return len(self.multiplexNameList) > 0
 
-    @classmethod
-    def multiplexPath(cls) -> str:
-        return '/'.join(cls.multiplexNameList)
+    def _multiplexPath(self) -> str:
+        return '/'.join(self.multiplexNameList)
 
     def sub(self, name: str):
         log.warning('MemoryCard', 'sub() DEPRECATED, use multiplex() instead')
         return self.multiplex(name)
 
+    # FIXME Redeclared ?
     def multiplex(self, name: str):
         log.info('MemoryCard', 'multiplex(%s)' % name)
 
-        # FIXME: as any ?
         return self.multiplex(name)
 
     async def destroy(self):
@@ -201,61 +216,117 @@ class MemoryCard(AsyncMap):
 
     @property
     def size(self) -> int:
-        log.info('MemoryCard', '<%s> size' % self.multiplexPath())
+        log.info('MemoryCard', '<%s> size' % self._multiplexPath())
         if not self.payload:
             raise Exception('no payload, please call load() first.')
         # FIXME
-        count: int = -1
+        count: int = 0
         if self.isMultiplex():
-            # TODO
-            pass
+            for item in filter(self._isMultiplexKey, self.payload.keys()):
+                if item:
+                    count += 1
         else:
-            # TODO
-            count = len(self.keys())
+            count = len(self.payload.keys())
         return count
 
     async def get(self, name: str):
-        log.info('MemoryCard', '<%s> get(%s)' % (self.multiplexPath(), name))
+        log.info('MemoryCard', '<%s> get(%s)' % (self._multiplexPath(), name))
 
         if not self.payload:
             raise Exception('no payload, please call load() first.')
 
-        key = self.resolveKey(name)
+        key = self._resolveKey(name)
+
+        return self.payload.get(key)
 
     async def set(self, name, data):
-        log.info('MemoryCard', '<%s> set(%s, %s)', self.multiplexPath(), name, data)
+        log.info('MemoryCard', '<%s> set(%s, %s)', self._multiplexPath(), name, data)
 
         if not self.payload:
             raise Exception('no payload, please call load() first.')
 
-        key = self.resolveKey(name)
-        self.payload.key = data
+        key = self._resolveKey(name)
+        self.payload[key] = data
+
+    async def entries(self):
+        log.info('MemoryCard', '<%s> *entries()' % self._multiplexPath())
+        if not self.payload:
+            raise Exception('no payload, please call load() first.')
+
+        # while True:
+        #     try:
+        #         relativeKey = next(self.keys())
+        #         absoluteKey = self._resolveKey(relativeKey)
+        #         data = self.payload[absoluteKey]
+        #         pair = [relativeKey, data]
+        #         yield pair
+        #     except Exception as e:
+        #         pass
+        # pytype: disable=attribute-error
+        for relativeKey in self.keys():
+            absoluteKey = self._resolveKey(relativeKey)
+            data = self.payload[absoluteKey]
+            pair = [relativeKey, data]
+            yield pair
 
     async def clear(self):
-        log.info('MemoryCard', '<%s> clear()', self.multiplexPath())
+        log.info('MemoryCard', '<%s> clear()', self._multiplexPath())
 
         if not self.payload:
             raise Exception('no payload, please call load() first.')
 
         if self.isMultiplex():
             for key in self.payload:
-                if self.isMultiplexKey(key):
-                    del self.payload.key
+                if self._isMultiplexKey(key):
+                    self.payload.pop(key)
         else:
             self.payload = {}
 
     async def delete(self, name: str):
-        log.info('MemoryCard', '<%s> delete(%s)' % (self.multiplexPath(), name))
+        log.info('MemoryCard', '<%s> delete(%s)' % (self._multiplexPath(), name))
 
         if not self.payload:
             raise Exception('no payload, please call load() first.')
-        key = self.resolveKey(name)
-        del self.payload.key
+        key = self._resolveKey(name)
+        self.payload.pop(key)
 
     async def has(self, key: str) -> bool:
-        log.info('MemoryCard', '<%s> has(%s)' % (self.multiplexPath(), key))
+        log.info('MemoryCard', '<%s> has(%s)' % (self._multiplexPath(), key))
         if not self.payload:
             raise Exception('no payload, please call load() first.')
 
-        absoluteKey = self.resolveKey(key)
+        absoluteKey = self._resolveKey(key)
         return absoluteKey in self.payload
+
+    async def keys(self):
+        log.info('MemoryCard', '<%s> keys()' % self._multiplexPath())
+
+        if not self.payload:
+            raise Exception('no payload, please call load() first.')
+
+        for key in self.payload.keys():
+            if self.isMultiplex():
+                if self._isMultiplexKey(key):
+                    namespace = self._multiplexNamespace()
+                    mpKey = key[(len(namespace) + 1):]
+                    yield mpKey
+                continue
+            yield key
+
+    async def values(self):
+        log.info('MemoryCard', '<%s> values()' % self._multiplexPath())
+
+        if not self.payload:
+            raise Exception('no payload, please call load() first.')
+
+        # while True:
+        #     try:
+        #         relativeKey = next(self.keys())
+        #         absoluteKey = self._resolveKey(relativeKey)
+        #         yield self.payload.get(absoluteKey)
+        #     except Exception as e:
+        #         pass
+        # pytype: disable=attribute-error
+        for relativeKey in self.keys():
+            absoluteKey = self._resolveKey(relativeKey)
+            yield self.payload.get(absoluteKey)
