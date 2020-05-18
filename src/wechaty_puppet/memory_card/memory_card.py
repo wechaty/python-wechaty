@@ -8,7 +8,7 @@ from typing import (
     Optional,
     List,
     Union,
-    Any
+    Any,
 )
 
 from dataclasses import dataclass
@@ -24,6 +24,7 @@ from .types import (
     MemoryCardPayload
 )
 import collections
+
 log = logging.getLogger('memory_card')
 NAMESPACE_MULTIPLEX_SEPRATOR = '\r'
 NAMESPACE_KEY_SEPRATOR = '\n'
@@ -43,7 +44,7 @@ class MemoryCardOptions:
     # TODO name: Optional[str]
     name: Optional[str] = None
     storageOptions: Optional[StorageBackendOptions] = None
-    multiplex: Optional[multiplexprop] = None
+    multiplex: Sequence[multiplexprop] = None
 
 
 @dataclass
@@ -67,11 +68,11 @@ class MemoryCard(AsyncMap):
         card = MemoryCard(jsonObj.options)
         return card
 
-    # @classmethod
-    # def multiplex(cls, memory: MemoryCard, name: str) -> MemoryCard:
-    #     log.info('MemoryCard', 'static multiplex(%s, %s)' % (memory, name))
-    #     mpMemory = cls(memory.options)
-    #     return mpMemory
+    @classmethod
+    def multiplex(cls, name: str, memory: Optional[MemoryCard] = None) -> MemoryCard:
+        log.info('MemoryCard', 'static multiplex(%s, %s)' % (memory, name))
+        mpMemory = cls(memory.options)
+        return mpMemory
 
     name: Optional[str] = None
 
@@ -82,17 +83,21 @@ class MemoryCard(AsyncMap):
 
     options: Optional[MemoryCardOptions] = None
 
-    def __init__(self, options: MemoryCardOptions):
+    def __init__(self, options: Optional[MemoryCardOptions] = None):
         super().__init__()
-        log.info('MemoryCard', 'constructor(%s)' % json.dumps(options))
+        # log.info('MemoryCard', 'constructor(%s)' % json.dumps(options))
 
         # if type(options) == str:
         #     options = {self.name, options}
         #     self.name = options
         # else:
         #     self.name = options.name
-        self.name = options.name
-        self.options = options
+        if not options:
+            self.name = None
+            self.options = options
+        else:
+            self.name = options.name
+            self.options = options
 
         if options and options.multiplex:
             self.parent = options.multiplex.parent
@@ -130,7 +135,6 @@ class MemoryCard(AsyncMap):
                  )
         if not self.options:
             return
-
         storage = getStorage(self.options.name, self.options.storageOptions)
         return storage
 
@@ -143,7 +147,7 @@ class MemoryCard(AsyncMap):
             raise Exception('memory had already loaded before.')
 
         if self.storage:
-            self.payload = await self.storage.load()
+            self.payload = self.storage.load()
         else:
             log.info('MemoryCard', 'load() no storage')
             self.payload = {}
@@ -195,10 +199,10 @@ class MemoryCard(AsyncMap):
         return self.multiplex(name)
 
     # FIXME Redeclared ?
-    def multiplex(self, name: str):
+    def multiplex_copy(self, name: str):
         log.info('MemoryCard', 'multiplex(%s)' % name)
 
-        return self.multiplex(name)
+        return self.multiplex(self, name=name)
 
     async def destroy(self):
         log.info('MemoryCard', 'destroy() storage: %s' % self.storage)
@@ -244,9 +248,8 @@ class MemoryCard(AsyncMap):
 
         if not self.payload:
             raise Exception('no payload, please call load() first.')
-
         key = self._resolveKey(name)
-        self.payload[key] = data
+        self.payload.update({key, data})
 
     async def entries(self):
         log.info('MemoryCard', '<%s> *entries()' % self._multiplexPath())

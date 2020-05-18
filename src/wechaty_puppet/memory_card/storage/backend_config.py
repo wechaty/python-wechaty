@@ -15,7 +15,7 @@ class StorageNopOptions:
     placeholder: Optional[Any] = None
 
 
-StorageFileOptions = Type[StorageNopOptions]
+StorageFileOptions = StorageNopOptions
 
 
 # @dataclass
@@ -58,6 +58,7 @@ class StorageObsOptionsExtends(StorageBackendOptionsBase, StorageObsOptions):
     type = "obs"
 
 
+# TypeError: Cannot instantiate typing.Union
 StorageBackendOptions = Union[StorageBackendOptionsBase, StorageFileOptionsExtends,
                               StorageNopOptionsExtends, StorageObsOptionsExtends]
 

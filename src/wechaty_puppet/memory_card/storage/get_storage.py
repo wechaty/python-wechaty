@@ -1,7 +1,8 @@
 from __future__ import annotations
 from .backend_config import (
     BACKEND_DICT,
-    StorageBackendOptions
+    StorageBackendOptions,
+    StorageFileOptionsExtends
 )
 from typing import Optional
 from .backend import StorageBackend
@@ -16,10 +17,11 @@ log = logging.getLogger('getStorage')
 def getStorage(name: Optional[str] = None, options: StorageBackendOptions = None) -> StorageBackend:
 
     if options is None:
-        options = {type: 'file'}
+        options = StorageFileOptionsExtends(type='file')
 
-    log.info('getStorage', 'name: %s, options: %s' % (name, json.dumps(options)))
+    # log.info('getStorage', 'name: %s, options: %s' % (name, json.dumps(options)))
     if not name:
+        print("options", options)
         if not options.type == 'nop':
             raise Exception('storage have to be `nop` with a un-named storage')
         name = 'nop'
