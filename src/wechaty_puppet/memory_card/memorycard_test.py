@@ -20,35 +20,35 @@ memcardoptions = MemoryCardOptions(name='nop')
 
 class memorycard_test(unittest.TestCase):
 
-    # def test_smoke_testing(self):
-    #     card = MemoryCard(memcardoptions)
-    #     asyncio.run(card.load())
-    #
-    #     self.assertEqual(card.size, 0, 'init with 0')
-    #
-    #     asyncio.run(card.set('a', 'b'))
-    #     self.assertEqual(card.get('a'), 'b', 'get key a with value b')
-    #
-    #     asyncio.run(card.clear())
-    #     self.assertEqual(card.size, 0, 'clear reset to 0')
+    def test_smoke_testing(self):
+        card = MemoryCard(memcardoptions)
+        asyncio.run(card.load())
 
-    # def test_storage_file(self):
-    #     EXPECTED_KEY = 'key'
-    #     EXPECTED_VAL = 'val'
-    #     NAME = str(random.random())[2:]
-    #
-    #     card = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))
-    #
-    #     asyncio.run(card.load())
-    #     asyncio.run(card.set(EXPECTED_KEY, EXPECTED_VAL))
-    #     asyncio.run(card.save())
-    #
-    #     cardB = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))
-    #     asyncio.run(cardB.load())
-    #     self.assertEqual(asyncio.run(cardB.get(EXPECTED_KEY)), EXPECTED_VAL, 'should get val back from file')
-    #
-    #     asyncio.run(card.destroy())
-    #     asyncio.run(cardB.destroy())ssss
+        self.assertEqual(card.size, 0, 'init with 0')
+
+        asyncio.run(card.set('a', 'b'))
+        self.assertEqual(asyncio.run(card.get('a')), 'b', 'get key a with value b')
+
+        asyncio.run(card.clear())
+        self.assertEqual(card.size, 0, 'clear reset to 0')
+
+    def test_storage_file(self):
+        EXPECTED_KEY = 'key'
+        EXPECTED_VAL = 'val'
+        NAME = str(random.random())[2:]
+
+        card = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))
+
+        asyncio.run(card.load())
+        asyncio.run(card.set(EXPECTED_KEY, EXPECTED_VAL))
+        asyncio.run(card.save())
+
+        cardB = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))
+        asyncio.run(cardB.load())
+        self.assertEqual(asyncio.run(cardB.get(EXPECTED_KEY)), EXPECTED_VAL, 'should get val back from file')
+
+        asyncio.run(card.destroy())
+        asyncio.run(cardB.destroy())
 
     # def test_obs(self):
     #     EXPECTED_KEY = 'key'
@@ -69,10 +69,10 @@ class memorycard_test(unittest.TestCase):
     #     cardB = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=storageOptions))
     #     asyncio.run(cardB.load())
     #
-    #     self.assertEqual(cardB.get(EXPECTED_KEY), EXPECTED_VAL, 'should get val back from obs')
+    #     self.assertEqual(asyncio.run(cardB.get(EXPECTED_KEY)), EXPECTED_VAL, 'should get val back from obs')
     #     asyncio.run(card.destroy())
     #     asyncio.run(cardB.destroy())
-
+    #
     def test_save(self):
         NAME = str(random.random())[2:]
         card = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))

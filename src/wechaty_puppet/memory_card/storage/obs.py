@@ -1,10 +1,11 @@
-from wechaty_puppet.memory_card.types import MemoryCardPayload
+from __future__ import annotations
+from wechaty_puppet.memory_card.mctypes import MemoryCardPayload
 from .backend import StorageBackend
 from .backend_config import (
     StorageBackendOptions,
     StorageObsOptions
 )
-
+from typing import Any
 import logging
 log = logging.getLogger('obs')
 
@@ -12,7 +13,7 @@ log = logging.getLogger('obs')
 
 
 class StorageObs(StorageBackend):
-    obs = None
+    obs: Any = None
 
     def __init__(self, name: str, options: StorageBackendOptions):
         log.info('StorageObs', 'constructor()')

@@ -12,14 +12,14 @@ from typing import (
 )
 
 from dataclasses import dataclass
-
+import asyncio
 from .config import VERSION
 from .storage import (
     getStorage,
     StorageBackend,
     StorageBackendOptions
 )
-from .types import (
+from .mctypes import (
     AsyncMap,
     MemoryCardPayload
 )
@@ -147,7 +147,7 @@ class MemoryCard(AsyncMap):
             raise Exception('memory had already loaded before.')
 
         if self.storage:
-            self.payload = self.storage.load()
+            self.payload = await self.storage.load()
         else:
             log.info('MemoryCard', 'load() no storage')
             self.payload = {}
@@ -161,10 +161,10 @@ class MemoryCard(AsyncMap):
         log.info('MemoryCard', '<%s>%s save() to %s' % (self.name and '', self._multiplexPath(),
                                                         self.storage and None,))
 
-        if not self.payload:
+        if self.payload is None:
             raise Exception('no payload, please call load() first.')
 
-        if not self.storage:
+        if self.storage is None:
             log.info('MemoryCard', 'save() no storage, NOOP')
             return
 
@@ -199,10 +199,10 @@ class MemoryCard(AsyncMap):
         return self.multiplex(name)
 
     # FIXME Redeclared ?
-    def multiplex_copy(self, name: str):
+    def multiplex(self, name: str):
         log.info('MemoryCard', 'multiplex(%s)' % name)
 
-        return self.multiplex(self, name=name)
+        return multiplex(self, name=name)
 
     async def destroy(self):
         log.info('MemoryCard', 'destroy() storage: %s' % self.storage)
@@ -221,7 +221,7 @@ class MemoryCard(AsyncMap):
     @property
     def size(self) -> int:
         log.info('MemoryCard', '<%s> size' % self._multiplexPath())
-        if not self.payload:
+        if self.payload is None:
             raise Exception('no payload, please call load() first.')
         # FIXME
         count: int = 0
@@ -236,7 +236,7 @@ class MemoryCard(AsyncMap):
     async def get(self, name: str):
         log.info('MemoryCard', '<%s> get(%s)' % (self._multiplexPath(), name))
 
-        if not self.payload:
+        if self.payload is None:
             raise Exception('no payload, please call load() first.')
 
         key = self._resolveKey(name)
@@ -246,10 +246,10 @@ class MemoryCard(AsyncMap):
     async def set(self, name, data):
         log.info('MemoryCard', '<%s> set(%s, %s)', self._multiplexPath(), name, data)
 
-        if not self.payload:
+        if self.payload is None:
             raise Exception('no payload, please call load() first.')
         key = self._resolveKey(name)
-        self.payload.update({key, data})
+        self.payload.update({key: data})
 
     async def entries(self):
         log.info('MemoryCard', '<%s> *entries()' % self._multiplexPath())

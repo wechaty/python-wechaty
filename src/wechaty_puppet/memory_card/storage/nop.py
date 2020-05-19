@@ -1,5 +1,5 @@
 from __future__ import annotations
-from wechaty_puppet.memory_card.types import MemoryCardPayload
+from wechaty_puppet.memory_card.mctypes import MemoryCardPayload
 from .backend import StorageBackend
 from .backend_config import StorageBackendOptions
 
