@@ -11,7 +11,7 @@ import logging
 import json
 import re
 from .backend import StorageBackend
-from promise import Promise
+
 log = logging.getLogger("file")
 
 
