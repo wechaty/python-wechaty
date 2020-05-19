@@ -7,7 +7,7 @@ import re
 from typing import (
     Optional,
     List,
-    Union,
+    Type,
     Any,
 )
 
@@ -44,7 +44,7 @@ class MemoryCardOptions:
     # TODO name: Optional[str]
     name: Optional[str] = None
     storageOptions: Optional[StorageBackendOptions] = None
-    multiplex: Sequence[multiplexprop] = None
+    multiplex: Optional[multiplexprop] = None
 
 
 @dataclass
@@ -69,9 +69,10 @@ class MemoryCard(AsyncMap):
         return card
 
     @classmethod
-    def multiplex(cls, name: str, memory: Optional[MemoryCard] = None) -> MemoryCard:
+    def multiplex(cls, name: str, memory: MemoryCard) -> MemoryCard:
         log.info('MemoryCard', 'static multiplex(%s, %s)' % (memory, name))
-        mpMemory = cls(memory.options)
+        memorycard = MemoryCardOptions(storageOptions=memory.options, multiplex=multiplexprop(name=name, parent=memory))
+        mpMemory = cls(memorycard)
         return mpMemory
 
     name: Optional[str] = None
@@ -196,13 +197,13 @@ class MemoryCard(AsyncMap):
 
     def sub(self, name: str):
         log.warning('MemoryCard', 'sub() DEPRECATED, use multiplex() instead')
-        return self.multiplex(name)
+        return self.multiplex(name, memory=self)
 
     # FIXME Redeclared ?
-    def multiplex(self, name: str):
+    def multiplex_copy(self, name: str):
         log.info('MemoryCard', 'multiplex(%s)' % name)
 
-        return multiplex(self, name=name)
+        return self.multiplex(name=name, memory=self)
 
     async def destroy(self):
         log.info('MemoryCard', 'destroy() storage: %s' % self.storage)
