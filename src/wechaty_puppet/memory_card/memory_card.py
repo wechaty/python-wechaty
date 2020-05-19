@@ -1,14 +1,11 @@
 """doc"""
 from __future__ import annotations
-from os import path
 import logging
 import json
 import re
 from typing import (
     Optional,
     List,
-    Type,
-    Any,
 )
 
 from dataclasses import dataclass
@@ -23,7 +20,6 @@ from .mctypes import (
     AsyncMap,
     MemoryCardPayload
 )
-import collections
 
 log = logging.getLogger('memory_card')
 NAMESPACE_MULTIPLEX_SEPRATOR = '\r'
@@ -88,17 +84,11 @@ class MemoryCard(AsyncMap):
         super().__init__()
         # log.info('MemoryCard', 'constructor(%s)' % json.dumps(options))
 
-        # if type(options) == str:
-        #     options = {self.name, options}
-        #     self.name = options
-        # else:
-        #     self.name = options.name
-        if not options:
-            self.name = None
-            self.options = options
-        else:
-            self.name = options.name
-            self.options = options
+        if type(options) == str:
+            options = MemoryCardOptions(name=options)
+
+        self.options = options
+        self.name = options and options.name
 
         if options and options.multiplex:
             self.parent = options.multiplex.parent
@@ -172,7 +162,8 @@ class MemoryCard(AsyncMap):
         await self.storage.save(self.payload)
 
     def _isMultiplexKey(self, key: str) -> bool:
-        if NAMESPACE_MULTIPLEX_SEPRATOR_REGEX.match(key) and NAMESPACE_KEY_SEPRATOR_REGEX.match(key):
+        # if NAMESPACE_MULTIPLEX_SEPRATOR_REGEX.match(key) and NAMESPACE_KEY_SEPRATOR_REGEX.match(key):
+        if re.search(NAMESPACE_MULTIPLEX_SEPRATOR_REGEX, key) and re.search(NAMESPACE_KEY_SEPRATOR_REGEX, key):
             namespace = self._multiplexNamespace()
             return key.startswith(namespace)
 
@@ -226,8 +217,10 @@ class MemoryCard(AsyncMap):
             raise Exception('no payload, please call load() first.')
         # FIXME
         count: int = 0
+
         if self.isMultiplex():
-            for item in filter(self._isMultiplexKey, self.payload.keys()):
+            temp = filter(self._isMultiplexKey, self.payload.keys())
+            for item in temp:
                 if item:
                     count += 1
         else:
@@ -276,7 +269,7 @@ class MemoryCard(AsyncMap):
     async def clear(self):
         log.info('MemoryCard', '<%s> clear()', self._multiplexPath())
 
-        if not self.payload:
+        if self.payload is None:
             raise Exception('no payload, please call load() first.')
 
         if self.isMultiplex():
