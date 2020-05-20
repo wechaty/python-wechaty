@@ -1,1 +1,5 @@
+grpclib
+pyee
 requests
+qrcode
+chatie-grpc==0.15.dev4

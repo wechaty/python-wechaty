@@ -5,5 +5,10 @@ pycodestyle
 pylint
 pylint-quotes
 pytest
-pytype
+pytype==2020.2.20
 semver
+grpclib
+pyee
+requests
+qrcode
+betterproto

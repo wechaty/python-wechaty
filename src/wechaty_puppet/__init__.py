@@ -1,47 +1,105 @@
 """
 doc
 """
-from .puppet    import Puppet
-from .file_box  import FileBox
-from .contact   import (
-    ContactGender,
-    ContactPayload,
-    ContactQueryFilter,
-    ContactType,
-)
-from .url_link_payload  import UrlLinkPayload
-from .friendship        import (
-    FriendshipType,
-    FriendshipSearchQueryFilter,
-    FriendshipPayload
-)
-from .message import (
-    MessagePayload,
-    MessageQueryFilter,
+
+# message module
+from chatie_grpc.wechaty import (   # type: ignore
+
+    # Message
     MessageType,
+    MessagePayloadResponse as MessagePayload,
+
+    # Contact
+    ContactGender,
+    ContactType,
+    ContactPayloadResponse as ContactPayload,
+
+    # Message
+    # Friendship
+    FriendshipType,
+    FriendshipPayloadResponse as FriendshipPayload,
+
+    # Room
+    RoomPayloadResponse as RoomPayload,
+    RoomMemberPayloadResponse as RoomMemberPayload,
+
+    # UrlLink
+
+    # RoomInvitation
+    RoomInvitationPayloadResponse as RoomInvitationPayload,
+
+    # Image
+    ImageType,
+
+    # Event
+    EventType,
+
+    # MiniProgram
+
+    # MessageContactResponse,
+    # MessageFileResponse,
+    # MessageImageResponse
 )
-from .room import (
+
+from .puppet import (
+    Puppet,
+    PuppetOptions
+)
+from .file_box import FileBox
+
+from .schemas.message import (
+    MessageQueryFilter,
+)
+
+from .schemas.contact import (
+    ContactQueryFilter
+)
+
+from .schemas.friendship import (
+    FriendshipSearchCondition
+)
+
+from .schemas.room import (
     RoomQueryFilter,
-    RoomPayload,
     RoomMemberQueryFilter,
-    RoomMemberPayload,
 )
-from .room_invitation import (
-    RoomInvitationPayload
-)
-from .mini_program import (
-    MiniProgramPayload
+
+from .schemas.url_link import UrlLinkPayload
+
+from .schemas.mini_program import MiniProgramPayload
+
+from .schemas.event import (
+    EventScanPayload,
+    EventDongPayload,
+    EventLoginPayload,
+    EventReadyPayload,
+    EventLogoutPayload,
+    EventResetPayload,
+
+    EventRoomTopicPayload,
+    EventRoomLeavePayload,
+    EventRoomJoinPayload,
+    EventRoomInvitePayload,
+
+
+    EventMessagePayload,
+    EventHeartbeatPayload,
+    EventFriendshipPayload,
+    EventErrorPayload
 )
 
 __all__ = [
     'Puppet',
+    'PuppetOptions',
+
     'ContactGender',
     'ContactPayload',
     'ContactQueryFilter',
     'ContactType',
+
     'FileBox',
     'FriendshipType',
-    'FriendshipSearchQueryFilter',
+    'FriendshipSearchCondition',
     'FriendshipPayload',
 
     'MessagePayload',
@@ -57,5 +115,24 @@ __all__ = [
 
     'RoomInvitationPayload',
 
-    'MiniProgramPayload'
+    'MiniProgramPayload',
+
+    'EventScanPayload',
+    'EventDongPayload',
+    'EventLoginPayload',
+    'EventReadyPayload',
+    'EventLogoutPayload',
+    'EventResetPayload',
+    'EventFriendshipPayload',
+    'EventHeartbeatPayload',
+    'EventMessagePayload',
+    'EventRoomInvitePayload',
+    'EventRoomJoinPayload',
+    'EventRoomLeavePayload',
+    'EventRoomTopicPayload',
+    'EventErrorPayload',
+
+    'ImageType',
+    'EventType'
+
 ]

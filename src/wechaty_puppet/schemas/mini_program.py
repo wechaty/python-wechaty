@@ -20,30 +20,19 @@ limitations under the License.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import Optional
 
-# pylint: disable=R0903
+
+@dataclass
 class MiniProgramPayload:
     """
     mini_program payload
     """
-    # pylint: disable=R0913
-
-    def __init__(
-            self,
-            app_id: str,
-            description: str,
-            page_path: str,
-            thumb_key: str,
-            thumb_url: str,
-            title: str,
-            user_name: str):
-        """
-        initialization
-        """
-        self.app_id = app_id
-        self.description = description
-        self.page_path = page_path
-        self.thumb_key = thumb_key
-        self.thumb_url = thumb_url
-        self.title = title
-        self.user_name = user_name
+    app_id: Optional[str] = None
+    description: Optional[str] = None
+    page_path: Optional[str] = None
+    thumb_key: Optional[str] = None
+    thumb_url: Optional[str] = None
+    title: Optional[str] = None
+    user_name: Optional[str] = None

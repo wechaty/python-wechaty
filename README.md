@@ -245,11 +245,13 @@ pip3 install wechaty
 
 ### v0.4 (Mar 15, 2020) master
 
-1 Add a friendly exception message for PyPI users. [#24](https://github.com/wechaty/python-wechaty/issues/24)
+Welcome [@huangaszaq](https://github.com/huangaszaq) for joining the project! [#42](https://github.com/wechaty/python-wechaty/pull/42)
+
+1. Add a friendly exception message for PyPI users. [#24](https://github.com/wechaty/python-wechaty/issues/24)
 
 ### v0.1 (Mar 8, 2020)
 
-Welcome [@wj-Mcat](https://github.com/wj-Mcat) for joining the project!
+Welcome [@wj-Mcat](https://github.com/wj-Mcat) for joining the project! [#4](https://github.com/wechaty/python-wechaty/pull/4)
 
 1. Starting translate TypeScript of Wechaty to Python
 1. DevOps Setup
@@ -272,6 +274,7 @@ Project created, publish a empty module `wechaty` on PyPI.
 ## Maintainers
 
 1. [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
+1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
 ## Author
 

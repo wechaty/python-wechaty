@@ -23,10 +23,11 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from enum import IntEnum
 from typing import (
     Type,
 )
+
+from wechaty_puppet.schemas.image import ImageType
 
 from wechaty_puppet import FileBox
 
@@ -38,22 +39,13 @@ from ..config import (
 log = logging.getLogger('Image')
 
 
-class ImageType(IntEnum):
-    """
-    User Image Type
-    """
-    Thumbnail = 0
-    HD = 1
-    Artwork = 2
-
-
 class Image(Accessory):
     """
     User Image class
     """
 
     def __str__(self):
-        return 'Image<%d>' % self.id
+        return 'Image<%d>' % self.image_id
 
     def __init__(
             self,
@@ -65,7 +57,7 @@ class Image(Accessory):
         super().__init__()
         log.info('__init__(%d)', image_id)
 
-        self.id = image_id
+        self.image_id = image_id
         if self.puppet is None:
             raise NotImplementedError('Image class can not be instanced'
                                       ' without a puppet!')
@@ -78,7 +70,7 @@ class Image(Accessory):
         :param image_id:
         :return:
         """
-        log.info('@classmethod create(%d)', image_id)
+        log.info('@classmethod create(%s)', image_id)
         # obj = super().__new__(cls)
         # obj.__init__(image_id)
         # return obj
@@ -89,27 +81,27 @@ class Image(Accessory):
         docstring
         :return:
         """
-        log.info('thumbnail() for %d', self.id)
-        file_box = await self.puppet \
-            .message_image(self.id, ImageType.Thumbnail)
-        return file_box
+        log.info('thumbnail() for <%s>', self.image_id)
+        image_file = await self.puppet.message_image(
+            message_id=self.image_id, image_type=ImageType.Thumbnail)
+        return image_file
 
     async def hd(self) -> FileBox:
         """
         docstring
         :return:
         """
-        log.info('hd() for %d', self.id)
-        file_box = await self.puppet \
-            .message_image(self.id, ImageType.HD)
-        return file_box
+        log.info('hd() for <%s>', self.image_id)
+        image_file = await self.puppet.message_image(
+            message_id=self.image_id, image_type=ImageType.HD)
+        return image_file
 
     async def artwork(self) -> FileBox:
         """
         docstring
         :return:
         """
-        log.info('artwork() for %d', self.id)
-        file_box = await self.puppet \
-            .message_image(self.id, ImageType.Artwork)
-        return file_box
+        log.info('artwork() for <%d>', self.image_id)
+        image_file = await self.puppet.message_image(
+            message_id=self.image_id, image_type=ImageType.Artwork)
+        return image_file
