@@ -19,7 +19,6 @@ log = logging.getLogger('DingDongBot')
 
 async def message(msg: Message):
     """back on message"""
-    log.info(msg)
     from_contact = msg.talker()
     text = msg.text()
     room = msg.room()
