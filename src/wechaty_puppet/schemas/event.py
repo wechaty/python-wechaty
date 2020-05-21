@@ -24,8 +24,6 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional
 
-from wechaty_puppet import MessageType
-
 
 class ScanStatus(Enum):
     """
@@ -107,7 +105,7 @@ class EventRoomTopicPayload(EventPayloadBase):
 @dataclass
 class EventScanPayload(EventPayloadBase):
     status: ScanStatus
-    qr_code: Optional[str] = None
+    qrcode: Optional[str] = None
     data: Optional[str] = None
 
 

@@ -74,7 +74,7 @@ class Watchdog(AsyncIOEventEmitter):
 
     def feed(self, food: WatchdogFood):
         """feed the food to the watch dog"""
-        log.info('feed the food <%s> the watchdog', food)
+        log.debug('feed the food <%s> the watchdog', food)
         self._last_food = food
         self._last_feed = datetime.now()
         self.emit('feed', food, self._last_feed)

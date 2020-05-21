@@ -32,7 +32,7 @@ from typing import (
     Optional,
     Type,
     # Union,
-    Callable, List)
+    List)
 from pyee import AsyncIOEventEmitter    # type: ignore
 
 from wechaty_puppet import (
@@ -70,7 +70,7 @@ from .utils import (
 log = logging.getLogger('Wechaty')
 log.setLevel(logging.INFO)
 
-DEFAULT_TIMEOUT = 60
+DEFAULT_TIMEOUT = 300
 
 
 # pylint: disable=R0903
@@ -88,7 +88,7 @@ class WechatyOptions:
 
 
 # pylint:disable=R0902,R0904
-class Wechaty:
+class Wechaty(AsyncIOEventEmitter):
     """
     docstring
     """
@@ -104,8 +104,7 @@ class Wechaty:
         """
         docstring
         """
-        log.info('__init__()')
-
+        super().__init__()
         self.Tag = Tag
         self.Contact = Contact
         self.Friendship = Friendship
@@ -117,7 +116,6 @@ class Wechaty:
         self.started: bool = False
         self.puppet: Puppet = puppet
 
-        self.event_stream: AsyncIOEventEmitter = AsyncIOEventEmitter()
         self._name: Optional[str] = None
 
         self.state = StateSwitch()
@@ -126,7 +124,8 @@ class Wechaty:
         self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
     def __str__(self):
-        return 'Wechaty<{0}, {1}>'.format(self.name(), self.contact_id)
+        """str format of the Room object"""
+        return 'Wechaty<{0}, {1}>'.format(self.name, self.contact_id)
 
     @classmethod
     def instance(cls: Type[Wechaty], puppet: Puppet) -> Wechaty:
@@ -144,149 +143,126 @@ class Wechaty:
         # return cast(Wechaty, cls._global_instance)
         # return cls._global_instance
 
+    @property
     def name(self) -> str:
         """name"""
         if self._name is None:
             return 'default_puppet'
         return self._name
 
-    def on(self, event: str, listener) -> Wechaty:
+    def on(self, event, f=None) -> Wechaty:
         """
-        listen event for puppet
+        listen wechaty event
+        :param event:
+        :param f:
+        :return:
         """
-        self.event_stream.on(event, listener)
+        log.info('on() listen event <%s> with <%s>', event, f)
+        super().on(event, f)
         return self
 
-    def emit(self, event_name: str, *args, **kwargs):
+    def emit(self, event, *args, **kwargs):
         """
-        emit a specific event
+        emit wechaty event
+        :param event:
+        :param args:
+        :param kwargs:
+        :return:
         """
-        self.event_stream.emit(event_name, *args, **kwargs)
+        log.debug('emit() event <%s> <%s>',
+                  [str(item) for item in args],
+                  kwargs)
+        super().emit(event, *args, **kwargs)
 
-    def on_dong(self, listener: Callable[[str], None]) -> Wechaty:
-        """
-        listen dong event for puppet
-
-        this is friendly for code typing
-        """
-        self.event_stream.on('dong', listener)
-        return self
-
-    def on_error(self, listener: Callable[[str], None]) -> Wechaty:
+    async def on_error(self, payload: EventErrorPayload):
         """
         listen error event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('error', listener)
 
-        return self
-
-    def on_heartbeat(self, listener: Callable[[str], None]) -> Wechaty:
+    async def on_heartbeat(self, payload: EventHeartbeatPayload):
         """
         listen heartbeat event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('heartbeat', listener)
 
-        return self
-
-    def on_friendship(self, listener: Callable[[Friendship], None]) -> Wechaty:
+    async def on_friendship(self, friendship: Friendship):
         """
         listen friendship event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('friendship', listener)
-        return self
 
-    def on_login(self, listener: Callable[[Contact], None]) -> Wechaty:
+    async def on_login(self, contact: Contact):
         """
         listen login event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('login', listener)
-        return self
 
-    def on_logout(self, listener: Callable[[str], None]) -> Wechaty:
+    async def on_logout(self, contact: Contact):
         """
         listen logout event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('logout', listener)
-        return self
 
-    def on_message(self, listener: Callable[[Message], None]) -> Wechaty:
+    async def on_message(self, msg: Message):
         """
         listen message event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('message', listener)
-        return self
 
-    def on_ready(self, listener: Callable[[None], None]) -> Wechaty:
+    async def on_ready(self):
         """
         listen ready event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('ready', listener)
-        return self
 
-    def on_room_invite(self, listener: Callable[[RoomInvitation], None]
-                       ) -> Wechaty:
+    async def on_room_invite(self, room_invitation: RoomInvitation):
         """
         listen room_invitation event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('room_invite', listener)
-        return self
 
-    def on_room_join(self,
-                     listener: Callable[[Room, List[Contact],
-                                         Contact, datetime], None]) -> Wechaty:
+    async def on_room_join(self, room: Room, invitees: List[Contact],
+                           inviter: Contact, date: datetime):
         """
         listen room_join event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('room_join', listener)
-        return self
 
-    def on_room_leave(self, listener: Callable[[Room, List[Contact], Contact,
-                                                datetime], None]) -> Wechaty:
+    async def on_room_leave(self, room: Room, leavers: List[Contact],
+                            remover: Contact, date: datetime):
         """
         listen room_leave event for puppet
 
+        room, leavers, remover, date
+
         this is friendly for code typing
         """
-        self.event_stream.on('room_leave', listener)
-        return self
 
-    def on_room_topic(self, listener: Callable[[Room, str, str, Contact,
-                                                datetime], None]) -> Wechaty:
+    async def on_room_topic(self, room: Room, new_topic: str, old_topic: str,
+                            changer: Contact, date: datetime):
         """
         listen room_topic event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('room_topic', listener)
-        return self
 
-    def on_scan(self, listener: Callable[[str, ScanStatus, str], None]
-                ) -> Wechaty:
+    async def on_scan(self, status: ScanStatus, qr_code: Optional[str] = None,
+                      data: Optional[str] = None):
         """
         listen scan event for puppet
 
         this is friendly for code typing
         """
-        self.event_stream.on('scan', listener)
-        return self
 
     async def start(self):
         """
@@ -308,7 +284,7 @@ class Wechaty:
             self._watchdog.on('sleep', ask_for_food)
             self._watchdog.feed(food)
             while True:
-                log.info('bot tick <%s>', datetime.now())
+                log.debug('bot tick <%s>', datetime.now())
                 await self._watchdog.sleep()
                 is_death = self._watchdog.starved_to_death()
                 if is_death:
@@ -337,38 +313,43 @@ class Wechaty:
         for event_name in event_names:
             if event_name == 'dong':
                 def dong_listener(payload: EventDongPayload):
-                    log.info('receive dong event <%s>', payload)
-                    self.event_stream.emit('dong', payload.data)
+                    log.debug('receive <dong> event <%s>', payload)
+                    self.emit('dong', payload.data)
                     # feed food to the dog
-                    food = WatchdogFood(timeout=3)
+                    food = WatchdogFood(timeout=30)
                     self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
                 def error_listener(payload: EventErrorPayload):
-                    self.event_stream.emit('error', payload)
+                    log.info('receive <error> event <%s>', payload)
+                    self.emit('error', payload)
+                    self.on_error(payload)
 
                 puppet.on('error', error_listener)
 
             elif event_name == 'heart-beat':
                 def heartbeat_listener(payload: EventHeartbeatPayload):
-                    self.event_stream.emit('heartbeat', payload.data)
+                    log.info('receive <heart-beat> event <%s>', payload)
+                    self.emit('heartbeat', payload.data)
 
                 puppet.on('heart-beat', heartbeat_listener)
 
             elif event_name == 'friendship':
                 async def friendship_listener(payload: EventFriendshipPayload):
+                    log.info('receive <friendship> event <%s>', payload)
                     friendship = self.Friendship.load(payload.friendship_id)
                     await friendship.ready()
-                    self.event_stream.emit('friendship', payload)
+                    self.emit('friendship', payload)
                     friendship.contact().emit('friendship', friendship)
 
                 puppet.on('friendship', friendship_listener)
 
             elif event_name == 'login':
                 async def login_listener(payload: EventLoginPayload):
-                    # TODO -> should to ContactSelf
-                    log.info('login() <%s>', payload)
+                    # set login contact_id
+                    self.contact_id = payload.contact_id
+                    log.info('receive <login> event <%s>', payload)
                     contact = self.Contact.load(payload.contact_id)
                     await contact.ready()
                     self.emit('login', Contact)
@@ -378,6 +359,7 @@ class Wechaty:
             elif event_name == 'logout':
                 async def logout_listener(payload: EventLogoutPayload):
                     # TODO -> should to ContactSelf
+                    log.info('receive <logout> event <%s>', payload)
                     contact = self.Contact.load(payload.contact_id)
                     await contact.ready()
                     self.emit('logout', Contact)
@@ -386,8 +368,10 @@ class Wechaty:
 
             elif event_name == 'message':
                 async def message_listener(payload: EventMessagePayload):
+                    log.debug('receive <message> event <%s>', payload)
                     msg = self.Message.load(payload.message_id)
                     await msg.ready()
+                    log.info('receive message <%s>', msg)
                     self.emit('message', msg)
 
                     room = msg.room()
@@ -398,8 +382,7 @@ class Wechaty:
 
             elif event_name == 'ready':
                 def ready_listener():
-                    log.info(
-                        'Wechaty init_puppet_event_bridge() puppet.on(ready)')
+                    log.info('receive <ready> event <%s>')
                     self.emit('ready')
                     self._ready_state.on(True)
 
@@ -407,6 +390,7 @@ class Wechaty:
 
             elif event_name == 'room-invite':
                 async def room_invite_listener(payload: EventRoomInvitePayload):
+                    log.info('receive <room-invite> event <%s>')
                     invitation = self.RoomInvitation.load(
                         payload.room_invitation_id)
                     self.emit('room-invite', invitation)
@@ -415,6 +399,7 @@ class Wechaty:
 
             elif event_name == 'room-join':
                 async def room_join_listener(payload: EventRoomJoinPayload):
+                    log.info('receive <room-join> event <%s>')
                     room = self.Room.load(payload.room_id)
                     await room.ready()
 
@@ -434,6 +419,7 @@ class Wechaty:
 
             elif event_name == 'room-leave':
                 async def room_leave_listener(payload: EventRoomLeavePayload):
+                    log.info('receive <room-leave> event <%s>')
                     room = self.Room.load(payload.room_id)
                     # room info is dirty now
                     await room.ready(force_sync=True)
@@ -462,6 +448,7 @@ class Wechaty:
 
             elif event_name == 'room-topic':
                 async def room_topic_listener(payload: EventRoomTopicPayload):
+                    log.info('receive <room-topic> event <%s>')
                     room = self.Room.load(payload.room_id)
                     await room.ready()
 
@@ -479,8 +466,9 @@ class Wechaty:
 
             elif event_name == 'scan':
                 async def scan_listener(payload: EventScanPayload):
-                    qr_code = '' if payload.qr_code is None \
-                        else payload.qr_code
+                    log.info('receive <scan> event <%s>')
+                    qr_code = '' if payload.qrcode is None \
+                        else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
                         qr_terminal(qr_code)
                     self.emit('scan', qr_code, payload.status, payload.data)
@@ -488,7 +476,7 @@ class Wechaty:
                 puppet.on('scan', scan_listener)
 
             elif event_name == 'reset':
-                pass
+                log.info('receive <reset> event <%s>')
             else:
                 raise ValueError(f'event_name <{event_name}> unsupported!')
 
@@ -498,7 +486,7 @@ class Wechaty:
 
     def add_listener_function(self, event: str, listener):
         """add listener function to event emitter"""
-        self.event_stream.on(event, listener)
+        self.on(event, listener)
 
     async def init_puppet(self):
         """
@@ -514,13 +502,6 @@ class Wechaty:
         self.Room.set_wechaty(self)
         self.RoomInvitation.set_wechaty(self)
         self.Contact.set_wechaty(self)
-
-    def set_puppet(self):
-        """
-        set puppet to the Room/Message/Tag class
-        :return:
-        """
-        self.Message.set_puppet(self.puppet)
 
     async def stop(self):
         """

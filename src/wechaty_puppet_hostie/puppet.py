@@ -35,6 +35,8 @@ from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty_puppet import (
     EventScanPayload,
+    ScanStatus,
+
     EventReadyPayload,
 
     EventDongPayload,
@@ -77,9 +79,6 @@ class HostiePuppet(Puppet):
         self.channel, self.puppet_stub = self.init_puppet()
 
         self._event_stream: AsyncIOEventEmitter = AsyncIOEventEmitter()
-
-        self.init_puppet()
-        # self.puppet_stub.room_member_list()
 
     async def room_list(self) -> List[str]:
         """
@@ -683,12 +682,15 @@ class HostiePuppet(Puppet):
         log.info('listening the event from the puppet ...')
         async for response in self.puppet_stub.event():
             if response is not None:
-                log.info('receive event: <%s>', response)
                 payload_data: dict = json.loads(response.payload)
                 if response.type == int(EventType.EVENT_TYPE_SCAN):
                     log.debug('receiving scan info <%s>', response)
                     # create qr_code
-                    payload = EventScanPayload(**payload_data)
+                    payload = EventScanPayload(
+                        status=ScanStatus(payload_data['status']),
+                        qrcode=payload_data.get('qrcode', None),
+                        data=payload_data.get('data', None)
+                    )
                     self._event_stream.emit('scan', payload)
 
                 elif response.type == int(EventType.EVENT_TYPE_DONG):

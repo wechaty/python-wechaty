@@ -66,10 +66,6 @@ class Message(Accessory):
         """
         initialization
         """
-        log.info(
-            'Message constructor(%s) for class Message (%s)',
-            self.__class__.__name__,
-            message_id)
         self.message_id = message_id
         self._payload: Optional[MessagePayload] = None
 
@@ -102,9 +98,20 @@ class Message(Accessory):
         format string for message
         """
         if self.payload is not None:
-            return self.__class__.__name__
-        # TODO -> check condition string format
-        return ''
+            room = self.room()
+            room_format = '' if room is None \
+                else f'room <{room}>, '
+
+            to = self.to()
+            to_format = '' if to is None \
+                else f'say to contact <{to}>'
+            return '%stalker %s, %s, %s' % (
+                room_format,
+                self.talker(),
+                to_format,
+                self.text(),
+            )
+        return f'<{self.message_id}> not ready'
 
     async def say(self, msg: Union[str, Contact, FileBox, UrlLink, MiniProgram],
                   mention_ids: Optional[List[str]] = None) -> Message:
@@ -401,7 +408,7 @@ class Message(Accessory):
         """
         sync load message
         """
-        log.info('Message ready()')
+        log.debug('Message ready <%s>', self)
         if self.is_ready():
             return
 
@@ -410,12 +417,15 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('payload not found')
 
-        if self.payload.from_id is not None:
-            self.wechaty.Contact.load(self.payload.from_id)
-        if self.payload.room_id is not None:
-            self.wechaty.Room.load(self.payload.room_id)
-        if self.payload.to_id is not None:
-            self.wechaty.Contact.load(self.payload.to_id)
+        if self.payload.from_id.strip() != '':
+            talker = self.wechaty.Contact.load(self.payload.from_id)
+            await talker.ready()
+        if self.payload.room_id.strip() != '':
+            room = self.wechaty.Room.load(self.payload.room_id)
+            await room.ready()
+        if self.payload.to_id.strip() != '':
+            to_contact = self.wechaty.Contact.load(self.payload.to_id)
+            await to_contact.ready()
 
     def is_ready(self) -> bool:
         """
