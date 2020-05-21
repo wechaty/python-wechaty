@@ -1,7 +1,7 @@
 """doc"""
 from __future__ import annotations
 import logging
-from ..types import MemoryCardPayload
+from wechaty_puppet.memory_card.mctypes import MemoryCardPayload
 from .backend_config import StorageBackendOptions
 
 log = logging.getLogger("backend")

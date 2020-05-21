@@ -1,16 +1,16 @@
 """doc"""
 from __future__ import annotations
 import os
-from ..types import MemoryCardPayload
-from .backend import StorageBackend
+
 from .backend_config import (
     StorageBackendOptions,
     StorageFileOptions
 )
-
+from wechaty_puppet.memory_card.mctypes import MemoryCardPayload
 import logging
 import json
 import re
+from .backend import StorageBackend
 
 log = logging.getLogger("file")
 
@@ -48,15 +48,22 @@ class StorageFile(StorageBackend):
           }
         }))
         """
-        buffer: str = ""
+        try:
+            fp = open(self.absFileName, 'r')
+            buffer = fp.read()
+        except Exception as e:
+            print("fileload:", e)
+        finally:
+            fp.close()
+
         text = str(buffer)
 
         payload: MemoryCardPayload = {}
-
         try:
             payload = json.loads(text)
         except Exception as e:
             log.error('MemoryCard', 'load() exception: %s', e)
+            # print('MemoryCard', 'load() exception: ', e)
 
         return payload
 
@@ -74,6 +81,14 @@ class StorageFile(StorageBackend):
           )
         })
         """
+        try:
+            fp = open(self.absFileName, 'w')
+            fp.write(text)
+        except Exception as e:
+            print("filesave:", e)
+        finally:
+            fp.close()
+
     async def destroy(self) -> None:
         log.info('StorageFile', 'destroy()')
         if os.path.exists(self.absFileName):
