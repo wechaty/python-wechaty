@@ -28,7 +28,7 @@ from typing import (
 import json
 import logging
 
-from wechaty_puppet import (
+from wechaty_puppet import (    # type: ignore
     FriendshipType,
     FriendshipPayload
 )

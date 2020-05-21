@@ -25,7 +25,7 @@ from typing import (
     Optional,
 )
 
-from wechaty_puppet import (
+from wechaty_puppet import (    # type: ignore
     FileBox,
 )
 

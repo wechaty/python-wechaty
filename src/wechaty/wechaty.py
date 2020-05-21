@@ -35,7 +35,7 @@ from typing import (
     List)
 from pyee import AsyncIOEventEmitter    # type: ignore
 
-from wechaty_puppet import (
+from wechaty_puppet import (    # type: ignore
     Puppet,
     EventLoginPayload,
     EventLogoutPayload,
@@ -48,12 +48,13 @@ from wechaty_puppet import (
     EventRoomInvitePayload,
     EventRoomTopicPayload,
     EventRoomLeavePayload,
-    EventRoomJoinPayload
+    EventRoomJoinPayload,
+
+    ScanStatus,
 )
-from wechaty_puppet.schemas.event import ScanStatus
-from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT
-from wechaty_puppet.state_switch import StateSwitch
-from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
+from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT     # type: ignore
+from wechaty_puppet.state_switch import StateSwitch     # type: ignore
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
 from .user import (
     Contact,
     Friendship,
