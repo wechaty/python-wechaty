@@ -161,13 +161,14 @@ class Contact(Accessory, AsyncIOEventEmitter):
         load contact object from puppet
         :return:
         """
-        log.info('load contact %s', self.name)
+
         if force_sync or not self.is_ready():
             try:
                 payload = await self.puppet.contact_payload(
                     self.contact_id)
 
                 self.payload = payload
+                log.info('load contact <%s>', self)
             except IOError as e:
                 log.info('can"t load contact %s payload, message : %s',
                          self.name,
@@ -182,11 +183,11 @@ class Contact(Accessory, AsyncIOEventEmitter):
         if self.payload is None:
             return 'Contact <{}>'.format(self.contact_id)
 
-        if self.payload.name is not None:
-            identity = self.payload.name
-        elif self.payload.alias is not None:
+        if self.payload.alias.strip() != '':
             identity = self.payload.alias
-        elif self.contact_id is not None:
+        elif self.payload.name.strip() != '':
+            identity = self.payload.name
+        elif self.contact_id.strip() != '':
             identity = self.contact_id
         else:
             identity = 'loading ...'
