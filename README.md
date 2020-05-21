@@ -278,10 +278,10 @@ Project created, publish a empty module `wechaty` on PyPI.
 ## Commiters
 
 - [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
-- [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
+- [@huan](https://github.com/huan) - ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
 
 ## Copyright & License
 
-- Code & Docs © 2018 Wechaty Contributors
+- Code & Docs © 2018 Wechaty Contributors <https://github.com/wechaty>
 - Code released under the Apache-2.0 License
 - Docs released under Creative Commons
