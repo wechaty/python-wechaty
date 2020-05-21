@@ -1,0 +1,1 @@
+from .VERSION import VERSION
