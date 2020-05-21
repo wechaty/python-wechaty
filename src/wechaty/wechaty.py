@@ -70,7 +70,7 @@ from .utils import (
 log = logging.getLogger('Wechaty')
 log.setLevel(logging.INFO)
 
-DEFAULT_TIMEOUT = 60
+DEFAULT_TIMEOUT = 300
 
 
 # pylint: disable=R0903
@@ -104,7 +104,6 @@ class Wechaty(AsyncIOEventEmitter):
         """
         docstring
         """
-        log.info('__init__()')
         super().__init__()
         self.Tag = Tag
         self.Contact = Contact
@@ -125,6 +124,7 @@ class Wechaty(AsyncIOEventEmitter):
         self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
     def __str__(self):
+        """str format of the Room object"""
         return 'Wechaty<{0}, {1}>'.format(self.name, self.contact_id)
 
     @classmethod
@@ -169,7 +169,9 @@ class Wechaty(AsyncIOEventEmitter):
         :param kwargs:
         :return:
         """
-        log.info('emit() emit event <%s> <%s>', *args, **kwargs)
+        log.debug('emit() event <%s> <%s>',
+                  [str(item) for item in args],
+                  kwargs)
         super().emit(event, *args, **kwargs)
 
     async def on_error(self, payload: EventErrorPayload):
@@ -282,7 +284,7 @@ class Wechaty(AsyncIOEventEmitter):
             self._watchdog.on('sleep', ask_for_food)
             self._watchdog.feed(food)
             while True:
-                log.info('bot tick <%s>', datetime.now())
+                log.debug('bot tick <%s>', datetime.now())
                 await self._watchdog.sleep()
                 is_death = self._watchdog.starved_to_death()
                 if is_death:
@@ -311,10 +313,10 @@ class Wechaty(AsyncIOEventEmitter):
         for event_name in event_names:
             if event_name == 'dong':
                 def dong_listener(payload: EventDongPayload):
-                    log.info('receive <dong> event <%s>', payload)
+                    log.debug('receive <dong> event <%s>', payload)
                     self.emit('dong', payload.data)
                     # feed food to the dog
-                    food = WatchdogFood(timeout=3)
+                    food = WatchdogFood(timeout=30)
                     self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
@@ -366,9 +368,10 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'message':
                 async def message_listener(payload: EventMessagePayload):
-                    log.info('receive <message> event <%s>', payload)
+                    log.debug('receive <message> event <%s>', payload)
                     msg = self.Message.load(payload.message_id)
                     await msg.ready()
+                    log.info('receive message <%s>', msg)
                     self.emit('message', msg)
 
                     room = msg.room()
@@ -464,8 +467,8 @@ class Wechaty(AsyncIOEventEmitter):
             elif event_name == 'scan':
                 async def scan_listener(payload: EventScanPayload):
                     log.info('receive <scan> event <%s>')
-                    qr_code = '' if payload.qr_code is None \
-                        else payload.qr_code
+                    qr_code = '' if payload.qrcode is None \
+                        else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
                         qr_terminal(qr_code)
                     self.emit('scan', qr_code, payload.status, payload.data)
