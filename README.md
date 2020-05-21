@@ -271,19 +271,17 @@ Project created, publish a empty module `wechaty` on PyPI.
 - [Go Wechaty](https://github.com/wechaty/go-wechaty) - Go WeChat Bot SDK for Individual Account
 - [Java Wechaty](https://github.com/wechaty/java-wechaty) - Java WeChat Bot SDK for Individual Account
 
-## Maintainers
+## Contributors
 
-1. [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
 1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
-## Author
+## Commiters
 
-[Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
-
-[![Profile of Huan LI (李卓桓) on StackOverflow](https://stackexchange.com/users/flair/265499.png)](https://stackexchange.com/users/265499)
+- [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
+- [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
 
 ## Copyright & License
 
-- Code & Docs © 2018-now Huan LI \<zixia@zixia.net\>
+- Code & Docs © 2018 Wechaty Contributors
 - Code released under the Apache-2.0 License
 - Docs released under Creative Commons
