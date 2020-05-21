@@ -81,7 +81,6 @@ class MemoryCard(AsyncMap):
     options: Optional[MemoryCardOptions] = None
 
     def __init__(self, options: Optional[MemoryCardOptions] = None):
-        super().__init__()
         # log.info('MemoryCard', 'constructor(%s)' % json.dumps(options))
 
         if type(options) == str:
@@ -273,7 +272,8 @@ class MemoryCard(AsyncMap):
             raise Exception('no payload, please call load() first.')
 
         if self.isMultiplex():
-            for key in self.payload:
+            temp = self.payload.copy()
+            for key in temp:
                 if self._isMultiplexKey(key):
                     self.payload.pop(key)
         else:
@@ -298,7 +298,7 @@ class MemoryCard(AsyncMap):
     async def keys(self):
         log.info('MemoryCard', '<%s> keys()' % self._multiplexPath())
 
-        if not self.payload:
+        if self.payload is None:
             raise Exception('no payload, please call load() first.')
 
         for key in self.payload.keys():

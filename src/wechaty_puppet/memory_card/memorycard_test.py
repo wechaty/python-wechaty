@@ -1,8 +1,9 @@
 import asyncio
-import unittest
+import pytest
 from dataclasses import dataclass
-from .memory_card import MemoryCard, MemoryCardOptions
-from .storage.backend_config import StorageFileOptionsExtends, StorageBackendOptionsBase, StorageObsOptionsExtends
+from wechaty_puppet.memory_card import MemoryCard
+from wechaty_puppet.memory_card.memory_card import MemoryCardOptions
+from wechaty_puppet.memory_card.storage.backend_config import StorageFileOptionsExtends, StorageBackendOptionsBase, StorageObsOptionsExtends
 import random
 from typing import Any
 
@@ -18,19 +19,18 @@ class OBS_SETTING:
 memcardoptions = MemoryCardOptions(name='nop')
 
 
-class memorycard_test(unittest.TestCase):
+class TestMemoryCard:
 
     def test_smoke_testing(self):
         card = MemoryCard(memcardoptions)
         asyncio.run(card.load())
 
-        self.assertEqual(card.size, 0, 'init with 0')
+        assert card.size == 0, 'init with 0'
 
         asyncio.run(card.set('a', 'b'))
-        self.assertEqual(asyncio.run(card.get('a')), 'b', 'get key a with value b')
-
+        assert asyncio.run(card.get('a')) == 'b', 'get key a with value b'
         asyncio.run(card.clear())
-        self.assertEqual(card.size, 0, 'clear reset to 0')
+        assert card.size == 0, 'clear reset to 0'
 
     def test_storage_file(self):
         EXPECTED_KEY = 'key'
@@ -45,7 +45,7 @@ class memorycard_test(unittest.TestCase):
 
         cardB = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))
         asyncio.run(cardB.load())
-        self.assertEqual(asyncio.run(cardB.get(EXPECTED_KEY)), EXPECTED_VAL, 'should get val back from file')
+        assert asyncio.run(cardB.get(EXPECTED_KEY)) == EXPECTED_VAL, 'should get val back from file'
 
         asyncio.run(card.destroy())
         asyncio.run(cardB.destroy())
@@ -78,9 +78,9 @@ class memorycard_test(unittest.TestCase):
         card = MemoryCard(MemoryCardOptions(name=NAME, storageOptions=StorageBackendOptionsBase(type='file')))
         try:
             asyncio.run(card.save())
-            self.fail('should not call save() success')
+            assert 'should not call save() success'
         except Exception as e:
-            self.assertTrue('should throw to call save() before load()')
+            assert 'should throw to call save() before load()'
 
     def test_load(self):
         NAME = str(random.random())[2:]
@@ -88,14 +88,11 @@ class memorycard_test(unittest.TestCase):
         try:
             asyncio.run(card.load())
             asyncio.run(card.load())
-            self.fail('should not call load() success after twice')
+            assert 'should not call load() success after twice'
         except Exception as e:
-            self.assertTrue(True, 'should throw to call load() twice')
+            assert 'should throw to call load() twice'
 
     def test_memorycard(self):
         card = MemoryCard()
-        self.assertEqual(card.name, None, 'should get None as name')
+        assert card.name is None, 'should get None as name'
 
-
-if __name__ == '__main__':
-    unittest.main(argv=['-v'])
