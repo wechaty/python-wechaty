@@ -153,7 +153,7 @@ class HostiePuppet(Puppet):
         :param tag_id:
         :return:
         """
-        # chatie_grpc has not implement this function
+        # TODO -> chatie_grpc has not implement this function
         return None
 
     async def tag_contact_add(self, tag_id: str, contact_id: str):
@@ -173,7 +173,7 @@ class HostiePuppet(Puppet):
         :param contact_id:
         :return:
         """
-        # chatie_grpc has not implement this function
+        # TODO -> chatie_grpc has not implement this function
         return
 
     async def tag_contact_remove(self, tag_id: str, contact_id: str):
@@ -503,52 +503,45 @@ class HostiePuppet(Puppet):
         :param room_invitation_id:
         :return:
         """
+        await self.puppet_stub.room_invitation_accept(id=room_invitation_id)
 
     async def contact_self_qr_code(self) -> str:
         """
-
+        get contact self qr_code
         :return:
         """
-        return ''
+        response = await self.puppet_stub.contact_self_q_r_code()
+        if response is None:
+            raise ValueError('contact_self_qr_code() can"t get response ...')
+        return response.qrcode
 
     async def contact_self_name(self, name: str):
         """
-
+        set contact self name
         :param name:
         :return:
         """
+        await self.puppet_stub.contact_self_name(name=name)
 
     async def contact_signature(self, signature: str):
         """
-
+        get contact signature
         :param signature:
         :return:
         """
+        await self.puppet_stub.contact_self_signature(signature=signature)
 
     async def room_validate(self, room_id: str) -> bool:
         """
-
-        :param room_id:
-        :return:
-        """
-
-    async def room_payload_dirty(self, room_id: str):
-        """
-
-        :param room_id:
-        :return:
-        """
-
-    async def room_member_payload_dirty(self, room_id: str):
-        """
-
+        this function should be in wechaty
+        check if the room is validate
         :param room_id:
         :return:
         """
 
     async def room_payload(self, room_id: str) -> RoomPayload:
         """
-
+        get room payload
         :param room_id:
         :return:
         """
@@ -557,7 +550,7 @@ class HostiePuppet(Puppet):
 
     async def room_members(self, room_id: str) -> List[str]:
         """
-
+        get room members
         :param room_id:
         :return:
         """
@@ -565,46 +558,87 @@ class HostiePuppet(Puppet):
         return response.member_ids
 
     async def room_add(self, room_id: str, contact_id: str):
-        pass
-
-    async def room_delete(self, room_id: str, contact_id: str):
-        pass
-
-    async def room_quit(self, room_id: str):
-        pass
-
-    async def room_topic(self, room_id: str, new_topic: str):
-        pass
-
-    async def room_announce(self, room_id: str,
-                            announcement: str = None) -> str:
         """
-
-        :param room_id:
-        :param announcement:
-        :return:
-        """
-        return ''
-
-    async def room_qr_code(self, room_id: str) -> str:
-        """
-
-        :param room_id:
-        :return:
-        """
-        return ''
-
-    async def room_member_payload(self, room_id: str,
-                                  contact_id: str) -> RoomMemberPayload:
-        """
-
+        add room
         :param room_id:
         :param contact_id:
         :return:
         """
+        await self.puppet_stub.room_add(id=room_id, contact_id=contact_id)
+
+    async def room_delete(self, room_id: str, contact_id: str):
+        """
+        delete room
+        :param room_id:
+        :param contact_id:
+        :return:
+        """
+        await self.puppet_stub.room_del(id=room_id, contact_id=contact_id)
+
+    async def room_quit(self, room_id: str):
+        """
+        quit from room
+        :param room_id:
+        :return:
+        """
+        await self.puppet_stub.room_quit(id=room_id)
+
+    async def room_topic(self, room_id: str,
+                         new_topic: Optional[str] = None) -> Optional[str]:
+        """
+        get/set topic of the room
+        :param room_id:
+        :param new_topic:
+        :return:
+        """
+        response = await self.puppet_stub.room_topic(
+            id=room_id, topic=new_topic)
+        return response.topic
+
+    async def room_announce(self, room_id: str,
+                            announcement: Optional[str] = None
+                            ) -> Optional[str]:
+        """
+        get/set announce of the room
+        :param room_id:
+        :param announcement:
+        :return:
+        """
+        response = await self.puppet_stub.room_announce(
+            id=room_id, text=announcement)
+        return response.text
+
+    async def room_qr_code(self, room_id: str) -> str:
+        """
+        get the qr_code of the room
+        :param room_id:
+        :return:
+        """
+        response = await self.puppet_stub.room_q_r_code(id=room_id)
+        return response.qrcode
+
+    async def room_member_payload(self, room_id: str,
+                                  contact_id: str) -> RoomMemberPayload:
+        """
+        get room member payload
+        :param room_id:
+        :param contact_id:
+        :return:
+        """
+        response = await self.puppet_stub.room_member_payload(
+            id=room_id, member_id=contact_id)
+        return response
 
     async def room_avatar(self, room_id: str) -> FileBox:
-        pass
+        """
+        get avatar of the room
+        :param room_id:
+        :return:
+        """
+        response = await self.puppet_stub.room_avatar(id=room_id)
+        # TODO -> need to get file mimeType from base64str
+        file_box = FileBox.from_base64(response.filebox)
+        return file_box
 
     def init_puppet(self) -> Tuple[Channel, PuppetStub]:
         """
@@ -622,7 +656,6 @@ class HostiePuppet(Puppet):
             raise Exception("can't find hostie server address")
         log.info('init puppet hostie')
         log.debug('get puppet ip address : <%s>', data)
-
         channel = Channel(host=data['ip'], port=8788)
         puppet_stub = PuppetStub(channel)
         # try to restart puppet_stub
