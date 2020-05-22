@@ -33,7 +33,7 @@ import json
 import logging
 from pyee import AsyncIOEventEmitter    # type: ignore
 # from wechaty_puppet import RoomMemberPayload
-from wechaty_puppet import (
+from wechaty_puppet import (    # type: ignore
     FileBox,
     RoomQueryFilter,
     RoomPayload

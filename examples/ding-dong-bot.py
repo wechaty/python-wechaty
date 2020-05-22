@@ -3,18 +3,22 @@ import asyncio
 import logging
 from typing import Optional, Union
 
+from wechaty_puppet import PuppetOptions, FileBox  # type: ignore
+from wechaty_puppet_hostie import HostiePuppet  # type: ignore
+
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
-from wechaty_puppet import PuppetOptions
-from wechaty_puppet_hostie import HostiePuppet
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(filename)s <%(funcName)s> %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 log = logging.getLogger('DingDongBot')
 
 
 async def message(msg: Message):
     """back on message"""
-    log.info(msg)
     from_contact = msg.talker()
     text = msg.text()
     room = msg.room()
@@ -24,16 +28,12 @@ async def message(msg: Message):
         await conversationer.ready()
         await conversationer.say('dong')
         # await conversationer.say('🤔')
-        # file_box = FileBox.from_url(
-        #     'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/'
-        #     'u=1116676390,2305043183&fm=26&gp=0.jpg',
-        #     name='ding-dong.jpg')
-        # content = open('log.txt', 'rb').read()
-        # base64_str = base64.b64encode(content)
+        file_box = FileBox.from_url(
+            'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/'
+            'u=1116676390,2305043183&fm=26&gp=0.jpg',
+            name='ding-dong.jpg')
         # file_box = FileBox.from_file('ding-dong-icon.png', name='ding-dong.png')
-        # file_box = FileBox.from_base64(base64=base64_str, name='log.txt')
-        # file_box = FileBox.from_base64(base64=base64_str, name='log.txt')
-        # await conversationer.say(file_box)
+        await conversationer.say(file_box)
 
 
 async def do_some_thing():

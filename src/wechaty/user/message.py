@@ -28,12 +28,11 @@ from typing import (
 
 from datetime import datetime
 import logging
-from wechaty_puppet import (
+from wechaty_puppet import (    # type: ignore
     MessagePayload,
     MessageQueryFilter,
     MessageType,
 )
-# from wechaty.utils import type_check
 
 from ..accessory import Accessory
 

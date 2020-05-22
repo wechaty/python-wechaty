@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 
-from wechaty_puppet import MiniProgramPayload
+from wechaty_puppet import MiniProgramPayload   # type: ignore
 
 
 log = logging.getLogger('MiniProgram')

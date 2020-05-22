@@ -27,9 +27,8 @@ from typing import (
     Type,
 )
 
-from wechaty_puppet.schemas.image import ImageType
 
-from wechaty_puppet import FileBox
+from wechaty_puppet import FileBox, ImageType   # type: ignore
 
 from ..accessory import Accessory
 from ..config import (

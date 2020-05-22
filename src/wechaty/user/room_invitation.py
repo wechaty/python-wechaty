@@ -24,7 +24,7 @@ from typing import Union, List
 import logging
 import json
 from datetime import datetime
-from wechaty_puppet import RoomInvitationPayload
+from wechaty_puppet import RoomInvitationPayload    # type: ignore
 from .contact import Contact
 from ..types import Acceptable
 from ..accessory import Accessory

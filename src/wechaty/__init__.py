@@ -1,6 +1,6 @@
 """doc"""
 
-from wechaty_puppet import (
+from wechaty_puppet import (    # type: ignore
     FileBox,
 )
 from .accessory import Accessory
