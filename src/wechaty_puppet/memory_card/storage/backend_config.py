@@ -65,7 +65,6 @@ StorageBackendOptions = Union[StorageBackendOptionsBase, StorageFileOptionsExten
 from .file import StorageFile
 from .nop import StorageNop
 from .obs import StorageObs
-
 # from .s3 import StorageS3
 
 BACKEND_DICT = {"file": StorageFile,

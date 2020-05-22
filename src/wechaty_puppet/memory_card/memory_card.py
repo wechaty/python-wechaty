@@ -9,7 +9,6 @@ from typing import (
 )
 
 from dataclasses import dataclass
-import asyncio
 from .config import VERSION
 from .storage import (
     getStorage,
@@ -81,7 +80,6 @@ class MemoryCard(AsyncMap):
     options: Optional[MemoryCardOptions] = None
 
     def __init__(self, options: Optional[MemoryCardOptions] = None):
-        # log.info('MemoryCard', 'constructor(%s)' % json.dumps(options))
 
         if type(options) == str:
             options = MemoryCardOptions(name=options)
@@ -161,7 +159,6 @@ class MemoryCard(AsyncMap):
         await self.storage.save(self.payload)
 
     def _isMultiplexKey(self, key: str) -> bool:
-        # if NAMESPACE_MULTIPLEX_SEPRATOR_REGEX.match(key) and NAMESPACE_KEY_SEPRATOR_REGEX.match(key):
         if re.search(NAMESPACE_MULTIPLEX_SEPRATOR_REGEX, key) and re.search(NAMESPACE_KEY_SEPRATOR_REGEX, key):
             namespace = self._multiplexNamespace()
             return key.startswith(namespace)
@@ -249,16 +246,6 @@ class MemoryCard(AsyncMap):
         if not self.payload:
             raise Exception('no payload, please call load() first.')
 
-        # while True:
-        #     try:
-        #         relativeKey = next(self.keys())
-        #         absoluteKey = self._resolveKey(relativeKey)
-        #         data = self.payload[absoluteKey]
-        #         pair = [relativeKey, data]
-        #         yield pair
-        #     except Exception as e:
-        #         pass
-        # pytype: disable=attribute-error
         for relativeKey in self.keys():
             absoluteKey = self._resolveKey(relativeKey)
             data = self.payload[absoluteKey]
@@ -316,14 +303,6 @@ class MemoryCard(AsyncMap):
         if not self.payload:
             raise Exception('no payload, please call load() first.')
 
-        # while True:
-        #     try:
-        #         relativeKey = next(self.keys())
-        #         absoluteKey = self._resolveKey(relativeKey)
-        #         yield self.payload.get(absoluteKey)
-        #     except Exception as e:
-        #         pass
-        # pytype: disable=attribute-error
         for relativeKey in self.keys():
             absoluteKey = self._resolveKey(relativeKey)
             yield self.payload.get(absoluteKey)

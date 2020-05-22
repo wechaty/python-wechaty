@@ -8,18 +8,15 @@ from typing import Optional
 from .backend import StorageBackend
 
 import logging
-import json
 
 log = logging.getLogger('getStorage')
 
 
-# options : StorageBackendOptions = {type: 'file'}
 def getStorage(name: Optional[str] = None, options: StorageBackendOptions = None) -> StorageBackend:
 
     if options is None:
         options = StorageFileOptionsExtends(type='file')
 
-    # log.info('getStorage', 'name: %s, options: %s' % (name, json.dumps(options)))
     if not name:
         print("options", options)
         if not options.type == 'nop':

@@ -1,17 +1,13 @@
 """doc"""
 from __future__ import annotations
-# from dataclasses import dataclass
 from typing import (
     TypeVar,
     Generic,
-    List
 )
-import collections
 K = TypeVar("K")
 V = TypeVar("V")
 
 
-# class AsyncMap(Generic[K, V]):
 class AsyncMap(Generic[K, V]):
 
     @property
