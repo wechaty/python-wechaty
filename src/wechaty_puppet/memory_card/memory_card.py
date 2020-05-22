@@ -1,4 +1,5 @@
 """doc"""
+# pytype: disable=attribute-error
 from __future__ import annotations
 import logging
 import json
@@ -36,7 +37,6 @@ class multiplexprop:
 
 @dataclass
 class MemoryCardOptions:
-    # TODO name: Optional[str]
     name: Optional[str] = None
     storageOptions: Optional[StorageBackendOptions] = None
     multiplex: Optional[multiplexprop] = None
@@ -48,7 +48,6 @@ class MemoryCardJsonObject:
     options: MemoryCardOptions
 
 
-# TODO
 class MemoryCard(AsyncMap):
     VERSION = VERSION
 
