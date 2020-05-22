@@ -9,7 +9,7 @@ from typing import (
 import logging
 import requests
 
-from wechaty_puppet import UrlLinkPayload
+from wechaty_puppet import UrlLinkPayload   # type: ignore
 
 log = logging.getLogger('UrlLink')
 

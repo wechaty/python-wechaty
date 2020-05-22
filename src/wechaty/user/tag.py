@@ -11,7 +11,6 @@ from typing import (
 )
 
 from collections import defaultdict
-# from wechaty.utils import type_check
 
 from ..accessory import (
     Accessory,

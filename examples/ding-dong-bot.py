@@ -3,18 +3,22 @@ import asyncio
 import logging
 from typing import Optional, Union
 
+from wechaty_puppet import PuppetOptions    # type: ignore
+from wechaty_puppet_hostie import HostiePuppet  # type: ignore
+
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
-from wechaty_puppet import PuppetOptions
-from wechaty_puppet_hostie import HostiePuppet
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(filename)s <%(funcName)s> %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 log = logging.getLogger('DingDongBot')
 
 
 async def message(msg: Message):
     """back on message"""
-    log.info(msg)
     from_contact = msg.talker()
     text = msg.text()
     room = msg.room()
