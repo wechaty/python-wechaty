@@ -70,6 +70,8 @@ from .schemas.mini_program import MiniProgramPayload
 
 from .schemas.event import (
     EventScanPayload,
+    ScanStatus,
+
     EventDongPayload,
     EventLoginPayload,
     EventReadyPayload,
@@ -118,6 +120,8 @@ __all__ = [
     'MiniProgramPayload',
 
     'EventScanPayload',
+    'ScanStatus',
+
     'EventDongPayload',
     'EventLoginPayload',
     'EventReadyPayload',
