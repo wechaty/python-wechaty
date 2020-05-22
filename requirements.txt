@@ -2,3 +2,4 @@ pyee
 requests
 qrcode
 wechaty-puppet
+wechaty-puppet-hostie
