@@ -26,13 +26,15 @@ from __future__ import annotations
 import asyncio
 import logging
 from datetime import datetime
+from dataclasses import dataclass
+import subprocess
 from typing import (
     # TypeVar,
     # cast,
     Optional,
     Type,
     # Union,
-    List)
+    List, Union)
 from pyee import AsyncIOEventEmitter    # type: ignore
 
 from wechaty_puppet import (    # type: ignore
@@ -52,7 +54,7 @@ from wechaty_puppet import (    # type: ignore
 
     ScanStatus,
 )
-from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT     # type: ignore
+from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
 from .user import (
@@ -74,18 +76,17 @@ log.setLevel(logging.INFO)
 DEFAULT_TIMEOUT = 300
 
 
-# pylint: disable=R0903
+PuppetModuleName = str
+
+
+@dataclass
 class WechatyOptions:
     """
     WechatyOptions instance
     """
-
-    def __init__(self, puppet: Puppet, name: str = None):
-        """
-        WechatyOptions constructor
-        """
-        self.name: Optional[str] = name
-        self.puppet: Puppet = puppet
+    name: Optional[str] = None
+    puppet: Optional[Union[PuppetModuleName, Puppet]] = None
+    puppet_options: Optional[PuppetOptions] = None
 
 
 # pylint:disable=R0902,R0904
@@ -101,11 +102,15 @@ class Wechaty(AsyncIOEventEmitter):
     # save login user contact_id
     contact_id: str
 
-    def __init__(self, puppet: Puppet):
+    def __init__(self, options: Optional[WechatyOptions] = None):
         """
         docstring
         """
         super().__init__()
+
+        if options is None:
+            options = WechatyOptions(puppet='wechaty-puppet-hostie')
+
         self.Tag = Tag
         self.Contact = Contact
         self.Friendship = Friendship
@@ -115,7 +120,8 @@ class Wechaty(AsyncIOEventEmitter):
         self.RoomInvitation = RoomInvitation
 
         self.started: bool = False
-        self.puppet: Puppet = puppet
+
+        self.puppet: Puppet = self._load_puppet(options)
 
         self._name: Optional[str] = None
 
@@ -124,12 +130,40 @@ class Wechaty(AsyncIOEventEmitter):
 
         self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
+    @staticmethod
+    def _load_puppet(options: WechatyOptions) -> Puppet:
+        """
+        dynamic load puppet
+        :param puppet_options:
+        :return:
+        """
+        if options.puppet is None:
+            raise Exception('puppet not exist')
+        if isinstance(options.puppet, PuppetModuleName):
+            if options.puppet == 'wechaty-puppet-hostie':
+                log.info('installing wechaty-puppet-hostie')
+                subprocess.call(['pip', 'install', 'wechaty-puppet-hostie'])
+                hostie_module = __import__('wechaty_puppet_hostie')
+                if not hasattr(hostie_module, 'HostiePuppet'):
+                    raise Exception('HostiePuppet not exist in '
+                                    'wechaty-puppet-hostie')
+                hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
+                if not issubclass(hostie_puppet_class, Puppet):
+                    raise TypeError(f'Type {hostie_puppet_class} '
+                                    f'is not correct')
+                return hostie_puppet_class(options.puppet_options)
+        elif isinstance(options.puppet, Puppet):
+            return options.puppet
+        raise TypeError('puppet expected type is [Puppet, '
+                        'PuppetModuleName(str)]')
+
     def __str__(self):
         """str format of the Room object"""
         return 'Wechaty<{0}, {1}>'.format(self.name, self.contact_id)
 
     @classmethod
-    def instance(cls: Type[Wechaty], puppet: Puppet) -> Wechaty:
+    def instance(cls: Type[Wechaty], options: Optional[WechatyOptions] = None
+                 ) -> Wechaty:
         """
         get or create global wechaty instance
         :return:
@@ -137,7 +171,7 @@ class Wechaty(AsyncIOEventEmitter):
         log.info('instance()')
 
         if cls._global_instance is None:
-            cls._global_instance = cls(puppet)
+            cls._global_instance = cls(options)
 
         # Huan(202003): how to remove cast?
         return cls._global_instance
