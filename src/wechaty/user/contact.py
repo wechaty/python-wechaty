@@ -201,6 +201,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         """
         if not self.is_ready():
             await self.ready()
+
         if isinstance(message, str):
             # say text
             msg_id = await self.puppet.message_send_text(

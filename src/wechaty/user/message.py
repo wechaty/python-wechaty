@@ -70,11 +70,11 @@ class Message(Accessory):
 
         # TODO -> check if it's Message class
         if not issubclass(self.__class__, Message):
-            raise Exception('Message class can not be instanciated directly!')
+            raise Exception('Message class can not be Initialized directly!')
 
         if self.puppet is None:
             raise Exception(
-                'Message class can not be instanciated without a puppet!'
+                'Message class can not be Initialized without a puppet!'
             )
 
     @property
@@ -127,6 +127,13 @@ class Message(Accessory):
             if talker is None:
                 raise ValueError(f'Message must be from room/contact')
             conversation_id = talker.contact_id
+
+        # in order to resolve circular dependency problems which is not for
+        # typing, we import some modules locally.
+        # TODO -> this is not good solution, we will fix it later.
+
+        from .url_link import UrlLink
+        from .mini_program import MiniProgram
 
         if isinstance(msg, str):
             message_id = await self.puppet.message_send_text(

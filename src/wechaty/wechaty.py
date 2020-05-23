@@ -26,13 +26,15 @@ from __future__ import annotations
 import asyncio
 import logging
 from datetime import datetime
+from dataclasses import dataclass
+import subprocess
 from typing import (
     # TypeVar,
     # cast,
     Optional,
     Type,
     # Union,
-    List)
+    List, Union)
 from pyee import AsyncIOEventEmitter    # type: ignore
 
 from wechaty_puppet import (    # type: ignore
@@ -52,7 +54,7 @@ from wechaty_puppet import (    # type: ignore
 
     ScanStatus,
 )
-from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT     # type: ignore
+from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
 from .user import (
@@ -74,18 +76,17 @@ log.setLevel(logging.INFO)
 DEFAULT_TIMEOUT = 300
 
 
-# pylint: disable=R0903
+PuppetModuleName = str
+
+
+@dataclass
 class WechatyOptions:
     """
     WechatyOptions instance
     """
-
-    def __init__(self, puppet: Puppet, name: str = None):
-        """
-        WechatyOptions constructor
-        """
-        self.name: Optional[str] = name
-        self.puppet: Puppet = puppet
+    name: Optional[str] = None
+    puppet: Optional[Union[PuppetModuleName, Puppet]] = None
+    puppet_options: Optional[PuppetOptions] = None
 
 
 # pylint:disable=R0902,R0904
@@ -101,11 +102,17 @@ class Wechaty(AsyncIOEventEmitter):
     # save login user contact_id
     contact_id: str
 
-    def __init__(self, puppet: Puppet):
+    def __init__(self, options: Optional[WechatyOptions] = None):
         """
         docstring
         """
         super().__init__()
+
+        if options is None:
+            options = WechatyOptions(puppet='wechaty-puppet-hostie')
+        if options.puppet_options is None:
+            options.puppet_options = PuppetOptions()
+
         self.Tag = Tag
         self.Contact = Contact
         self.Friendship = Friendship
@@ -115,7 +122,8 @@ class Wechaty(AsyncIOEventEmitter):
         self.RoomInvitation = RoomInvitation
 
         self.started: bool = False
-        self.puppet: Puppet = puppet
+
+        self.puppet: Puppet = self._load_puppet(options)
 
         self._name: Optional[str] = None
 
@@ -124,12 +132,40 @@ class Wechaty(AsyncIOEventEmitter):
 
         self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
+    @staticmethod
+    def _load_puppet(options: WechatyOptions) -> Puppet:
+        """
+        dynamic load puppet
+        :param puppet_options:
+        :return:
+        """
+        if options.puppet is None:
+            raise Exception('puppet not exist')
+        if isinstance(options.puppet, PuppetModuleName):
+            if options.puppet == 'wechaty-puppet-hostie':
+                log.info('installing wechaty-puppet-hostie')
+                subprocess.call(['pip', 'install', 'wechaty-puppet-hostie'])
+                hostie_module = __import__('wechaty_puppet_hostie')
+                if not hasattr(hostie_module, 'HostiePuppet'):
+                    raise Exception('HostiePuppet not exist in '
+                                    'wechaty-puppet-hostie')
+                hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
+                if not issubclass(hostie_puppet_class, Puppet):
+                    raise TypeError(f'Type {hostie_puppet_class} '
+                                    f'is not correct')
+                return hostie_puppet_class(options.puppet_options)
+        elif isinstance(options.puppet, Puppet):
+            return options.puppet
+        raise TypeError('puppet expected type is [Puppet, '
+                        'PuppetModuleName(str)]')
+
     def __str__(self):
         """str format of the Room object"""
         return 'Wechaty<{0}, {1}>'.format(self.name, self.contact_id)
 
     @classmethod
-    def instance(cls: Type[Wechaty], puppet: Puppet) -> Wechaty:
+    def instance(cls: Type[Wechaty], options: Optional[WechatyOptions] = None
+                 ) -> Wechaty:
         """
         get or create global wechaty instance
         :return:
@@ -137,7 +173,7 @@ class Wechaty(AsyncIOEventEmitter):
         log.info('instance()')
 
         if cls._global_instance is None:
-            cls._global_instance = cls(puppet)
+            cls._global_instance = cls(options)
 
         # Huan(202003): how to remove cast?
         return cls._global_instance
@@ -322,17 +358,18 @@ class Wechaty(AsyncIOEventEmitter):
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
-                def error_listener(payload: EventErrorPayload):
+                async def error_listener(payload: EventErrorPayload):
                     log.info('receive <error> event <%s>', payload)
                     self.emit('error', payload)
-                    self.on_error(payload)
+                    await self.on_error(payload)
 
                 puppet.on('error', error_listener)
 
             elif event_name == 'heart-beat':
-                def heartbeat_listener(payload: EventHeartbeatPayload):
+                async def heartbeat_listener(payload: EventHeartbeatPayload):
                     log.info('receive <heart-beat> event <%s>', payload)
                     self.emit('heartbeat', payload.data)
+                    await self.on_heartbeat(payload)
 
                 puppet.on('heart-beat', heartbeat_listener)
 
@@ -343,6 +380,7 @@ class Wechaty(AsyncIOEventEmitter):
                     await friendship.ready()
                     self.emit('friendship', payload)
                     friendship.contact().emit('friendship', friendship)
+                    await self.on_friendship(payload)
 
                 puppet.on('friendship', friendship_listener)
 
@@ -354,6 +392,7 @@ class Wechaty(AsyncIOEventEmitter):
                     contact = self.Contact.load(payload.contact_id)
                     await contact.ready()
                     self.emit('login', Contact)
+                    await self.on_login(contact)
 
                 puppet.on('login', login_listener)
 
@@ -364,6 +403,7 @@ class Wechaty(AsyncIOEventEmitter):
                     contact = self.Contact.load(payload.contact_id)
                     await contact.ready()
                     self.emit('logout', Contact)
+                    await self.on_logout(contact)
 
                 puppet.on('logout', logout_listener)
 
@@ -374,6 +414,7 @@ class Wechaty(AsyncIOEventEmitter):
                     await msg.ready()
                     log.info('receive message <%s>', msg)
                     self.emit('message', msg)
+                    await self.on_message(msg)
 
                     room = msg.room()
                     if room is not None:
@@ -382,10 +423,11 @@ class Wechaty(AsyncIOEventEmitter):
                 puppet.on('message', message_listener)
 
             elif event_name == 'ready':
-                def ready_listener():
+                async def ready_listener():
                     log.info('receive <ready> event <%s>')
                     self.emit('ready')
                     self._ready_state.on(True)
+                    await self.on_ready()
 
                 puppet.on('ready', ready_listener)
 
@@ -395,6 +437,7 @@ class Wechaty(AsyncIOEventEmitter):
                     invitation = self.RoomInvitation.load(
                         payload.room_invitation_id)
                     self.emit('room-invite', invitation)
+                    await self.on_room_invite(invitation)
 
                 puppet.on('room-invite', room_invite_listener)
 
@@ -414,6 +457,8 @@ class Wechaty(AsyncIOEventEmitter):
 
                     date = datetime.fromtimestamp(payload.time_stamp)
                     self.emit('room-join', room, invitees, inviter, date)
+                    await self.on_room_join(room, invitees, inviter, date)
+
                     room.emit('join', invitees, inviter, date)
 
                 puppet.on('room-join', room_join_listener)
@@ -435,8 +480,9 @@ class Wechaty(AsyncIOEventEmitter):
                     await remover.ready()
 
                     date = datetime.fromtimestamp(payload.time_stamp)
-
                     self.emit('room-leave', room, leavers, remover, date)
+                    await self.on_room_leave(room, leavers, remover, date)
+
                     room.emit('leave', leavers, remover, date)
 
                     if self.puppet.self_id() in payload.removed_ids:
@@ -460,6 +506,10 @@ class Wechaty(AsyncIOEventEmitter):
 
                     self.emit('room-topic', room, payload.new_topic,
                               payload.old_topic, changer, date)
+
+                    await self.on_room_topic(room, payload.new_topic,
+                                             payload.old_topic, changer, date)
+
                     room.emit('topic', payload.new_topic, payload.old_topic,
                               changer, date)
 
@@ -472,7 +522,8 @@ class Wechaty(AsyncIOEventEmitter):
                         else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
                         qr_terminal(qr_code)
-                    self.emit('scan', qr_code, payload.status, payload.data)
+                    self.emit('scan', payload.status, qr_code,  payload.data)
+                    await self.on_scan(payload.status, qr_code,  payload.data)
 
                 puppet.on('scan', scan_listener)
 
