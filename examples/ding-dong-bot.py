@@ -1,18 +1,18 @@
 """doc"""
 import asyncio
 import logging
+import os
 from typing import Optional, Union
 
-from wechaty_puppet import PuppetOptions, FileBox  # type: ignore
+from wechaty_puppet import FileBox  # type: ignore
 
-from wechaty import Wechaty, Contact, WechatyOptions
+from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(filename)s <%(funcName)s> %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
-    filename='./log.txt'
 )
 log = logging.getLogger(__name__)
 
@@ -33,22 +33,15 @@ async def message(msg: Message):
             name='ding-dong.jpg')
         await conversation.say(file_box)
 
+os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'your-token-here'
 bot: Optional[Wechaty] = None
 
 
 async def main():
     """doc"""
-    token = open('../token.txt').readlines()[0]
-    token = token.replace('\n', '')
     # pylint: disable=W0603
     global bot
-    options = WechatyOptions(
-        puppet='wechaty-puppet-hostie',
-        puppet_options=PuppetOptions(
-            token=token
-        )
-    )
-    bot = Wechaty(options).on('message', message)
+    bot = Wechaty().on('message', message)
     await bot.start()
 
 
