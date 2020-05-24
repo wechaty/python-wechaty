@@ -7,6 +7,7 @@
 <!--
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
 -->
+[![Python Wechaty Getting Started](https://img.shields.io/badge/Python%20Wechaty-Getting%20Started-blue)](https://github.com/wechaty/python-wechaty-getting-started)
 
 ## Connecting Chatbots
 
