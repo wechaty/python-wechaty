@@ -51,7 +51,7 @@ class MyBot(Wechaty):
 
 
 bot: Optional[MyBot] = None
-os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'donut-test-user-6014'
+os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'your-token-here'
 
 
 async def main():
