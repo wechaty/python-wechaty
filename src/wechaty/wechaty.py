@@ -37,7 +37,7 @@ from typing import (
     List, Union)
 from pyee import AsyncIOEventEmitter    # type: ignore
 
-from wechaty_puppet import (    # type: ignore
+from wechaty_puppet import (  # type: ignore
     Puppet,
     EventLoginPayload,
     EventLogoutPayload,
@@ -53,7 +53,7 @@ from wechaty_puppet import (    # type: ignore
     EventRoomJoinPayload,
 
     ScanStatus,
-)
+    EventReadyPayload)
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
@@ -253,7 +253,7 @@ class Wechaty(AsyncIOEventEmitter):
         this is friendly for code typing
         """
 
-    async def on_ready(self):
+    async def on_ready(self, payload: EventReadyPayload):
         """
         listen ready event for puppet
 
@@ -423,11 +423,11 @@ class Wechaty(AsyncIOEventEmitter):
                 puppet.on('message', message_listener)
 
             elif event_name == 'ready':
-                async def ready_listener():
+                async def ready_listener(payload: EventReadyPayload):
                     log.info('receive <ready> event <%s>')
-                    self.emit('ready')
+                    self.emit('ready', payload)
                     self._ready_state.on(True)
-                    await self.on_ready()
+                    await self.on_ready(payload)
 
                 puppet.on('ready', ready_listener)
 
