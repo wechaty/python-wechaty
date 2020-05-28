@@ -28,6 +28,7 @@ from typing import (
 
 from datetime import datetime
 from wechaty_puppet import (    # type: ignore
+    FileBox,
     MessagePayload,
     MessageQueryFilter,
     MessageType,
@@ -42,14 +43,9 @@ from .mini_program import MiniProgram
 # from ..types import Sayable
 
 from .contact import Contact
-
-if TYPE_CHECKING:
-    from .url_link import UrlLink
-    from .image import Image
-    from .room import Room
-    from wechaty_puppet import (
-        FileBox
-    )
+from .url_link import UrlLink
+from .image import Image
+from .room import Room
 
 log = get_logger('Message')
 
