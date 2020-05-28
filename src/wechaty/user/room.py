@@ -30,7 +30,6 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-import logging
 from pyee import AsyncIOEventEmitter    # type: ignore
 # from wechaty_puppet import RoomMemberPayload
 from wechaty_puppet import (    # type: ignore
@@ -40,6 +39,7 @@ from wechaty_puppet import (    # type: ignore
 )
 # from wechaty.utils import type_check
 from ..accessory import Accessory
+from ..config import get_logger
 
 if TYPE_CHECKING:
 
@@ -48,7 +48,7 @@ if TYPE_CHECKING:
     from .mini_program import MiniProgram
     from .message import Message
 
-log = logging.getLogger('Room')
+log = get_logger('Room')
 
 
 class Room(Accessory):

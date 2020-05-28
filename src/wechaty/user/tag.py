@@ -16,14 +16,14 @@ from ..accessory import (
     Accessory,
 )
 from ..config import (
-    logging,
+    get_logger,
 )
 
 if TYPE_CHECKING:
     from .contact import Contact
     from .favorite import Favorite
 
-log = logging.getLogger('Tag')
+log = get_logger('Tag')
 
 
 class Tag(Accessory):

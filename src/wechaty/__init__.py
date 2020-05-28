@@ -4,7 +4,7 @@ from wechaty_puppet import (    # type: ignore
     FileBox,
 )
 from .config import (
-    logging,
+    get_logger,
 )
 from .accessory import Accessory
 from .wechaty import (
@@ -29,8 +29,8 @@ __all__ = [
     'Favorite',
     'FileBox',
     'Friendship',
+    'get_logger',
     'Image',
-    'logging',
     'Message',
     'MiniProgram',
     'Room',

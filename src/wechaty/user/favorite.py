@@ -24,13 +24,14 @@ from typing import (
     TYPE_CHECKING,
     List,
 )
-import logging
+from ..config import (
+    get_logger,
+)
 
 if TYPE_CHECKING:
-
     from .tag import Tag
 
-log = logging.getLogger('Favorite')
+log = get_logger('Favorite')
 
 
 # pylint: disable=R

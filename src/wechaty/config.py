@@ -29,11 +29,42 @@ from wechaty_puppet import (    # type: ignore
     FileBox,
 )
 
-# pylint: disable=C0103
-log = logging.getLogger('Config')
+
+def get_logger(name: str) -> logging.Logger:
+    """
+    configured Loggers
+    """
+    WECHATY_LOG_KEY = 'WECHATY_LOG'
+
+    if WECHATY_LOG_KEY in os.environ:
+        WECHATY_LOG = os.environ[WECHATY_LOG_KEY].upper()
+    else:
+        WECHATY_LOG = 'INFO'
+
+    LOGGER_LEVELS = [
+        'CRITICAL',
+        'ERROR',
+        'WARNING',
+        'INFO',
+        'DEBUG',
+    ]
+
+    if WECHATY_LOG in LOGGER_LEVELS:
+        level = getattr(logging, WECHATY_LOG, logging.INFO)
+    else:
+        level = logging.INFO
+
+    _log = logging.getLogger(name)
+    _log.setLevel(level)
+
+    return _log
+
+
+log = get_logger('Config')
 
 # log.debug('test logging debug')
 # log.info('test logging info')
+
 
 _FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_PATH = os.path.realpath(

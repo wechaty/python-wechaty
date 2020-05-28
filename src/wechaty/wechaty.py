@@ -24,7 +24,6 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
-import logging
 from datetime import datetime
 from dataclasses import dataclass
 from typing import (
@@ -68,9 +67,11 @@ from .user import (
 from .utils import (
     qr_terminal
 )
+from .config import (
+    get_logger,
+)
 
-log = logging.getLogger('Wechaty')
-log.setLevel(logging.INFO)
+log = get_logger('Wechaty')
 
 DEFAULT_TIMEOUT = 300
 

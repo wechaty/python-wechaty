@@ -21,15 +21,15 @@ limitations under the License.
 from __future__ import annotations
 
 from typing import Union, List
-import logging
 import json
 from datetime import datetime
 from wechaty_puppet import RoomInvitationPayload    # type: ignore
 from .contact import Contact
 from ..types import Acceptable
 from ..accessory import Accessory
+from ..config import get_logger
 
-log = logging.getLogger('RoomInvitation')
+log = get_logger('RoomInvitation')
 
 
 class RoomInvitation(Accessory, Acceptable):
