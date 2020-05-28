@@ -27,7 +27,6 @@ import asyncio
 import logging
 from datetime import datetime
 from dataclasses import dataclass
-import subprocess
 from typing import (
     # TypeVar,
     # cast,
@@ -158,8 +157,9 @@ class Wechaty(AsyncIOEventEmitter):
             return hostie_puppet_class(options.puppet_options)
         elif isinstance(options.puppet, Puppet):
             return options.puppet
-        raise TypeError('puppet expected type is [Puppet, '
-                        'PuppetModuleName(str)]')
+        else:
+            raise TypeError('puppet expected type is [Puppet, '
+                            'PuppetModuleName(str)]')
 
     def __str__(self):
         """str format of the Room object"""
