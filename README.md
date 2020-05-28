@@ -1,4 +1,4 @@
-# python-wechaty ![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue) [![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)](https://github.com/wechaty/python-wechaty/actions?query=workflow%3APyPI)
+# python-wechaty [![PyPI Version](https://img.shields.io/pypi/v/wechaty?color=blue)](https://pypi.org/project/wechaty/) [![PyPI GitHub Actions](https://github.com/wechaty/python-wechaty/workflows/PyPI/badge.svg)](https://github.com/wechaty/python-wechaty/actions?query=workflow%3APyPI)
 
 ![Python Wechaty](https://wechaty.github.io/python-wechaty/images/python-wechaty.png)
 
