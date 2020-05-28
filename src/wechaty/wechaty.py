@@ -142,18 +142,20 @@ class Wechaty(AsyncIOEventEmitter):
         if options.puppet is None:
             raise Exception('puppet not exist')
         if isinstance(options.puppet, PuppetModuleName):
-            if options.puppet == 'wechaty-puppet-hostie':
-                log.info('installing wechaty-puppet-hostie')
-                subprocess.call(['pip', 'install', 'wechaty-puppet-hostie'])
-                hostie_module = __import__('wechaty_puppet_hostie')
-                if not hasattr(hostie_module, 'HostiePuppet'):
-                    raise Exception('HostiePuppet not exist in '
-                                    'wechaty-puppet-hostie')
-                hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
-                if not issubclass(hostie_puppet_class, Puppet):
-                    raise TypeError(f'Type {hostie_puppet_class} '
-                                    f'is not correct')
-                return hostie_puppet_class(options.puppet_options)
+            if options.puppet != 'wechaty-puppet-hostie':
+                raise TypeError('Python Wechaty only supports wechaty-puppet-hostie right now.'
+                                'This puppet is not supported: ' + options.puppet)
+
+            hostie_module = __import__('wechaty_puppet_hostie')
+            if not hasattr(hostie_module, 'HostiePuppet'):
+                raise Exception('HostiePuppet not exist in '
+                                'wechaty-puppet-hostie')
+
+            hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
+            if not issubclass(hostie_puppet_class, Puppet):
+                raise TypeError(f'Type {hostie_puppet_class} '
+                                f'is not correct')
+            return hostie_puppet_class(options.puppet_options)
         elif isinstance(options.puppet, Puppet):
             return options.puppet
         raise TypeError('puppet expected type is [Puppet, '
