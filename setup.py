@@ -68,7 +68,13 @@ setuptools.setup(
     url='https://github.com/wechaty/python-wechaty',
     packages=setuptools.find_packages('src'),
     package_dir={'': 'src'},
-    install_requires=['pyee', 'requests', 'qrcode', 'wechaty-puppet'],
+    install_requires=[
+        'pyee',
+        'qrcode',
+        'requests',
+        'wechaty-puppet-hostie',
+        'wechaty-puppet',
+    ],
     # packages=setuptools.find_packages('wip'),
     # package_dir={'': 'wip'},
     classifiers=[
