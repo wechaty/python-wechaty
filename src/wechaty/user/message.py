@@ -40,11 +40,11 @@ from .mini_program import MiniProgram
 # TODO -> remove Sayable interface temporary
 # from ..types import Sayable
 
+from .contact import Contact
 
 if TYPE_CHECKING:
     from .url_link import UrlLink
     from .image import Image
-    from .contact import Contact
     from .room import Room
     from wechaty_puppet import (
         FileBox
