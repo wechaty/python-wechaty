@@ -3,34 +3,39 @@
 from wechaty_puppet import (    # type: ignore
     FileBox,
 )
-from .accessory import Accessory
-from .wechaty import Wechaty, WechatyOptions
-from .user import (
-    Contact,
-    Favorite,
-    UrlLink,
-    Friendship,
-    Room,
-    MiniProgram,
-    Tag,
-    Image
-)
 from .config import (
     logging,
 )
+from .accessory import Accessory
+from .wechaty import (
+    Wechaty,
+    WechatyOptions,
+)
+from .user import (
+    Contact,
+    Favorite,
+    Friendship,
+    Image,
+    Message,
+    MiniProgram,
+    Room,
+    Tag,
+    UrlLink,
+)
 
 __all__ = [
-    'logging',
     'Accessory',
     'Contact',
     'Favorite',
     'FileBox',
+    'Friendship',
+    'Image',
+    'logging',
+    'Message',
+    'MiniProgram',
+    'Room',
+    'Tag',
+    'UrlLink',
     'Wechaty',
     'WechatyOptions',
-    'Image',
-    'UrlLink',
-    'Room',
-    'Friendship',
-    'Tag',
-    'MiniProgram',
 ]
