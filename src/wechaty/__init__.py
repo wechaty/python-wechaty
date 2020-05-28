@@ -1,8 +1,46 @@
 """doc"""
 
+#
+# import types from wechaty_puppet
+#
+
 from wechaty_puppet import (    # type: ignore
     FileBox,
+    MessageType,
+    MessagePayload,
+
+    # Contact
+    ContactGender,
+    ContactType,
+    ContactPayload,
+
+    # Friendship
+    FriendshipType,
+    FriendshipPayload,
+
+    # Room
+    RoomPayload,
+    RoomMemberPayload,
+
+    # UrlLink
+
+    # RoomInvitation
+    RoomInvitationPayload,
+
+    # Image
+    ImageType,
+
+    # Event
+    EventType,
+
+    RoomQueryFilter,
+    RoomMemberQueryFilter,
+    FriendshipSearchQueryFilter,
+    ContactQueryFilter,
+    MessageQueryFilter,
 )
+
+
 from .config import (
     get_logger,
 )
@@ -23,6 +61,7 @@ from .user import (
     UrlLink,
 )
 
+
 __all__ = [
     'Accessory',
     'Contact',
@@ -38,4 +77,38 @@ __all__ = [
     'UrlLink',
     'Wechaty',
     'WechatyOptions',
+
+    'MessageType',
+    'MessagePayload',
+
+    # Contact
+    'ContactGender',
+    'ContactType',
+    'ContactPayload',
+
+    # Friendship
+    'FriendshipType',
+    'FriendshipPayload',
+
+    # Room
+    'RoomPayload',
+    'RoomMemberPayload',
+
+    # UrlLink
+
+    # RoomInvitation
+    'RoomInvitationPayload',
+
+    # Image
+    'ImageType',
+
+    # Event
+    'EventType',
+
+    'RoomQueryFilter',
+    'RoomMemberQueryFilter',
+    'FriendshipSearchQueryFilter',
+    'ContactQueryFilter',
+    'MessageQueryFilter',
+    'FileBox'
 ]

@@ -136,7 +136,7 @@ class Wechaty(AsyncIOEventEmitter):
     def _load_puppet(options: WechatyOptions) -> Puppet:
         """
         dynamic load puppet
-        :param puppet_options:
+        :param options:
         :return:
         """
         if options.puppet is None:
@@ -387,9 +387,9 @@ class Wechaty(AsyncIOEventEmitter):
                     log.info('receive <friendship> event <%s>', payload)
                     friendship = self.Friendship.load(payload.friendship_id)
                     await friendship.ready()
-                    self.emit('friendship', payload)
+                    self.emit('friendship', friendship)
                     friendship.contact().emit('friendship', friendship)
-                    await self.on_friendship(payload)
+                    await self.on_friendship(friendship)
 
                 puppet.on('friendship', friendship_listener)
 
