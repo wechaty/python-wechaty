@@ -6,12 +6,13 @@ from __future__ import annotations
 from typing import (
     Type,
 )
-import logging
 import requests
 
 from wechaty_puppet import UrlLinkPayload   # type: ignore
 
-log = logging.getLogger('UrlLink')
+from ..config import get_logger
+
+log = get_logger('UrlLink')
 
 
 class UrlLink:

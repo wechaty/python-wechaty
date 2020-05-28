@@ -27,7 +27,6 @@ from typing import (
 )
 
 from datetime import datetime
-import logging
 from wechaty_puppet import (    # type: ignore
     MessagePayload,
     MessageQueryFilter,
@@ -35,7 +34,9 @@ from wechaty_puppet import (    # type: ignore
 )
 
 from ..accessory import Accessory
-
+from ..config import (
+    get_logger,
+)
 from .mini_program import MiniProgram
 # TODO -> remove Sayable interface temporary
 # from ..types import Sayable
@@ -50,7 +51,7 @@ if TYPE_CHECKING:
         FileBox
     )
 
-log = logging.getLogger('Message')
+log = get_logger('Message')
 
 
 # pylint: disable=R0904,R0903

@@ -26,7 +26,6 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-import logging
 
 from wechaty_puppet import (    # type: ignore
     FriendshipType,
@@ -36,11 +35,14 @@ from wechaty_puppet import (    # type: ignore
 
 from ..types import Acceptable
 from ..accessory import Accessory
+from ..config import (
+    get_logger,
+)
 
 if TYPE_CHECKING:
     from .contact import Contact
 
-log = logging.getLogger('FriendShip')
+log = get_logger('FriendShip')
 
 
 class Friendship(Accessory, Acceptable):

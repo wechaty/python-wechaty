@@ -10,11 +10,11 @@ from typing import (
 import pytest   # type: ignore
 
 from .config import (
-    logging,
+    get_logger,
 )
 
 # pylint: disable=C0103
-log = logging.getLogger('ConfigTest')
+log = get_logger('ConfigTest')
 
 # pylint: disable=redefined-outer-name
 
@@ -37,6 +37,6 @@ def test_config(
     assert data == 'test', 'data should equals test'
 
 
-def test_log():
+def test_get_logger():
     """test"""
-    assert logging, 'log should exist'
+    assert get_logger, 'log should exist'

@@ -32,10 +32,10 @@ from wechaty_puppet import FileBox, ImageType   # type: ignore
 
 from ..accessory import Accessory
 from ..config import (
-    logging,
+    get_logger,
 )
 
-log = logging.getLogger('Image')
+log = get_logger('Image')
 
 
 class Image(Accessory):

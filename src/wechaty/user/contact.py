@@ -30,7 +30,6 @@ from typing import (
 )
 
 from collections import defaultdict
-import logging
 from pyee import AsyncIOEventEmitter    # type: ignore
 from wechaty_puppet import (    # type: ignore
     ContactGender,
@@ -44,6 +43,7 @@ from ..accessory import Accessory
 # from wechaty import Accessory
 from ..config import (
     FileBox,
+    get_logger,
 )
 
 
@@ -55,7 +55,7 @@ if TYPE_CHECKING:
     # pytype: disable=pyi-error
     from .url_link import UrlLink
 
-log = logging.getLogger('Contact')
+log = get_logger('Contact')
 
 
 # pylint:disable=R0904
