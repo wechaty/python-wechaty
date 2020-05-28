@@ -354,7 +354,7 @@ class Wechaty(AsyncIOEventEmitter):
         """
         init puppet event stream
         """
-        log.info('init_puppet_event_brideg() <%s>', puppet)
+        log.info('init_puppet_event_bridge() <%s>', puppet)
         event_names = PUPPET_EVENT_DICT.keys()
         for event_name in event_names:
             if event_name == 'dong':
