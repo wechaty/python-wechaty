@@ -140,11 +140,18 @@ class Wechaty(AsyncIOEventEmitter):
         """
         if options.puppet is None:
             raise Exception('puppet not exist')
+
+        if isinstance(options.puppet, Puppet):
+            return options.puppet
+
         if isinstance(options.puppet, PuppetModuleName):
             if options.puppet != 'wechaty-puppet-hostie':
                 raise TypeError('Python Wechaty only supports wechaty-puppet-hostie right now.'
                                 'This puppet is not supported: ' + options.puppet)
 
+            #
+            # wechaty-puppet-hostie
+            #
             hostie_module = __import__('wechaty_puppet_hostie')
             if not hasattr(hostie_module, 'HostiePuppet'):
                 raise Exception('HostiePuppet not exist in '
@@ -154,12 +161,11 @@ class Wechaty(AsyncIOEventEmitter):
             if not issubclass(hostie_puppet_class, Puppet):
                 raise TypeError(f'Type {hostie_puppet_class} '
                                 f'is not correct')
+
             return hostie_puppet_class(options.puppet_options)
-        elif isinstance(options.puppet, Puppet):
-            return options.puppet
-        else:
-            raise TypeError('puppet expected type is [Puppet, '
-                            'PuppetModuleName(str)]')
+
+        raise TypeError('puppet expected type is [Puppet, '
+                        'PuppetModuleName(str)]')
 
     def __str__(self):
         """str format of the Room object"""
