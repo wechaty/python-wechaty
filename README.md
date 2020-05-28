@@ -15,12 +15,6 @@
 
 Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 6 lines of Python.
 
-## WORK IN PROGRESS
-
-Work in progress...
-
-Please come back after 4 weeks...
-
 ## Voice of the Developers
 
 > "Wechaty is a great solution, I believe there would be much more users recognize it." [link](https://github.com/Wechaty/wechaty/pull/310#issuecomment-285574472)  
