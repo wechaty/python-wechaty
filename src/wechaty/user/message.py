@@ -328,7 +328,7 @@ class Message(Accessory):
         """
         log.info('Message mention_list')
         room = self.room()
-        if self.type() != MessageType.Text or room is None:
+        if self.type() != MessageType.MESSAGE_TYPE_TEXT or room is None:
             return []
 
         # Use mention list if mention list is available
@@ -487,7 +487,7 @@ class Message(Accessory):
         Extract the Media File from the Message, and put it into the FileBox.
         """
         log.info('Message to FileBox')
-        if self.type() == MessageType.Text:
+        if self.type() == MessageType.MESSAGE_TYPE_TEXT:
             raise Exception('text message can"t convert to FileBox')
         file_box = await self.puppet.message_file(self.message_id)
         return file_box
