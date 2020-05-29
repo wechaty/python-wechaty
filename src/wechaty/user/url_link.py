@@ -8,9 +8,8 @@ from typing import (
 )
 import requests
 
-from wechaty_puppet import UrlLinkPayload   # type: ignore
+from wechaty_puppet import UrlLinkPayload, get_logger   # type: ignore
 
-from ..config import get_logger
 
 log = get_logger('UrlLink')
 

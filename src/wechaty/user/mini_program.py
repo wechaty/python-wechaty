@@ -20,11 +20,8 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from wechaty_puppet import MiniProgramPayload   # type: ignore
+from wechaty_puppet import MiniProgramPayload, get_logger   # type: ignore
 
-from ..config import (
-    get_logger,
-)
 
 log = get_logger('MiniProgram')
 

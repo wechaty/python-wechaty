@@ -11,12 +11,9 @@ from typing import (
 )
 
 from collections import defaultdict
-
+from wechaty_puppet import get_logger   # type: ignore
 from ..accessory import (
     Accessory,
-)
-from ..config import (
-    get_logger,
 )
 
 if TYPE_CHECKING:

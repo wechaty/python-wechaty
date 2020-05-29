@@ -29,22 +29,19 @@ from typing import (
     Union,
 )
 
-from collections import defaultdict
 from pyee import AsyncIOEventEmitter    # type: ignore
 from wechaty_puppet import (    # type: ignore
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
-    ContactType
+    ContactType,
+
+    get_logger,
+    FileBox
 )
 # from wechaty.utils import type_check
 
 from ..accessory import Accessory
-# from wechaty import Accessory
-from ..config import (
-    FileBox,
-    get_logger,
-)
 
 
 if TYPE_CHECKING:

@@ -35,11 +35,11 @@ from pyee import AsyncIOEventEmitter    # type: ignore
 from wechaty_puppet import (    # type: ignore
     FileBox,
     RoomQueryFilter,
-    RoomPayload
+    RoomPayload,
+    get_logger
 )
 # from wechaty.utils import type_check
 from ..accessory import Accessory
-from ..config import get_logger
 
 if TYPE_CHECKING:
 

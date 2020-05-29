@@ -23,7 +23,6 @@ from typing import (
     Optional,
     Union,
     List,
-    TYPE_CHECKING,
 )
 
 from datetime import datetime
@@ -32,12 +31,10 @@ from wechaty_puppet import (    # type: ignore
     MessagePayload,
     MessageQueryFilter,
     MessageType,
+    get_logger
 )
 
 from ..accessory import Accessory
-from ..config import (
-    get_logger,
-)
 from .mini_program import MiniProgram
 # TODO -> remove Sayable interface temporary
 # from ..types import Sayable
