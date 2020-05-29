@@ -26,7 +26,7 @@ from typing import (
     # cast,
     Optional,
 )
-from .config import get_logger
+from wechaty_puppet import get_logger   # type: ignore
 
 # pylint:disable=R0401
 if TYPE_CHECKING:

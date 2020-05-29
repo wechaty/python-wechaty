@@ -51,7 +51,10 @@ from wechaty_puppet import (  # type: ignore
     EventRoomJoinPayload,
 
     ScanStatus,
-    EventReadyPayload)
+    EventReadyPayload,
+
+    get_logger
+)
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
@@ -66,9 +69,6 @@ from .user import (
 )
 from .utils import (
     qr_terminal
-)
-from .config import (
-    get_logger,
 )
 
 log = get_logger('Wechaty')

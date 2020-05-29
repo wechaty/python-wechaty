@@ -38,6 +38,7 @@ from wechaty_puppet import (    # type: ignore
     FriendshipSearchQueryFilter,
     ContactQueryFilter,
     MessageQueryFilter,
+    ScanStatus
 )
 
 
@@ -105,10 +106,11 @@ __all__ = [
     # Event
     'EventType',
 
+    'ScanStatus',
+
     'RoomQueryFilter',
     'RoomMemberQueryFilter',
     'FriendshipSearchQueryFilter',
     'ContactQueryFilter',
     'MessageQueryFilter',
-    'FileBox'
 ]

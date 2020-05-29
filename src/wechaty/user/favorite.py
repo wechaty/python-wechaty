@@ -24,9 +24,7 @@ from typing import (
     TYPE_CHECKING,
     List,
 )
-from ..config import (
-    get_logger,
-)
+from wechaty_puppet import get_logger   # type: ignore
 
 if TYPE_CHECKING:
     from .tag import Tag

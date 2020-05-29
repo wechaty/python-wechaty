@@ -29,15 +29,14 @@ import json
 
 from wechaty_puppet import (    # type: ignore
     FriendshipType,
-    FriendshipPayload
+    FriendshipPayload,
+    get_logger
 )
 # from wechaty.utils import type_check
 
 from ..types import Acceptable
 from ..accessory import Accessory
-from ..config import (
-    get_logger,
-)
+
 
 if TYPE_CHECKING:
     from .contact import Contact

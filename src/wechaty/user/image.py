@@ -28,12 +28,11 @@ from typing import (
 )
 
 
-from wechaty_puppet import FileBox, ImageType   # type: ignore
+from wechaty_puppet import (    # type: ignore
+    FileBox, ImageType, get_logger
+)
 
 from ..accessory import Accessory
-from ..config import (
-    get_logger,
-)
 
 log = get_logger('Image')
 
