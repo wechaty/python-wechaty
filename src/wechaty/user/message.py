@@ -264,7 +264,7 @@ class Message(Accessory):
         """
         Get the recalled message
         """
-        if self.message_type() != MessageType.Recalled:
+        if self.message_type() != MessageType.MESSAGE_TYPE_RECALLED:
             raise Exception(
                 'Can not call toRecalled() on message which is not'
                 ' recalled type.')
@@ -499,7 +499,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to Image() for message %s', self.message_id)
-        if self.type() != MessageType.Image:
+        if self.type() != MessageType.MESSAGE_TYPE_IMAGE:
             raise Exception(
                 'current message type: %s, not image type'
                 % self.type()
@@ -514,7 +514,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to Contact')
-        if self.type() != MessageType.Contact:
+        if self.type() != MessageType.MESSAGE_TYPE_CONTACT:
             raise Exception(
                 'current message type: %s, not contact type'
                 % self.type()
@@ -532,7 +532,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to UrlLink')
-        if self.type() != MessageType.Url:
+        if self.type() != MessageType.MESSAGE_TYPE_URL:
             raise Exception(
                 'current message type: %s, not url type'
                 % self.type()
@@ -554,7 +554,7 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('payload not found')
 
-        if self.type() != MessageType.MiniProgram:
+        if self.type() != MessageType.MESSAGE_TYPE_MINI_PROGRAM:
             raise Exception('not a mini_program type message')
 
         payload = await self.puppet.message_mini_program(
