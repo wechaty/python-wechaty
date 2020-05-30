@@ -264,7 +264,7 @@ class Message(Accessory):
         """
         Get the recalled message
         """
-        if self.message_type() != MessageType.Recalled:
+        if self.message_type() != MessageType.MESSAGE_TYPE_RECALLED:
             raise Exception(
                 'Can not call toRecalled() on message which is not'
                 ' recalled type.')
@@ -328,7 +328,7 @@ class Message(Accessory):
         """
         log.info('Message mention_list')
         room = self.room()
-        if self.type() != MessageType.Text or room is None:
+        if self.type() != MessageType.MESSAGE_TYPE_TEXT or room is None:
             return []
 
         # Use mention list if mention list is available
@@ -487,7 +487,7 @@ class Message(Accessory):
         Extract the Media File from the Message, and put it into the FileBox.
         """
         log.info('Message to FileBox')
-        if self.type() == MessageType.Text:
+        if self.type() == MessageType.MESSAGE_TYPE_TEXT:
             raise Exception('text message can"t convert to FileBox')
         file_box = await self.puppet.message_file(self.message_id)
         return file_box
@@ -499,7 +499,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to Image() for message %s', self.message_id)
-        if self.type() != MessageType.Image:
+        if self.type() != MessageType.MESSAGE_TYPE_IMAGE:
             raise Exception(
                 'current message type: %s, not image type'
                 % self.type()
@@ -514,7 +514,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to Contact')
-        if self.type() != MessageType.Contact:
+        if self.type() != MessageType.MESSAGE_TYPE_CONTACT:
             raise Exception(
                 'current message type: %s, not contact type'
                 % self.type()
@@ -532,7 +532,7 @@ class Message(Accessory):
         :return:
         """
         log.info('Message to UrlLink')
-        if self.type() != MessageType.Url:
+        if self.type() != MessageType.MESSAGE_TYPE_URL:
             raise Exception(
                 'current message type: %s, not url type'
                 % self.type()
@@ -554,7 +554,7 @@ class Message(Accessory):
         if self.payload is None:
             raise Exception('payload not found')
 
-        if self.type() != MessageType.MiniProgram:
+        if self.type() != MessageType.MESSAGE_TYPE_MINI_PROGRAM:
             raise Exception('not a mini_program type message')
 
         payload = await self.puppet.message_mini_program(
