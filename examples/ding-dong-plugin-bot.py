@@ -1,11 +1,10 @@
 """doc"""
 import asyncio
-import logging
-import os
 from typing import Optional
-from python_wechaty_plugin_contrib import DingDongPlugin, DailyPlugin, WeatherPlugin
-
 from wechaty import Wechaty
+from python_wechaty_plugin_contrib import (
+    DingDongPlugin, DailyPlugin, WeatherPlugin
+)
 
 
 bot: Optional[Wechaty] = None

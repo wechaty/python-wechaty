@@ -20,7 +20,6 @@ limitations under the License.
 """
 from __future__ import annotations
 
-import asyncio
 from abc import abstractmethod, ABCMeta
 from typing import (
     TYPE_CHECKING,
@@ -28,28 +27,26 @@ from typing import (
     Optional,
     Dict, Union,
     OrderedDict as PluginDict,
-    Any)
+)
 from datetime import datetime
 from copy import deepcopy
 from dataclasses import dataclass
 from collections import defaultdict, OrderedDict
-from wechaty_puppet import get_logger, EventMessagePayload
+from wechaty_puppet import get_logger
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
         EventErrorPayload,
         EventHeartbeatPayload,
-        EventReadyPayload
-    )
-    from wechaty.user.room_invitation import RoomInvitation
-    from wechaty import (
-        Wechaty,
-        Room,
-        Friendship,
-        Contact,
-        Message,
+        EventReadyPayload,
         ScanStatus
     )
+    from wechaty.user.room_invitation import RoomInvitation
+    from wechaty.user.room import Room
+    from wechaty.user.friendship import Friendship
+    from wechaty.user.contact import Contact
+    from wechaty.user.message import Message
+    from .wechaty import Wechaty
 
 
 log = get_logger(__name__)
@@ -57,6 +54,7 @@ log = get_logger(__name__)
 
 @dataclass
 class WechatyPluginOptions:
+    """options for wechaty plugin"""
     metadata: dict = defaultdict
 
 
@@ -72,6 +70,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         self.bot: Optional[Wechaty] = None
 
     async def init_plugin(self, wechaty: Wechaty):
+        """set wechaty to the plugin"""
         self.bot = wechaty
 
     @property
@@ -161,6 +160,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         this is friendly for code typing
         """
 
+    # pylint: disable=R0913
     async def on_room_topic(self, room: Room, new_topic: str, old_topic: str,
                             changer: Contact, date: datetime):
         """
@@ -189,7 +189,7 @@ PluginTree = Dict[str, Union[str, List[str]]]
 
 
 class WechatyPluginManager:
-
+    """manage the wechaty plugin, It will support some features."""
     def __init__(self, wechaty: Wechaty):
         self._plugins: PluginDict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
@@ -201,7 +201,7 @@ class WechatyPluginManager:
         """add plugin to the manager, if the plugin name exist, it will not to
         be installed"""
         if plugin.name in self._plugins:
-            log.warning(f'plugin : {plugin.name} has exist')
+            log.warning('plugin : %s has exist', plugin.name)
             return
         self._plugins[plugin.name] = plugin
 
@@ -212,9 +212,12 @@ class WechatyPluginManager:
         self._plugins.pop(name)
 
     async def init_plugins(self):
+        """
+        set wechaty to plugins
+        """
         log.info('init the plugins ...')
         for name, plugin in self._plugins.items():
-            log.info(f'init {name}-plugin ...')
+            log.info('init %s-plugin ...', name)
             await plugin.init_plugin(self._wechaty)
 
     async def emit_events(self, event_name: str, *args, **kwargs):
@@ -226,14 +229,19 @@ class WechatyPluginManager:
         event_payload:
         """
         if event_name == 'message':
+            # this is not type linting, it's needed to be imported at top-level
+            # , So, it must occurs cyclic-import problems, to resolve this, a
+            # simple way is that we import package at local-level.
+
+            # pylint: disable=import-outside-toplevel
             from wechaty import Message
-            if len(args) ==1 and isinstance(args[0], Message):
+            if len(args) == 1 and isinstance(args[0], Message):
                 msg: Message = args[0]
             elif 'msg' in kwargs and isinstance(kwargs['msg'], Message):
                 msg: Message = kwargs['msg']
             else:
-                raise ValueError(f'can"t find the message params')
+                raise ValueError('can"t find the message params')
 
             for name, plugin in self._plugins.items():
-                log.info(f'emit {name}-plugin ...')
+                log.info('emit %s-plugin ...', name)
                 await plugin.on_message(msg)

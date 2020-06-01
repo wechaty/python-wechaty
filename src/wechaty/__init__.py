@@ -46,6 +46,11 @@ from .config import (
     get_logger,
 )
 from .accessory import Accessory
+from .plugin import (
+    WechatyPlugin,
+    WechatyPluginManager,
+    WechatyPluginOptions
+)
 from .wechaty import (
     Wechaty,
     WechatyOptions,

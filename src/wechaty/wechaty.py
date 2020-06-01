@@ -58,6 +58,10 @@ from wechaty_puppet import (  # type: ignore
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
+
+from .plugin import (
+    WechatyPlugin, WechatyPluginManager
+)
 from .user import (
     Contact,
     Friendship,
@@ -70,9 +74,7 @@ from .user import (
 from .utils import (
     qr_terminal
 )
-from .plugin import (
-    WechatyPlugin, WechatyPluginManager, WechatyPluginOptions
-)
+
 
 log = get_logger('Wechaty')
 
@@ -116,13 +118,13 @@ class Wechaty(AsyncIOEventEmitter):
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
-        self.Tag = Tag
-        self.Contact = Contact
-        self.Friendship = Friendship
-        self.Message = Message
-        self.Room = Room
-        self.Image = Image
-        self.RoomInvitation = RoomInvitation
+        self.Tag = Tag  #pylint: disable=C0103
+        self.Contact = Contact  #pylint: disable=C0103
+        self.Friendship = Friendship    #pylint: disable=C0103
+        self.Message = Message  #pylint: disable=C0103
+        self.Room = Room    #pylint: disable=C0103
+        self.Image = Image  #pylint: disable=C0103
+        self.RoomInvitation = RoomInvitation    #pylint: disable=C0103
 
         self.started: bool = False
 
@@ -550,8 +552,8 @@ class Wechaty(AsyncIOEventEmitter):
                         else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
                         qr_terminal(qr_code)
-                    self.emit('scan', payload.status, qr_code,  payload.data)
-                    await self.on_scan(payload.status, qr_code,  payload.data)
+                    self.emit('scan', payload.status, qr_code, payload.data)
+                    await self.on_scan(payload.status, qr_code, payload.data)
 
                 puppet.on('scan', scan_listener)
 
@@ -577,7 +579,7 @@ class Wechaty(AsyncIOEventEmitter):
         self.Room.set_puppet(self.puppet)
         self.RoomInvitation.set_puppet(self.puppet)
         self.Contact.set_puppet(self.puppet)
-        
+
 
         self.Message.set_wechaty(self)
         self.Room.set_wechaty(self)
