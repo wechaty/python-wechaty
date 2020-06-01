@@ -67,7 +67,6 @@ from .user import (
     Image,
     RoomInvitation,
     MiniProgram,
-    UrlLink,
     Favorite
 )
 from .utils import (
