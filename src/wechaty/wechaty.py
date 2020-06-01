@@ -70,6 +70,9 @@ from .user import (
 from .utils import (
     qr_terminal
 )
+from .plugin import (
+    WechatyPlugin, WechatyPluginManager, WechatyPluginOptions
+)
 
 log = get_logger('Wechaty')
 
@@ -132,6 +135,8 @@ class Wechaty(AsyncIOEventEmitter):
 
         self._watchdog = Watchdog(DEFAULT_TIMEOUT)
 
+        self._plugin_manager: WechatyPluginManager = WechatyPluginManager(self)
+
     @staticmethod
     def _load_puppet(options: WechatyOptions) -> Puppet:
         """
@@ -188,6 +193,16 @@ class Wechaty(AsyncIOEventEmitter):
         return cls._global_instance
         # return cast(Wechaty, cls._global_instance)
         # return cls._global_instance
+
+    def use(self, plugin: Union[WechatyPlugin, List[WechatyPlugin]]) -> Wechaty:
+        """register the plugin"""
+        if isinstance(plugin, WechatyPlugin):
+            plugins = [plugin]
+        else:
+            plugins = plugin
+        for item in plugins:
+            self._plugin_manager.add_plugin(item)
+        return self
 
     @property
     def name(self) -> str:
@@ -403,6 +418,9 @@ class Wechaty(AsyncIOEventEmitter):
                     self.emit('login', Contact)
                     await self.on_login(contact)
 
+                    # init the plugins
+                    await self._plugin_manager.init_plugins()
+
                 puppet.on('login', login_listener)
 
             elif event_name == 'logout':
@@ -413,7 +431,6 @@ class Wechaty(AsyncIOEventEmitter):
                     await contact.ready()
                     self.emit('logout', Contact)
                     await self.on_logout(contact)
-
                 puppet.on('logout', logout_listener)
 
             elif event_name == 'message':
@@ -428,6 +445,8 @@ class Wechaty(AsyncIOEventEmitter):
                     room = msg.room()
                     if room is not None:
                         room.emit('message', room)
+
+                    await self._plugin_manager.emit_events('message', msg)
 
                 puppet.on('message', message_listener)
 
@@ -558,6 +577,7 @@ class Wechaty(AsyncIOEventEmitter):
         self.Room.set_puppet(self.puppet)
         self.RoomInvitation.set_puppet(self.puppet)
         self.Contact.set_puppet(self.puppet)
+        
 
         self.Message.set_wechaty(self)
         self.Room.set_wechaty(self)
