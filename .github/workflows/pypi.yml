@@ -60,7 +60,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
           make install
-
       - name: Check Branch
         id: check-branch
         run: |
@@ -74,6 +73,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
+          make deploy-version
           python setup.py sdist bdist_wheel
           twine upload --skip-existing dist/*
 
