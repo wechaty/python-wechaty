@@ -38,6 +38,7 @@ from wechaty_puppet import (    # type: ignore
     FriendshipSearchQueryFilter,
     ContactQueryFilter,
     MessageQueryFilter,
+    ScanStatus
 )
 
 
@@ -61,6 +62,8 @@ from .user import (
     UrlLink,
 )
 
+from .version import VERSION
+__version__ = VERSION
 
 __all__ = [
     'Accessory',
@@ -105,10 +108,11 @@ __all__ = [
     # Event
     'EventType',
 
+    'ScanStatus',
+
     'RoomQueryFilter',
     'RoomMemberQueryFilter',
     'FriendshipSearchQueryFilter',
     'ContactQueryFilter',
     'MessageQueryFilter',
-    'FileBox'
 ]

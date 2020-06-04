@@ -23,11 +23,10 @@ from __future__ import annotations
 from typing import Union, List
 import json
 from datetime import datetime
-from wechaty_puppet import RoomInvitationPayload    # type: ignore
+from wechaty_puppet import RoomInvitationPayload, get_logger    # type: ignore
 from .contact import Contact
 from ..types import Acceptable
 from ..accessory import Accessory
-from ..config import get_logger
 
 log = get_logger('RoomInvitation')
 

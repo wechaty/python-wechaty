@@ -51,7 +51,10 @@ from wechaty_puppet import (  # type: ignore
     EventRoomJoinPayload,
 
     ScanStatus,
-    EventReadyPayload)
+    EventReadyPayload,
+
+    get_logger
+)
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
@@ -62,13 +65,12 @@ from .user import (
     Tag,
     Room,
     Image,
-    RoomInvitation
+    RoomInvitation,
+    MiniProgram,
+    Favorite
 )
 from .utils import (
     qr_terminal
-)
-from .config import (
-    get_logger,
 )
 
 log = get_logger('Wechaty')
@@ -120,6 +122,9 @@ class Wechaty(AsyncIOEventEmitter):
         self.Room = Room
         self.Image = Image
         self.RoomInvitation = RoomInvitation
+        self.Favorite = Favorite
+        self.MiniProgram = MiniProgram
+        # TODO -> url-link, miniprogram
 
         self.started: bool = False
 
@@ -558,11 +563,17 @@ class Wechaty(AsyncIOEventEmitter):
         self.Room.set_puppet(self.puppet)
         self.RoomInvitation.set_puppet(self.puppet)
         self.Contact.set_puppet(self.puppet)
+        self.Friendship.set_puppet(self.puppet)
+        self.Image.set_puppet(self.puppet)
+        self.Tag.set_puppet(self.puppet)
 
         self.Message.set_wechaty(self)
         self.Room.set_wechaty(self)
         self.RoomInvitation.set_wechaty(self)
         self.Contact.set_wechaty(self)
+        self.Friendship.set_wechaty(self)
+        self.Image.set_wechaty(self)
+        self.Tag.set_wechaty(self)
 
     async def stop(self):
         """
