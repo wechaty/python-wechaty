@@ -5,6 +5,8 @@
 [![Python Wechaty Getting Started](https://img.shields.io/badge/Python%20Wechaty-Getting%20Started-blue)](https://github.com/wechaty/python-wechaty-getting-started)
 [![Python 3.7](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
+[![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
+
 <!--
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
 -->
@@ -267,6 +269,15 @@ Project created, publish a empty module `wechaty` on PyPI.
 - [Go Wechaty](https://github.com/wechaty/go-wechaty) - Go WeChaty Conversational AI Chatbot SDK for Wechat Individual Accounts (Go)
 - [Java Wechaty](https://github.com/wechaty/java-wechaty) - Java WeChaty Conversational AI Chatbot SDK for Wechat Individual Accounts (Java)
 - [Scala Wechaty](https://github.com/wechaty/scala-wechaty) - Scala WeChaty Conversational AI Chatbot SDK for WechatyIndividual Accounts (Scala)
+
+
+## Badge
+
+[![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
+
+```md
+[![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
+```
 
 ## Contributors
 
