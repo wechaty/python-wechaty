@@ -21,18 +21,20 @@ limitations under the License.
 from __future__ import annotations
 
 from abc import abstractmethod, ABCMeta
+from enum import Enum
 from typing import (
     TYPE_CHECKING,
     List,
     Optional,
-    Dict, Union,
-    OrderedDict as PluginDict,
+    Dict,
+    Union
 )
+import re
 from datetime import datetime
 from copy import deepcopy
 from dataclasses import dataclass
 from collections import defaultdict, OrderedDict
-from wechaty_puppet import get_logger
+from wechaty_puppet import get_logger   # type: ignore
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
@@ -41,12 +43,14 @@ if TYPE_CHECKING:
         EventReadyPayload,
         ScanStatus
     )
+    from wechaty import (
+        Room,
+        Friendship,
+        Contact,
+        Message,
+        Wechaty
+    )
     from wechaty.user.room_invitation import RoomInvitation
-    from wechaty.user.room import Room
-    from wechaty.user.friendship import Friendship
-    from wechaty.user.contact import Contact
-    from wechaty.user.message import Message
-    from .wechaty import Wechaty
 
 
 log = get_logger(__name__)
@@ -55,7 +59,13 @@ log = get_logger(__name__)
 @dataclass
 class WechatyPluginOptions:
     """options for wechaty plugin"""
-    metadata: dict = defaultdict
+    metadata: Optional[dict] = None
+
+
+class PluginStatus(Enum):
+    """plugin running status"""
+    Running = 0
+    Stopped = 1
 
 
 class WechatyPlugin(metaclass=ABCMeta):
@@ -80,7 +90,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         raise NotImplementedError
 
     @staticmethod
-    def get_dependency_plugins() -> list[str]:
+    def get_dependency_plugins() -> List[str]:
         """
         get dependency plugins
         """
@@ -191,25 +201,90 @@ PluginTree = Dict[str, Union[str, List[str]]]
 class WechatyPluginManager:
     """manage the wechaty plugin, It will support some features."""
     def __init__(self, wechaty: Wechaty):
-        self._plugins: PluginDict[str, WechatyPlugin] = OrderedDict()
+        self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
+        self._plugin_status: Dict[str, PluginStatus] = {}
         # plugins can be a topological graph pattern, this feature is not
         # supported now.
         self._dependency_tree: PluginTree = defaultdict()
 
-    def add_plugin(self, plugin: WechatyPlugin):
+    # pylint: disable=R1711
+    @staticmethod
+    def _load_plugin_from_local_file(plugin_path: str) -> Optional[WechatyPlugin]:
+        """load plugin from local file"""
+        log.info('load plugin from local file <%s>', plugin_path)
+        return None
+
+    # pylint: disable=R1711
+    @staticmethod
+    def _load_plugin_from_github_url(github_url: str
+                                     ) -> Optional[WechatyPlugin]:
+        """load plugin from github url, but, this is dangerous"""
+        log.info('load plugin from github url <%s>', github_url)
+        return None
+
+    def add_plugin(self, plugin: Union[str, WechatyPlugin]):
         """add plugin to the manager, if the plugin name exist, it will not to
         be installed"""
-        if plugin.name in self._plugins:
-            log.warning('plugin : %s has exist', plugin.name)
-            return
-        self._plugins[plugin.name] = plugin
+        if isinstance(plugin, str):
+            regex = re.compile(
+                r'^(?:http|ftp)s?://'  # http:// or https://
+                r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}'
+                r'\.?|[A-Z0-9-]{2,}\.?)|'
+                r'localhost|'  # localhost...
+                r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
+                r'(?::\d+)?'  # optional port
+                r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+            if regex.match(plugin) is None:
+                # load plugin from local file
+                plugin_instance = self._load_plugin_from_local_file(plugin)
+            else:
+                plugin_instance = self._load_plugin_from_github_url(plugin)
+            if plugin_instance is None:
+                raise Exception('can"t load plugin %s' % plugin)
+        else:
+            if plugin.name in self._plugins:
+                log.warning('plugin : %s has exist', plugin.name)
+                return
+            plugin_instance = plugin
+
+        self._plugins[plugin_instance.name] = plugin_instance
+        # default wechaty plugin status is Running
+        self._plugin_status[plugin_instance.name] = PluginStatus.Running
 
     def remove_plugin(self, name: str):
         """remove plugin"""
         if name not in self._plugins:
             raise IndexError(f'plugin {name} not exist')
         self._plugins.pop(name)
+        self._plugin_status.pop(name)
+
+    def _check_plugins(self, name: str):
+        """
+        check the plugins whether
+        """
+        if name not in self._plugins and name not in self._plugin_status:
+            raise Exception('plugins <%s> not exist' % name)
+
+    def stop_plugin(self, name: str):
+        """stop the plugin"""
+        log.info('stopping the plugin <%s>', name)
+        self._check_plugins(name)
+
+        if self._plugin_status[name] == PluginStatus.Stopped:
+            log.warning('plugins <%s> is stopped', name)
+        self._plugin_status[name] = PluginStatus.Stopped
+
+    def start_plugin(self, name: str):
+        """starting the plugin"""
+        log.info('starting the plugin <%s>', name)
+        self._check_plugins(name)
+        self._plugin_status[name] = PluginStatus.Running
+
+    def plugin_status(self, name: str) -> PluginStatus:
+        """get the plugin status"""
+        self._check_plugins(name)
+        return self._plugin_status[name]
 
     async def init_plugins(self):
         """
@@ -238,10 +313,13 @@ class WechatyPluginManager:
             if len(args) == 1 and isinstance(args[0], Message):
                 msg: Message = args[0]
             elif 'msg' in kwargs and isinstance(kwargs['msg'], Message):
-                msg: Message = kwargs['msg']
+                msg = kwargs['msg']
             else:
                 raise ValueError('can"t find the message params')
 
+            # this will make the plugins running sequential, _plugins
+            # is a sort dict
             for name, plugin in self._plugins.items():
                 log.info('emit %s-plugin ...', name)
-                await plugin.on_message(msg)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_message(msg)

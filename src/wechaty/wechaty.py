@@ -62,6 +62,7 @@ from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
 from .plugin import (
     WechatyPlugin, WechatyPluginManager
 )
+
 from .user import (
     Contact,
     Friendship,
@@ -71,6 +72,7 @@ from .user import (
     Image,
     RoomInvitation
 )
+
 from .utils import (
     qr_terminal
 )
@@ -118,13 +120,20 @@ class Wechaty(AsyncIOEventEmitter):
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
-        self.Tag = Tag  #pylint: disable=C0103
-        self.Contact = Contact  #pylint: disable=C0103
-        self.Friendship = Friendship    #pylint: disable=C0103
-        self.Message = Message  #pylint: disable=C0103
-        self.Room = Room    #pylint: disable=C0103
-        self.Image = Image  #pylint: disable=C0103
-        self.RoomInvitation = RoomInvitation    #pylint: disable=C0103
+        # pylint: disable=C0103
+        self.Tag = Tag
+        # pylint: disable=C0103
+        self.Contact = Contact
+        # pylint: disable=C0103
+        self.Friendship = Friendship
+        # pylint: disable=C0103
+        self.Message = Message
+        # pylint: disable=C0103
+        self.Room = Room
+        # pylint: disable=C0103
+        self.Image = Image
+        # pylint: disable=C0103
+        self.RoomInvitation = RoomInvitation
 
         self.started: bool = False
 
@@ -579,7 +588,6 @@ class Wechaty(AsyncIOEventEmitter):
         self.Room.set_puppet(self.puppet)
         self.RoomInvitation.set_puppet(self.puppet)
         self.Contact.set_puppet(self.puppet)
-
 
         self.Message.set_wechaty(self)
         self.Room.set_wechaty(self)

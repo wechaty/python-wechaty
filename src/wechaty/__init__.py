@@ -48,7 +48,6 @@ from .config import (
 from .accessory import Accessory
 from .plugin import (
     WechatyPlugin,
-    WechatyPluginManager,
     WechatyPluginOptions
 )
 from .wechaty import (
@@ -83,6 +82,9 @@ __all__ = [
     'UrlLink',
     'Wechaty',
     'WechatyOptions',
+
+    'WechatyPlugin',
+    'WechatyPluginOptions',
 
     'MessageType',
     'MessagePayload',
