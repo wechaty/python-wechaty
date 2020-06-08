@@ -1,7 +1,7 @@
 # Makefile for Python Wechaty
 #
 # 	GitHb: https://github.com/wechaty/python-wechaty
-# 	Author: Huan LI <zixia@zixia.net> git.io/zixia
+# 	Author: Huan LI <zixia@zixia.net> https://github.com/huan
 #
 
 SOURCE_GLOB=$(wildcard bin/*.py src/**/*.py tests/**/*.py examples/*.py)
@@ -20,7 +20,7 @@ all : clean lint
 
 .PHONY: clean
 clean:
-	rm -fr dist/*
+	rm -fr dist/* .pytype
 
 .PHONY: lint
 lint: pylint pycodestyle flake8 mypy pytype
@@ -105,3 +105,7 @@ version:
 		&& git commit -m "$${newVersion}" > /dev/null \
 		&& git tag "v$${newVersion}" \
 		&& echo "Bumped version to $${newVersion}"
+
+.PHONY: deploy-version
+deploy-version:
+	echo "VERSION = '$$(cat VERSION)'" > src/wechaty/version.py

@@ -70,7 +70,9 @@ from .user import (
     Tag,
     Room,
     Image,
-    RoomInvitation
+    RoomInvitation,
+    MiniProgram,
+    Favorite
 )
 
 from .utils import (
@@ -134,6 +136,9 @@ class Wechaty(AsyncIOEventEmitter):
         self.Image = Image
         # pylint: disable=C0103
         self.RoomInvitation = RoomInvitation
+        self.Favorite = Favorite
+        self.MiniProgram = MiniProgram
+        # TODO -> url-link, miniprogram
 
         self.started: bool = False
 
@@ -588,11 +593,17 @@ class Wechaty(AsyncIOEventEmitter):
         self.Room.set_puppet(self.puppet)
         self.RoomInvitation.set_puppet(self.puppet)
         self.Contact.set_puppet(self.puppet)
+        self.Friendship.set_puppet(self.puppet)
+        self.Image.set_puppet(self.puppet)
+        self.Tag.set_puppet(self.puppet)
 
         self.Message.set_wechaty(self)
         self.Room.set_wechaty(self)
         self.RoomInvitation.set_wechaty(self)
         self.Contact.set_wechaty(self)
+        self.Friendship.set_wechaty(self)
+        self.Image.set_wechaty(self)
+        self.Tag.set_wechaty(self)
 
     async def stop(self):
         """
