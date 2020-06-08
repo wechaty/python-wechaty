@@ -33,7 +33,6 @@ async def message(msg: Message):
             name='ding-dong.jpg')
         await conversation.say(file_box)
 
-os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'your-token-here'
 bot: Optional[Wechaty] = None
 
 

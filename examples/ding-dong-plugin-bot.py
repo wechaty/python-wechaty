@@ -3,7 +3,7 @@ import asyncio
 from typing import Optional
 from wechaty import Wechaty
 from python_wechaty_plugin_contrib import (
-    DingDongPlugin, DailyPlugin, WeatherPlugin
+    DingDongPlugin, WeatherPlugin
 )
 
 
@@ -14,7 +14,7 @@ async def main():
     """doc"""
     # pylint: disable=W0603
     global bot
-    bot = Wechaty().use([DingDongPlugin(), DailyPlugin(), WeatherPlugin()])
+    bot = Wechaty().use([DingDongPlugin(), WeatherPlugin()])
     await bot.start()
 
 

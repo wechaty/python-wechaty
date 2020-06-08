@@ -1,7 +1,7 @@
 """daily plugin"""
 from datetime import datetime
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler     # type: ignore
 
 from wechaty import Wechaty
 from wechaty.plugin import WechatyPlugin
