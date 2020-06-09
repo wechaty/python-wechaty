@@ -374,8 +374,9 @@ class Wechaty(AsyncIOEventEmitter):
             elif event_name == 'error':
                 async def error_listener(payload: EventErrorPayload):
                     log.info('receive <error> event <%s>', payload)
-                    self.emit('error', payload)
-                    await self.on_error(payload)
+                    if isinstance(payload, EventErrorPayload):
+                        self.emit('error', payload.data)
+                        await self.on_error(payload)
 
                 puppet.on('error', error_listener)
 
