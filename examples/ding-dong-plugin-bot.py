@@ -2,10 +2,10 @@
 import asyncio
 from typing import Optional
 from wechaty import Wechaty
-from python_wechaty_plugin_contrib import (
+from wechaty_plugin_contrib import (
     DingDongPlugin, WeatherPlugin
 )
-from python_wechaty_plugin_contrib.ding_dong_rank_plugin import DingDongRankPlugin
+from wechaty_plugin_contrib.ding_dong_rank_plugin import DingDongRankPlugin
 
 bot: Optional[Wechaty] = None
 
