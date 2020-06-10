@@ -67,7 +67,8 @@ from .user import (
     Image,
     RoomInvitation,
     MiniProgram,
-    Favorite
+    Favorite,
+    ContactSelf
 )
 from .utils import (
     qr_terminal
@@ -117,6 +118,7 @@ class Wechaty(AsyncIOEventEmitter):
 
         self.Tag = Tag
         self.Contact = Contact
+        self.ContactSelf = ContactSelf
         self.Friendship = Friendship
         self.Message = Message
         self.Room = Room
@@ -581,3 +583,19 @@ class Wechaty(AsyncIOEventEmitter):
         """
         log.info('wechaty is stoping ...')
         await self.puppet.stop()
+
+    def user_self(self) -> ContactSelf:
+        """
+        get user self
+        :return:
+        """
+        user_id = self.puppet.self_id()
+        user = self.ContactSelf.load(user_id)
+        return user
+
+    def self(self) -> Contact:
+        """
+        get user self
+        :return: user_self
+        """
+        return self.user_self()
