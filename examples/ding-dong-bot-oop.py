@@ -2,7 +2,6 @@
 # pylint: disable=R0801
 import asyncio
 import logging
-import os
 from typing import Optional, Union
 
 from wechaty_puppet import FileBox, ScanStatus  # type: ignore
@@ -51,7 +50,6 @@ class MyBot(Wechaty):
 
 
 bot: Optional[MyBot] = None
-os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'your-token-here'
 
 
 async def main():

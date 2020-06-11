@@ -58,6 +58,11 @@ from wechaty_puppet import (  # type: ignore
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch     # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
+
+from .plugin import (
+    WechatyPlugin, WechatyPluginManager
+)
+
 from .user import (
     Contact,
     Friendship,
@@ -69,9 +74,11 @@ from .user import (
     MiniProgram,
     Favorite
 )
+
 from .utils import (
     qr_terminal
 )
+
 
 log = get_logger('Wechaty')
 
@@ -115,12 +122,19 @@ class Wechaty(AsyncIOEventEmitter):
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
+        # pylint: disable=C0103
         self.Tag = Tag
+        # pylint: disable=C0103
         self.Contact = Contact
+        # pylint: disable=C0103
         self.Friendship = Friendship
+        # pylint: disable=C0103
         self.Message = Message
+        # pylint: disable=C0103
         self.Room = Room
+        # pylint: disable=C0103
         self.Image = Image
+        # pylint: disable=C0103
         self.RoomInvitation = RoomInvitation
         self.Favorite = Favorite
         self.MiniProgram = MiniProgram
@@ -136,6 +150,8 @@ class Wechaty(AsyncIOEventEmitter):
         self._ready_state = StateSwitch()
 
         self._watchdog = Watchdog(DEFAULT_TIMEOUT)
+
+        self._plugin_manager: WechatyPluginManager = WechatyPluginManager(self)
 
     @staticmethod
     def _load_puppet(options: WechatyOptions) -> Puppet:
@@ -193,6 +209,16 @@ class Wechaty(AsyncIOEventEmitter):
         return cls._global_instance
         # return cast(Wechaty, cls._global_instance)
         # return cls._global_instance
+
+    def use(self, plugin: Union[WechatyPlugin, List[WechatyPlugin]]) -> Wechaty:
+        """register the plugin"""
+        if isinstance(plugin, WechatyPlugin):
+            plugins = [plugin]
+        else:
+            plugins = plugin
+        for item in plugins:
+            self._plugin_manager.add_plugin(item)
+        return self
 
     @property
     def name(self) -> str:
@@ -373,9 +399,10 @@ class Wechaty(AsyncIOEventEmitter):
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
                 async def error_listener(payload: EventErrorPayload):
-                    log.info('receive <error> event <%s>', payload)
-                    self.emit('error', payload)
-                    await self.on_error(payload)
+                    if isinstance(payload, EventErrorPayload):
+                        log.info('receive <error> event <%s>', payload)
+                        self.emit('error', payload)
+                        await self.on_error(payload)
 
                 puppet.on('error', error_listener)
 
@@ -408,6 +435,9 @@ class Wechaty(AsyncIOEventEmitter):
                     self.emit('login', Contact)
                     await self.on_login(contact)
 
+                    # init the plugins
+                    await self._plugin_manager.init_plugins()
+
                 puppet.on('login', login_listener)
 
             elif event_name == 'logout':
@@ -418,7 +448,6 @@ class Wechaty(AsyncIOEventEmitter):
                     await contact.ready()
                     self.emit('logout', Contact)
                     await self.on_logout(contact)
-
                 puppet.on('logout', logout_listener)
 
             elif event_name == 'message':
@@ -433,6 +462,8 @@ class Wechaty(AsyncIOEventEmitter):
                     room = msg.room()
                     if room is not None:
                         room.emit('message', room)
+
+                    await self._plugin_manager.emit_events('message', msg)
 
                 puppet.on('message', message_listener)
 
@@ -536,8 +567,8 @@ class Wechaty(AsyncIOEventEmitter):
                         else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
                         qr_terminal(qr_code)
-                    self.emit('scan', payload.status, qr_code,  payload.data)
-                    await self.on_scan(payload.status, qr_code,  payload.data)
+                    self.emit('scan', payload.status, qr_code, payload.data)
+                    await self.on_scan(payload.status, qr_code, payload.data)
 
                 puppet.on('scan', scan_listener)
 

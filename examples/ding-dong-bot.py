@@ -1,7 +1,6 @@
 """doc"""
 import asyncio
 import logging
-import os
 from typing import Optional, Union
 
 from wechaty_puppet import FileBox  # type: ignore
@@ -14,6 +13,7 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(filename)s <%(funcName)s> %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
 )
+
 log = logging.getLogger(__name__)
 
 
@@ -33,7 +33,6 @@ async def message(msg: Message):
             name='ding-dong.jpg')
         await conversation.say(file_box)
 
-os.environ['WECHATY_PUPPET_HOSTIE_TOKEN'] = 'your-token-here'
 bot: Optional[Wechaty] = None
 
 
