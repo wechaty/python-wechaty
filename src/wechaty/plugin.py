@@ -27,8 +27,8 @@ from typing import (
     List,
     Optional,
     Dict,
-    Union
-)
+    Union,
+    Any)
 import re
 from datetime import datetime
 from copy import deepcopy
@@ -59,6 +59,7 @@ log = get_logger(__name__)
 @dataclass
 class WechatyPluginOptions:
     """options for wechaty plugin"""
+    name: Optional[str] = None
     metadata: Optional[dict] = None
 
 
@@ -75,9 +76,12 @@ class WechatyPlugin(metaclass=ABCMeta):
     listen events from
 
     """
-    def __init__(self):
-        self.output = {}
+    def __init__(self, options: Optional[WechatyPluginOptions] = None):
+        self.output: Dict[str, Any] = {}
         self.bot: Optional[Wechaty] = None
+        if options is None:
+            options = WechatyPluginOptions()
+        self.options = options
 
     async def init_plugin(self, wechaty: Wechaty):
         """set wechaty to the plugin"""
