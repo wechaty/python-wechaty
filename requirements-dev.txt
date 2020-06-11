@@ -10,3 +10,4 @@ semver
 pyee
 requests
 qrcode
+apscheduler
