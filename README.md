@@ -270,7 +270,6 @@ Project created, publish a empty module `wechaty` on PyPI.
 - [Java Wechaty](https://github.com/wechaty/java-wechaty) - Java WeChaty Conversational AI Chatbot SDK for Wechat Individual Accounts (Java)
 - [Scala Wechaty](https://github.com/wechaty/scala-wechaty) - Scala WeChaty Conversational AI Chatbot SDK for WechatyIndividual Accounts (Scala)
 
-
 ## Badge
 
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
@@ -280,6 +279,15 @@ Project created, publish a empty module `wechaty` on PyPI.
 ```
 
 ## Contributors
+
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/0)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/0)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/1)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/1)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/2)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/2)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/3)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/3)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/4)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/4)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/5)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/5)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/6)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/6)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/7)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/7)
 
 1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
