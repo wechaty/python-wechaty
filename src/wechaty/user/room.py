@@ -119,19 +119,30 @@ class Room(Accessory):
                        topic: Optional[str] = None) -> List[Room]:
         """
         find room by query filter
+
+        TODO -> we should remove search_query from puppet-*
         """
         log.info('Room find_all <%s, %s>', room_id, topic)
-        query_filter = RoomQueryFilter(id=room_id, topic=topic)
-        room_ids = await cls.get_puppet().room_search(query_filter)
+
+        room_ids = await cls.get_puppet().room_search()
         rooms = [cls.load(room_id) for room_id in room_ids]
+
+        if topic is not None:
+            # sync all room payload
+            for room in rooms:
+                await room.ready()
 
         room_result = []
         # TODO -> chang to more efficient way
         # jointly run async ready method
         for room in rooms:
             try:
-                await room.ready()
-                room_result.append(room)
+                if room_id == room.room_id:
+                    room_result.append(room)
+
+                elif topic is not None and room.topic() == topic:
+                    room_result.append(room)
+
             # pylint:disable=W0703
             except Exception as exception:
                 log.warning(
@@ -160,7 +171,8 @@ class Room(Accessory):
         for index, room in enumerate(rooms):
             # TODO -> room_valid function is not implemented in puppet
             # this code need to be changed later
-            valid = cls.get_puppet() is None
+
+            valid = cls.get_puppet() is not None
 
             if valid:
                 log.warning(
@@ -229,8 +241,6 @@ class Room(Accessory):
         if self.payload is None:
             raise Exception('Room Payload can"t be ready')
 
-        return
-
         member_ids = await self.puppet.room_members(self.room_id)
 
         contacts = [
@@ -254,6 +264,11 @@ class Room(Accessory):
         Room Say(%s, %s)
         """
         log.info('Room say <%s, %s>', some_thing, mention_ids)
+
+        # we should import UrlLink type locally because of circular dependency
+
+        from wechaty.user.url_link import UrlLink
+        from wechaty.user.mini_program import MiniProgram
 
         if isinstance(some_thing, str):
             msg_id = await self.puppet.message_send_text(
@@ -356,9 +371,6 @@ class Room(Accessory):
             for member in members:
                 await member.ready()
 
-            # members: List[Contact] = list(
-            #     map(lambda x: self.wechaty.Contact.load(x), member_ids)
-            # )
             names = [member.name for member in members]
             return ','.join(names)
 
