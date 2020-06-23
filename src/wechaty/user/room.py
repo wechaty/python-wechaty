@@ -462,7 +462,7 @@ class Room(Accessory):
         log.info('Get room <%s> all members', self)
 
         member_ids = await self.puppet.room_members(self.room_id)
-        members = [
+        members: List[Contact] = [
             self.wechaty.Contact.load(member_id)
             for member_id in member_ids
         ]
@@ -472,10 +472,13 @@ class Room(Accessory):
             if isinstance(query, str):
                 member_search_result = []
                 for member in members:
-                    if member.name.__contains__(query):
-                        member_search_result.append(member)
-                    elif member.payload.alias.__contains__(query):
-                        member_search_result.append(member)
+
+                    if member.payload is not None:
+                        if member.name.__contains__(query):
+                            member_search_result.append(member)
+                        elif member.payload.alias is not None and \
+                                member.payload.alias.__contains__(query):
+                            member_search_result.append(member)
 
                     # get room_alias but hostie-server not support
                 return member_search_result
@@ -483,10 +486,15 @@ class Room(Accessory):
             if isinstance(query, RoomMemberQueryFilter):
                 member_search_result = []
                 for member in members:
-                    if member.name.__contains__(query.name):
-                        member_search_result.append(member)
-                    elif member.payload.alias.__contains__(query.contact_alias):
-                        member_search_result.append(member)
+                    if member.payload is not None:
+                        if member.name.__contains__(query.name):
+                            member_search_result.append(member)
+
+                        elif member.payload.alias is not None and \
+                                member.payload.alias.__contains__(
+                                    query.contact_alias):
+
+                            member_search_result.append(member)
 
                     # get room_alias but hostie-server not support
                 return member_search_result
