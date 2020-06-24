@@ -19,6 +19,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
+
+import asyncio
 from collections import defaultdict
 # from threading import Event, Thread
 
@@ -35,6 +37,7 @@ from pyee import AsyncIOEventEmitter    # type: ignore
 from wechaty_puppet import (    # type: ignore
     FileBox,
     RoomQueryFilter,
+    RoomMemberQueryFilter,
     RoomPayload,
     get_logger
 )
@@ -119,19 +122,27 @@ class Room(Accessory):
                        topic: Optional[str] = None) -> List[Room]:
         """
         find room by query filter
+
+        TODO -> we should remove search_query from puppet-*
         """
         log.info('Room find_all <%s, %s>', room_id, topic)
-        query_filter = RoomQueryFilter(id=room_id, topic=topic)
-        room_ids = await cls.get_puppet().room_search(query_filter)
+
+        room_ids = await cls.get_puppet().room_search()
         rooms = [cls.load(room_id) for room_id in room_ids]
 
+        if topic is not None:
+            # using async parallel pattern to load room payload
+            await asyncio.gather(*[room.ready() for room in rooms])
+
         room_result = []
-        # TODO -> chang to more efficient way
-        # jointly run async ready method
         for room in rooms:
             try:
-                await room.ready()
-                room_result.append(room)
+                if room_id == room.room_id:
+                    room_result.append(room)
+
+                elif topic is not None and room.topic() == topic:
+                    room_result.append(room)
+
             # pylint:disable=W0703
             except Exception as exception:
                 log.warning(
@@ -160,7 +171,8 @@ class Room(Accessory):
         for index, room in enumerate(rooms):
             # TODO -> room_valid function is not implemented in puppet
             # this code need to be changed later
-            valid = cls.get_puppet() is None
+
+            valid = cls.get_puppet() is not None
 
             if valid:
                 log.warning(
@@ -219,7 +231,8 @@ class Room(Accessory):
             return
 
         if force_sync:
-            pass
+            self.payload = None
+
             # TODO -> *_dirty method is not implemented in puppet
             # await self.puppet.room_payload_dirty(self.room_id)
             # await self.puppet.room_member_payload_dirty(self.room_id)
@@ -228,8 +241,6 @@ class Room(Accessory):
 
         if self.payload is None:
             raise Exception('Room Payload can"t be ready')
-
-        return
 
         member_ids = await self.puppet.room_members(self.room_id)
 
@@ -254,6 +265,11 @@ class Room(Accessory):
         Room Say(%s, %s)
         """
         log.info('Room say <%s, %s>', some_thing, mention_ids)
+
+        # we should import UrlLink type locally because of circular dependency
+
+        from wechaty.user.url_link import UrlLink
+        from wechaty.user.mini_program import MiniProgram
 
         if isinstance(some_thing, str):
             msg_id = await self.puppet.message_send_text(
@@ -308,6 +324,8 @@ class Room(Accessory):
         log.info('Room add <%s>', contact)
 
         await self.puppet.room_add(self.room_id, contact.contact_id)
+        # reload the payload
+        await self.ready(force_sync=True)
 
     async def delete(self, contact: Contact):
         """
@@ -318,6 +336,8 @@ class Room(Accessory):
         if contact is None or contact.contact_id is None:
             raise Exception('Contact is none or contact_id not found')
         await self.puppet.room_delete(self.room_id, contact.contact_id)
+        # reload the payload
+        await self.ready(force_sync=True)
 
     async def quit(self):
         """
@@ -356,14 +376,13 @@ class Room(Accessory):
             for member in members:
                 await member.ready()
 
-            # members: List[Contact] = list(
-            #     map(lambda x: self.wechaty.Contact.load(x), member_ids)
-            # )
             names = [member.name for member in members]
             return ','.join(names)
 
         try:
             await self.puppet.room_topic(self.room_id, new_topic)
+            # reload the payload
+            await self.ready(force_sync=True)
             return new_topic
         # pylint:disable=W0703
         except Exception as exception:
@@ -387,6 +406,8 @@ class Room(Accessory):
             announce = await self.puppet.room_announce(self.room_id)
             return announce
         await self.puppet.room_announce(self.room_id, announce_text)
+        # reload the payload
+        await self.ready(force_sync=True)
         return None
 
     async def qr_code(self) -> str:
@@ -394,6 +415,10 @@ class Room(Accessory):
         TODO -> need to rewrite this function later
         Get QR Code Value of the Room from the room, which can be used as
         scan and join the room.
+
+        'Wechaty Puppet Unsupported API Error. Learn More At
+        https://github.com/wechaty/wechaty-puppet/wiki/Compatibility', None)>
+
         """
         log.info('qr_code()')
         qr_code_str = await self.puppet.room_qr_code(self.room_id)
@@ -402,6 +427,11 @@ class Room(Accessory):
     async def alias(self, member: Contact) -> Optional[str]:
         """
         Return contact's roomAlias in the room
+
+        TODO -> 'Wechaty Puppet Unsupported API Error. Learn More At
+        https://github.com/wechaty/wechaty-puppet/wiki/Compatibility', None)>
+
+        the result of the function will always return an empty string
         """
         if member is None:
             raise Exception('member can"t be none')
@@ -418,47 +448,62 @@ class Room(Accessory):
         Check if the room has member `contact`, the return is a Promise and
         must be `await`-ed
         """
-        member_ids = await self.puppet.room_members(self.room_id)
-        return contact.contact_id in member_ids
+        if self.payload is None:
+            await self.ready()
+            assert self.payload is not None
+        return contact.contact_id in self.payload.member_ids
 
-    async def member_all(
-            self,
-            query: Union[str, RoomQueryFilter] = None) -> List[Contact]:
-        """
-        Find all contacts in a room
-
-        # TODO -> need to refactoring this function
-
-        """
-        log.info('room member all (%s)', json.dumps(query))
-        if query is None:
-            members = await self.member_list()
-            return members
-
-        contact_ids = await self.puppet.room_members(self.room_id)
-        contacts = [
-            self.wechaty.Contact.load(contact_id)
-            for contact_id in contact_ids
-        ]
-        return contacts
-
-    async def member_list(self) -> List[Contact]:
+    async def member_list(self,
+                          query: Union[str, RoomMemberQueryFilter] = None
+                          ) -> List[Contact]:
         """
         Get all room member from the room
         """
         log.info('Get room <%s> all members', self)
 
         member_ids = await self.puppet.room_members(self.room_id)
-        contacts = [
+        members: List[Contact] = [
             self.wechaty.Contact.load(member_id)
             for member_id in member_ids
         ]
+        await asyncio.gather(*[member.ready() for member in members])
 
-        return contacts
+        if query is not None:
+            if isinstance(query, str):
+                member_search_result = []
+                for member in members:
 
-    async def member(
-            self,
-            query: Union[str, RoomQueryFilter] = None) -> Optional[Contact]:
+                    if member.payload is not None:
+                        if member.name.__contains__(query):
+                            member_search_result.append(member)
+                        elif member.payload.alias is not None and \
+                                member.payload.alias.__contains__(query):
+                            member_search_result.append(member)
+
+                    # get room_alias but hostie-server not support
+                return member_search_result
+
+            if isinstance(query, RoomMemberQueryFilter):
+                member_search_result = []
+                for member in members:
+                    if member.payload is not None:
+                        if member.name.__contains__(query.name):
+                            member_search_result.append(member)
+
+                        elif member.payload.alias is not None and \
+                                member.payload.alias.__contains__(
+                                    query.contact_alias):
+
+                            member_search_result.append(member)
+
+                    # get room_alias but hostie-server not support
+                return member_search_result
+
+        return members
+
+    async def member(self,
+                     query: Union[str, RoomMemberQueryFilter] = None
+                     ) -> Optional[Contact]:
         """
         Find all contacts in a room, if get many, return the first one.
 
@@ -467,7 +512,7 @@ class Room(Accessory):
         """
         log.info('Room member search <%s>', query)
 
-        members = await self.member_all(query)
+        members = await self.member_list(query)
         if members is None or len(members) < 1:
             return None
         return members[0]
@@ -477,7 +522,10 @@ class Room(Accessory):
         get room owner
         """
         log.info('Room <%s> owner', self)
-        if self.payload is None or self.payload.owner_id is None:
+        if self.payload is None:
+            raise Exception('Room <%s> payload not found', self)
+
+        if self.payload.owner_id is None or self.payload.owner_id == '':
             # raise Exception('Room <%s> payload or payload.owner_id not found')
             return None
 

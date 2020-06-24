@@ -31,7 +31,7 @@ lint: pylint pycodestyle flake8 mypy pytype
 pylint:
 	pylint \
 		--load-plugins pylint_quotes \
-		--disable=W0511,R0801 \
+		--disable=W0511,R0801,cyclic-import \
 		$(SOURCE_GLOB)
 
 .PHONY: pycodestyle
@@ -53,7 +53,7 @@ mypy:
 	MYPYPATH=stubs/ mypy \
 		$(SOURCE_GLOB)
 
-.PHONE: pytype
+.PHONY: pytype
 pytype:
 	pytype src/ --disable=import-error,pyi-error
 	pytype examples/ --disable=import-error
