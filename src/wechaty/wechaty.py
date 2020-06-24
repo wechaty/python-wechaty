@@ -403,6 +403,8 @@ class Wechaty(AsyncIOEventEmitter):
                         log.info('receive <error> event <%s>', payload)
                         self.emit('error', payload)
                         await self.on_error(payload)
+                    else:
+                        log.error('internal error <%s>', payload)
 
                 puppet.on('error', error_listener)
 

@@ -20,6 +20,7 @@ limitations under the License.
 """
 from __future__ import annotations
 
+import asyncio
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -111,6 +112,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         :return:
         """
         log.info('find() <%s, %s>', cls, query)
+
         contact_list = await cls.find_all(query)
         if len(contact_list) == 0:
             return None
@@ -129,6 +131,9 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
         contact_ids = await cls.get_puppet().contact_list()
         contacts = [Contact.load(contact_id) for contact_id in contact_ids]
+
+        # load contact parallel using asyncio.gather method
+        await asyncio.gather(*[contact.ready() for contact in contacts])
 
         # async load
         batch_size = 16
@@ -188,7 +193,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
             identity = self.contact_id
         else:
             identity = 'loading ...'
-        return 'Contact <%s>' % identity
+        return 'Contact <%s> <%s>' % (self.contact_id, identity)
 
     async def say(self, message: Union[str, Message, FileBox, Contact, UrlLink]
                   ) -> Optional[Message]:
@@ -198,6 +203,9 @@ class Contact(Accessory, AsyncIOEventEmitter):
         """
         if not self.is_ready():
             await self.ready()
+
+        # import some class because circular dependency
+        from wechaty.user.url_link import UrlLink
 
         if isinstance(message, str):
             # say text
@@ -260,20 +268,20 @@ class Contact(Accessory, AsyncIOEventEmitter):
         if self.payload is None:
             raise Exception('can"t load contact payload <%s>' % self)
 
-        if new_alias is None:
-            await self.ready()
-            if self.payload.alias is None:
-                return ''
-            return self.payload.alias
+        # if new_alias is None:
+        #     if self.payload.alias is None:
+        #         return ''
+        #     return self.payload.alias
 
         try:
-            await self.puppet.contact_alias(self.contact_id, new_alias)
+            alias = await self.puppet.contact_alias(self.contact_id, new_alias)
             await self.ready(force_sync=True)
             if new_alias != self.payload.alias:
                 log.info(
                     'Contact alias(%s) sync with server fail: \
                     set(%s) is not equal to get(%s)',
                     new_alias, new_alias, self.payload.alias)
+            return alias
         # pylint:disable=W0703
         except Exception as exception:
             log.info(
@@ -349,7 +357,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
             return None
         return self.payload.city
 
-    async def avatar(self, file_box: Optional[FileBox]) -> FileBox:
+    async def avatar(self, file_box: Optional[FileBox] = None) -> FileBox:
         """
         get the avatar of the account
         """
@@ -371,7 +379,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         """
         sync the contact data
         """
-        return self.ready()
+        await self.ready()
 
     def is_self(self) -> bool:
         """
