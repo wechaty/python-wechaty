@@ -44,16 +44,23 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
-## The World's Shortest Python ChatBot: 6 lines of Code
+## The simplest Python ChatBot
 
 ```python
-from wechaty import Wechaty
+import asyncio
+from wechaty import Wechaty, Message
 
-Wechaty.instance() // Global Instance
-  .on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
-  .on('login', lambda user: print('User {} logined'.format(user)))
-  .on('message', lambda message: print('Message: {}'.format(message)))
-  .start()
+async def message(msg: Message):
+    """back on message"""
+    talker = msg.talker()
+    await talker.ready()
+    await talker.say('hello world')
+
+async def main():
+    bot = Wechaty().on('message', message)
+    await bot.start()
+
+asyncio.run(main())
 ```
 
 ## Python Wechaty Developing Plan
@@ -279,14 +286,14 @@ Project created, publish a empty module `wechaty` on PyPI.
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
 ```
 
-## Contributors
-
-1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
-
 ## Commiters
 
 - [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
 - [@huan](https://github.com/huan) - ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
+
+## Contributors
+
+1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
 ## Copyright & License
 
