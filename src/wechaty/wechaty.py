@@ -126,7 +126,7 @@ class Wechaty(AsyncIOEventEmitter):
         # pylint: disable=C0103
         self.Tag = Tag
         # pylint: disable=C0103
-        self.Contact = Contac
+        self.Contact = Contact
         # pylint: disable=C0103
         self.ContactSelf = ContactSelf
         # pylint: disable=C0103
