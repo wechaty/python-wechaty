@@ -8,7 +8,7 @@ log = get_logger('contact_self')
 
 class ContactSelf(Contact):
 
-    async def avatar(self, file: Optional[FileBox]):
+    async def avatar(self, file: Optional[FileBox] = None) -> FileBox:
         """
 
         :param file:
