@@ -169,12 +169,12 @@ class Friendship(Accessory, Acceptable):
         log.info('accept friendship %s', self.friendship_id)
         if not self.payload:
             raise Exception('Friendship payload not ready')
-        if self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
+        if self.payload and self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
             # TODO -> recheck the exception string
             raise Exception(
                 'accept() need type to be FriendshipType.Receive,'
                 'but it got a " + Friendship.Type[this.payload.type]')
-        log.info('friendship accept to %s', self.payload.contact_id)
+        log.info('friendship accept to %s', self.payload and self.payload.contact_id)
         await self.puppet.friendship_accept(friendship_id=self.friendship_id)
         contact = self.contact()
 
