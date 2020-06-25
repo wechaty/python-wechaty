@@ -167,7 +167,8 @@ class Friendship(Accessory, Acceptable):
         accept friendship
         """
         log.info('accept friendship %s', self.friendship_id)
-        await self.ready()
+        if not self.payload:
+            raise Exception('Friendship payload not ready')
         if self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
             # TODO -> recheck the exception string
             raise Exception(
