@@ -134,8 +134,7 @@ class Friendship(Accessory, Acceptable):
             # TODO -> get constructor name of the friendship
             return 'Friendship'
         return 'Friendship # {0} <{1}>'.format(
-            str(self._payload.type),
-            self.payload.contact_id)
+            str(self._payload.type), self._payload.contact_id)
 
     def is_ready(self) -> bool:
         """
@@ -160,6 +159,8 @@ class Friendship(Accessory, Acceptable):
         """
         if self.puppet is None:
             raise Exception('puppet not found ...')
+        if not self.payload:
+            raise Exception('payload not ready ...')
         contact = self.wechaty.Contact.load(self.payload.contact_id)
         return contact
 
