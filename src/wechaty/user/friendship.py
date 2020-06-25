@@ -146,12 +146,10 @@ class Friendship(Accessory, Acceptable):
         """
         load friendship payload
         """
-        if not self.is_ready():
-            self._payload = await self.puppet.friendship_payload(
-                friendship_id=self.friendship_id)
-        if self.payload is None:
-            raise Exception('cannot load friendship payload %s'
-                            % self.friendship_id)
+        if self.is_ready():
+            return
+        self._payload = await self.puppet.friendship_payload(
+            friendship_id=self.friendship_id)
 
     def contact(self) -> Contact:
         """
@@ -169,9 +167,7 @@ class Friendship(Accessory, Acceptable):
         accept friendship
         """
         log.info('accept friendship %s', self.friendship_id)
-        if self.payload is None:
-            raise Exception('payload not found')
-
+        await self.ready()
         if self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
             # TODO -> recheck the exception string
             raise Exception(
