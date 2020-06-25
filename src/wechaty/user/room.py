@@ -140,8 +140,10 @@ class Room(Accessory):
                 if room_id == room.room_id:
                     room_result.append(room)
 
-                elif topic is not None and await room.topic() == topic:
-                    room_result.append(room)
+                elif topic is not None:
+                    room_topic = await room.topic()
+                    if room_topic == topic:
+                        room_result.append(room)
 
             # pylint:disable=W0703
             except Exception as exception:
