@@ -64,9 +64,9 @@ class Friendship(Accessory, Acceptable):
 
         log.info('Friendship constructor %s', friendship_id)
 
-        if self.__class__ is Friendship:
-            raise Exception(
-                'Friendship class can not be instanciated directly!')
+        # if self.__class__ is Friendship:
+        #     raise Exception(
+        #         'Friendship class can not be instanciated directly!')
         if self.puppet is None:
             raise Exception(
                 'Friendship class can not be instanciated without a puppet!')
@@ -119,15 +119,11 @@ class Friendship(Accessory, Acceptable):
         raise NotImplementedError
 
     @property
-    def payload(self) -> FriendshipPayload:
+    def payload(self) -> Optional[FriendshipPayload]:
         """
         get the FriendShipPayload as a property
         :return:
         """
-        if self._payload is None:
-            self.ready()
-        if self._payload is None:
-            raise Exception('can"t load friendship payload')
         return self._payload
 
     def __str__(self) -> str:
@@ -145,18 +141,17 @@ class Friendship(Accessory, Acceptable):
         """
         check if friendship is ready
         """
-        return self.puppet is None or self.payload is None
+        return self.puppet is not None and self.payload is not None
 
     async def ready(self):
         """
         load friendship payload
         """
         if not self.is_ready():
-            friendship_search_response = await self.puppet.friendship_payload(
+            self._payload = await self.puppet.friendship_payload(
                 friendship_id=self.friendship_id)
-            self._payload = friendship_search_response
         if self.payload is None:
-            raise Exception('can"t not load friendship payload %s'
+            raise Exception('cannot load friendship payload %s'
                             % self.friendship_id)
 
     def contact(self) -> Contact:
