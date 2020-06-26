@@ -15,7 +15,7 @@
 
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/Wechaty/wechaty)
 
-Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 6 lines of Python.
+Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 9 lines of Python.
 
 ## Voice of the Developers
 
@@ -44,16 +44,18 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
-## The World's Shortest Python ChatBot: 6 lines of Code
+## The World's Shortest Python ChatBot: 9 lines of Code
 
 ```python
 from wechaty import Wechaty
-
-Wechaty.instance() // Global Instance
-  .on('scan', lambda qrcode, status : print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, encodeURIComponent(qrcode))))
-  .on('login', lambda user: print('User {} logined'.format(user)))
-  .on('message', lambda message: print('Message: {}'.format(message)))
-  .start()
+import asyncio
+async def main():
+    bot = Wechaty()
+    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, qrcode)))
+    bot.on('login', lambda user: print('User {} logined'.format(user)))
+    bot.on('message', lambda message: print('Message: {}'.format(message)))
+    await bot.start()
+asyncio.run(main())
 ```
 
 ## Python Wechaty Developing Plan
