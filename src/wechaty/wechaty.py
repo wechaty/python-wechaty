@@ -72,7 +72,8 @@ from .user import (
     Image,
     RoomInvitation,
     MiniProgram,
-    Favorite
+    Favorite,
+    ContactSelf
 )
 
 from .utils import (
@@ -126,6 +127,8 @@ class Wechaty(AsyncIOEventEmitter):
         self.Tag = Tag
         # pylint: disable=C0103
         self.Contact = Contact
+        # pylint: disable=C0103
+        self.ContactSelf = ContactSelf
         # pylint: disable=C0103
         self.Friendship = Friendship
         # pylint: disable=C0103
@@ -614,3 +617,19 @@ class Wechaty(AsyncIOEventEmitter):
         """
         log.info('wechaty is stoping ...')
         await self.puppet.stop()
+
+    def user_self(self) -> ContactSelf:
+        """
+        get user self
+        :return:
+        """
+        user_id = self.puppet.self_id()
+        user = self.ContactSelf.load(user_id)
+        return user
+
+    def self(self) -> Contact:
+        """
+        get user self
+        :return: user_self
+        """
+        return self.user_self()
