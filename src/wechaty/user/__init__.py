@@ -11,6 +11,7 @@ from .room            import Room
 from .tag             import Tag
 from .url_link        import UrlLink
 from .room_invitation import RoomInvitation
+from .contact_self import ContactSelf
 
 # Huan(202003): is that necessary to put "name" to `__all__`?
 # name = 'user'
@@ -25,5 +26,6 @@ __all__ = [
     'Room',
     'Tag',
     'UrlLink',
-    'RoomInvitation'
+    'RoomInvitation',
+    'ContactSelf'
 ]

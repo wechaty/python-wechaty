@@ -53,7 +53,7 @@ mypy:
 	MYPYPATH=stubs/ mypy \
 		$(SOURCE_GLOB)
 
-.PHONE: pytype
+.PHONY: pytype
 pytype:
 	pytype src/ --disable=import-error,pyi-error
 	pytype examples/ --disable=import-error

@@ -15,7 +15,7 @@
 
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/Wechaty/wechaty)
 
-Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 6 lines of Python.
+Wechaty is a RPA SDK for Wechat **Individual** Account that can help you create a chatbot in 9 lines of Python.
 
 ## Voice of the Developers
 
@@ -44,6 +44,7 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
+<<<<<<< HEAD
 ## The simplest Python ChatBot
 
 ```python
@@ -60,6 +61,19 @@ async def main():
     bot = Wechaty().on('message', message)
     await bot.start()
 
+=======
+## The World's Shortest Python ChatBot: 9 lines of Code
+
+```python
+from wechaty import Wechaty
+import asyncio
+async def main():
+    bot = Wechaty()
+    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, qrcode)))
+    bot.on('login', lambda user: print('User {} logined'.format(user)))
+    bot.on('message', lambda message: print('Message: {}'.format(message)))
+    await bot.start()
+>>>>>>> 9de895727c35f0f4a4247f7ed9c1217a6155b738
 asyncio.run(main())
 ```
 
@@ -277,7 +291,6 @@ Project created, publish a empty module `wechaty` on PyPI.
 - [Java Wechaty](https://github.com/wechaty/java-wechaty) - Java WeChaty Conversational AI Chatbot SDK for Wechat Individual Accounts (Java)
 - [Scala Wechaty](https://github.com/wechaty/scala-wechaty) - Scala WeChaty Conversational AI Chatbot SDK for WechatyIndividual Accounts (Scala)
 
-
 ## Badge
 
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
@@ -285,6 +298,19 @@ Project created, publish a empty module `wechaty` on PyPI.
 ```md
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
 ```
+
+## Contributors
+
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/0)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/0)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/1)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/1)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/2)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/2)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/3)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/3)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/4)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/4)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/5)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/5)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/6)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/6)
+[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/7)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/7)
+
+1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
 ## Commiters
 
