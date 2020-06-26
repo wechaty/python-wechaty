@@ -7,7 +7,7 @@ from typing import (
     Type,
 )
 import requests
-from lxml import etree # parse html
+from lxml import etree # type: ignore
 from wechaty_puppet import UrlLinkPayload, get_logger   # type: ignore
 
 
