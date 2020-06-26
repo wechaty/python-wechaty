@@ -88,3 +88,22 @@ Here collects the plugins developed by the community. If you want to publish you
 
 This repository is less relevant to the python-wecahty core, so if you want to focus on the core function, you can skip this one freely.
 
+## One practise to work within PyCharm IDE
+
+So, you have already forked the `python-wechaty-getting-started` project or created your own bot project, and the PyPI packages mentioned above is installed by the `pip install` way.
+
+Now we start to have a discuss on how to work easier in your IDE.
+
+Here we show a working practise in PyCharm IDE, if you have a better way, or want to share your instruction under other development environment, feel free to make a PR.
+
+### 1. Set a python virtual environment for the bot project
+
+### 2. Add the WECHATY_PUPPET_HOSTIE_TOKEN environment params
+
+### 3. Add the python-wechaty repositories as git submodules
+
+### 4. Mark these src directory as source
+
+### 5. Change the code and push to your own fork version
+
+### 6. Make a PR (pull request) in GitHub
