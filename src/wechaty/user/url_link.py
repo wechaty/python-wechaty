@@ -7,9 +7,8 @@ from typing import (
     Type,
 )
 import requests
-from lxml import etree # type: ignore
-from wechaty_puppet import UrlLinkPayload, get_logger   # type: ignore
-
+from lxml import etree  # type: ignore
+from wechaty_puppet import UrlLinkPayload, get_logger  # type: ignore
 
 log = get_logger('UrlLink')
 
@@ -18,9 +17,10 @@ class UrlLink:
     """
     url_link object which handle the url_link content
     """
+
     def __init__(
-            self,
-            payload: UrlLinkPayload,
+        self,
+        payload: UrlLinkPayload,
     ):
         """
         initialization
@@ -30,8 +30,8 @@ class UrlLink:
 
     @classmethod
     def create(
-            cls: Type[UrlLink],
-            url: str,
+        cls: Type[UrlLink],
+        url: str,
     ) -> UrlLink:
         """
         create urllink from url string
@@ -42,10 +42,10 @@ class UrlLink:
         thumbnail_url = html.xpath('//meta[@property="og:image"]/@content')
         description = html.xpath('//meta[@property="og:description"]/@content')
         payload = UrlLinkPayload(
-            title = title[0] if len(title) else url,
-            url = url,
-            thumbnail_url = thumbnail_url[0] if len(thumbnail_url) else "",
-            description = description[0] if len(description) else ""
+            title=title[0] if len(title) else url,
+            url=url,
+            thumbnail_url=thumbnail_url[0] if len(thumbnail_url) else "",
+            description=description[0] if len(description) else ""
         )
         return UrlLink(payload)
 
