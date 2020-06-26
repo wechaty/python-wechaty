@@ -21,6 +21,7 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 from collections import defaultdict
 # from threading import Event, Thread
 
@@ -291,7 +292,7 @@ class Room(Accessory):
         elif isinstance(some_thing, UrlLink):
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.room_id,
-                url=some_thing.url
+                url=json.dumps(dataclasses.asdict(some_thing.payload))
             )
         elif isinstance(some_thing, MiniProgram):
             # TODO -> mini_program key is not clear

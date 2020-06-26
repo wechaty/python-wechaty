@@ -21,6 +21,8 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
+import dataclasses
+import json
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -229,7 +231,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
             # use this way to resolve circulation dependency import
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.contact_id,
-                url=message.url
+                url=json.dumps(dataclasses.asdict(message.payload))
             )
         # elif isinstance(message, MiniProgram):
         #     msg_id = await self.puppet.message_send_mini_program(

@@ -7,7 +7,7 @@ from typing import (
     Type,
 )
 import requests
-
+from lxml import etree # parse html
 from wechaty_puppet import UrlLinkPayload, get_logger   # type: ignore
 
 
@@ -33,14 +33,20 @@ class UrlLink:
             cls: Type[UrlLink],
             url: str,
     ) -> UrlLink:
-        """doc"""
+        """
+        create urllink from url string
+        """
         log.info('create url_link for %s', url)
-        res = requests.get(url)
-
+        html = etree.HTML(requests.get(url).text)
+        title = html.xpath('//meta[@property="og:title"]/@content')
+        thumbnail_url = html.xpath('//meta[@property="og:image"]/@content')
+        description = html.xpath('//meta[@property="og:description"]/@content')
         payload = UrlLinkPayload(
-            title=res.content.title().decode("utf-8"),
-            url=url)
-        # TODO -> get description, thumbnail_url of a website
+            title = title[0] if len(title) else url,
+            url = url,
+            thumbnail_url = thumbnail_url[0] if len(thumbnail_url) else "",
+            description = description[0] if len(description) else ""
+        )
         return UrlLink(payload)
 
     def __str__(self):
