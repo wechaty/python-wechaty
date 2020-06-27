@@ -273,7 +273,7 @@ class Room(Accessory):
 
         from wechaty.user.url_link import UrlLink
         from wechaty.user.mini_program import MiniProgram
-
+        from wechaty.user.contact import Contact
         if isinstance(some_thing, str):
             msg_id = await self.puppet.message_send_text(
                 conversation_id=self.room_id, message=some_thing,
