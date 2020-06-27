@@ -44,7 +44,7 @@ class UrlLink:
         payload = UrlLinkPayload(
             title=title[0] if len(title) else url,
             url=url,
-            thumbnail_url=thumbnail_url[0] if len(thumbnail_url) else "",
+            thumbnailUrl=thumbnail_url[0] if len(thumbnail_url) else "",
             description=description[0] if len(description) else ""
         )
         return UrlLink(payload)
@@ -67,14 +67,14 @@ class UrlLink:
         return self.payload.title
 
     @property
-    def thumbnail_url(self) -> str:
+    def thumbnailUrl(self) -> str:
         """
         get thumbnail url
         :return:
         """
-        if self.payload.thumbnail_url is None:
+        if self.payload.thumbnailUrl is None:
             return ''
-        return self.payload.thumbnail_url
+        return self.payload.thumbnailUrl
 
     @property
     def description(self) -> str:
