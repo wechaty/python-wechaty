@@ -244,6 +244,14 @@ pip3 install wechaty
 
 ## History
 
+### v0.6 (Jun 19, 2020)
+
+Python Wechaty Scala Wechaty **BETA** Released!
+
+Read more from our Multi-language Wechaty Beta Release event from our blog:
+
+- [Multi Language Wechaty Beta Release Announcement!](https://wechaty.github.io/2020/06/19/multi-language-wechaty-beta-release/)
+
 ### v0.4 (Mar 15, 2020) master
 
 Welcome [@huangaszaq](https://github.com/huangaszaq) for joining the project! [#42](https://github.com/wechaty/python-wechaty/pull/42)
