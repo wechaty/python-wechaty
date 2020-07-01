@@ -19,6 +19,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
+
+import dataclasses
+import json
 from typing import (
     Optional,
     Union,
@@ -143,7 +146,7 @@ class Message(Accessory):
                 conversation_id=conversation_id, file=msg)
         elif isinstance(msg, UrlLink):
             message_id = await self.puppet.message_send_url(
-                conversation_id=conversation_id, url=msg.url)
+                conversation_id=conversation_id, url=json.dumps(dataclasses.asdict(msg.payload)))
         elif isinstance(msg, MiniProgram):
             assert msg.payload is not None
             message_id = await self.puppet.message_send_mini_program(

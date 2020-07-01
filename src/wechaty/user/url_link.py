@@ -7,9 +7,8 @@ from typing import (
     Type,
 )
 import requests
-
-from wechaty_puppet import UrlLinkPayload, get_logger   # type: ignore
-
+from lxml import etree  # type: ignore
+from wechaty_puppet import UrlLinkPayload, get_logger  # type: ignore
 
 log = get_logger('UrlLink')
 
@@ -18,9 +17,10 @@ class UrlLink:
     """
     url_link object which handle the url_link content
     """
+
     def __init__(
-            self,
-            payload: UrlLinkPayload,
+        self,
+        payload: UrlLinkPayload,
     ):
         """
         initialization
@@ -30,17 +30,23 @@ class UrlLink:
 
     @classmethod
     def create(
-            cls: Type[UrlLink],
-            url: str,
+        cls: Type[UrlLink],
+        url: str,
     ) -> UrlLink:
-        """doc"""
+        """
+        create urllink from url string
+        """
         log.info('create url_link for %s', url)
-        res = requests.get(url)
-
+        html = etree.HTML(requests.get(url).text)
+        title = html.xpath('//meta[@property="og:title"]/@content')
+        thumbnail_url = html.xpath('//meta[@property="og:image"]/@content')
+        description = html.xpath('//meta[@property="og:description"]/@content')
         payload = UrlLinkPayload(
-            title=res.content.title().decode("utf-8"),
-            url=url)
-        # TODO -> get description, thumbnail_url of a website
+            title=title[0] if len(title) else url,
+            url=url,
+            thumbnailUrl=thumbnail_url[0] if len(thumbnail_url) else "",
+            description=description[0] if len(description) else ""
+        )
         return UrlLink(payload)
 
     def __str__(self):
@@ -61,14 +67,14 @@ class UrlLink:
         return self.payload.title
 
     @property
-    def thumbnail_url(self) -> str:
+    def thumbnailUrl(self) -> str:
         """
         get thumbnail url
         :return:
         """
-        if self.payload.thumbnail_url is None:
+        if self.payload.thumbnailUrl is None:
             return ''
-        return self.payload.thumbnail_url
+        return self.payload.thumbnailUrl
 
     @property
     def description(self) -> str:
