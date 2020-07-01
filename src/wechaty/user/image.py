@@ -53,7 +53,7 @@ class Image(Accessory):
         :param image_id:
         """
         super().__init__()
-        log.info('__init__(%d)', image_id)
+        log.info('init the message Image object <%s>', image_id)
 
         self.image_id = image_id
         if self.puppet is None:

@@ -44,6 +44,7 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
+
 ## The World's Shortest Python ChatBot: 9 lines of Code
 
 ```python
@@ -55,6 +56,7 @@ async def main():
     bot.on('login', lambda user: print('User {} logined'.format(user)))
     bot.on('message', lambda message: print('Message: {}'.format(message)))
     await bot.start()
+
 asyncio.run(main())
 ```
 
@@ -305,6 +307,10 @@ Project created, publish a empty module `wechaty` on PyPI.
 
 - [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
 - [@huan](https://github.com/huan) - ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
+
+## Contributors
+
+1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
 ## Copyright & License
 
