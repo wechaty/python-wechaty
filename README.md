@@ -44,24 +44,7 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
-<<<<<<< HEAD
-## The simplest Python ChatBot
 
-```python
-import asyncio
-from wechaty import Wechaty, Message
-
-async def message(msg: Message):
-    """back on message"""
-    talker = msg.talker()
-    await talker.ready()
-    await talker.say('hello world')
-
-async def main():
-    bot = Wechaty().on('message', message)
-    await bot.start()
-
-=======
 ## The World's Shortest Python ChatBot: 9 lines of Code
 
 ```python
@@ -73,7 +56,7 @@ async def main():
     bot.on('login', lambda user: print('User {} logined'.format(user)))
     bot.on('message', lambda message: print('Message: {}'.format(message)))
     await bot.start()
->>>>>>> 9de895727c35f0f4a4247f7ed9c1217a6155b738
+
 asyncio.run(main())
 ```
 
