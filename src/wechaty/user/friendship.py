@@ -64,9 +64,9 @@ class Friendship(Accessory, Acceptable):
 
         log.info('Friendship constructor %s', friendship_id)
 
-        if self.__class__ is Friendship:
-            raise Exception(
-                'Friendship class can not be instanciated directly!')
+        # if self.__class__ is Friendship:
+        #     raise Exception(
+        #         'Friendship class can not be instanciated directly!')
         if self.puppet is None:
             raise Exception(
                 'Friendship class can not be instanciated without a puppet!')
@@ -119,15 +119,11 @@ class Friendship(Accessory, Acceptable):
         raise NotImplementedError
 
     @property
-    def payload(self) -> FriendshipPayload:
+    def payload(self) -> Optional[FriendshipPayload]:
         """
         get the FriendShipPayload as a property
         :return:
         """
-        if self._payload is None:
-            self.ready()
-        if self._payload is None:
-            raise Exception('can"t load friendship payload')
         return self._payload
 
     def __str__(self) -> str:
@@ -138,26 +134,22 @@ class Friendship(Accessory, Acceptable):
             # TODO -> get constructor name of the friendship
             return 'Friendship'
         return 'Friendship # {0} <{1}>'.format(
-            str(self._payload.type),
-            self.payload.contact_id)
+            str(self._payload.type), self._payload.contact_id)
 
     def is_ready(self) -> bool:
         """
         check if friendship is ready
         """
-        return self.puppet is None or self.payload is None
+        return self.puppet is not None and self.payload is not None
 
     async def ready(self):
         """
         load friendship payload
         """
-        if not self.is_ready():
-            friendship_search_response = await self.puppet.friendship_payload(
-                friendship_id=self.friendship_id)
-            self._payload = friendship_search_response
-        if self.payload is None:
-            raise Exception('can"t not load friendship payload %s'
-                            % self.friendship_id)
+        if self.is_ready():
+            return
+        self._payload = await self.puppet.friendship_payload(
+            friendship_id=self.friendship_id)
 
     def contact(self) -> Contact:
         """
@@ -165,6 +157,8 @@ class Friendship(Accessory, Acceptable):
         """
         if self.puppet is None:
             raise Exception('puppet not found ...')
+        if not self.payload:
+            raise Exception('payload not ready ...')
         contact = self.wechaty.Contact.load(self.payload.contact_id)
         return contact
 
@@ -173,15 +167,14 @@ class Friendship(Accessory, Acceptable):
         accept friendship
         """
         log.info('accept friendship %s', self.friendship_id)
-        if self.payload is None:
-            raise Exception('payload not found')
-
-        if self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
+        if not self.payload:
+            raise Exception('Friendship payload not ready')
+        if self.payload and self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
             # TODO -> recheck the exception string
             raise Exception(
                 'accept() need type to be FriendshipType.Receive,'
                 'but it got a " + Friendship.Type[this.payload.type]')
-        log.info('friendship accept to %s', self.payload.contact_id)
+        log.info('friendship accept to %s', self.payload and self.payload.contact_id)
         await self.puppet.friendship_accept(friendship_id=self.friendship_id)
         contact = self.contact()
 
