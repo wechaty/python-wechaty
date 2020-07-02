@@ -98,9 +98,24 @@ Here we show a working practise in PyCharm IDE, if you have a better way, or wan
 
 ### 1. Set a python virtual environment for the bot project
 
-### 2. Add the WECHATY_PUPPET_HOSTIE_TOKEN environment params
+* File \> Settings \> Project Interpreter \> Add
+* Add a new virtual environment base on Python 3.7+
+* Find the "Run/Debug Configuration" on the dropdown box to the left of the "Run" icon in the top-right area.
+* Click "Edit Configurations..."
+* Select the newly added virtual environment as the Python interpreter
+* Add WECHATY_PUPPET_HOSTIE_TOKEN=\<your_token\> in the "Environment variables" row
+* Run `pip install -r requirements.txt` in the Terminal panel (you can see the terminal has been already working on your virtual environment automatically)
+* Set the Script path to your bot.py, for example, select `ding-dong-bot.py`
 
-### 3. Add the python-wechaty repositories as git submodules
+Now you can run your bot by clicking the "Run" button.
+
+### 2. Add the python-wechaty repositories as git submodules
+
+If you want to modify the python-wechaty repository during debugging your bot, you should first replace the running code from PyPI modules to your source directory.
+
+Here I recommend a convenient way to make it, if you are using PyCharm and run as the last step.
+
+
 
 ### 4. Mark these src directory as source
 
