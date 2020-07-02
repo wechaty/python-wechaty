@@ -44,17 +44,20 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
+
 ## The World's Shortest Python ChatBot: 9 lines of Code
 
 ```python
 from wechaty import Wechaty
+
 import asyncio
 async def main():
     bot = Wechaty()
-    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, qrcode)))
+    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://wechaty.github.io/qrcode/{}'.format(status, qrcode)))
     bot.on('login', lambda user: print('User {} logined'.format(user)))
     bot.on('message', lambda message: print('Message: {}'.format(message)))
     await bot.start()
+
 asyncio.run(main())
 ```
 
@@ -242,6 +245,14 @@ pip3 install wechaty
 
 ## History
 
+### v0.6 (Jun 19, 2020)
+
+Python Wechaty Scala Wechaty **BETA** Released!
+
+Read more from our Multi-language Wechaty Beta Release event from our blog:
+
+- [Multi Language Wechaty Beta Release Announcement!](https://wechaty.github.io/2020/06/19/multi-language-wechaty-beta-release/)
+
 ### v0.4 (Mar 15, 2020) master
 
 Welcome [@huangaszaq](https://github.com/huangaszaq) for joining the project! [#42](https://github.com/wechaty/python-wechaty/pull/42)
@@ -297,6 +308,10 @@ Project created, publish a empty module `wechaty` on PyPI.
 
 - [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
 - [@huan](https://github.com/huan) - ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
+
+## Contributors
+
+1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
 ## Copyright & License
 

@@ -21,6 +21,7 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 from collections import defaultdict
 # from threading import Event, Thread
 
@@ -140,8 +141,10 @@ class Room(Accessory):
                 if room_id == room.room_id:
                     room_result.append(room)
 
-                elif topic is not None and room.topic() == topic:
-                    room_result.append(room)
+                elif topic is not None:
+                    room_topic = await room.topic()
+                    if room_topic == topic:
+                        room_result.append(room)
 
             # pylint:disable=W0703
             except Exception as exception:
@@ -270,7 +273,7 @@ class Room(Accessory):
 
         from wechaty.user.url_link import UrlLink
         from wechaty.user.mini_program import MiniProgram
-
+        from wechaty.user.contact import Contact
         if isinstance(some_thing, str):
             msg_id = await self.puppet.message_send_text(
                 conversation_id=self.room_id, message=some_thing,
@@ -289,7 +292,7 @@ class Room(Accessory):
         elif isinstance(some_thing, UrlLink):
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.room_id,
-                url=some_thing.url
+                url=json.dumps(dataclasses.asdict(some_thing.payload))
             )
         elif isinstance(some_thing, MiniProgram):
             # TODO -> mini_program key is not clear
