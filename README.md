@@ -49,10 +49,11 @@ Scan now, because other Wechaty Python developers want to talk with you too! (se
 
 ```python
 from wechaty import Wechaty
+
 import asyncio
 async def main():
     bot = Wechaty()
-    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://api.qrserver.com/v1/create-qr-code/?data={}'.format(status, qrcode)))
+    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://wechaty.github.io/qrcode/{}'.format(status, qrcode)))
     bot.on('login', lambda user: print('User {} logined'.format(user)))
     bot.on('message', lambda message: print('Message: {}'.format(message)))
     await bot.start()
