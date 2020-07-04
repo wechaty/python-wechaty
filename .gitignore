@@ -107,3 +107,4 @@ t.*
 dist/
 .pytype/
 token.txt
+.idea/
