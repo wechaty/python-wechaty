@@ -304,7 +304,7 @@ Project created, publish a empty module `wechaty` on PyPI.
 
 1. [@huangaszaq](https://github.com/huangaszaq) -  Chunhong HUANG (黄纯洪)
 
-## Commiters
+## Authors
 
 - [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
 - [@huan](https://github.com/huan) - ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
