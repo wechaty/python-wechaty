@@ -435,9 +435,9 @@ class Wechaty(AsyncIOEventEmitter):
                     # set login contact_id
                     self.contact_id = payload.contact_id
                     log.info('receive <login> event <%s>', payload)
-                    contact = self.Contact.load(payload.contact_id)
+                    contact = self.ContactSelf.load(payload.contact_id)
                     await contact.ready()
-                    self.emit('login', Contact)
+                    self.emit('login', ContactSelf)
                     await self.on_login(contact)
 
                     # init the plugins
@@ -449,9 +449,9 @@ class Wechaty(AsyncIOEventEmitter):
                 async def logout_listener(payload: EventLogoutPayload):
                     # TODO -> should to ContactSelf
                     log.info('receive <logout> event <%s>', payload)
-                    contact = self.Contact.load(payload.contact_id)
+                    contact = self.ContactSelf.load(payload.contact_id)
                     await contact.ready()
-                    self.emit('logout', Contact)
+                    self.emit('logout', ContactSelf)
                     await self.on_logout(contact)
                 puppet.on('logout', logout_listener)
 
