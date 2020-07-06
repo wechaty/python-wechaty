@@ -109,16 +109,49 @@ Here we show a working practise in PyCharm IDE, if you have a better way, or wan
 
 Now you can run your bot by clicking the "Run" button.
 
-### 2. Add the python-wechaty repositories as git submodules
+### 2. Add the python-wechaty repositories as git submodules.
 
 If you want to modify the python-wechaty repository during debugging your bot, you should first replace the running code from PyPI modules to your source directory.
 
 Here I recommend a convenient way to make it, if you are using PyCharm and run as the last step.
 
+1. Fork the repo which you want to modify.
 
+2. Add it into your getting-started project as a submodule.
 
-### 4. Mark these src directory as source
+For example:
 
-### 5. Change the code and push to your own fork version
+```
+git submodule add https://github.com/yourname/python-wechaty
+```
 
-### 6. Make a PR (pull request) in GitHub
+Now the remote `origin` stands for your own forked repo.
+
+3. Add an extra remote `wechaty` as the official one:
+
+```
+cd python-wechaty
+git remote add origin wechaty https://github.com/wechaty/python-wechaty
+```
+
+So if you want to pull from the official latest changes, just use `git pull wechaty master`.
+
+4. Set the `???/src` folder in your submodule as `Source Root` in PyCharm
+
+So now you can change the code and have a try, the `import wechaty` of your code now points to the source you've added as a submodule.
+
+### 4. Change the code and push to your own fork version
+
+So feel free to change the code as your submodule and have a test.
+
+If your are done, now you can commit the submodule and push to your forked repo (origin master).
+
+```
+cd python-wechaty
+git commit -am "your comment"
+git push origin master
+```
+
+### 5. Make a PR (pull request) in GitHub
+
+So now you've got commits on your forked repo, feel free to request a pull-request on it.
