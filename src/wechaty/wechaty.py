@@ -122,23 +122,23 @@ class Wechaty(AsyncIOEventEmitter):
             options.puppet_options = PuppetOptions()
 
         # pylint: disable=C0103
-        self.Tag = Tag
+        self.Tag: Type[Tag] = Tag
         # pylint: disable=C0103
-        self.Contact = Contact
+        self.Contact: Type[Contact] = Contact
         # pylint: disable=C0103
-        self.ContactSelf = ContactSelf
+        self.ContactSelf: Type[ContactSelf] = ContactSelf
         # pylint: disable=C0103
-        self.Friendship = Friendship
+        self.Friendship: Type[Friendship] = Friendship
         # pylint: disable=C0103
-        self.Message = Message
+        self.Message: Type[Message] = Message
         # pylint: disable=C0103
-        self.Room = Room
+        self.Room: Type[Room] = Room
         # pylint: disable=C0103
-        self.Image = Image
+        self.Image: Type[Image] = Image
         # pylint: disable=C0103
-        self.RoomInvitation = RoomInvitation
-        self.Favorite = Favorite
-        self.MiniProgram = MiniProgram
+        self.RoomInvitation: Type[RoomInvitation] = RoomInvitation
+        self.Favorite: Type[Favorite] = Favorite
+        self.MiniProgram: Type[MiniProgram] = MiniProgram
         # TODO -> url-link, miniprogram
 
         self.started: bool = False
