@@ -179,14 +179,14 @@ class Room(Accessory):
 
             if valid:
                 log.warning(
-                    'Room find() confirm room[#%d] with id=%d '
+                    'Room find() confirm room[#%d] with id=%s '
                     'is valid result, return it.',
                     index,
                     room.room_id
                 )
                 return room
             log.info(
-                'Room find() confirm room[#%d] with id=%d '
+                'Room find() confirm room[#%d] with id=%s '
                 'is INVALID result, try next',
                 index,
                 room.room_id)

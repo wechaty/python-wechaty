@@ -114,16 +114,21 @@ class Friendship(Accessory, Acceptable):
         """
         delete friendship
         """
-        log.info('delete() <%s>', contact.contact_id)
+        log.info('delete() a contact <%s>', contact.contact_id)
+        log.warning('trying to delete a friend, which is dangerous, is not '
+                    'implemented')
         # this is a dangerous action
         raise NotImplementedError
 
     @property
-    def payload(self) -> Optional[FriendshipPayload]:
+    def payload(self) -> FriendshipPayload:
         """
         get the FriendShipPayload as a property
         :return:
         """
+        if self._payload is None:
+            raise ValueError('should ready()<sync> the friendship payload '
+                             'before get it, please call the <ready()> method')
         return self._payload
 
     def __str__(self) -> str:
@@ -131,10 +136,9 @@ class Friendship(Accessory, Acceptable):
         string format for Friendship
         """
         if self._payload is None:
-            # TODO -> get constructor name of the friendship
-            return 'Friendship'
-        return 'Friendship # {0} <{1}>'.format(
-            str(self._payload.type), self._payload.contact_id)
+            return 'Friendship <{0}>'.format(self.friendship_id)
+        return 'Friendship # type: {0}  contact: <{1}>  hello msg: <{2}>'\
+            .format(self.type().name, self._payload.contact_id, self.hello())
 
     def is_ready(self) -> bool:
         """
@@ -142,23 +146,20 @@ class Friendship(Accessory, Acceptable):
         """
         return self.puppet is not None and self.payload is not None
 
-    async def ready(self):
+    async def ready(self, force_sync: bool = False):
         """
         load friendship payload
         """
-        if self.is_ready():
-            return
-        self._payload = await self.puppet.friendship_payload(
-            friendship_id=self.friendship_id)
+        log.info('ready() sync the friendship payload')
+        if not self.is_ready() or force_sync:
+            self._payload = await self.puppet.friendship_payload(
+                friendship_id=self.friendship_id)
 
     def contact(self) -> Contact:
         """
         get the contact of the friendship
         """
-        if self.puppet is None:
-            raise Exception('puppet not found ...')
-        if not self.payload:
-            raise Exception('payload not ready ...')
+
         contact = self.wechaty.Contact.load(self.payload.contact_id)
         return contact
 
@@ -166,40 +167,40 @@ class Friendship(Accessory, Acceptable):
         """
         accept friendship
         """
-        log.info('accept friendship %s', self.friendship_id)
-        if not self.payload:
-            raise Exception('Friendship payload not ready')
-        if self.payload and self.payload.type != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
-            # TODO -> recheck the exception string
+        log.info('accept friendship, friendship_id: <%s>', self.friendship_id)
+        if self.type() != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
             raise Exception(
-                'accept() need type to be FriendshipType.Receive,'
-                'but it got a " + Friendship.Type[this.payload.type]')
-        log.info('friendship accept to %s', self.payload and self.payload.contact_id)
+                'accept() need type to be FriendshipType.'
+                'FRIENDSHIP_TYPE_RECEIVE, but it got a " + FriendshipType : '
+                '<{0}>'.format(self.type().name))
+
+        log.info('friendship accept to %s', self.payload.contact_id)
         await self.puppet.friendship_accept(friendship_id=self.friendship_id)
         contact = self.contact()
 
         # reset contact data
         try:
             # TODO -> some other logical code
-            # do something
             await contact.ready()
         # pylint:disable=W0703
         except Exception as e:
             log.info(
                 "can't reload contact data %s",
                 str(e.args))
-        await contact.sync()
 
     def hello(self) -> str:
         """
         TODO ->
         Get verify message from
         """
-        if self.payload is None:
-            raise Exception('payload not found')
         if self.payload.hello is None:
-            return ''
-        return self.payload.hello
+            hello_msg = ''
+        else:
+            hello_msg = self.payload.hello
+
+        log.info('get hello message <%s> of friendship <%s>', self.payload)
+
+        return hello_msg
 
     def type(self) -> FriendshipType:
         """
@@ -207,7 +208,13 @@ class Friendship(Accessory, Acceptable):
         """
         if self.payload is None:
             return FriendshipType.FRIENDSHIP_TYPE_UNSPECIFIED
-        return self.payload.type
+        if isinstance(self.payload.type, int):
+            return FriendshipType(self.payload.type)
+        elif isinstance(self.payload.type, FriendshipType):
+            return self.payload.type
+        else:
+            raise TypeError('friendship type field type is limited between '
+                            'int/FriendshipType')
 
     def to_json(self) -> str:
         """
