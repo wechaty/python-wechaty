@@ -396,7 +396,8 @@ class Wechaty(AsyncIOEventEmitter):
                     self.emit('dong', payload.data)
                     # feed food to the dog
                     food = WatchdogFood(timeout=30)
-                    self._watchdog.feed(food)
+                    if self._watchdog:
+                        self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
