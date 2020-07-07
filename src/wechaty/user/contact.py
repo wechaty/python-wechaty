@@ -132,7 +132,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         log.info('find_all() <%s, %s>', cls, query)
 
         contact_ids = await cls.get_puppet().contact_list()
-        contacts = [Contact.load(contact_id) for contact_id in contact_ids]
+        contacts = [cls.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
         await asyncio.gather(*[contact.ready() for contact in contacts])

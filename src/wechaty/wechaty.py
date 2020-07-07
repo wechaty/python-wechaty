@@ -121,6 +121,8 @@ class Wechaty(AsyncIOEventEmitter):
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
+        self._options = options
+
         # pylint: disable=C0103
         self.Tag: Type[Tag] = Tag
         # pylint: disable=C0103
@@ -143,17 +145,24 @@ class Wechaty(AsyncIOEventEmitter):
 
         self.started: bool = False
 
-        self.puppet: Puppet = self._load_puppet(options)
-
         self._name: Optional[str] = None
 
         self.state = StateSwitch()
         self._ready_state = StateSwitch()
 
+        self._puppet: Optional[Puppet] = None
+
         # Create watchdog on start, and allow to shutdown the watchdog by setting it to None
         self._watchdog: Optional[Watchdog] = None
+        self._watchdog_task: Optional[asyncio.Task] = None
 
         self._plugin_manager: WechatyPluginManager = WechatyPluginManager(self)
+
+    @property
+    def puppet(self) -> Puppet:
+        if not self._puppet:
+            raise Exception('Wechaty puppet not loaded!')
+        return self._puppet
 
     @staticmethod
     def _load_puppet(options: WechatyOptions) -> Puppet:
@@ -359,7 +368,9 @@ class Wechaty(AsyncIOEventEmitter):
             async def ask_for_food(last_food, last_feed):
                 log.debug('dog ask for food <%s> <%s> ...',
                           last_food, last_feed)
-                await self.puppet.ding()
+                # Cancel when stopped, or the puppet.ding() call will got an error
+                if self.puppet and self._watchdog and id(self._watchdog) == watch_dog_id:
+                    await self.puppet.ding()
 
             self._watchdog.on('sleep', ask_for_food)
             self._watchdog.feed(food)
@@ -372,8 +383,11 @@ class Wechaty(AsyncIOEventEmitter):
                     await self.restart()
                     break
 
-        asyncio.create_task(start_watchdog())
+        self._watchdog_task = asyncio.ensure_future(start_watchdog())
         log.info('starting ...')
+
+        self.started = True
+
         await self.puppet.start()
 
     async def restart(self):
@@ -595,6 +609,9 @@ class Wechaty(AsyncIOEventEmitter):
         """
         init puppet grpc connection
         """
+        # Recreate puppet instance
+        self._puppet = self._load_puppet(self._options)
+
         # Using metaclass to create a dynamic subclass to server multi bot instances.
         meta_info = dict(_puppet=self.puppet, _wechaty=self)
         self.Contact = type('Contact', (Contact,), meta_info)
@@ -613,10 +630,26 @@ class Wechaty(AsyncIOEventEmitter):
         stop the wechaty
         """
         log.info('wechaty is stoping ...')
+        self.started = False
+
         # Shutdown the watchdog
-        self._watchdog = None
+        if self._watchdog:
+            log.info('stopping - unsubscribe watchdog events')
+            self._watchdog.remove_all_listeners()
+            log.info('stopping - unset watchdog')
+            self._watchdog = None
+        if self._watchdog_task:
+            log.info('stopping - stop watchdog task')
+            self._watchdog_task.cancel()
+            log.info('stopping - unset watchdog task')
+            self._watchdog_task = None
+
         # deinit puppet
+        log.info('stopping - stop puppet')
         await self.puppet.stop()
+        log.info('stopping - unset puppet')
+        self._puppet = None
+        log.info('wechaty is successfully stopped gracefully!')
 
     def user_self(self) -> ContactSelf:
         """
