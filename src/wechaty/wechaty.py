@@ -372,7 +372,8 @@ class Wechaty(AsyncIOEventEmitter):
                     await self.restart()
                     break
 
-        asyncio.create_task(start_watchdog())
+        loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(start_watchdog(), loop)
         log.info('starting ...')
         await self.puppet.start()
 
