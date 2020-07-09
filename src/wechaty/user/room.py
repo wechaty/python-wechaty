@@ -146,7 +146,7 @@ class Room(Accessory):
             )
 
         if isinstance(query, RoomQueryFilter):
-            new_query = query  # to pass mypy check
+            new_query : RoomQueryFilter = query  # to pass mypy check
             rooms = list(
                 filter(
                     lambda x: False if not x.payload else

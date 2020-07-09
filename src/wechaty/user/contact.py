@@ -163,7 +163,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
             )
 
         if isinstance(query, ContactQueryFilter):
-            new_query = query # to pass mypy check
+            new_query: ContactQueryFilter = query # to pass mypy check
             contact_result_list = list(
                 filter(
                     lambda x: False if not x.payload else
