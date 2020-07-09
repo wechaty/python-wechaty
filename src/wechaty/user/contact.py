@@ -135,47 +135,35 @@ class Contact(Accessory, AsyncIOEventEmitter):
         contacts = [Contact.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
-
         # async load
-        batch_size = 16
-        batch_index = 0
-        contact_result_list: List[Contact] = []
-        # slice contacts by batch_size
-        while batch_index * batch_size < len(contacts):
-            batch_contactList = contacts[batch_index * batch_size: (batch_index + 1) * batch_size]
-            try:
-                await asyncio.gather(*[contact.ready() for contact in batch_contactList])
-                contact_result_list += batch_contactList
-            except RuntimeError as exception:
-                log.info('load contact occur exception: %s', exception.args)
-            batch_index = batch_index + 1
+        await asyncio.gather(*[contact.ready() for contact in contacts])
 
         if query is not None:
             if isinstance(query, str):
-                contact_result_list = list(
+                contacts = list(
                     filter(
                         lambda x: False if not x.payload else
                         (x.payload.alias.__contains__(query)) or
                         (x.payload.id.__contains__(query)) or
                         (x.payload.name.__contains__(query)) or
                         (x.payload.weixin.__contains__(query)),
-                        contact_result_list
+                        contacts
                     )
                 )
 
             if isinstance(query, ContactQueryFilter):
                 query = dataclasses.asdict(query)
-                contact_result_list = list(
+                contacts = list(
                     filter(
                         lambda x: False if not x.payload else
                         (x.payload.alias == query.get('alias') or not query.get('alias')) and
                         (x.payload.id == query.get('id') or not query.get('id')) and
                         (x.payload.name == query.get('name') or not query.get('name')) and
                         (x.payload.weixin == query.get('weixin') or not query.get('weixin')),
-                        contact_result_list
+                        contacts
                     )
                 )
-        return contact_result_list
+        return contacts
 
     def is_ready(self):
         """
