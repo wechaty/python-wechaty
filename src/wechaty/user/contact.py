@@ -153,10 +153,11 @@ class Contact(Accessory, AsyncIOEventEmitter):
         if isinstance(query, str):
             contact_result_list = list(
                 filter(
-                    lambda x: (x.payload.alias.__contains__(query)) or
-                              (x.payload.id.__contains__(query)) or
-                              (x.payload.name.__contains__(query)) or
-                              (x.payload.weixin.__contains__(query)),
+                    lambda x: False if not x.payload else
+                    (x.payload.alias.__contains__(query)) or
+                    (x.payload.id.__contains__(query)) or
+                    (x.payload.name.__contains__(query)) or
+                    (x.payload.weixin.__contains__(query)),
                     contact_result_list
                 )
             )
@@ -164,10 +165,11 @@ class Contact(Accessory, AsyncIOEventEmitter):
         if isinstance(query, ContactQueryFilter):
             contact_result_list = list(
                 filter(
-                    lambda x: (x.payload.alias == query.alias or not query.alias) and
-                              (x.payload.id == query.id or not query.id) and
-                              (x.payload.name == query.name or not query.name) and
-                              (x.payload.weixin == query.weixin or not query.weixin),
+                    lambda x: False if not x.payload else
+                    (x.payload.alias == query.alias or not query.alias) and
+                    (x.payload.id == query.id or not query.id) and
+                    (x.payload.name == query.name or not query.name) and
+                    (x.payload.weixin == query.weixin or not query.weixin),
                     contact_result_list
                 )
             )

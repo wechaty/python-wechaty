@@ -138,9 +138,9 @@ class Room(Accessory):
         if isinstance(query,str):
             rooms = list(
                 filter(
-                    lambda x: x.payload and
-                              (x.payload.id.__contains__(query)) or
-                              (x.payload.topic.__contains__(query)),
+                    lambda x: False if not x.payload else
+                    (x.payload.id.__contains__(query)) or
+                    (x.payload.topic.__contains__(query)),
                     rooms
                 )
             )
@@ -148,8 +148,9 @@ class Room(Accessory):
         if isinstance(query,RoomQueryFilter):
             rooms = list(
                 filter(
-                    lambda x: (x.payload.id == query.id or not query.id) and
-                              (x.payload.topic == query.topic or not query.topic),
+                    lambda x: False if not x.payload else
+                    (x.payload.id == query.id or not query.id) and
+                    (x.payload.topic == query.topic or not query.topic),
                     rooms
                 )
             )
