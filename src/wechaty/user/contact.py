@@ -32,8 +32,8 @@ from typing import (
     Union,
 )
 
-from pyee import AsyncIOEventEmitter    # type: ignore
-from wechaty_puppet import (    # type: ignore
+from pyee import AsyncIOEventEmitter  # type: ignore
+from wechaty_puppet import (  # type: ignore
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
@@ -45,7 +45,6 @@ from wechaty_puppet import (    # type: ignore
 # from wechaty.utils import type_check
 
 from ..accessory import Accessory
-
 
 if TYPE_CHECKING:
     # pytype: disable=pyi-error
@@ -107,7 +106,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
     @classmethod
     async def find(cls: Type[Contact], query: Union[str, ContactQueryFilter]) \
-            -> Optional[Contact]:
+        -> Optional[Contact]:
         """
         find a single target contact
         :param query:
@@ -132,25 +131,46 @@ class Contact(Accessory, AsyncIOEventEmitter):
         log.info('find_all() <%s, %s>', cls, query)
 
         contact_ids = await cls.get_puppet().contact_list()
+        # filter Contact by contact id to make sure its valid if contact_id.startswith('wxid_')
         contacts = [Contact.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
-        await asyncio.gather(*[contact.ready() for contact in contacts])
 
         # async load
         batch_size = 16
-        # slice contacts by batch_size
-        contacts = contacts[:batch_size * (len(contacts) // batch_size)]
-
+        batch_index = 0
         contact_result_list: List[Contact] = []
-
-        for contact in contacts:
+        # slice contacts by batch_size
+        while batch_index * batch_size < len(contacts):
+            batch_contactList = contacts[batch_index * batch_size: (batch_index + 1) * batch_size]
             try:
-                await contact.ready()
-                contact_result_list.append(contact)
+                await asyncio.gather(*[contact.ready() for contact in batch_contactList])
+                contact_result_list += batch_contactList
             except RuntimeError as exception:
                 log.info('load contact occur exception: %s', exception.args)
+            batch_index = batch_index + 1
 
+        if isinstance(query, str):
+            contact_result_list = list(
+                filter(
+                    lambda x: (x.payload.alias.__contains__(query)) or
+                              (x.payload.id.__contains__(query)) or
+                              (x.payload.name.__contains__(query)) or
+                              (x.payload.weixin.__contains__(query)),
+                    contact_result_list
+                )
+            )
+
+        if isinstance(query, ContactQueryFilter):
+            contact_result_list = list(
+                filter(
+                    lambda x: (x.payload.alias == query.alias or not query.alias) and
+                              (x.payload.id == query.id or not query.id) and
+                              (x.payload.name == query.name or not query.name) and
+                              (x.payload.weixin == query.weixin or not query.weixin),
+                    contact_result_list
+                )
+            )
         return contact_result_list
 
     def is_ready(self):

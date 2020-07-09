@@ -119,51 +119,52 @@ class Room(Accessory):
             raise Exception('Room create error')
 
     @classmethod
-    async def find_all(cls, room_id: Optional[str] = None,
-                       topic: Optional[str] = None) -> List[Room]:
+    async def find_all(cls,
+                       query: Union[str, RoomQueryFilter] = None) -> List[Room]:
         """
         find room by query filter
 
         TODO -> we should remove search_query from puppet-*
         """
-        log.info('Room find_all <%s, %s>', room_id, topic)
+        log.info('Room find_all <%s>', query)
 
         room_ids = await cls.get_puppet().room_search()
         rooms = [cls.load(room_id) for room_id in room_ids]
 
-        if topic is not None:
-            # using async parallel pattern to load room payload
-            await asyncio.gather(*[room.ready() for room in rooms])
+        # using async parallel pattern to load room payload
+        await asyncio.gather(*[room.ready() for room in rooms])
 
-        room_result = []
-        for room in rooms:
-            try:
-                if room_id == room.room_id:
-                    room_result.append(room)
-
-                elif topic is not None:
-                    room_topic = await room.topic()
-                    if room_topic == topic:
-                        room_result.append(room)
-
-            # pylint:disable=W0703
-            except Exception as exception:
-                log.warning(
-                    'Room findAll() room.ready() rejection: %s',
-                    exception.args
+        # search by any field contains query word
+        if isinstance(query,str):
+            rooms = list(
+                filter(
+                    lambda x: x.payload and
+                              (x.payload.id.__contains__(query)) or
+                              (x.payload.topic.__contains__(query)),
+                    rooms
                 )
-        return room_result
+            )
+
+        if isinstance(query,RoomQueryFilter):
+            rooms = list(
+                filter(
+                    lambda x: (x.payload.id == query.id or not query.id) and
+                              (x.payload.topic == query.topic or not query.topic),
+                    rooms
+                )
+            )
+        return rooms
 
     @classmethod
-    async def find(cls, room_id: Optional[str] = None,
-                   topic: Optional[str] = None) -> Union[None, Room]:
+    async def find(cls,
+                   query: Union[str, RoomQueryFilter] = None) -> Union[None, Room]:
         """
         Try to find a room by filter: {topic: string | RegExp}. If get many,
         return the first one.
         """
-        log.info('Room find <%s, %s>', room_id, topic)
+        log.info('Room find <%s>', query)
 
-        rooms = await cls.find_all(room_id, topic)
+        rooms = await cls.find_all(query)
 
         if rooms is None or len(rooms) < 1:
             return None
