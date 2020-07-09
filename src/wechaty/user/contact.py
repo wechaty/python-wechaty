@@ -163,13 +163,14 @@ class Contact(Accessory, AsyncIOEventEmitter):
             )
 
         if isinstance(query, ContactQueryFilter):
+            new_query = query # to pass mypy check
             contact_result_list = list(
                 filter(
                     lambda x: False if not x.payload else
-                    (x.payload.alias == query.alias or not query.alias) and
-                    (x.payload.id == query.id or not query.id) and
-                    (x.payload.name == query.name or not query.name) and
-                    (x.payload.weixin == query.weixin or not query.weixin),
+                    (x.payload.alias == new_query.alias or not new_query.alias) and
+                    (x.payload.id == new_query.id or not new_query.id) and
+                    (x.payload.name == new_query.name or not new_query.name) and
+                    (x.payload.weixin == new_query.weixin or not new_query.weixin),
                     contact_result_list
                 )
             )
