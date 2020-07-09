@@ -135,26 +135,27 @@ class Room(Accessory):
         await asyncio.gather(*[room.ready() for room in rooms])
 
         # search by any field contains query word
-        if isinstance(query, str):
-            rooms = list(
-                filter(
-                    lambda x: False if not x.payload else
-                    (x.payload.id.__contains__(query)) or
-                    (x.payload.topic.__contains__(query)),
-                    rooms
+        if query is not None:
+            if isinstance(query, str):
+                rooms = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.id.__contains__(query)) or
+                        (x.payload.topic.__contains__(query)),
+                        rooms
+                    )
                 )
-            )
 
-        if isinstance(query, RoomQueryFilter):
-            new_query : RoomQueryFilter = query  # to pass mypy check
-            rooms = list(
-                filter(
-                    lambda x: False if not x.payload else
-                    (x.payload.id == new_query.id or not new_query.id) and
-                    (x.payload.topic == new_query.topic or not new_query.topic),
-                    rooms
+            if isinstance(query, RoomQueryFilter):
+                query = dataclasses.asdict(query)
+                rooms = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.id == query.get('id') or not query.get('id')) and
+                        (x.payload.topic == query.get('topic') or not query.get('topic')),
+                        rooms
+                    )
                 )
-            )
         return rooms
 
     @classmethod

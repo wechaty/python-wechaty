@@ -150,30 +150,31 @@ class Contact(Accessory, AsyncIOEventEmitter):
                 log.info('load contact occur exception: %s', exception.args)
             batch_index = batch_index + 1
 
-        if isinstance(query, str):
-            contact_result_list = list(
-                filter(
-                    lambda x: False if not x.payload else
-                    (x.payload.alias.__contains__(query)) or
-                    (x.payload.id.__contains__(query)) or
-                    (x.payload.name.__contains__(query)) or
-                    (x.payload.weixin.__contains__(query)),
-                    contact_result_list
+        if query is not None:
+            if isinstance(query, str):
+                contact_result_list = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.alias.__contains__(query)) or
+                        (x.payload.id.__contains__(query)) or
+                        (x.payload.name.__contains__(query)) or
+                        (x.payload.weixin.__contains__(query)),
+                        contact_result_list
+                    )
                 )
-            )
 
-        if isinstance(query, ContactQueryFilter):
-            new_query: ContactQueryFilter = query # to pass mypy check
-            contact_result_list = list(
-                filter(
-                    lambda x: False if not x.payload else
-                    (x.payload.alias == new_query.alias or not new_query.alias) and
-                    (x.payload.id == new_query.id or not new_query.id) and
-                    (x.payload.name == new_query.name or not new_query.name) and
-                    (x.payload.weixin == new_query.weixin or not new_query.weixin),
-                    contact_result_list
+            if isinstance(query, ContactQueryFilter):
+                query = dataclasses.asdict(query)
+                contact_result_list = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.alias == query.get('alias') or not query.get('alias')) and
+                        (x.payload.id == query.get('id') or not query.get('id')) and
+                        (x.payload.name == query.get('name') or not query.get('name')) and
+                        (x.payload.weixin == query.get('weixin') or not query.get('weixin')),
+                        contact_result_list
+                    )
                 )
-            )
         return contact_result_list
 
     def is_ready(self):
