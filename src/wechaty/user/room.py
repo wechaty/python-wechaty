@@ -33,9 +33,9 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-from pyee import AsyncIOEventEmitter  # type: ignore
+from pyee import AsyncIOEventEmitter    # type: ignore
 # from wechaty_puppet import RoomMemberPayload
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (    # type: ignore
     FileBox,
     RoomQueryFilter,
     RoomMemberQueryFilter,
@@ -46,6 +46,7 @@ from wechaty_puppet import (  # type: ignore
 from ..accessory import Accessory
 
 if TYPE_CHECKING:
+
     from .contact import Contact
     from .url_link import UrlLink
     from .mini_program import MiniProgram
@@ -107,7 +108,7 @@ class Room(Accessory):
 
         try:
             contact_ids = list(map(lambda x: x.contact_id, contacts))
-            room_id = await cls.get_puppet(). \
+            room_id = await cls.get_puppet().\
                 room_create(contact_ids=contact_ids, topic=topic)
             return cls.load(room_id=room_id)
         except Exception as exception:
@@ -137,9 +138,9 @@ class Room(Accessory):
         if isinstance(query, str):
             rooms = list(
                 filter(
-                    lambda x: x.payload and
-                              (x.payload.id.__contains__(query)) or
-                              (x.payload.topic.__contains__(query)),
+                    lambda x: False if not x.payload else
+                    (x.payload.id.__contains__(query)) or
+                    (x.payload.topic.__contains__(query)),
                     rooms
                 )
             )
@@ -148,8 +149,9 @@ class Room(Accessory):
             new_query = query  # to pass mypy check
             rooms = list(
                 filter(
-                    lambda x: (x.payload.id == new_query.id or not new_query.id) and
-                              (x.payload.topic == new_query.topic or not new_query.topic),
+                    lambda x: False if not x.payload else
+                    (x.payload.id == new_query.id or not new_query.id) and
+                    (x.payload.topic == new_query.topic or not new_query.topic),
                     rooms
                 )
             )
@@ -443,7 +445,7 @@ class Room(Accessory):
             room_id=self.room_id, contact_id=member.contact_id)
 
         if room_member_payload is not None \
-            and room_member_payload.room_alias is not None:
+                and room_member_payload.room_alias is not None:
             return room_member_payload.room_alias
         return None
 
@@ -481,7 +483,7 @@ class Room(Accessory):
                         if member.name.__contains__(query):
                             member_search_result.append(member)
                         elif member.payload.alias is not None and \
-                            member.payload.alias.__contains__(query):
+                                member.payload.alias.__contains__(query):
                             member_search_result.append(member)
 
                     # get room_alias but hostie-server not support
@@ -495,8 +497,8 @@ class Room(Accessory):
                             member_search_result.append(member)
 
                         elif member.payload.alias is not None and \
-                            member.payload.alias.__contains__(
-                                query.contact_alias):
+                                member.payload.alias.__contains__(
+                                    query.contact_alias):
 
                             member_search_result.append(member)
 
