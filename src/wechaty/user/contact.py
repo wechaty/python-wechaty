@@ -163,17 +163,14 @@ class Contact(Accessory, AsyncIOEventEmitter):
             )
 
         if isinstance(query, ContactQueryFilter):
-            id: str = query.id  # to pass mypy check
-            alias: str = query.alias  # to pass mypy check
-            name: str = query.name  # to pass mypy check
-            weixin: str = query.weixin  # to pass mypy check
+            new_query: ContactQueryFilter = query # to pass mypy check
             contact_result_list = list(
                 filter(
                     lambda x: False if not x.payload else
-                    (x.payload.alias == id or not id) and
-                    (x.payload.id == alias or not alias) and
-                    (x.payload.name == name or not name) and
-                    (x.payload.weixin == weixin or not weixin),
+                    (x.payload.alias == new_query.alias or not new_query.alias) and
+                    (x.payload.id == new_query.id or not new_query.id) and
+                    (x.payload.name == new_query.name or not new_query.name) and
+                    (x.payload.weixin == new_query.weixin or not new_query.weixin),
                     contact_result_list
                 )
             )
