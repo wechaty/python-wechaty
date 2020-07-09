@@ -649,7 +649,7 @@ class Wechaty(AsyncIOEventEmitter):
         await self.puppet.stop()
         log.info('stopping - unset puppet')
         self._puppet = None
-        log.info('wechaty is successfully stopped gracefully!')
+        log.info('wechaty has been stopped gracefully!')
 
     def user_self(self) -> ContactSelf:
         """
