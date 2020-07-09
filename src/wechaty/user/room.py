@@ -147,12 +147,12 @@ class Room(Accessory):
                 )
 
             if isinstance(query, RoomQueryFilter):
-                query = dataclasses.asdict(query)
+                newQuery: Dict = dataclasses.asdict(query)
                 rooms = list(
                     filter(
                         lambda x: False if not x.payload else
-                        (x.payload.id == query.get('id') or not query.get('id')) and
-                        (x.payload.topic == query.get('topic') or not query.get('topic')),
+                        (x.payload.id == newQuery.get('id') or not newQuery.get('id')) and
+                        (x.payload.topic == newQuery.get('topic') or not newQuery.get('topic')),
                         rooms
                     )
                 )

@@ -152,14 +152,14 @@ class Contact(Accessory, AsyncIOEventEmitter):
                 )
 
             if isinstance(query, ContactQueryFilter):
-                query = dataclasses.asdict(query)
+                newQuery: Dict = dataclasses.asdict(query)
                 contacts = list(
                     filter(
                         lambda x: False if not x.payload else
-                        (x.payload.alias == query.get('alias') or not query.get('alias')) and
-                        (x.payload.id == query.get('id') or not query.get('id')) and
-                        (x.payload.name == query.get('name') or not query.get('name')) and
-                        (x.payload.weixin == query.get('weixin') or not query.get('weixin')),
+                        (x.payload.alias == newQuery.get('alias') or not newQuery.get('alias')) and
+                        (x.payload.id == newQuery.get('id') or not newQuery.get('id')) and
+                        (x.payload.name == newQuery.get('name') or not newQuery.get('name')) and
+                        (x.payload.weixin == newQuery.get('weixin') or not newQuery.get('weixin')),
                         contacts
                     )
                 )
