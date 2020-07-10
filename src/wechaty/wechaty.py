@@ -160,6 +160,10 @@ class Wechaty(AsyncIOEventEmitter):
 
     @property
     def puppet(self) -> Puppet:
+        """
+        Always expected to return a non-null puppet instance, or raise an error.
+        :return:
+        """
         if not self._puppet:
             raise Exception('Wechaty puppet not loaded!')
         return self._puppet

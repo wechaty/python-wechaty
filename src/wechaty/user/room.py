@@ -485,7 +485,7 @@ class Room(Accessory):
                         if member.name.__contains__(query):
                             member_search_result.append(member)
                         elif member.payload.alias is not None and \
-                            member.payload.alias.__contains__(query):
+                                member.payload.alias.__contains__(query):
                             member_search_result.append(member)
 
                     # get room_alias but hostie-server not support
@@ -499,7 +499,7 @@ class Room(Accessory):
                             member_search_result.append(member)
 
                         elif member.payload.alias is not None and \
-                            member.payload.alias.__contains__(
+                                member.payload.alias.__contains__(
                                 query.contact_alias):
 
                             member_search_result.append(member)
