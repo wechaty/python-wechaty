@@ -88,3 +88,70 @@ Here collects the plugins developed by the community. If you want to publish you
 
 This repository is less relevant to the python-wecahty core, so if you want to focus on the core function, you can skip this one freely.
 
+## One practise to work within PyCharm IDE
+
+So, you have already forked the `python-wechaty-getting-started` project or created your own bot project, and the PyPI packages mentioned above is installed by the `pip install` way.
+
+Now we start to have a discuss on how to work easier in your IDE.
+
+Here we show a working practise in PyCharm IDE, if you have a better way, or want to share your instruction under other development environment, feel free to make a PR.
+
+### 1. Set a python virtual environment for the bot project
+
+* File \> Settings \> Project Interpreter \> Add
+* Add a new virtual environment base on Python 3.7+
+* Find the "Run/Debug Configuration" on the dropdown box to the left of the "Run" icon in the top-right area.
+* Click "Edit Configurations..."
+* Select the newly added virtual environment as the Python interpreter
+* Add WECHATY_PUPPET_HOSTIE_TOKEN=\<your_token\> in the "Environment variables" row
+* Run `pip install -r requirements.txt` in the Terminal panel (you can see the terminal has been already working on your virtual environment automatically)
+* Set the Script path to your bot.py, for example, select `ding-dong-bot.py`
+
+Now you can run your bot by clicking the "Run" button.
+
+### 2. Add the python-wechaty repositories as git submodules.
+
+If you want to modify the python-wechaty repository during debugging your bot, you should first replace the running code from PyPI modules to your source directory.
+
+Here I recommend a convenient way to make it, if you are using PyCharm and run as the last step.
+
+1. Fork the repo which you want to modify.
+
+2. Add it into your getting-started project as a submodule.
+
+For example:
+
+```
+git submodule add https://github.com/yourname/python-wechaty
+```
+
+Now the remote `origin` stands for your own forked repo.
+
+3. Add an extra remote `wechaty` as the official one:
+
+```
+cd python-wechaty
+git remote add origin wechaty https://github.com/wechaty/python-wechaty
+```
+
+So if you want to pull from the official latest changes, just use `git pull wechaty master`.
+
+4. Set the `???/src` folder in your submodule as `Source Root` in PyCharm
+
+So now you can change the code and have a try, the `import wechaty` of your code now points to the source you've added as a submodule.
+
+### 4. Change the code and push to your own fork version
+
+So feel free to change the code as your submodule and have a test.
+
+If your are done, now you can commit the submodule and push to your forked repo (origin master).
+
+```
+cd python-wechaty
+git commit -am "your comment"
+git push origin master
+```
+
+### 5. Make a PR (pull request) in GitHub
+
+So now you've got commits on your forked repo, feel free to request a pull-request on it.

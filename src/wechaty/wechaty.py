@@ -33,7 +33,7 @@ from typing import (
     Type,
     # Union,
     List, Union)
-from pyee import AsyncIOEventEmitter    # type: ignore
+from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty_puppet import (  # type: ignore
     Puppet,
@@ -56,8 +56,8 @@ from wechaty_puppet import (  # type: ignore
     get_logger
 )
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
-from wechaty_puppet.state_switch import StateSwitch     # type: ignore
-from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
+from wechaty_puppet.state_switch import StateSwitch  # type: ignore
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog  # type: ignore
 
 from .plugin import (
     WechatyPlugin, WechatyPluginManager
@@ -80,11 +80,9 @@ from .utils import (
     qr_terminal
 )
 
-
 log = get_logger('Wechaty')
 
 DEFAULT_TIMEOUT = 300
-
 
 PuppetModuleName = str
 
@@ -124,23 +122,23 @@ class Wechaty(AsyncIOEventEmitter):
             options.puppet_options = PuppetOptions()
 
         # pylint: disable=C0103
-        self.Tag = Tag
+        self.Tag: Type[Tag] = Tag
         # pylint: disable=C0103
-        self.Contact = Contact
+        self.Contact: Type[Contact] = Contact
         # pylint: disable=C0103
-        self.ContactSelf = ContactSelf
+        self.ContactSelf: Type[ContactSelf] = ContactSelf
         # pylint: disable=C0103
-        self.Friendship = Friendship
+        self.Friendship: Type[Friendship] = Friendship
         # pylint: disable=C0103
-        self.Message = Message
+        self.Message: Type[Message] = Message
         # pylint: disable=C0103
-        self.Room = Room
+        self.Room: Type[Room] = Room
         # pylint: disable=C0103
-        self.Image = Image
+        self.Image: Type[Image] = Image
         # pylint: disable=C0103
-        self.RoomInvitation = RoomInvitation
-        self.Favorite = Favorite
-        self.MiniProgram = MiniProgram
+        self.RoomInvitation: Type[RoomInvitation] = RoomInvitation
+        self.Favorite: Type[Favorite] = Favorite
+        self.MiniProgram: Type[MiniProgram] = MiniProgram
         # TODO -> url-link, miniprogram
 
         self.started: bool = False
@@ -152,7 +150,8 @@ class Wechaty(AsyncIOEventEmitter):
         self.state = StateSwitch()
         self._ready_state = StateSwitch()
 
-        self._watchdog = Watchdog(DEFAULT_TIMEOUT)
+        # Create watchdog on start, and allow to shutdown the watchdog by setting it to None
+        self._watchdog: Optional[Watchdog] = None
 
         self._plugin_manager: WechatyPluginManager = WechatyPluginManager(self)
 
@@ -353,7 +352,8 @@ class Wechaty(AsyncIOEventEmitter):
         await self.init_puppet_event_bridge(self.puppet)
 
         async def start_watchdog():
-
+            self._watchdog = Watchdog(DEFAULT_TIMEOUT)
+            watch_dog_id = id(self._watchdog)
             food = WatchdogFood(timeout=3)
 
             async def ask_for_food(last_food, last_feed):
@@ -363,7 +363,8 @@ class Wechaty(AsyncIOEventEmitter):
 
             self._watchdog.on('sleep', ask_for_food)
             self._watchdog.feed(food)
-            while True:
+            # If we set _watchdog to None or a new one, this loop should break.
+            while self._watchdog and id(self._watchdog) == watch_dog_id:
                 log.debug('bot tick <%s>', datetime.now())
                 await self._watchdog.sleep()
                 is_death = self._watchdog.starved_to_death()
@@ -379,8 +380,7 @@ class Wechaty(AsyncIOEventEmitter):
     async def restart(self):
         """restart the wechaty bot"""
         log.info('restarting the bot ...')
-        # await self.puppet.stop()
-        # await self.puppet.start()
+        await self.stop()
         await self.start()
 
     # pylint: disable=R0912,R0915,R0914
@@ -397,7 +397,8 @@ class Wechaty(AsyncIOEventEmitter):
                     self.emit('dong', payload.data)
                     # feed food to the dog
                     food = WatchdogFood(timeout=30)
-                    self._watchdog.feed(food)
+                    if self._watchdog:
+                        self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
@@ -437,7 +438,7 @@ class Wechaty(AsyncIOEventEmitter):
                     log.info('receive <login> event <%s>', payload)
                     contact = self.ContactSelf.load(payload.contact_id)
                     await contact.ready()
-                    self.emit('login', ContactSelf)
+                    self.emit('login', contact)
                     await self.on_login(contact)
 
                     # init the plugins
@@ -451,8 +452,9 @@ class Wechaty(AsyncIOEventEmitter):
                     log.info('receive <logout> event <%s>', payload)
                     contact = self.ContactSelf.load(payload.contact_id)
                     await contact.ready()
-                    self.emit('logout', ContactSelf)
+                    self.emit('logout', contact)
                     await self.on_logout(contact)
+
                 puppet.on('logout', logout_listener)
 
             elif event_name == 'message':
@@ -594,28 +596,27 @@ class Wechaty(AsyncIOEventEmitter):
         """
         init puppet grpc connection
         """
-
-        self.Message.set_puppet(self.puppet)
-        self.Room.set_puppet(self.puppet)
-        self.RoomInvitation.set_puppet(self.puppet)
-        self.Contact.set_puppet(self.puppet)
-        self.Friendship.set_puppet(self.puppet)
-        self.Image.set_puppet(self.puppet)
-        self.Tag.set_puppet(self.puppet)
-
-        self.Message.set_wechaty(self)
-        self.Room.set_wechaty(self)
-        self.RoomInvitation.set_wechaty(self)
-        self.Contact.set_wechaty(self)
-        self.Friendship.set_wechaty(self)
-        self.Image.set_wechaty(self)
-        self.Tag.set_wechaty(self)
+        # Using metaclass to create a dynamic subclass to server multi bot instances.
+        meta_info = dict(_puppet=self.puppet, _wechaty=self)
+        self.Contact = type('Contact', (Contact,), meta_info)
+        self.ContactSelf = type('ContactSelf', (ContactSelf,), meta_info)
+        self.Favorite = type('Favorite', (Favorite,), meta_info)
+        self.Friendship = type('Friendship', (Friendship,), meta_info)
+        self.Image = type('Image', (Image,), meta_info)
+        self.Message = type('Message', (Message,), meta_info)
+        self.MiniProgram = type('MiniProgram', (MiniProgram,), meta_info)
+        self.Room = type('Room', (Room,), meta_info)
+        self.RoomInvitation = type('RoomInvitation', (RoomInvitation,), meta_info)
+        self.Tag = type('Tag', (Tag,), meta_info)
 
     async def stop(self):
         """
         stop the wechaty
         """
         log.info('wechaty is stoping ...')
+        # Shutdown the watchdog
+        self._watchdog = None
+        # deinit puppet
         await self.puppet.stop()
 
     def user_self(self) -> ContactSelf:
