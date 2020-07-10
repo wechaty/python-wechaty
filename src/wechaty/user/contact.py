@@ -32,8 +32,8 @@ from typing import (
     Union,
 )
 
-from pyee import AsyncIOEventEmitter    # type: ignore
-from wechaty_puppet import (    # type: ignore
+from pyee import AsyncIOEventEmitter  # type: ignore
+from wechaty_puppet import (  # type: ignore
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
@@ -45,7 +45,6 @@ from wechaty_puppet import (    # type: ignore
 # from wechaty.utils import type_check
 
 from ..accessory import Accessory
-
 
 if TYPE_CHECKING:
     # pytype: disable=pyi-error
@@ -107,7 +106,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
     @classmethod
     async def find(cls: Type[Contact], query: Union[str, ContactQueryFilter]) \
-            -> Optional[Contact]:
+        -> Optional[Contact]:
         """
         find a single target contact
         :param query:
@@ -132,10 +131,40 @@ class Contact(Accessory, AsyncIOEventEmitter):
         log.info('find_all() <%s, %s>', cls, query)
 
         contact_ids = await cls.get_puppet().contact_list()
-        contacts = [cls.load(contact_id) for contact_id in contact_ids]
+
+        # filter Contact by contact id to make sure its valid if contact_id.startswith('wxid_')
+        contacts: [Contact] = [cls.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
+        # async load
         await asyncio.gather(*[contact.ready() for contact in contacts])
+
+        if query is not None:
+            if isinstance(query, str):
+                contacts = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.alias.__contains__(query)) or
+                        (x.payload.id.__contains__(query)) or
+                        (x.payload.name.__contains__(query)) or
+                        (x.payload.weixin.__contains__(query)),
+                        contacts
+                    )
+                )
+
+            if isinstance(query, ContactQueryFilter):
+                new_query: Dict = dataclasses.asdict(query)
+                contacts = list(
+                    filter(
+                        lambda x: x.payload and (
+                            (x.payload.alias == new_query.get('alias') or not new_query.get('alias')) and
+                            (x.payload.id == new_query.get('id') or not new_query.get('id')) and
+                            (x.payload.name == new_query.get('name') or not new_query.get('name')) and
+                            (x.payload.weixin == new_query.get('weixin') or not new_query.get('weixin'))
+                        ),
+                        contacts
+                    )
+                )
 
         return contacts
 
