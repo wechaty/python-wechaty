@@ -137,21 +137,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         # load contact parallel using asyncio.gather method
         await asyncio.gather(*[contact.ready() for contact in contacts])
 
-        # async load
-        batch_size = 16
-        # slice contacts by batch_size
-        contacts = contacts[:batch_size * (len(contacts) // batch_size)]
-
-        contact_result_list: List[Contact] = []
-
-        for contact in contacts:
-            try:
-                await contact.ready()
-                contact_result_list.append(contact)
-            except RuntimeError as exception:
-                log.info('load contact occur exception: %s', exception.args)
-
-        return contact_result_list
+        return contacts
 
     def is_ready(self):
         """
