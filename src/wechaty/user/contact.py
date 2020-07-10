@@ -133,7 +133,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         contact_ids = await cls.get_puppet().contact_list()
 
         # filter Contact by contact id to make sure its valid if contact_id.startswith('wxid_')
-        contacts: [Contact] = [cls.load(contact_id) for contact_id in contact_ids]
+        contacts: List[Contact] = [cls.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
         # async load
