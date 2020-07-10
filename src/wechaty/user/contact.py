@@ -32,8 +32,8 @@ from typing import (
     Union,
 )
 
-from pyee import AsyncIOEventEmitter    # type: ignore
-from wechaty_puppet import (    # type: ignore
+from pyee import AsyncIOEventEmitter  # type: ignore
+from wechaty_puppet import (  # type: ignore
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
@@ -45,7 +45,6 @@ from wechaty_puppet import (    # type: ignore
 # from wechaty.utils import type_check
 
 from ..accessory import Accessory
-
 
 if TYPE_CHECKING:
     # pytype: disable=pyi-error
@@ -107,7 +106,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
     @classmethod
     async def find(cls: Type[Contact], query: Union[str, ContactQueryFilter]) \
-            -> Optional[Contact]:
+        -> Optional[Contact]:
         """
         find a single target contact
         :param query:
@@ -132,26 +131,39 @@ class Contact(Accessory, AsyncIOEventEmitter):
         log.info('find_all() <%s, %s>', cls, query)
 
         contact_ids = await cls.get_puppet().contact_list()
+        # filter Contact by contact id to make sure its valid if contact_id.startswith('wxid_')
         contacts = [Contact.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
+        # async load
         await asyncio.gather(*[contact.ready() for contact in contacts])
 
-        # async load
-        batch_size = 16
-        # slice contacts by batch_size
-        contacts = contacts[:batch_size * (len(contacts) // batch_size)]
+        if query is not None:
+            if isinstance(query, str):
+                contacts = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.alias.__contains__(query)) or
+                        (x.payload.id.__contains__(query)) or
+                        (x.payload.name.__contains__(query)) or
+                        (x.payload.weixin.__contains__(query)),
+                        contacts
+                    )
+                )
 
-        contact_result_list: List[Contact] = []
-
-        for contact in contacts:
-            try:
-                await contact.ready()
-                contact_result_list.append(contact)
-            except RuntimeError as exception:
-                log.info('load contact occur exception: %s', exception.args)
-
-        return contact_result_list
+            if isinstance(query, ContactQueryFilter):
+                newQuery: Dict = dataclasses.asdict(query)
+                contacts = list(
+                    filter(
+                        lambda x: False if not x.payload else
+                        (x.payload.alias == newQuery.get('alias') or not newQuery.get('alias')) and
+                        (x.payload.id == newQuery.get('id') or not newQuery.get('id')) and
+                        (x.payload.name == newQuery.get('name') or not newQuery.get('name')) and
+                        (x.payload.weixin == newQuery.get('weixin') or not newQuery.get('weixin')),
+                        contacts
+                    )
+                )
+        return contacts
 
     def is_ready(self):
         """
