@@ -20,9 +20,14 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from wechaty import Message, Accessory
+from typing import TYPE_CHECKING
+
+from wechaty import Accessory
 from wechaty_puppet import MiniProgramPayload, get_logger   # type: ignore
 from wechaty.utils import default_str
+
+if TYPE_CHECKING:
+    from wechaty.user import Message
 
 
 log = get_logger('MiniProgram')
