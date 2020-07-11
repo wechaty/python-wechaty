@@ -21,6 +21,7 @@ limitations under the License.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from dataclasses import asdict
 
 from wechaty import Accessory
 from wechaty_puppet import MiniProgramPayload, get_logger   # type: ignore
@@ -70,6 +71,14 @@ class MiniProgram(Accessory):
 
         mini_program = cls(payload=payload)
         return mini_program
+
+    def to_json(self) -> dict:
+        """
+        save the mini-program to dict data
+        """
+        log.info(f'save the mini-program to json data : <{self.payload}>')
+        mini_program_data = asdict(self.payload)
+        return mini_program_data
 
     @property
     def payload(self) -> MiniProgramPayload:
