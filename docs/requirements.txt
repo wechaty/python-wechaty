@@ -1,0 +1,4 @@
+Sphinx
+sphinxcontrib.katex
+sphinx-rtd-theme
+recommonmark
