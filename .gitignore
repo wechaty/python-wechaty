@@ -111,3 +111,4 @@ token.txt
 **/logs/
 **/log.txt
 ./docs/build/
+**/.vscode/
