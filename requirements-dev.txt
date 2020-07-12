@@ -12,3 +12,4 @@ requests
 qrcode
 apscheduler
 lxml
+Sphinx

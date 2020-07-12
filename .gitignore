@@ -110,3 +110,4 @@ token.txt
 .idea/
 **/logs/
 **/log.txt
+./docs/build/
