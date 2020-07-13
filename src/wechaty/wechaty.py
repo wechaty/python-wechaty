@@ -195,6 +195,15 @@ class Wechaty(AsyncIOEventEmitter):
         """str format of the Room object"""
         return 'Wechaty<{0}, {1}>'.format(self.name, self.contact_id)
 
+    async def my_self_contact(self) -> ContactSelf:
+        """
+        get the login user contact
+        """
+        my_contact_id = self.puppet.self_id()
+        contact = self.ContactSelf.load(my_contact_id)
+        await contact.ready()
+        return contact
+
     @classmethod
     def instance(cls: Type[Wechaty], options: Optional[WechatyOptions] = None
                  ) -> Wechaty:
