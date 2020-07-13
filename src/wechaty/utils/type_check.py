@@ -1,4 +1,5 @@
 """add type check utils"""
+from typing import Union, Optional
 
 
 def type_check(obj: object, type_name: str) -> bool:
@@ -16,3 +17,9 @@ def type_check(obj: object, type_name: str) -> bool:
     if hasattr(obj, '__class__') and hasattr(obj.__class__, '__name__'):
         return obj.__class__.__name__ == type_name
     return False
+
+
+def default_str(obj: Union[str, Optional[str]]) -> str:
+    if obj:
+        return obj
+    return ''
