@@ -26,11 +26,11 @@ from typing import (
     # cast,
     Optional,
 )
-from wechaty_puppet import get_logger   # type: ignore
+from wechaty_puppet import get_logger  # type: ignore
 
 # pylint:disable=R0401
 if TYPE_CHECKING:
-    from wechaty_puppet import Puppet   # type: ignore
+    from wechaty_puppet import Puppet  # type: ignore
     from .wechaty import Wechaty
 
 log = get_logger('Accessory')
@@ -44,6 +44,17 @@ class Accessory:
 
     _puppet: Optional[Puppet] = None
     _wechaty: Optional[Wechaty] = None
+
+    abstract: bool = True
+
+    def __init__(self):
+        if self.abstract:
+            raise Exception(
+                'Do not instantiate class {cls} directly, sse with bot.{cls} instead. '
+                'See https://github.com/Chatie/wechaty/issues/1217'.format(
+                    cls=type(self).__name__
+                )
+            )
 
     @classmethod
     def set_puppet(cls, new_puppet: Puppet):

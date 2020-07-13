@@ -108,3 +108,4 @@ dist/
 .pytype/
 token.txt
 .idea/
+/logs

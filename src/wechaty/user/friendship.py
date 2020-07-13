@@ -59,14 +59,13 @@ class Friendship(Accessory, Acceptable):
         """
         initialization constructor for friendship
         """
+        super(Friendship, self).__init__()
+
         self.friendship_id = friendship_id
         self._payload: Optional[FriendshipPayload] = None
 
         log.info('Friendship constructor %s', friendship_id)
 
-        # if self.__class__ is Friendship:
-        #     raise Exception(
-        #         'Friendship class can not be instanciated directly!')
         if self.puppet is None:
             raise Exception(
                 'Friendship class can not be instanciated without a puppet!')
@@ -144,7 +143,7 @@ class Friendship(Accessory, Acceptable):
         """
         check if friendship is ready
         """
-        return self.puppet is not None and self.payload is not None
+        return self._puppet is not None and self._payload is not None
 
     async def ready(self, force_sync: bool = False):
         """

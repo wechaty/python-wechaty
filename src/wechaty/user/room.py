@@ -62,11 +62,10 @@ class Room(Accessory):
 
     def __init__(self, room_id: str) -> None:
         """docs"""
+        super(Room, self).__init__()
+
         self.room_id = room_id
         self.payload: Optional[RoomPayload] = None
-
-        if self.__class__ is Room:
-            raise Exception('Room class can not be instanciated directly!')
 
         if self.puppet is None:
             raise Exception(

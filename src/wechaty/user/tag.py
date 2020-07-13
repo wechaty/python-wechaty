@@ -41,12 +41,6 @@ class Tag(Accessory):
         """
         super(Tag, self).__init__()
         log.info('create tag %s', tag_id)
-
-        if isinstance(self, Tag):
-            raise AttributeError(
-                'Tag class can not be instanciated directly!'
-                'See: https://github.com/Chatie/wechaty/issues/1217')
-
         if self.puppet is None:
             raise NotImplementedError(
                 'Tag class can not be instanciated without a puppet!')
@@ -61,12 +55,6 @@ class Tag(Accessory):
         """
         load tag instance
         """
-        if cls is Tag:
-            raise AttributeError(
-                'The global Tag class can not be used directly!'
-                'See: https://github.com/Chatie/wechaty/issues/1217'
-            )
-
         if tag_id in cls._pool:
             return cls._pool[tag_id]
 

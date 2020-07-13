@@ -623,7 +623,7 @@ class Wechaty(AsyncIOEventEmitter):
         self._puppet = self._load_puppet(self._options)
 
         # Using metaclass to create a dynamic subclass to server multi bot instances.
-        meta_info = dict(_puppet=self.puppet, _wechaty=self)
+        meta_info = dict(_puppet=self.puppet, _wechaty=self, abstract=False)
         self.Contact = type('Contact', (Contact,), meta_info)
         self.ContactSelf = type('ContactSelf', (ContactSelf,), meta_info)
         self.Favorite = type('Favorite', (Favorite,), meta_info)
