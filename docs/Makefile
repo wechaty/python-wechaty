@@ -13,8 +13,17 @@ help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 .PHONY: install
-install: 
+install:
 	pip install -r requirements.txt
+
+.PHONY: api
+api:
+	echo `pwd`
+	sphinx-apidoc -o source ../src/
+
+# .PHONY: clean
+# clean:
+# 	rm ./source/wechaty.rst ./source/wechaty.user.rst ./source/wechaty.utils.rst ./source/modules.rst
 
 .PHONY: help Makefile
 
