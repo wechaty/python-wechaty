@@ -20,13 +20,21 @@ limitations under the License.
 """
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+from dataclasses import asdict
+
+from wechaty import Accessory
 from wechaty_puppet import MiniProgramPayload, get_logger   # type: ignore
+from wechaty.utils import default_str
+
+if TYPE_CHECKING:
+    from wechaty.user import Message
 
 
 log = get_logger('MiniProgram')
 
 
-class MiniProgram:
+class MiniProgram(Accessory):
     """
     mini_program object which handle the url_link content
     """
@@ -36,18 +44,50 @@ class MiniProgram:
         :param payload:
         """
         log.info('MiniProgram created')
-        self.payload: MiniProgramPayload = payload
+        self._payload: MiniProgramPayload = payload
 
     @classmethod
-    async def create(cls) -> MiniProgram:
+    async def create_from_message(cls, message: Message) -> MiniProgram:
         """
         static create MiniProgram method
         :return:
         """
-        log.info('MiniProgram created')
-        # TODO -> create default mini_program payload
-        payload = MiniProgramPayload()
-        return MiniProgram(payload)
+        log.info(f'loading the mini-program from message <{message}>')
+
+        mini_program_payload = await cls.get_puppet().message_mini_program(
+            message_id=message.message_id)
+
+        mini_program = MiniProgram(mini_program_payload)
+        return mini_program
+
+    @classmethod
+    def create_from_json(cls, payload_data: dict) -> MiniProgram:
+        """
+        create the mini_program from json data
+        """
+        log.info(f'loading the mini-program from json data <{payload_data}>')
+
+        payload = MiniProgramPayload(**payload_data)
+
+        mini_program = cls(payload=payload)
+        return mini_program
+
+    def to_json(self) -> dict:
+        """
+        save the mini-program to dict data
+        """
+        log.info(f'save the mini-program to json data : <{self.payload}>')
+        mini_program_data = asdict(self.payload)
+        return mini_program_data
+
+    @property
+    def payload(self) -> MiniProgramPayload:
+        """
+        get the payload data
+        """
+        if not self._payload:
+            raise ValueError('mini-program payload should not be none')
+        return self._payload
 
     @property
     def app_id(self) -> str:
@@ -55,9 +95,7 @@ class MiniProgram:
         get mini_program app_id
         :return:
         """
-        if self.payload.app_id is None:
-            return ''
-        return self.payload.app_id
+        return default_str(self._payload.appid)
 
     @property
     def title(self) -> str:
@@ -65,9 +103,14 @@ class MiniProgram:
         get mini_program title
         :return:
         """
-        if self.payload.title is None:
-            return ''
-        return self.payload.title
+        return default_str(self._payload.title)
+
+    @property
+    def icon_url(self) -> str:
+        """
+        get mini_program icon url
+        """
+        return default_str(self._payload.iconUrl)
 
     @property
     def page_path(self) -> str:
@@ -75,9 +118,7 @@ class MiniProgram:
         get mini_program page_path
         :return:
         """
-        if self.payload.page_path is None:
-            return ''
-        return self.payload.page_path
+        return default_str(self._payload.pagePath)
 
     @property
     def user_name(self) -> str:
@@ -85,9 +126,7 @@ class MiniProgram:
         get mini_program user_name
         :return:
         """
-        if self.payload.user_name is None:
-            return ''
-        return self.payload.user_name
+        return default_str(self._payload.username)
 
     @property
     def description(self) -> str:
@@ -95,9 +134,7 @@ class MiniProgram:
         get mini_program description
         :return:
         """
-        if self.payload.description is None:
-            return ''
-        return self.payload.description
+        return default_str(self._payload.description)
 
     @property
     def thumb_url(self) -> str:
@@ -105,9 +142,7 @@ class MiniProgram:
         get mini_program thumb_url
         :return:
         """
-        if self.payload.thumb_url is None:
-            return ''
-        return self.payload.thumb_url
+        return default_str(self._payload.thumbUrl)
 
     @property
     def thumb_key(self) -> str:
@@ -115,6 +150,4 @@ class MiniProgram:
         get mini_program thumb_key
         :return:
         """
-        if self.payload.thumb_key is None:
-            return ''
-        return self.payload.thumb_key
+        return default_str(self._payload.thumbKey)
