@@ -33,9 +33,9 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-from pyee import AsyncIOEventEmitter    # type: ignore
+from pyee import AsyncIOEventEmitter  # type: ignore
 # from wechaty_puppet import RoomMemberPayload
-from wechaty_puppet import (    # type: ignore
+from wechaty_puppet import (  # type: ignore
     FileBox,
     RoomQueryFilter,
     RoomMemberQueryFilter,
@@ -46,7 +46,6 @@ from wechaty_puppet import (    # type: ignore
 from ..accessory import Accessory
 
 if TYPE_CHECKING:
-
     from .contact import Contact
     from .url_link import UrlLink
     from .mini_program import MiniProgram
@@ -66,8 +65,8 @@ class Room(Accessory):
         self.room_id = room_id
         self.payload: Optional[RoomPayload] = None
 
-        # if self.__class__ is Room:
-        #     raise Exception('Room class can not be instanciated directly!')
+        if self.__class__ is Room:
+            raise Exception('Room class can not be instanciated directly!')
 
         if self.puppet is None:
             raise Exception(
@@ -101,16 +100,18 @@ class Room(Accessory):
             )
 
         log.info(
-            'Room create <%s, %s>',
+            'Room create <%s - %s>',
             ','.join([contact.contact_id for contact in contacts]),
             topic
         )
 
         try:
             contact_ids = list(map(lambda x: x.contact_id, contacts))
-            room_id = await cls.get_puppet().\
+            room_id = await cls.get_puppet(). \
                 room_create(contact_ids=contact_ids, topic=topic)
-            return cls.load(room_id=room_id)
+            room = cls.load(room_id=room_id)
+            await room.ready()
+            return room
         except Exception as exception:
             log.error(
                 'Room create error <%s>',
@@ -222,7 +223,7 @@ class Room(Accessory):
         if self.payload.topic is None:
             return 'loading ...'
 
-        return 'Room <%s>' % self.payload.topic
+        return 'Room <%s - %s>' % (self.room_id, self.payload.topic)
 
     def is_ready(self) -> bool:
         """
@@ -446,7 +447,7 @@ class Room(Accessory):
             room_id=self.room_id, contact_id=member.contact_id)
 
         if room_member_payload is not None \
-                and room_member_payload.room_alias is not None:
+            and room_member_payload.room_alias is not None:
             return room_member_payload.room_alias
         return None
 
@@ -499,7 +500,7 @@ class Room(Accessory):
 
                         elif member.payload.alias is not None and \
                                 member.payload.alias.__contains__(
-                                    query.contact_alias):
+                                query.contact_alias):
 
                             member_search_result.append(member)
 

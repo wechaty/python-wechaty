@@ -131,8 +131,9 @@ class Contact(Accessory, AsyncIOEventEmitter):
         log.info('find_all() <%s, %s>', cls, query)
 
         contact_ids = await cls.get_puppet().contact_list()
+
         # filter Contact by contact id to make sure its valid if contact_id.startswith('wxid_')
-        contacts = [Contact.load(contact_id) for contact_id in contact_ids]
+        contacts: List[Contact] = [cls.load(contact_id) for contact_id in contact_ids]
 
         # load contact parallel using asyncio.gather method
         # async load
@@ -152,17 +153,19 @@ class Contact(Accessory, AsyncIOEventEmitter):
                 )
 
             if isinstance(query, ContactQueryFilter):
-                newQuery: Dict = dataclasses.asdict(query)
+                new_query: Dict = dataclasses.asdict(query)
                 contacts = list(
                     filter(
-                        lambda x: False if not x.payload else
-                        (x.payload.alias == newQuery.get('alias') or not newQuery.get('alias')) and
-                        (x.payload.id == newQuery.get('id') or not newQuery.get('id')) and
-                        (x.payload.name == newQuery.get('name') or not newQuery.get('name')) and
-                        (x.payload.weixin == newQuery.get('weixin') or not newQuery.get('weixin')),
+                        lambda x: x.payload and (
+                            (x.payload.alias == new_query.get('alias') or not new_query.get('alias')) and
+                            (x.payload.id == new_query.get('id') or not new_query.get('id')) and
+                            (x.payload.name == new_query.get('name') or not new_query.get('name')) and
+                            (x.payload.weixin == new_query.get('weixin') or not new_query.get('weixin'))
+                        ),
                         contacts
                     )
                 )
+
         return contacts
 
     def is_ready(self):
