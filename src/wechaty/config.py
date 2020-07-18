@@ -24,6 +24,7 @@ from typing import (
     Optional,
 )
 
+from wechaty.exceptions import WechatyConfigurationError
 from wechaty_puppet import (    # type: ignore
     FileBox,
     get_logger
@@ -108,14 +109,14 @@ class Config:
             else DefaultSetting.default_protocol
 
         if token is None:
-            raise AttributeError('token can"t be None')
+            raise WechatyConfigurationError('token can"t be None')
 
         self.name = name
         self.debug = debug
         self.docker = docker
 
         if self.api_host is not None and not valid_api_host(self.api_host):
-            raise AttributeError('api host %s is not valid' % self.api_host)
+            raise WechatyConfigurationError('api host %s is not valid' % self.api_host)
 
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'

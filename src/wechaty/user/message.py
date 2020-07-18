@@ -29,7 +29,9 @@ from typing import (
 )
 
 from datetime import datetime
-from wechaty_puppet import (    # type: ignore
+
+from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
+from wechaty_puppet import (  # type: ignore
     FileBox,
     MessagePayload,
     MessageQueryFilter,
@@ -51,7 +53,7 @@ log = get_logger('Message')
 
 
 # pylint: disable=R0904,R0903
-class Message(Accessory):
+class Message(Accessory[MessagePayload]):
     """
     All wechat messages will be encapsulated as a Message.
     """
@@ -62,52 +64,36 @@ class Message(Accessory):
         """
         initialization
         """
+        super().__init__()
+
         self.message_id = message_id
-        self._payload: Optional[MessagePayload] = None
-
-        # TODO -> check if it's Message class
-        if not issubclass(self.__class__, Message):
-            raise Exception('Message class can not be Initialized directly!')
-
-        if self.puppet is None:
-            raise Exception(
-                'Message class can not be Initialized without a puppet!'
-            )
-
-    @property
-    def payload(self) -> Optional[MessagePayload]:
-        """
-        get message payload
-        """
-        return self._payload
 
     def message_type(self) -> MessageType:
         """
         get message type
         """
-        if self.payload is None:
-            raise Exception('MessagePayload not found ...')
         return self.payload.type
 
     def __str__(self) -> str:
         """
         format string for message
         """
-        if self.payload is not None:
-            room = self.room()
-            room_format = '' if room is None \
-                else f'room <{room}>, '
+        if not self.ready():
+            return f'<{self.message_id}> not ready'
 
-            to = self.to()
-            to_format = '' if to is None \
-                else f'say to contact <{to}>'
-            return '%stalker %s, %s, %s' % (
-                room_format,
-                self.talker(),
-                to_format,
-                self.text(),
-            )
-        return f'<{self.message_id}> not ready'
+        room = self.room()
+        room_format = '' if room is None \
+            else f'room <{room}>, '
+
+        to = self.to()
+        to_format = '' if to is None \
+            else f'say to contact <{to}>'
+        return '%stalker %s, %s, %s' % (
+            room_format,
+            self.talker(),
+            to_format,
+            self.text(),
+        )
 
     async def say(self, msg: Union[str, Contact, FileBox, UrlLink, MiniProgram],
                   mention_ids: Optional[List[str]] = None) -> Message:
@@ -122,7 +108,7 @@ class Message(Accessory):
         else:
             talker = self.talker()
             if talker is None:
-                raise ValueError(f'Message must be from room/contact')
+                raise WechatyPayloadError(f'Message must be from room/contact')
             conversation_id = talker.contact_id
 
         # in order to resolve circular dependency problems which is not for
@@ -153,8 +139,8 @@ class Message(Accessory):
                 conversation_id=conversation_id,
                 mini_program=msg.payload)
         else:
-            raise ValueError(f'message type should be str, '
-                             f'Contact/FileBox/UrlLink/MiniProgram')
+            raise WechatyPayloadError(f'message type should be str, '
+                                      f'Contact/FileBox/UrlLink/MiniProgram')
 
         message = self.load(message_id)
         await message.ready()
@@ -224,19 +210,15 @@ class Message(Accessory):
         # TODO ->   Suggestion: talker/to/room/text func can
         #           be converted to property func
         """
-        if self.payload is None:
-            raise Exception('Message payload not found ...')
         talker_id = self.payload.from_id
         if talker_id is None:
-            raise ValueError(f'message must be from Contact')
+            raise WechatyPayloadError(f'message must be from Contact')
         return self.wechaty.Contact.load(talker_id)
 
     def to(self) -> Optional[Contact]:
         """
         get message reply to
         """
-        if self.payload is None:
-            raise Exception('Message payload not found ...')
         to_id = self.payload.to_id
         if to_id is None:
             return None
@@ -246,8 +228,6 @@ class Message(Accessory):
         """
         get message room
         """
-        if self.payload is None:
-            raise Exception('Message payload not found ...')
         room_id = self.payload.room_id
         if room_id is None or room_id == '':
             return None
@@ -257,8 +237,6 @@ class Message(Accessory):
         """
         get message text
         """
-        if self.payload is None:
-            raise Exception('Message payload not found ...')
         if self.payload.text is None:
             return ''
         return self.payload.text
@@ -268,13 +246,13 @@ class Message(Accessory):
         Get the recalled message
         """
         if self.message_type() != MessageType.MESSAGE_TYPE_RECALLED:
-            raise Exception(
+            raise WechatyOperationError(
                 'Can not call toRecalled() on message which is not'
                 ' recalled type.')
 
         origin_message_id = self.text()
         if origin_message_id is None:
-            raise Exception('Can not find recalled message')
+            raise WechatyPayloadError('Can not find recalled message')
 
         log.info('get recall message <%s>', origin_message_id)
         try:
@@ -287,7 +265,7 @@ class Message(Accessory):
             )
 
             log.error(error_info)
-            raise Exception(error_info)
+            raise WechatyOperationError(error_info)
 
     async def recall(self) -> bool:
         """
@@ -309,8 +287,6 @@ class Message(Accessory):
         Get the type from the message.
         :return:
         """
-        if self.payload is None:
-            raise Exception('payload not found')
         return self.payload.type
 
     def is_self(self) -> bool:
@@ -415,10 +391,7 @@ class Message(Accessory):
         if self.is_ready():
             return
 
-        self._payload = await self.puppet.message_payload(self.message_id)
-
-        if self.payload is None:
-            raise Exception('payload not found')
+        self.payload = await self.puppet.message_payload(self.message_id)
 
         if self.payload.from_id.strip() != '':
             talker = self.wechaty.Contact.load(self.payload.from_id)
@@ -430,12 +403,6 @@ class Message(Accessory):
             to_contact = self.wechaty.Contact.load(self.payload.to_id)
             await to_contact.ready()
 
-    def is_ready(self) -> bool:
-        """
-        check message is ready
-        """
-        return self.payload is not None
-
     async def forward(self, to: Union[Room, Contact]):
         """
         doc
@@ -444,14 +411,14 @@ class Message(Accessory):
         """
         log.info('forward() <%s>', to)
         if to is None:
-            raise Exception('to param not found')
+            raise WechatyPayloadError('to param not found')
         try:
             if isinstance(to, Room):
                 to_id = to.room_id
             elif isinstance(to, Contact):
                 to_id = to.contact_id
             else:
-                raise Exception(
+                raise WechatyPayloadError(
                     'expected type is <Room, Contact>, but get <%s>'
                     % to.__class__)
             print(to_id)
@@ -459,20 +426,15 @@ class Message(Accessory):
 
         # pylint:disable=W0703
         except Exception as exception:
-            log.error(
-                'Message forward error <%s>',
-                exception.args
-            )
-            raise exception
+            message = 'Message forward error <%s>' % exception.args
+            log.error(message)
+            raise WechatyOperationError(message)
 
     def date(self) -> datetime:
         """
         Message sent date
         :return:
         """
-        if self.payload is None:
-            raise Exception('payload not found')
-
         time = datetime.fromtimestamp(self.payload.time_stamp)
         return time
 
@@ -481,8 +443,6 @@ class Message(Accessory):
         Returns the message age in seconds.
         :return:
         """
-        if self.payload is None:
-            raise Exception('Message payload not found')
         return (datetime.now() - self.date()).seconds // 1000
 
     async def to_file_box(self) -> FileBox:
@@ -491,7 +451,7 @@ class Message(Accessory):
         """
         log.info('Message to FileBox')
         if self.type() == MessageType.MESSAGE_TYPE_TEXT:
-            raise Exception('text message can"t convert to FileBox')
+            raise WechatyOperationError('text message can"t convert to FileBox')
         file_box = await self.puppet.message_file(self.message_id)
         return file_box
 
@@ -503,7 +463,7 @@ class Message(Accessory):
         """
         log.info('Message to Image() for message %s', self.message_id)
         if self.type() != MessageType.MESSAGE_TYPE_IMAGE:
-            raise Exception(
+            raise WechatyOperationError(
                 'current message type: %s, not image type'
                 % self.type()
             )
@@ -518,7 +478,7 @@ class Message(Accessory):
         """
         log.info('Message to Contact')
         if self.type() != MessageType.MESSAGE_TYPE_CONTACT:
-            raise Exception(
+            raise WechatyOperationError(
                 'current message type: %s, not contact type'
                 % self.type()
             )
@@ -536,13 +496,13 @@ class Message(Accessory):
         """
         log.info('Message to UrlLink')
         if self.type() != MessageType.MESSAGE_TYPE_URL:
-            raise Exception(
+            raise WechatyOperationError(
                 'current message type: %s, not url type'
                 % self.type()
             )
         payload = await self.puppet.message_url(self.message_id)
         if payload is None:
-            raise Exception(
+            raise WechatyPayloadError(
                 'can not get url_link_payload by message: %s'
                 % self.message_id)
         return UrlLink(payload)
@@ -554,16 +514,13 @@ class Message(Accessory):
         """
         log.info('Message to MiniProgram <%s>', self.message_id)
 
-        if self.payload is None:
-            raise Exception('payload not found')
-
         if self.type() != MessageType.MESSAGE_TYPE_MINI_PROGRAM:
-            raise Exception('not a mini_program type message')
+            raise WechatyOperationError('not a mini_program type message')
 
         payload = await self.puppet.message_mini_program(
             self.message_id)
         if payload is None:
-            raise Exception(
+            raise WechatyPayloadError(
                 'no miniProgram payload for message %s'
                 % self.message_id
             )

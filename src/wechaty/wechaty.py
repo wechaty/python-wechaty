@@ -33,8 +33,11 @@ from typing import (
     Type,
     # Union,
     List, Union)
+
+from grpclib.exceptions import StreamTerminatedError
 from pyee import AsyncIOEventEmitter  # type: ignore
 
+from wechaty.exceptions import WechatyStatusError, WechatyConfigurationError, WechatyOperationError
 from wechaty_puppet import (  # type: ignore
     Puppet,
     EventLoginPayload,
@@ -165,7 +168,7 @@ class Wechaty(AsyncIOEventEmitter):
         :return:
         """
         if not self._puppet:
-            raise Exception('Wechaty puppet not loaded!')
+            raise WechatyStatusError('Wechaty puppet not loaded!')
         return self._puppet
 
     @staticmethod
@@ -176,7 +179,7 @@ class Wechaty(AsyncIOEventEmitter):
         :return:
         """
         if options.puppet is None:
-            raise Exception('puppet not exist')
+            raise WechatyConfigurationError('puppet not exist')
 
         if isinstance(options.puppet, Puppet):
             return options.puppet
@@ -191,18 +194,18 @@ class Wechaty(AsyncIOEventEmitter):
             #
             hostie_module = __import__('wechaty_puppet_hostie')
             if not hasattr(hostie_module, 'HostiePuppet'):
-                raise Exception('HostiePuppet not exist in '
-                                'wechaty-puppet-hostie')
+                raise WechatyConfigurationError('HostiePuppet not exist in '
+                                                'wechaty-puppet-hostie')
 
             hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
             if not issubclass(hostie_puppet_class, Puppet):
-                raise TypeError(f'Type {hostie_puppet_class} '
-                                f'is not correct')
+                raise WechatyConfigurationError(f'Type {hostie_puppet_class} '
+                                                f'is not correct')
 
             return hostie_puppet_class(options.puppet_options)
 
-        raise TypeError('puppet expected type is [Puppet, '
-                        'PuppetModuleName(str)]')
+        raise WechatyConfigurationError('puppet expected type is [Puppet, '
+                                        'PuppetModuleName(str)]')
 
     def __str__(self):
         """str format of the Room object"""
@@ -361,8 +364,6 @@ class Wechaty(AsyncIOEventEmitter):
         start wechaty bot
         :return:
         """
-        await self.init_puppet()
-        await self.init_puppet_event_bridge(self.puppet)
 
         async def start_watchdog():
             try:
@@ -393,12 +394,25 @@ class Wechaty(AsyncIOEventEmitter):
                 # to terminate the watchdog
                 pass
 
-        self._watchdog_task = asyncio.create_task(start_watchdog())
-        log.info('starting ...')
+        # If the network is shut-down, we should catch the connection error and restart after a minute.
+        import requests.exceptions
+        try:
 
-        self.started = True
+            await self.init_puppet()
+            await self.init_puppet_event_bridge(self.puppet)
 
-        await self.puppet.start()
+            self._watchdog_task = asyncio.create_task(start_watchdog())
+            log.info('starting ...')
+
+            self.started = True
+
+            await self.puppet.start()
+
+        except (requests.exceptions.ConnectionError, StreamTerminatedError, OSError):
+
+            log.error('The network is not good, the bot will try to restart after 60 seconds.')
+            await asyncio.sleep(60)
+            await self.restart()
 
     async def restart(self):
         """restart the wechaty bot"""
@@ -605,7 +619,7 @@ class Wechaty(AsyncIOEventEmitter):
             elif event_name == 'reset':
                 log.info('receive <reset> event <%s>')
             else:
-                raise ValueError(f'event_name <{event_name}> unsupported!')
+                raise WechatyOperationError(f'event_name <{event_name}> unsupported!')
 
             log.info('initPuppetEventBridge() puppet.on(%s) (listenerCount:%s) '
                      'registering...',

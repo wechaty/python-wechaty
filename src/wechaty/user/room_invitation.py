@@ -23,6 +23,8 @@ from __future__ import annotations
 from typing import Union, List
 import json
 from datetime import datetime
+
+from wechaty.exceptions import WechatyOperationError
 from wechaty_puppet import RoomInvitationPayload, get_logger  # type: ignore
 from .contact import Contact
 from ..types import Acceptable
@@ -99,12 +101,9 @@ class RoomInvitation(Accessory, Acceptable):
                 inviter
             )
         except Exception as exception:
-            log.error(
-                'accept() with room(%s) & inviter(%s) error',
-                topic,
-                inviter
-            )
-            raise exception
+            message = 'accept() with room(%s) & inviter(%s) error' % (topic, inviter)
+            log.error(message)
+            raise WechatyOperationError(message)
 
     async def inviter(self) -> Contact:
         """

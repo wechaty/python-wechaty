@@ -27,7 +27,8 @@ from typing import (
 )
 import json
 
-from wechaty_puppet import (    # type: ignore
+from wechaty.exceptions import WechatyOperationError
+from wechaty_puppet import (  # type: ignore
     FriendshipType,
     FriendshipPayload,
     get_logger
@@ -36,7 +37,6 @@ from wechaty_puppet import (    # type: ignore
 
 from ..types import Acceptable
 from ..accessory import Accessory
-
 
 if TYPE_CHECKING:
     from .contact import Contact
@@ -62,13 +62,8 @@ class Friendship(Accessory, Acceptable):
         super(Friendship, self).__init__()
 
         self.friendship_id = friendship_id
-        self._payload: Optional[FriendshipPayload] = None
 
         log.info('Friendship constructor %s', friendship_id)
-
-        if self.puppet is None:
-            raise Exception(
-                'Friendship class can not be instanciated without a puppet!')
 
     @classmethod
     def load(cls, friendship_id: str) -> Friendship:
@@ -119,31 +114,14 @@ class Friendship(Accessory, Acceptable):
         # this is a dangerous action
         raise NotImplementedError
 
-    @property
-    def payload(self) -> FriendshipPayload:
-        """
-        get the FriendShipPayload as a property
-        :return:
-        """
-        if self._payload is None:
-            raise ValueError('should ready()<sync> the friendship payload '
-                             'before get it, please call the <ready()> method')
-        return self._payload
-
     def __str__(self) -> str:
         """
         string format for Friendship
         """
         if self._payload is None:
             return 'Friendship <{0}>'.format(self.friendship_id)
-        return 'Friendship # type: {0}  contact: <{1}>  hello msg: <{2}>'\
+        return 'Friendship # type: {0}  contact: <{1}>  hello msg: <{2}>' \
             .format(self.type().name, self._payload.contact_id, self.hello())
-
-    def is_ready(self) -> bool:
-        """
-        check if friendship is ready
-        """
-        return self._puppet is not None and self._payload is not None
 
     async def ready(self, force_sync: bool = False):
         """
@@ -168,7 +146,7 @@ class Friendship(Accessory, Acceptable):
         """
         log.info('accept friendship, friendship_id: <%s>', self.friendship_id)
         if self.type() != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
-            raise Exception(
+            raise WechatyOperationError(
                 'accept() need type to be FriendshipType.'
                 'FRIENDSHIP_TYPE_RECEIVE, but it got a " + FriendshipType : '
                 '<{0}>'.format(self.type().name))
@@ -220,16 +198,12 @@ class Friendship(Accessory, Acceptable):
         dumps the friendship
         """
         log.info('Friendship to_json')
-        if not self.is_ready():
-            raise Exception(
-                f'Friendship<${self.friendship_id}> needs to be ready. '
-                'Please call ready() before toJSON()')
         return json.dumps(self.payload)
 
     @classmethod
     async def from_json(
-            cls,
-            json_data: Union[str, FriendshipPayload]
+        cls,
+        json_data: Union[str, FriendshipPayload]
     ) -> Friendship:
         """
         create friendShip by friendshipJson

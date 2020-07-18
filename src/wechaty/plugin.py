@@ -34,7 +34,9 @@ from datetime import datetime
 from copy import deepcopy
 from dataclasses import dataclass
 from collections import defaultdict, OrderedDict
-from wechaty_puppet import get_logger   # type: ignore
+
+from wechaty.exceptions import WechatyPluginError, WechatyPayloadError
+from wechaty_puppet import get_logger  # type: ignore
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
@@ -51,7 +53,6 @@ if TYPE_CHECKING:
         Wechaty
     )
     from wechaty.user.room_invitation import RoomInvitation
-
 
 log = get_logger(__name__)
 
@@ -76,6 +77,7 @@ class WechatyPlugin(metaclass=ABCMeta):
     listen events from
 
     """
+
     def __init__(self, options: Optional[WechatyPluginOptions] = None):
         self.output: Dict[str, Any] = {}
         self.bot: Optional[Wechaty] = None
@@ -204,6 +206,7 @@ PluginTree = Dict[str, Union[str, List[str]]]
 
 class WechatyPluginManager:
     """manage the wechaty plugin, It will support some features."""
+
     def __init__(self, wechaty: Wechaty):
         self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
@@ -245,7 +248,7 @@ class WechatyPluginManager:
             else:
                 plugin_instance = self._load_plugin_from_github_url(plugin)
             if plugin_instance is None:
-                raise Exception('can"t load plugin %s' % plugin)
+                raise WechatyPluginError('can"t load plugin %s' % plugin)
         else:
             if plugin.name in self._plugins:
                 log.warning('plugin : %s has exist', plugin.name)
@@ -259,7 +262,7 @@ class WechatyPluginManager:
     def remove_plugin(self, name: str):
         """remove plugin"""
         if name not in self._plugins:
-            raise IndexError(f'plugin {name} not exist')
+            raise WechatyPluginError(f'plugin {name} not exist')
         self._plugins.pop(name)
         self._plugin_status.pop(name)
 
@@ -268,7 +271,7 @@ class WechatyPluginManager:
         check the plugins whether
         """
         if name not in self._plugins and name not in self._plugin_status:
-            raise Exception('plugins <%s> not exist' % name)
+            raise WechatyPluginError('plugins <%s> not exist' % name)
 
     def stop_plugin(self, name: str):
         """stop the plugin"""
@@ -319,7 +322,7 @@ class WechatyPluginManager:
             elif 'msg' in kwargs and isinstance(kwargs['msg'], Message):
                 msg = kwargs['msg']
             else:
-                raise ValueError('can"t find the message params')
+                raise WechatyPayloadError('can"t find the message params')
 
             # this will make the plugins running sequential, _plugins
             # is a sort dict

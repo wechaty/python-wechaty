@@ -56,9 +56,6 @@ class Image(Accessory):
         log.info('init the message Image object <%s>', image_id)
 
         self.image_id = image_id
-        if self.puppet is None:
-            raise NotImplementedError('Image class can not be instanced'
-                                      ' without a puppet!')
 
     @classmethod
     def create(cls: Type[Image], image_id: str) -> Image:
