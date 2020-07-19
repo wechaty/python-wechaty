@@ -309,24 +309,18 @@ class WechatyPluginManager:
 
     async def emit_events(self, event_name: str, *args, **kwargs):
         """
-
         during the try-stage, only support message_events
 
         event_name: get event
         event_payload:
         """
         if event_name == 'message':
-            # this is not type linting, it's needed to be imported at top-level
-            # , So, it must occurs cyclic-import problems, to resolve this, a
-            # simple way is that we import package at local-level.
-
-            # pylint: disable=import-outside-toplevel
-            if len(args) == 1 and isinstance(args[0], Message):
-                msg: Message = args[0]
-            elif 'msg' in kwargs and isinstance(kwargs['msg'], Message):
-                msg = kwargs['msg']
-            else:
-                raise WechatyPayloadError('can"t find the message params')
+            # https://stackoverflow.com/a/154156/2544762
+            # The most Pythonic way to check the type of an object is... not to check it.
+            if not len(args) and 'msg' not in kwargs:
+                raise WechatyPluginError(
+                    'message event requires the first positioned or msg named param')
+            msg: Message = kwargs.get('msg') or args[0]
 
             # this will make the plugins running sequential, _plugins
             # is a sort dict
