@@ -20,6 +20,7 @@ limitations under the License.
 """
 from __future__ import annotations
 
+import logging
 from abc import abstractmethod, ABCMeta
 from enum import Enum
 from typing import (
@@ -34,9 +35,12 @@ from datetime import datetime
 from copy import deepcopy
 from dataclasses import dataclass
 from collections import defaultdict, OrderedDict
-
-from wechaty.exceptions import WechatyPluginError, WechatyPayloadError
 from wechaty_puppet import get_logger  # type: ignore
+
+from .exceptions import (
+    WechatyPluginError,
+    WechatyPayloadError,
+)
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
@@ -45,16 +49,17 @@ if TYPE_CHECKING:
         EventReadyPayload,
         ScanStatus
     )
-    from wechaty import (
+    from .wechaty import (
+        Wechaty
+    )
+    from .user import (
         Room,
+        RoomInvitation,
         Friendship,
         Contact,
         Message,
-        Wechaty
     )
-    from wechaty.user.room_invitation import RoomInvitation
-
-log = get_logger(__name__)
+log: logging.Logger = get_logger(__name__)
 
 
 @dataclass
@@ -316,7 +321,6 @@ class WechatyPluginManager:
             # simple way is that we import package at local-level.
 
             # pylint: disable=import-outside-toplevel
-            from wechaty import Message
             if len(args) == 1 and isinstance(args[0], Message):
                 msg: Message = args[0]
             elif 'msg' in kwargs and isinstance(kwargs['msg'], Message):

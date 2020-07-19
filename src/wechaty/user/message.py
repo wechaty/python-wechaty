@@ -78,7 +78,7 @@ class Message(Accessory[MessagePayload]):
         """
         format string for message
         """
-        if not self.ready():
+        if not self.is_ready():
             return f'<{self.message_id}> not ready'
 
         room = self.room()

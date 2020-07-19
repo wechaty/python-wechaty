@@ -24,20 +24,22 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
+import logging
+import traceback
 from datetime import datetime
 from dataclasses import dataclass
 from typing import (
-    # TypeVar,
-    # cast,
+    # TYPE_CHECKING,
     Optional,
     Type,
-    # Union,
-    List, Union)
+    List,
+    Union
+)
 
+import requests.exceptions
 from grpclib.exceptions import StreamTerminatedError
 from pyee import AsyncIOEventEmitter  # type: ignore
 
-from wechaty.exceptions import WechatyStatusError, WechatyConfigurationError, WechatyOperationError
 from wechaty_puppet import (  # type: ignore
     Puppet,
     EventLoginPayload,
@@ -56,14 +58,16 @@ from wechaty_puppet import (  # type: ignore
     ScanStatus,
     EventReadyPayload,
 
-    get_logger
+    WechatyPuppetError,
+
+    get_logger,
 )
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch  # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog  # type: ignore
 
-from .plugin import (
-    WechatyPlugin, WechatyPluginManager
+from .utils import (
+    qr_terminal
 )
 
 from .user import (
@@ -79,11 +83,18 @@ from .user import (
     ContactSelf
 )
 
-from .utils import (
-    qr_terminal
+from .plugin import (
+    WechatyPlugin,
+    WechatyPluginManager
 )
 
-log = get_logger('Wechaty')
+from .exceptions import (  # type: ignore
+    WechatyStatusError,
+    WechatyConfigurationError,
+    WechatyOperationError,
+)
+
+log: logging.Logger = get_logger('Wechaty')
 
 DEFAULT_TIMEOUT = 300
 
@@ -394,25 +405,35 @@ class Wechaty(AsyncIOEventEmitter):
                 # to terminate the watchdog
                 pass
 
-        # If the network is shut-down, we should catch the connection error and restart after a minute.
-        import requests.exceptions
+        # If the network is shut-down, we should catch the connection
+        # error and restart after a minute.
         try:
 
             await self.init_puppet()
             await self.init_puppet_event_bridge(self.puppet)
 
-            self._watchdog_task = asyncio.create_task(start_watchdog())
-            log.info('starting ...')
+            log.info('starting puppet ...')
+            await self.puppet.start()
 
             self.started = True
 
-            await self.puppet.start()
+            self._watchdog_task = asyncio.create_task(start_watchdog())
 
         except (requests.exceptions.ConnectionError, StreamTerminatedError, OSError):
 
             log.error('The network is not good, the bot will try to restart after 60 seconds.')
             await asyncio.sleep(60)
             await self.restart()
+
+        except WechatyPuppetError:
+            traceback.print_exc()
+            loop = asyncio.get_event_loop()
+            loop.stop()
+
+        except:
+            traceback.print_exc()
+            loop = asyncio.get_event_loop()
+            loop.stop()
 
     async def restart(self):
         """restart the wechaty bot"""

@@ -4,7 +4,7 @@
 # import types from wechaty_puppet
 #
 
-from wechaty_puppet import (    # type: ignore
+from wechaty_puppet import (  # type: ignore
     FileBox,
     MessageType,
     MessagePayload,
@@ -41,7 +41,6 @@ from wechaty_puppet import (    # type: ignore
     ScanStatus
 )
 
-
 from .config import (
     get_logger,
 )
@@ -62,11 +61,22 @@ from .user import (
     Message,
     MiniProgram,
     Room,
+    RoomInvitation,
     Tag,
     UrlLink,
 )
+from .exceptions import (
+    WechatyError,
+    WechatyConfigurationError,
+    WechatyAccessoryBindingError,
+    WechatyStatusError,
+    WechatyPayloadError,
+    WechatyOperationError,
+    WechatyPluginError,
+)
 
 from .version import VERSION
+
 __version__ = VERSION
 
 __all__ = [
@@ -80,6 +90,7 @@ __all__ = [
     'Message',
     'MiniProgram',
     'Room',
+    'RoomInvitation',
     'Tag',
     'UrlLink',
     'Wechaty',
@@ -122,4 +133,13 @@ __all__ = [
     'FriendshipSearchQueryFilter',
     'ContactQueryFilter',
     'MessageQueryFilter',
+
+    # Error
+    'WechatyError',
+    'WechatyConfigurationError',
+    'WechatyAccessoryBindingError',
+    'WechatyStatusError',
+    'WechatyPayloadError',
+    'WechatyOperationError',
+    'WechatyPluginError',
 ]

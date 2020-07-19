@@ -77,9 +77,9 @@ class Accessory(Generic[PayloadType]):
         """
         if self._payload is None:
             raise ValueError(
-                'should ready()<sync> the {} before get it, '
+                'should ready()<sync> the {} payload before get it, '
                 'please call the <ready()> method'.format(
-                    PayloadType.__name__
+                    type(self).__name__
                 )
             )
         return self._payload

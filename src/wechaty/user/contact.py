@@ -183,7 +183,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         get contact string representation
         """
-        if self.payload is None:
+        if not self.is_ready():
             return 'Contact <{}>'.format(self.contact_id)
 
         if self.payload.alias.strip() != '':
