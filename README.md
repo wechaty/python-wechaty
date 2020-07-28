@@ -302,7 +302,7 @@ Project created, publish a empty module `wechaty` on PyPI.
 [![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/6)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/6)
 [![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/7)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/7)
 
-## Authors
+## Creators
 
 - [@wj-Mcat](https://github.com/wj-Mcat) - Jingjing WU (吴京京)
 - [@huan](https://github.com/huan) - ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
