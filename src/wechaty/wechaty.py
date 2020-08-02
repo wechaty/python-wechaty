@@ -24,15 +24,20 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
+import logging
+import traceback
 from datetime import datetime
 from dataclasses import dataclass
 from typing import (
-    # TypeVar,
-    # cast,
+    # TYPE_CHECKING,
     Optional,
     Type,
-    # Union,
-    List, Union)
+    List,
+    Union
+)
+
+import requests.exceptions
+from grpclib.exceptions import StreamTerminatedError
 from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty_puppet import (  # type: ignore
@@ -53,14 +58,16 @@ from wechaty_puppet import (  # type: ignore
     ScanStatus,
     EventReadyPayload,
 
-    get_logger
+    WechatyPuppetError,
+
+    get_logger,
 )
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch  # type: ignore
 from wechaty_puppet.watch_dog import WatchdogFood, Watchdog  # type: ignore
 
-from .plugin import (
-    WechatyPlugin, WechatyPluginManager
+from .utils import (
+    qr_terminal
 )
 
 from .user import (
@@ -76,11 +83,18 @@ from .user import (
     ContactSelf
 )
 
-from .utils import (
-    qr_terminal
+from .plugin import (
+    WechatyPlugin,
+    WechatyPluginManager
 )
 
-log = get_logger('Wechaty')
+from .exceptions import (  # type: ignore
+    WechatyStatusError,
+    WechatyConfigurationError,
+    WechatyOperationError,
+)
+
+log: logging.Logger = get_logger('Wechaty')
 
 DEFAULT_TIMEOUT = 300
 
@@ -165,7 +179,7 @@ class Wechaty(AsyncIOEventEmitter):
         :return:
         """
         if not self._puppet:
-            raise Exception('Wechaty puppet not loaded!')
+            raise WechatyStatusError('Wechaty puppet not loaded!')
         return self._puppet
 
     @staticmethod
@@ -176,7 +190,7 @@ class Wechaty(AsyncIOEventEmitter):
         :return:
         """
         if options.puppet is None:
-            raise Exception('puppet not exist')
+            raise WechatyConfigurationError('puppet not exist')
 
         if isinstance(options.puppet, Puppet):
             return options.puppet
@@ -191,18 +205,18 @@ class Wechaty(AsyncIOEventEmitter):
             #
             hostie_module = __import__('wechaty_puppet_hostie')
             if not hasattr(hostie_module, 'HostiePuppet'):
-                raise Exception('HostiePuppet not exist in '
-                                'wechaty-puppet-hostie')
+                raise WechatyConfigurationError('HostiePuppet not exist in '
+                                                'wechaty-puppet-hostie')
 
             hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
             if not issubclass(hostie_puppet_class, Puppet):
-                raise TypeError(f'Type {hostie_puppet_class} '
-                                f'is not correct')
+                raise WechatyConfigurationError(f'Type {hostie_puppet_class} '
+                                                f'is not correct')
 
             return hostie_puppet_class(options.puppet_options)
 
-        raise TypeError('puppet expected type is [Puppet, '
-                        'PuppetModuleName(str)]')
+        raise WechatyConfigurationError('puppet expected type is [Puppet, '
+                                        'PuppetModuleName(str)]')
 
     def __str__(self):
         """str format of the Room object"""
@@ -370,8 +384,6 @@ class Wechaty(AsyncIOEventEmitter):
         start wechaty bot
         :return:
         """
-        await self.init_puppet()
-        await self.init_puppet_event_bridge(self.puppet)
 
         async def start_watchdog():
             try:
@@ -402,12 +414,35 @@ class Wechaty(AsyncIOEventEmitter):
                 # to terminate the watchdog
                 pass
 
-        self._watchdog_task = asyncio.create_task(start_watchdog())
-        log.info('starting ...')
+        # If the network is shut-down, we should catch the connection
+        # error and restart after a minute.
+        try:
 
-        self.started = True
+            await self.init_puppet()
+            await self.init_puppet_event_bridge(self.puppet)
 
-        await self.puppet.start()
+            log.info('starting puppet ...')
+            await self.puppet.start()
+
+            self.started = True
+
+            self._watchdog_task = asyncio.create_task(start_watchdog())
+
+        except (requests.exceptions.ConnectionError, StreamTerminatedError, OSError):
+
+            log.error('The network is not good, the bot will try to restart after 60 seconds.')
+            await asyncio.sleep(60)
+            await self.restart()
+
+        except WechatyPuppetError:
+            traceback.print_exc()
+            loop = asyncio.get_event_loop()
+            loop.stop()
+
+        # except Exception:
+        #     traceback.print_exc()
+        #     loop = asyncio.get_event_loop()
+        #     loop.stop()
 
     async def restart(self):
         """restart the wechaty bot"""
@@ -614,7 +649,7 @@ class Wechaty(AsyncIOEventEmitter):
             elif event_name == 'reset':
                 log.info('receive <reset> event <%s>')
             else:
-                raise ValueError(f'event_name <{event_name}> unsupported!')
+                raise WechatyOperationError(f'event_name <{event_name}> unsupported!')
 
             log.info('initPuppetEventBridge() puppet.on(%s) (listenerCount:%s) '
                      'registering...',
@@ -632,7 +667,7 @@ class Wechaty(AsyncIOEventEmitter):
         self._puppet = self._load_puppet(self._options)
 
         # Using metaclass to create a dynamic subclass to server multi bot instances.
-        meta_info = dict(_puppet=self.puppet, _wechaty=self)
+        meta_info = dict(_puppet=self.puppet, _wechaty=self, abstract=False)
         self.Contact = type('Contact', (Contact,), meta_info)
         self.ContactSelf = type('ContactSelf', (ContactSelf,), meta_info)
         self.Favorite = type('Favorite', (Favorite,), meta_info)
@@ -665,7 +700,15 @@ class Wechaty(AsyncIOEventEmitter):
 
         # deinit puppet
         log.info('stopping - stop puppet')
-        await self.puppet.stop()
+        try:
+            await self.puppet.stop()
+        except OSError as e:
+            # OSError: [Errno 101] Network is unreachable
+            if e.errno == 101:
+                pass
+            else:
+                raise e
+
         log.info('stopping - unset puppet')
         self._puppet = None
         log.info('wechaty has been stopped gracefully!')

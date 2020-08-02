@@ -23,7 +23,9 @@ from __future__ import annotations
 from typing import Union, List
 import json
 from datetime import datetime
-from wechaty_puppet import RoomInvitationPayload, get_logger    # type: ignore
+
+from wechaty.exceptions import WechatyOperationError
+from wechaty_puppet import RoomInvitationPayload, get_logger  # type: ignore
 from .contact import Contact
 from ..types import Acceptable
 from ..accessory import Accessory
@@ -40,10 +42,8 @@ class RoomInvitation(Accessory, Acceptable):
         """
         initialization
         """
-        if self.puppet is None:
-            raise Exception(
-                'RoomInvitation class can not be instanciated directly!'
-            )
+        super(Accessory, self).__init__()
+
         self.invitation_id: str = room_invitation_id
         log.info('__init__ () <%s>', self)
 
@@ -101,12 +101,9 @@ class RoomInvitation(Accessory, Acceptable):
                 inviter
             )
         except Exception as exception:
-            log.error(
-                'accept() with room(%s) & inviter(%s) error',
-                topic,
-                inviter
-            )
-            raise exception
+            message = 'accept() with room(%s) & inviter(%s) error' % (topic, inviter)
+            log.error(message)
+            raise WechatyOperationError(message)
 
     async def inviter(self) -> Contact:
         """

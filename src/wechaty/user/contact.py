@@ -33,6 +33,8 @@ from typing import (
 )
 
 from pyee import AsyncIOEventEmitter  # type: ignore
+
+from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
 from wechaty_puppet import (  # type: ignore
     ContactGender,
     ContactPayload,
@@ -58,7 +60,7 @@ log = get_logger('Contact')
 
 
 # pylint:disable=R0904
-class Contact(Accessory, AsyncIOEventEmitter):
+class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     """
     contact object
     """
@@ -70,9 +72,6 @@ class Contact(Accessory, AsyncIOEventEmitter):
         """
         super().__init__()
         self.contact_id: str = contact_id
-        # name = "Contact<" + contact_id  + ">"
-        # self.name: str = "default_acontact"
-        self.payload: Optional[ContactPayload] = None
 
     def get_id(self):
         """
@@ -82,19 +81,13 @@ class Contact(Accessory, AsyncIOEventEmitter):
         return self.contact_id
 
     @classmethod
-    def load(cls: Type[Contact], contact_id: Optional[str]) -> Contact:
+    def load(cls: Type[Contact], contact_id: str) -> Contact:
         """
         load contact by contact_id
         :param contact_id:
         :return: created contact instance
         """
-        if contact_id is None:
-            raise AttributeError('contact_id can"t be None')
         # create new contact and set to pool
-
-        # if cls is Contact:
-        #     raise PermissionError(
-        #         'can"t be created from abstract Contact class')
 
         if contact_id in cls._pool:
             return cls._pool[contact_id]
@@ -168,13 +161,6 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
         return contacts
 
-    def is_ready(self):
-        """
-        check if payload is ready
-        :return:
-        """
-        return self.payload is not None and self.payload.name is not None
-
     async def ready(self, force_sync: bool = False):
         """
         load contact object from puppet
@@ -183,23 +169,21 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
         if force_sync or not self.is_ready():
             try:
-                payload = await self.puppet.contact_payload(
+                self.payload = await self.puppet.contact_payload(
                     self.contact_id)
-
-                self.payload = payload
                 log.info('load contact <%s>', self)
             except IOError as e:
                 log.info('can"t load contact %s payload, message : %s',
                          self.name,
                          str(e.args))
 
-                raise IOError('can"t load contact payload')
+                raise WechatyPayloadError('can"t load contact payload')
 
     def __str__(self):
         """
         get contact string representation
         """
-        if self.payload is None:
+        if not self.is_ready():
             return 'Contact <{}>'.format(self.contact_id)
 
         if self.payload.alias.strip() != '':
@@ -254,7 +238,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
 
         else:
             log.info('unsupported tags %s', message)
-            raise RuntimeError('unsupported tags')
+            raise WechatyOperationError('unsupported tags')
 
         if msg_id is not None:
             msg = self.wechaty.Message.load(msg_id)
@@ -268,9 +252,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         """
         get contact name
         """
-        if self.payload is not None and self.payload.name is not None:
-            return self.payload.name
-        return ''
+        return '' if not self.is_ready() else self.payload.name
 
     async def alias(self,
                     new_alias: Optional[str] = None
@@ -283,7 +265,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
             await self.ready()
 
         if self.payload is None:
-            raise Exception('can"t load contact payload <%s>' % self)
+            raise WechatyPayloadError('can"t load contact payload <%s>' % self)
 
         # if new_alias is None:
         #     if self.payload.alias is None:
@@ -339,7 +321,7 @@ class Contact(Accessory, AsyncIOEventEmitter):
         get contact type
         """
         if self.payload is None:
-            raise Exception('contact payload not found')
+            raise WechatyPayloadError('contact payload not found')
         return self.payload.type
 
     def star(self) -> Optional[bool]:

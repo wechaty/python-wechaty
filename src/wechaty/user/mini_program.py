@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 log = get_logger('MiniProgram')
 
 
-class MiniProgram(Accessory):
+class MiniProgram(Accessory[MiniProgramPayload]):
     """
     mini_program object which handle the url_link content
     """
@@ -43,6 +43,8 @@ class MiniProgram(Accessory):
         initialization for mini_program
         :param payload:
         """
+        super().__init__()
+
         log.info('MiniProgram created')
         self._payload: MiniProgramPayload = payload
 
@@ -79,15 +81,6 @@ class MiniProgram(Accessory):
         log.info(f'save the mini-program to json data : <{self.payload}>')
         mini_program_data = asdict(self.payload)
         return mini_program_data
-
-    @property
-    def payload(self) -> MiniProgramPayload:
-        """
-        get the payload data
-        """
-        if not self._payload:
-            raise ValueError('mini-program payload should not be none')
-        return self._payload
 
     @property
     def app_id(self) -> str:
