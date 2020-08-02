@@ -24,12 +24,12 @@ from typing import (
     Optional,
 )
 
-from wechaty.exceptions import WechatyConfigurationError
 from wechaty_puppet import (    # type: ignore
     FileBox,
     get_logger
 )
 
+from wechaty.exceptions import WechatyConfigurationError
 
 log = get_logger('Config')
 
