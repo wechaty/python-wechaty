@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wechaty.utils package &#8212; python-wechaty 0.6.6 文档</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="wechaty-utils-package">
+<h1>wechaty.utils package<a class="headerlink" href="#wechaty-utils-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-wechaty.utils.qr_code">
+<span id="wechaty-utils-qr-code-module"></span><h2>wechaty.utils.qr_code module<a class="headerlink" href="#module-wechaty.utils.qr_code" title="永久链接至标题">¶</a></h2>
+<p>qr_code helper utils</p>
+<dl class="py function">
+<dt id="wechaty.utils.qr_code.qr_terminal">
+<code class="sig-prename descclassname">wechaty.utils.qr_code.</code><code class="sig-name descname">qr_terminal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.utils.qr_code.qr_terminal" title="永久链接至目标">¶</a></dt>
+<dd><p>create qr_code
+:param data: qrcode data
+:param version:1-40 or None
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.utils.qrcode_terminal">
+<span id="wechaty-utils-qrcode-terminal-module"></span><h2>wechaty.utils.qrcode_terminal module<a class="headerlink" href="#module-wechaty.utils.qrcode_terminal" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="wechaty.utils.qrcode_terminal.draw">
+<code class="sig-prename descclassname">wechaty.utils.qrcode_terminal.</code><code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.utils.qrcode_terminal.draw" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="wechaty.utils.qrcode_terminal.qr_terminal_str">
+<code class="sig-prename descclassname">wechaty.utils.qrcode_terminal.</code><code class="sig-name descname">qr_terminal_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.utils.qrcode_terminal.qr_terminal_str" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>data</strong> – qrcode data</p>
+</dd>
+</dl>
+<p>:param version:1-40 or None
+:return:</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.utils.type_check">
+<span id="wechaty-utils-type-check-module"></span><h2>wechaty.utils.type_check module<a class="headerlink" href="#module-wechaty.utils.type_check" title="永久链接至标题">¶</a></h2>
+<p>add type check utils</p>
+<dl class="py function">
+<dt id="wechaty.utils.type_check.default_str">
+<code class="sig-prename descclassname">wechaty.utils.type_check.</code><code class="sig-name descname">default_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.utils.type_check.default_str" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="wechaty.utils.type_check.type_check">
+<code class="sig-prename descclassname">wechaty.utils.type_check.</code><code class="sig-name descname">type_check</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">type_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.utils.type_check.type_check" title="永久链接至目标">¶</a></dt>
+<dd><p>circulation dependency problems can be resolved by TYPE_CHECKING,
+but this can not resolve NO type linting problems. eg:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if isinstance(msg, Contact):</dt><dd><p>pass</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>in this problem, program don’t import Contact at running time. So, it will</dt><dd><p>throw a Exception, which will not be threw</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – </p></li>
+<li><p><strong>type_name</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wechaty.utils" title="永久链接至标题">¶</a></h2>
+<p>doc</p>
+<dl class="py function">
+<dt id="wechaty.utils.default_str">
+<code class="sig-prename descclassname">wechaty.utils.</code><code class="sig-name descname">default_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.utils.default_str" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="wechaty.utils.qr_terminal">
+<code class="sig-prename descclassname">wechaty.utils.</code><code class="sig-name descname">qr_terminal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.utils.qr_terminal" title="永久链接至目标">¶</a></dt>
+<dd><p>create qr_code
+:param data: qrcode data
+:param version:1-40 or None
+:return:</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">python-wechaty</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, wj-Mcat.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/wechaty.utils.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,2231 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wechaty.user package &#8212; python-wechaty 0.6.6 文档</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="wechaty-user-package">
+<h1>wechaty.user package<a class="headerlink" href="#wechaty-user-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-wechaty.user.contact">
+<span id="wechaty-user-contact-module"></span><h2>wechaty.user.contact module<a class="headerlink" href="#module-wechaty.user.contact" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.contact.Contact">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.contact.</code><code class="sig-name descname">Contact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact.Contact" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyee._asyncio.AsyncIOEventEmitter</span></code></p>
+<p>contact object</p>
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.alias">
+<em class="property">async </em><code class="sig-name descname">alias</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_alias</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union[None, str]<a class="headerlink" href="#wechaty.user.contact.Contact.alias" title="永久链接至目标">¶</a></dt>
+<dd><p>get/set alias</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.avatar">
+<em class="property">async </em><code class="sig-name descname">avatar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_box</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>wechaty_puppet.file_box.file_box.FileBox<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.contact.Contact.avatar" title="永久链接至目标">¶</a></dt>
+<dd><p>get the avatar of the account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.city">
+<code class="sig-name descname">city</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.city" title="永久链接至目标">¶</a></dt>
+<dd><p>get the city of the account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.find">
+<em class="property">async classmethod </em><code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.contact.ContactQueryFilter<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.find" title="永久链接至目标">¶</a></dt>
+<dd><p>find a single target contact
+:param query:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.find_all">
+<em class="property">async classmethod </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.contact.ContactQueryFilter<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>find all contact friends
+:param query:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.gender">
+<code class="sig-name descname">gender</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.ContactGender<a class="headerlink" href="#wechaty.user.contact.Contact.gender" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact gender info</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact.Contact.get_id" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact_id
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.is_friend">
+<code class="sig-name descname">is_friend</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>bool<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.is_friend" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if contact is friend</p>
+<p>False for not friend of the bot, null for unknown.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.is_offical">
+<code class="sig-name descname">is_offical</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.contact.Contact.is_offical" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if it’s a offical account
+:params:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.is_personal">
+<code class="sig-name descname">is_personal</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.contact.Contact.is_personal" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if it’s a personal account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact.Contact.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check if payload is ready
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.is_self">
+<code class="sig-name descname">is_self</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.contact.Contact.is_self" title="永久链接至目标">¶</a></dt>
+<dd><p>check if it’s the self account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.contact.Contact.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load contact by contact_id
+:param contact_id:
+:return: created contact instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#wechaty.user.contact.Contact.name" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.province">
+<code class="sig-name descname">province</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.province" title="永久链接至目标">¶</a></dt>
+<dd><p>get the province of the account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_sync</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact.Contact.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>load contact object from puppet
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.say">
+<em class="property">async </em><code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>Message<span class="p">, </span>FileBox<span class="p">, </span>Contact<span class="p">, </span>UrlLink<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Message<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.say" title="永久链接至目标">¶</a></dt>
+<dd><p>say something
+:param message: message content</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.star">
+<code class="sig-name descname">star</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>bool<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.star" title="永久链接至目标">¶</a></dt>
+<dd><p>check if it’s a star account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.sync">
+<em class="property">async </em><code class="sig-name descname">sync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact.Contact.sync" title="永久链接至目标">¶</a></dt>
+<dd><p>sync the contact data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.tags">
+<em class="property">async </em><code class="sig-name descname">tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tag<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.tags" title="永久链接至目标">¶</a></dt>
+<dd><p>Get all tags of contact</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.type">
+<code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.ContactType<a class="headerlink" href="#wechaty.user.contact.Contact.type" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact.Contact.weixin">
+<code class="sig-name descname">weixin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.contact.Contact.weixin" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the weixin number from a contact.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.contact_self">
+<span id="wechaty-user-contact-self-module"></span><h2>wechaty.user.contact_self module<a class="headerlink" href="#module-wechaty.user.contact_self" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="wechaty.user.contact_self.ContactSelf">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.contact_self.</code><code class="sig-name descname">ContactSelf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact_self.ContactSelf" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.user.contact.Contact</span></code></a></p>
+<dl class="py method">
+<dt id="wechaty.user.contact_self.ContactSelf.avatar">
+<em class="property">async </em><code class="sig-name descname">avatar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>wechaty_puppet.file_box.file_box.FileBox<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.contact_self.ContactSelf.avatar" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>file</strong> – </p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact_self.ContactSelf.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#wechaty.user.contact_self.ContactSelf.name" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact_self.ContactSelf.qr_code">
+<em class="property">async </em><code class="sig-name descname">qr_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.contact_self.ContactSelf.qr_code" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.contact_self.ContactSelf.signature">
+<em class="property">async </em><code class="sig-name descname">signature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">signature</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.contact_self.ContactSelf.signature" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>signature</strong> – </p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.favorite">
+<span id="wechaty-user-favorite-module"></span><h2>wechaty.user.favorite module<a class="headerlink" href="#module-wechaty.user.favorite" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.favorite.Favorite">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.favorite.</code><code class="sig-name descname">Favorite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">favorite_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.favorite.Favorite" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>favorite object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.favorite.Favorite.find_all">
+<em class="property">async </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.favorite.Favorite.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>get all favorite tags</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.favorite.Favorite.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.favorite.Favorite.get_id" title="永久链接至目标">¶</a></dt>
+<dd><p>get favorite_id
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.favorite.Favorite.tags">
+<em class="property">async </em><code class="sig-name descname">tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tag<span class="p">]</span><a class="headerlink" href="#wechaty.user.favorite.Favorite.tags" title="永久链接至目标">¶</a></dt>
+<dd><p>get favorite tags</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.friendship">
+<span id="wechaty-user-friendship-module"></span><h2>wechaty.user.friendship module<a class="headerlink" href="#module-wechaty.user.friendship" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.friendship.Friendship">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.friendship.</code><code class="sig-name descname">Friendship</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">friendship_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.friendship.Friendship" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a>, <a class="reference internal" href="wechaty.html#wechaty.types.Acceptable" title="wechaty.types.Acceptable"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.types.Acceptable</span></code></a></p>
+<p>Send, receive friend request, and friend confirmation events.</p>
+<ul class="simple">
+<li><ol class="arabic simple">
+<li><p>send request</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="2">
+<li><p>receive request(in friend event)</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="3">
+<li><p>confirmation friendship(friend event)</p></li>
+</ol>
+</li>
+</ul>
+<dl class="py attribute">
+<dt id="wechaty.user.friendship.Friendship.Type">
+<code class="sig-name descname">Type</code><a class="headerlink" href="#wechaty.user.friendship.Friendship.Type" title="永久链接至目标">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chatie_grpc.wechaty.FriendshipType</span></code> 的别名</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.accept">
+<em class="property">async </em><code class="sig-name descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.friendship.Friendship.accept" title="永久链接至目标">¶</a></dt>
+<dd><p>accept friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.add">
+<em class="property">async classmethod </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em>, <em class="sig-param"><span class="n">hello</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.friendship.Friendship.add" title="永久链接至目标">¶</a></dt>
+<dd><p>add friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.contact">
+<code class="sig-name descname">contact</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Contact<a class="headerlink" href="#wechaty.user.friendship.Friendship.contact" title="永久链接至目标">¶</a></dt>
+<dd><p>get the contact of the friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.delete">
+<em class="property">async classmethod </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.friendship.Friendship.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>delete friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.from_json">
+<em class="property">async classmethod </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_data</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>chatie_grpc.wechaty.FriendshipPayloadResponse<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.friendship.Friendship" title="wechaty.user.friendship.Friendship">wechaty.user.friendship.Friendship</a><a class="headerlink" href="#wechaty.user.friendship.Friendship.from_json" title="永久链接至目标">¶</a></dt>
+<dd><p>create friendShip by friendshipJson</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.hello">
+<code class="sig-name descname">hello</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.friendship.Friendship.hello" title="永久链接至目标">¶</a></dt>
+<dd><p>TODO -&gt;
+Get verify message from</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.friendship.Friendship.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check if friendship is ready</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">friendship_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.friendship.Friendship" title="wechaty.user.friendship.Friendship">wechaty.user.friendship.Friendship</a><a class="headerlink" href="#wechaty.user.friendship.Friendship.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load friendship without payload, which loads in a lazy way
+:param friendship_id:
+:return: initialized friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.payload">
+<em class="property">property </em><code class="sig-name descname">payload</code><a class="headerlink" href="#wechaty.user.friendship.Friendship.payload" title="永久链接至目标">¶</a></dt>
+<dd><p>get the FriendShipPayload as a property
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_sync</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.friendship.Friendship.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>load friendship payload</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.search">
+<em class="property">async classmethod </em><code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weixin</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phone</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.friendship.Friendship.search" title="永久链接至目标">¶</a></dt>
+<dd><ul class="simple">
+<li><p>Search a Friend by phone or weixin.</p></li>
+<li></li>
+<li><p>The best practice is to search friend request once per minute.</p></li>
+<li><p>Remeber not to do this too frequently, or your account</p></li>
+<li><p>may be blocked.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.friendship.Friendship.to_json" title="永久链接至目标">¶</a></dt>
+<dd><p>dumps the friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.friendship.Friendship.type">
+<code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.FriendshipType<a class="headerlink" href="#wechaty.user.friendship.Friendship.type" title="永久链接至目标">¶</a></dt>
+<dd><p>Return the Friendship Type</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.image">
+<span id="wechaty-user-image-module"></span><h2>wechaty.user.image module<a class="headerlink" href="#module-wechaty.user.image" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a>
+2020-now &#64; Copyright Wechaty</p>
+<dl class="simple">
+<dt>GitHub:</dt><dd><p>TypeScript: <a class="reference external" href="https://github.com/wechaty/wechaty/blob/master/src/user/image.ts">https://github.com/wechaty/wechaty/blob/master/src/user/image.ts</a>
+Python:     <a class="reference external" href="https://github.com/wechaty/python-wechaty/blob/master/src/wechaty/user/images.py">https://github.com/wechaty/python-wechaty/blob/master/src/wechaty/user/images.py</a></p>
+</dd>
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>Licensed under the Apache License, Version 2.0 (the “License”);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+</div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an “AS IS” BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.image.Image">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.image.</code><code class="sig-name descname">Image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.image.Image" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>User Image class</p>
+<dl class="py method">
+<dt id="wechaty.user.image.Image.artwork">
+<em class="property">async </em><code class="sig-name descname">artwork</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.image.Image.artwork" title="永久链接至目标">¶</a></dt>
+<dd><p>docstring
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.image.Image.create">
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.image.Image" title="wechaty.user.image.Image">wechaty.user.image.Image</a><a class="headerlink" href="#wechaty.user.image.Image.create" title="永久链接至目标">¶</a></dt>
+<dd><p>create image instance by image_id
+:param cls:
+:param image_id:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.image.Image.hd">
+<em class="property">async </em><code class="sig-name descname">hd</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.image.Image.hd" title="永久链接至目标">¶</a></dt>
+<dd><p>docstring
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.image.Image.thumbnail">
+<em class="property">async </em><code class="sig-name descname">thumbnail</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.image.Image.thumbnail" title="永久链接至目标">¶</a></dt>
+<dd><p>docstring
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.message">
+<span id="wechaty-user-message-module"></span><h2>wechaty.user.message module<a class="headerlink" href="#module-wechaty.user.message" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.message.Message">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.message.</code><code class="sig-name descname">Message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.message.Message" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>All wechat messages will be encapsulated as a Message.</p>
+<dl class="py attribute">
+<dt id="wechaty.user.message.Message.Type">
+<code class="sig-name descname">Type</code><a class="headerlink" href="#wechaty.user.message.Message.Type" title="永久链接至目标">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chatie_grpc.wechaty.MessageType</span></code> 的别名</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.age">
+<code class="sig-name descname">age</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#wechaty.user.message.Message.age" title="永久链接至目标">¶</a></dt>
+<dd><p>Returns the message age in seconds.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.date">
+<code class="sig-name descname">date</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="headerlink" href="#wechaty.user.message.Message.date" title="永久链接至目标">¶</a></dt>
+<dd><p>Message sent date
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.find">
+<em class="property">async classmethod </em><code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">talker_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>chatie_grpc.wechaty.MessageType<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.message.Message.find" title="永久链接至目标">¶</a></dt>
+<dd><p>Find message in cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.find_all">
+<em class="property">async classmethod </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">talker_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>chatie_grpc.wechaty.MessageType<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.message.Message.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>Find messages in cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.forward">
+<em class="property">async </em><code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><span class="p">, </span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.message.Message.forward" title="永久链接至目标">¶</a></dt>
+<dd><p>doc
+:param to:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.message.Message.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check message is ready</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.is_self">
+<code class="sig-name descname">is_self</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.message.Message.is_self" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if a message is sent by self
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><a class="headerlink" href="#wechaty.user.message.Message.load" title="永久链接至目标">¶</a></dt>
+<dd><p>Create a Mobile Terminated Message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.mention_list">
+<em class="property">async </em><code class="sig-name descname">mention_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.message.Message.mention_list" title="永久链接至目标">¶</a></dt>
+<dd><p>Get message mentioned contactList.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.mention_self">
+<em class="property">async </em><code class="sig-name descname">mention_self</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.message.Message.mention_self" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if a message is mention self.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.mention_text">
+<em class="property">async </em><code class="sig-name descname">mention_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.message.Message.mention_text" title="永久链接至目标">¶</a></dt>
+<dd><p>get mention text
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.message_type">
+<code class="sig-name descname">message_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.MessageType<a class="headerlink" href="#wechaty.user.message.Message.message_type" title="永久链接至目标">¶</a></dt>
+<dd><p>get message type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.payload">
+<em class="property">property </em><code class="sig-name descname">payload</code><a class="headerlink" href="#wechaty.user.message.Message.payload" title="永久链接至目标">¶</a></dt>
+<dd><p>get message payload</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.message.Message.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>sync load message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.recall">
+<em class="property">async </em><code class="sig-name descname">recall</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.message.Message.recall" title="永久链接至目标">¶</a></dt>
+<dd><p>Recall a message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.room">
+<code class="sig-name descname">room</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.message.Message.room" title="永久链接至目标">¶</a></dt>
+<dd><p>get message room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.say">
+<em class="property">async </em><code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">, </span>wechaty_puppet.file_box.file_box.FileBox<span class="p">, </span><a class="reference internal" href="#wechaty.user.url_link.UrlLink" title="wechaty.user.url_link.UrlLink">wechaty.user.url_link.UrlLink</a><span class="p">, </span><a class="reference internal" href="#wechaty.user.mini_program.MiniProgram" title="wechaty.user.mini_program.MiniProgram">wechaty.user.mini_program.MiniProgram</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mention_ids</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><a class="headerlink" href="#wechaty.user.message.Message.say" title="永久链接至目标">¶</a></dt>
+<dd><p>send message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.talker">
+<code class="sig-name descname">talker</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.message.Message.talker" title="永久链接至目标">¶</a></dt>
+<dd><p>get message talker</p>
+<p># TODO -&gt;   Suggestion: talker/to/room/text func can
+#           be converted to property func</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.text">
+<code class="sig-name descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.message.Message.text" title="永久链接至目标">¶</a></dt>
+<dd><p>get message text</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to">
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.message.Message.to" title="永久链接至目标">¶</a></dt>
+<dd><p>get message reply to</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to_contact">
+<em class="property">async </em><code class="sig-name descname">to_contact</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.message.Message.to_contact" title="永久链接至目标">¶</a></dt>
+<dd><p>Get Share Card of the Message
+Extract the Contact Card from the Message, and encapsulate it into</p>
+<blockquote>
+<div><p>Contact class</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to_file_box">
+<em class="property">async </em><code class="sig-name descname">to_file_box</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.message.Message.to_file_box" title="永久链接至目标">¶</a></dt>
+<dd><p>Extract the Media File from the Message, and put it into the FileBox.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to_image">
+<code class="sig-name descname">to_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.image.Image" title="wechaty.user.image.Image">wechaty.user.image.Image</a><a class="headerlink" href="#wechaty.user.message.Message.to_image" title="永久链接至目标">¶</a></dt>
+<dd><p>Extract the Image File from the Message, so that we can use
+different image sizes.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to_mini_program">
+<em class="property">async </em><code class="sig-name descname">to_mini_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.mini_program.MiniProgram" title="wechaty.user.mini_program.MiniProgram">wechaty.user.mini_program.MiniProgram</a><a class="headerlink" href="#wechaty.user.message.Message.to_mini_program" title="永久链接至目标">¶</a></dt>
+<dd><p>get message mini_program
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to_recalled">
+<em class="property">async </em><code class="sig-name descname">to_recalled</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><a class="headerlink" href="#wechaty.user.message.Message.to_recalled" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the recalled message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.to_url_link">
+<em class="property">async </em><code class="sig-name descname">to_url_link</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.url_link.UrlLink" title="wechaty.user.url_link.UrlLink">wechaty.user.url_link.UrlLink</a><a class="headerlink" href="#wechaty.user.message.Message.to_url_link" title="永久链接至目标">¶</a></dt>
+<dd><p>get url_link from message
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.message.Message.type">
+<code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.MessageType<a class="headerlink" href="#wechaty.user.message.Message.type" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the type from the message.
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.mini_program">
+<span id="wechaty-user-mini-program-module"></span><h2>wechaty.user.mini_program module<a class="headerlink" href="#module-wechaty.user.mini_program" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.mini_program.MiniProgram">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.mini_program.</code><code class="sig-name descname">MiniProgram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span><span class="p">:</span> <span class="n">wechaty_puppet.schemas.mini_program.MiniProgramPayload</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>mini_program object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.app_id">
+<em class="property">property </em><code class="sig-name descname">app_id</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.app_id" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program app_id
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.create_from_json">
+<em class="property">classmethod </em><code class="sig-name descname">create_from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload_data</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.mini_program.MiniProgram" title="wechaty.user.mini_program.MiniProgram">wechaty.user.mini_program.MiniProgram</a><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.create_from_json" title="永久链接至目标">¶</a></dt>
+<dd><p>create the mini_program from json data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.create_from_message">
+<em class="property">async classmethod </em><code class="sig-name descname">create_from_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n">Message</span></em><span class="sig-paren">)</span> &#x2192; MiniProgram<a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.create_from_message" title="永久链接至目标">¶</a></dt>
+<dd><p>static create MiniProgram method
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.description">
+<em class="property">property </em><code class="sig-name descname">description</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.description" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program description
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.icon_url">
+<em class="property">property </em><code class="sig-name descname">icon_url</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.icon_url" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program icon url</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.page_path">
+<em class="property">property </em><code class="sig-name descname">page_path</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.page_path" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program page_path
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.payload">
+<em class="property">property </em><code class="sig-name descname">payload</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.payload" title="永久链接至目标">¶</a></dt>
+<dd><p>get the payload data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.thumb_key">
+<em class="property">property </em><code class="sig-name descname">thumb_key</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.thumb_key" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program thumb_key
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.thumb_url">
+<em class="property">property </em><code class="sig-name descname">thumb_url</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.thumb_url" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program thumb_url
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.title">
+<em class="property">property </em><code class="sig-name descname">title</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.title" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program title
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.to_json" title="永久链接至目标">¶</a></dt>
+<dd><p>save the mini-program to dict data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.mini_program.MiniProgram.user_name">
+<em class="property">property </em><code class="sig-name descname">user_name</code><a class="headerlink" href="#wechaty.user.mini_program.MiniProgram.user_name" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program user_name
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.room">
+<span id="wechaty-user-room-module"></span><h2>wechaty.user.room module<a class="headerlink" href="#module-wechaty.user.room" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.room.Room">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.room.</code><code class="sig-name descname">Room</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>All wechat rooms(groups) will be encapsulated as a Room.</p>
+<dl class="py method">
+<dt id="wechaty.user.room.Room.add">
+<em class="property">async </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room.add" title="永久链接至目标">¶</a></dt>
+<dd><p>Add contact in a room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.alias">
+<em class="property">async </em><code class="sig-name descname">alias</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">member</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.alias" title="永久链接至目标">¶</a></dt>
+<dd><p>Return contact’s roomAlias in the room</p>
+<p>TODO -&gt; ‘Wechaty Puppet Unsupported API Error. Learn More At
+<a class="reference external" href="https://github.com/wechaty/wechaty-puppet/wiki/Compatibility">https://github.com/wechaty/wechaty-puppet/wiki/Compatibility</a>’, None)&gt;</p>
+<p>the result of the function will always return an empty string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.announce">
+<em class="property">async </em><code class="sig-name descname">announce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">announce_text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.announce" title="永久链接至目标">¶</a></dt>
+<dd><p>SET/GET announce from the room</p>
+<p>It only works when bot is the owner of the room.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.avatar">
+<em class="property">async </em><code class="sig-name descname">avatar</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.room.Room.avatar" title="永久链接至目标">¶</a></dt>
+<dd><p>get the avatar of the room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.create">
+<em class="property">async classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contacts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Contact<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">topic</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Room<a class="headerlink" href="#wechaty.user.room.Room.create" title="永久链接至目标">¶</a></dt>
+<dd><p>create room instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.delete">
+<em class="property">async </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>delete room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.emit">
+<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room.emit" title="永久链接至目标">¶</a></dt>
+<dd><p>emit event for a specific</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.find">
+<em class="property">async classmethod </em><code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.room.RoomQueryFilter<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union[None, wechaty.user.room.Room]<a class="headerlink" href="#wechaty.user.room.Room.find" title="永久链接至目标">¶</a></dt>
+<dd><p>Try to find a room by filter: {topic: string | RegExp}. If get many,
+return the first one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.find_all">
+<em class="property">async classmethod </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.room.RoomQueryFilter<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>find room by query filter</p>
+<p>TODO -&gt; we should remove search_query from puppet-*</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.has">
+<em class="property">async </em><code class="sig-name descname">has</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.room.Room.has" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if the room has member <cite>contact</cite>, the return is a Promise and
+must be <cite>await</cite>-ed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.room.Room.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check if room’s payload is ready</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><a class="headerlink" href="#wechaty.user.room.Room.load" title="永久链接至目标">¶</a></dt>
+<dd><p>dynamic load room instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.member">
+<em class="property">async </em><code class="sig-name descname">member</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>RoomMemberQueryFilter<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.member" title="永久链接至目标">¶</a></dt>
+<dd><p>Find all contacts in a room, if get many, return the first one.</p>
+<p># TODO -&gt; need to refactoring this function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.member_list">
+<em class="property">async </em><code class="sig-name descname">member_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>RoomMemberQueryFilter<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.member_list" title="永久链接至目标">¶</a></dt>
+<dd><p>Get all room member from the room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.on">
+<code class="sig-name descname">on</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room.on" title="永久链接至目标">¶</a></dt>
+<dd><p>listen event for contact
+event_name:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.owner">
+<em class="property">async </em><code class="sig-name descname">owner</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.owner" title="永久链接至目标">¶</a></dt>
+<dd><p>get room owner</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.qr_code">
+<em class="property">async </em><code class="sig-name descname">qr_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.room.Room.qr_code" title="永久链接至目标">¶</a></dt>
+<dd><p>TODO -&gt; need to rewrite this function later
+Get QR Code Value of the Room from the room, which can be used as
+scan and join the room.</p>
+<p>‘Wechaty Puppet Unsupported API Error. Learn More At
+<a class="reference external" href="https://github.com/wechaty/wechaty-puppet/wiki/Compatibility">https://github.com/wechaty/wechaty-puppet/wiki/Compatibility</a>’, None)&gt;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.quit">
+<em class="property">async </em><code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room.quit" title="永久链接至目标">¶</a></dt>
+<dd><p>Add contact in a room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_sync</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room.Room.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>Please not to use <cite>ready()</cite> at the user land.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.say">
+<em class="property">async </em><code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">some_thing</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>Contact<span class="p">, </span>FileBox<span class="p">, </span>MiniProgram<span class="p">, </span>UrlLink<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mention_ids</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union[None, Message]<a class="headerlink" href="#wechaty.user.room.Room.say" title="永久链接至目标">¶</a></dt>
+<dd><p>Room Say(%s, %s)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room.Room.topic">
+<em class="property">async </em><code class="sig-name descname">topic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_topic</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.room.Room.topic" title="永久链接至目标">¶</a></dt>
+<dd><p>get/set room topic</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.room_invitation">
+<span id="wechaty-user-room-invitation-module"></span><h2>wechaty.user.room_invitation module<a class="headerlink" href="#module-wechaty.user.room_invitation" title="永久链接至标题">¶</a></h2>
+<p>Python Wechaty - <a class="reference external" href="https://github.com/wechaty/python-wechaty">https://github.com/wechaty/python-wechaty</a></p>
+<dl class="simple">
+<dt>Authors:    Huan LI (李卓桓) &lt;<a class="reference external" href="https://github.com/huan">https://github.com/huan</a>&gt;</dt><dd><p>Jingjing WU (吴京京) &lt;<a class="reference external" href="https://github.com/wj-Mcat">https://github.com/wj-Mcat</a>&gt;</p>
+</dd>
+</dl>
+<p>2020-now &#64; Copyright Wechaty</p>
+<p>Licensed under the Apache License, Version 2.0 (the ‘License’);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<p><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an ‘AS IS’ BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="py class">
+<dt id="wechaty.user.room_invitation.RoomInvitation">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.room_invitation.</code><code class="sig-name descname">RoomInvitation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_invitation_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a>, <a class="reference internal" href="wechaty.html#wechaty.types.Acceptable" title="wechaty.types.Acceptable"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.types.Acceptable</span></code></a></p>
+<p>Room Invitation</p>
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.accept">
+<em class="property">async </em><code class="sig-name descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.accept" title="永久链接至目标">¶</a></dt>
+<dd><p>accept the room invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.age">
+<em class="property">async </em><code class="sig-name descname">age</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.age" title="永久链接至目标">¶</a></dt>
+<dd><p>get the age of the invitation timespan</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.date">
+<em class="property">async </em><code class="sig-name descname">date</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.date" title="永久链接至目标">¶</a></dt>
+<dd><p>get the date of the room invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.from_json">
+<em class="property">async classmethod </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>chatie_grpc.wechaty.RoomInvitationPayloadResponse<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.room_invitation.RoomInvitation" title="wechaty.user.room_invitation.RoomInvitation">wechaty.user.room_invitation.RoomInvitation</a><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.from_json" title="永久链接至目标">¶</a></dt>
+<dd><p>Load the room invitation info from disk</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.inviter">
+<em class="property">async </em><code class="sig-name descname">inviter</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.inviter" title="永久链接至目标">¶</a></dt>
+<dd><p>get the inviter of the invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_invitation_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.room_invitation.RoomInvitation" title="wechaty.user.room_invitation.RoomInvitation">wechaty.user.room_invitation.RoomInvitation</a><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load RoomInvitation object
+:param room_invitation_id:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.member_count">
+<em class="property">async </em><code class="sig-name descname">member_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.member_count" title="永久链接至目标">¶</a></dt>
+<dd><p>get the number of the invitation members</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.member_list">
+<em class="property">async </em><code class="sig-name descname">member_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.member_list" title="永久链接至目标">¶</a></dt>
+<dd><p>get the members of the room invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.to_json">
+<em class="property">async </em><code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.to_json" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the room invitation info when listened on room-invite event</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.to_str">
+<em class="property">async </em><code class="sig-name descname">to_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.to_str" title="永久链接至目标">¶</a></dt>
+<dd><p>get room invitation string format description with async way</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.room_invitation.RoomInvitation.topic">
+<em class="property">async </em><code class="sig-name descname">topic</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.room_invitation.RoomInvitation.topic" title="永久链接至目标">¶</a></dt>
+<dd><p>get the topic of the intivation</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.tag">
+<span id="wechaty-user-tag-module"></span><h2>wechaty.user.tag module<a class="headerlink" href="#module-wechaty.user.tag" title="永久链接至标题">¶</a></h2>
+<p>Tag for Contact Message</p>
+<dl class="py class">
+<dt id="wechaty.user.tag.Tag">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.tag.</code><code class="sig-name descname">Tag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.tag.Tag" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>tag object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.tag.Tag.add">
+<em class="property">async </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Contact<span class="p">, </span>Favorite<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.tag.Tag.add" title="永久链接至目标">¶</a></dt>
+<dd><p>add tag to contact or favorite
+:param to:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.tag.Tag.delete">
+<em class="property">async </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Contact<span class="p">, </span>Favorite<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.tag.Tag.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>remove tag from contact or favorite
+:param target:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.tag.Tag.get">
+<em class="property">classmethod </em><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.tag.Tag" title="wechaty.user.tag.Tag">wechaty.user.tag.Tag</a><a class="headerlink" href="#wechaty.user.tag.Tag.get" title="永久链接至目标">¶</a></dt>
+<dd><p>get tag objecr</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.tag.Tag.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.tag.Tag" title="wechaty.user.tag.Tag">wechaty.user.tag.Tag</a><a class="headerlink" href="#wechaty.user.tag.Tag.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load tag instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.tag.Tag.remove">
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Contact<span class="p">, </span>Favorite<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.tag.Tag.remove" title="永久链接至目标">¶</a></dt>
+<dd><p>Remove this tag from Contact/Favorite</p>
+<p>tips : This function is depending on the Puppet Implementation,
+see [puppet-compatible-table](<a class="reference external" href="https://github.com/Chatie/">https://github.com/Chatie/</a>
+wechaty/wiki/Puppet#3-puppet-compatible-table)
+:param source:
+:return:</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="wechaty.user.tag.Tag.tag_id">
+<code class="sig-name descname">tag_id</code><em class="property">: str</em><a class="headerlink" href="#wechaty.user.tag.Tag.tag_id" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user.url_link">
+<span id="wechaty-user-url-link-module"></span><h2>wechaty.user.url_link module<a class="headerlink" href="#module-wechaty.user.url_link" title="永久链接至标题">¶</a></h2>
+<p>UrlLink for Contact Message</p>
+<dl class="py class">
+<dt id="wechaty.user.url_link.UrlLink">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.url_link.</code><code class="sig-name descname">UrlLink</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span><span class="p">:</span> <span class="n">wechaty_puppet.schemas.url_link.UrlLinkPayload</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.url_link.UrlLink" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>url_link object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.url_link.UrlLink.create">
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.url_link.UrlLink" title="wechaty.user.url_link.UrlLink">wechaty.user.url_link.UrlLink</a><a class="headerlink" href="#wechaty.user.url_link.UrlLink.create" title="永久链接至目标">¶</a></dt>
+<dd><p>create urllink from url string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.url_link.UrlLink.description">
+<em class="property">property </em><code class="sig-name descname">description</code><a class="headerlink" href="#wechaty.user.url_link.UrlLink.description" title="永久链接至目标">¶</a></dt>
+<dd><p>get description
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.url_link.UrlLink.thumbnailUrl">
+<em class="property">property </em><code class="sig-name descname">thumbnailUrl</code><a class="headerlink" href="#wechaty.user.url_link.UrlLink.thumbnailUrl" title="永久链接至目标">¶</a></dt>
+<dd><p>get thumbnail url
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.url_link.UrlLink.title">
+<em class="property">property </em><code class="sig-name descname">title</code><a class="headerlink" href="#wechaty.user.url_link.UrlLink.title" title="永久链接至目标">¶</a></dt>
+<dd><p>get UrlLink title
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.url_link.UrlLink.url">
+<em class="property">property </em><code class="sig-name descname">url</code><a class="headerlink" href="#wechaty.user.url_link.UrlLink.url" title="永久链接至目标">¶</a></dt>
+<dd><p>get url
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-wechaty.user">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-wechaty.user" title="永久链接至标题">¶</a></h2>
+<p>doc</p>
+<dl class="py class">
+<dt id="wechaty.user.Contact">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Contact</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Contact" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">pyee._asyncio.AsyncIOEventEmitter</span></code></p>
+<p>contact object</p>
+<dl class="py method">
+<dt id="wechaty.user.Contact.alias">
+<em class="property">async </em><code class="sig-name descname">alias</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_alias</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union[None, str]<a class="headerlink" href="#wechaty.user.Contact.alias" title="永久链接至目标">¶</a></dt>
+<dd><p>get/set alias</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.avatar">
+<em class="property">async </em><code class="sig-name descname">avatar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_box</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>wechaty_puppet.file_box.file_box.FileBox<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.Contact.avatar" title="永久链接至目标">¶</a></dt>
+<dd><p>get the avatar of the account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.city">
+<code class="sig-name descname">city</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.city" title="永久链接至目标">¶</a></dt>
+<dd><p>get the city of the account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.find">
+<em class="property">async classmethod </em><code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.contact.ContactQueryFilter<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.find" title="永久链接至目标">¶</a></dt>
+<dd><p>find a single target contact
+:param query:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.find_all">
+<em class="property">async classmethod </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.contact.ContactQueryFilter<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>find all contact friends
+:param query:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.gender">
+<code class="sig-name descname">gender</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.ContactGender<a class="headerlink" href="#wechaty.user.Contact.gender" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact gender info</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Contact.get_id" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact_id
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.is_friend">
+<code class="sig-name descname">is_friend</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>bool<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.is_friend" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if contact is friend</p>
+<p>False for not friend of the bot, null for unknown.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.is_offical">
+<code class="sig-name descname">is_offical</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Contact.is_offical" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if it’s a offical account
+:params:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.is_personal">
+<code class="sig-name descname">is_personal</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Contact.is_personal" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if it’s a personal account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Contact.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check if payload is ready
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.is_self">
+<code class="sig-name descname">is_self</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Contact.is_self" title="永久链接至目标">¶</a></dt>
+<dd><p>check if it’s the self account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.Contact.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load contact by contact_id
+:param contact_id:
+:return: created contact instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#wechaty.user.Contact.name" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.province">
+<code class="sig-name descname">province</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.province" title="永久链接至目标">¶</a></dt>
+<dd><p>get the province of the account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_sync</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Contact.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>load contact object from puppet
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.say">
+<em class="property">async </em><code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>Message<span class="p">, </span>FileBox<span class="p">, </span>Contact<span class="p">, </span>UrlLink<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Message<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.say" title="永久链接至目标">¶</a></dt>
+<dd><p>say something
+:param message: message content</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.star">
+<code class="sig-name descname">star</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>bool<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.star" title="永久链接至目标">¶</a></dt>
+<dd><p>check if it’s a star account</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.sync">
+<em class="property">async </em><code class="sig-name descname">sync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Contact.sync" title="永久链接至目标">¶</a></dt>
+<dd><p>sync the contact data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.tags">
+<em class="property">async </em><code class="sig-name descname">tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tag<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.tags" title="永久链接至目标">¶</a></dt>
+<dd><p>Get all tags of contact</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.type">
+<code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.ContactType<a class="headerlink" href="#wechaty.user.Contact.type" title="永久链接至目标">¶</a></dt>
+<dd><p>get contact type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Contact.weixin">
+<code class="sig-name descname">weixin</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.Contact.weixin" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the weixin number from a contact.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.ContactSelf">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">ContactSelf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.ContactSelf" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.user.contact.Contact</span></code></a></p>
+<dl class="py method">
+<dt id="wechaty.user.ContactSelf.avatar">
+<em class="property">async </em><code class="sig-name descname">avatar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>wechaty_puppet.file_box.file_box.FileBox<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.ContactSelf.avatar" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>file</strong> – </p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.ContactSelf.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#wechaty.user.ContactSelf.name" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.ContactSelf.qr_code">
+<em class="property">async </em><code class="sig-name descname">qr_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.ContactSelf.qr_code" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.ContactSelf.signature">
+<em class="property">async </em><code class="sig-name descname">signature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">signature</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.ContactSelf.signature" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>signature</strong> – </p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.Favorite">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Favorite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">favorite_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Favorite" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>favorite object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.Favorite.find_all">
+<em class="property">async </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Favorite.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>get all favorite tags</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Favorite.get_id">
+<code class="sig-name descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Favorite.get_id" title="永久链接至目标">¶</a></dt>
+<dd><p>get favorite_id
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Favorite.tags">
+<em class="property">async </em><code class="sig-name descname">tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Tag<span class="p">]</span><a class="headerlink" href="#wechaty.user.Favorite.tags" title="永久链接至目标">¶</a></dt>
+<dd><p>get favorite tags</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.Friendship">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Friendship</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">friendship_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Friendship" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a>, <a class="reference internal" href="wechaty.html#wechaty.types.Acceptable" title="wechaty.types.Acceptable"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.types.Acceptable</span></code></a></p>
+<p>Send, receive friend request, and friend confirmation events.</p>
+<ul class="simple">
+<li><ol class="arabic simple">
+<li><p>send request</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="2">
+<li><p>receive request(in friend event)</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="3">
+<li><p>confirmation friendship(friend event)</p></li>
+</ol>
+</li>
+</ul>
+<dl class="py attribute">
+<dt id="wechaty.user.Friendship.Type">
+<code class="sig-name descname">Type</code><a class="headerlink" href="#wechaty.user.Friendship.Type" title="永久链接至目标">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chatie_grpc.wechaty.FriendshipType</span></code> 的别名</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.accept">
+<em class="property">async </em><code class="sig-name descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Friendship.accept" title="永久链接至目标">¶</a></dt>
+<dd><p>accept friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.add">
+<em class="property">async classmethod </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em>, <em class="sig-param"><span class="n">hello</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Friendship.add" title="永久链接至目标">¶</a></dt>
+<dd><p>add friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.contact">
+<code class="sig-name descname">contact</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Contact<a class="headerlink" href="#wechaty.user.Friendship.contact" title="永久链接至目标">¶</a></dt>
+<dd><p>get the contact of the friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.delete">
+<em class="property">async classmethod </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Friendship.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>delete friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.from_json">
+<em class="property">async classmethod </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_data</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>chatie_grpc.wechaty.FriendshipPayloadResponse<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.friendship.Friendship" title="wechaty.user.friendship.Friendship">wechaty.user.friendship.Friendship</a><a class="headerlink" href="#wechaty.user.Friendship.from_json" title="永久链接至目标">¶</a></dt>
+<dd><p>create friendShip by friendshipJson</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.hello">
+<code class="sig-name descname">hello</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.Friendship.hello" title="永久链接至目标">¶</a></dt>
+<dd><p>TODO -&gt;
+Get verify message from</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Friendship.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check if friendship is ready</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">friendship_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.friendship.Friendship" title="wechaty.user.friendship.Friendship">wechaty.user.friendship.Friendship</a><a class="headerlink" href="#wechaty.user.Friendship.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load friendship without payload, which loads in a lazy way
+:param friendship_id:
+:return: initialized friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.payload">
+<em class="property">property </em><code class="sig-name descname">payload</code><a class="headerlink" href="#wechaty.user.Friendship.payload" title="永久链接至目标">¶</a></dt>
+<dd><p>get the FriendShipPayload as a property
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_sync</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Friendship.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>load friendship payload</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.search">
+<em class="property">async classmethod </em><code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weixin</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">phone</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.Friendship.search" title="永久链接至目标">¶</a></dt>
+<dd><ul class="simple">
+<li><p>Search a Friend by phone or weixin.</p></li>
+<li></li>
+<li><p>The best practice is to search friend request once per minute.</p></li>
+<li><p>Remeber not to do this too frequently, or your account</p></li>
+<li><p>may be blocked.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.Friendship.to_json" title="永久链接至目标">¶</a></dt>
+<dd><p>dumps the friendship</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Friendship.type">
+<code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.FriendshipType<a class="headerlink" href="#wechaty.user.Friendship.type" title="永久链接至目标">¶</a></dt>
+<dd><p>Return the Friendship Type</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.Image">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Image" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>User Image class</p>
+<dl class="py method">
+<dt id="wechaty.user.Image.artwork">
+<em class="property">async </em><code class="sig-name descname">artwork</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.Image.artwork" title="永久链接至目标">¶</a></dt>
+<dd><p>docstring
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Image.create">
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.image.Image" title="wechaty.user.image.Image">wechaty.user.image.Image</a><a class="headerlink" href="#wechaty.user.Image.create" title="永久链接至目标">¶</a></dt>
+<dd><p>create image instance by image_id
+:param cls:
+:param image_id:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Image.hd">
+<em class="property">async </em><code class="sig-name descname">hd</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.Image.hd" title="永久链接至目标">¶</a></dt>
+<dd><p>docstring
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Image.thumbnail">
+<em class="property">async </em><code class="sig-name descname">thumbnail</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.Image.thumbnail" title="永久链接至目标">¶</a></dt>
+<dd><p>docstring
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.Message">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Message" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>All wechat messages will be encapsulated as a Message.</p>
+<dl class="py attribute">
+<dt id="wechaty.user.Message.Type">
+<code class="sig-name descname">Type</code><a class="headerlink" href="#wechaty.user.Message.Type" title="永久链接至目标">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chatie_grpc.wechaty.MessageType</span></code> 的别名</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.age">
+<code class="sig-name descname">age</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#wechaty.user.Message.age" title="永久链接至目标">¶</a></dt>
+<dd><p>Returns the message age in seconds.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.date">
+<code class="sig-name descname">date</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="headerlink" href="#wechaty.user.Message.date" title="永久链接至目标">¶</a></dt>
+<dd><p>Message sent date
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.find">
+<em class="property">async classmethod </em><code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">talker_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>chatie_grpc.wechaty.MessageType<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Message.find" title="永久链接至目标">¶</a></dt>
+<dd><p>Find message in cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.find_all">
+<em class="property">async classmethod </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">talker_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_id</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">message_type</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>chatie_grpc.wechaty.MessageType<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Message.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>Find messages in cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.forward">
+<em class="property">async </em><code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><span class="p">, </span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Message.forward" title="永久链接至目标">¶</a></dt>
+<dd><p>doc
+:param to:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Message.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check message is ready</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.is_self">
+<code class="sig-name descname">is_self</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Message.is_self" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if a message is sent by self
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><a class="headerlink" href="#wechaty.user.Message.load" title="永久链接至目标">¶</a></dt>
+<dd><p>Create a Mobile Terminated Message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.mention_list">
+<em class="property">async </em><code class="sig-name descname">mention_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Message.mention_list" title="永久链接至目标">¶</a></dt>
+<dd><p>Get message mentioned contactList.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.mention_self">
+<em class="property">async </em><code class="sig-name descname">mention_self</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Message.mention_self" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if a message is mention self.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.mention_text">
+<em class="property">async </em><code class="sig-name descname">mention_text</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.Message.mention_text" title="永久链接至目标">¶</a></dt>
+<dd><p>get mention text
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.message_type">
+<code class="sig-name descname">message_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.MessageType<a class="headerlink" href="#wechaty.user.Message.message_type" title="永久链接至目标">¶</a></dt>
+<dd><p>get message type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.payload">
+<em class="property">property </em><code class="sig-name descname">payload</code><a class="headerlink" href="#wechaty.user.Message.payload" title="永久链接至目标">¶</a></dt>
+<dd><p>get message payload</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Message.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>sync load message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.recall">
+<em class="property">async </em><code class="sig-name descname">recall</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Message.recall" title="永久链接至目标">¶</a></dt>
+<dd><p>Recall a message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.room">
+<code class="sig-name descname">room</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Message.room" title="永久链接至目标">¶</a></dt>
+<dd><p>get message room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.say">
+<em class="property">async </em><code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">, </span>wechaty_puppet.file_box.file_box.FileBox<span class="p">, </span><a class="reference internal" href="#wechaty.user.url_link.UrlLink" title="wechaty.user.url_link.UrlLink">wechaty.user.url_link.UrlLink</a><span class="p">, </span><a class="reference internal" href="#wechaty.user.mini_program.MiniProgram" title="wechaty.user.mini_program.MiniProgram">wechaty.user.mini_program.MiniProgram</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mention_ids</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><a class="headerlink" href="#wechaty.user.Message.say" title="永久链接至目标">¶</a></dt>
+<dd><p>send message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.talker">
+<code class="sig-name descname">talker</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.Message.talker" title="永久链接至目标">¶</a></dt>
+<dd><p>get message talker</p>
+<p># TODO -&gt;   Suggestion: talker/to/room/text func can
+#           be converted to property func</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.text">
+<code class="sig-name descname">text</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.Message.text" title="永久链接至目标">¶</a></dt>
+<dd><p>get message text</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to">
+<code class="sig-name descname">to</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Message.to" title="永久链接至目标">¶</a></dt>
+<dd><p>get message reply to</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to_contact">
+<em class="property">async </em><code class="sig-name descname">to_contact</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.Message.to_contact" title="永久链接至目标">¶</a></dt>
+<dd><p>Get Share Card of the Message
+Extract the Contact Card from the Message, and encapsulate it into</p>
+<blockquote>
+<div><p>Contact class</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to_file_box">
+<em class="property">async </em><code class="sig-name descname">to_file_box</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.Message.to_file_box" title="永久链接至目标">¶</a></dt>
+<dd><p>Extract the Media File from the Message, and put it into the FileBox.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to_image">
+<code class="sig-name descname">to_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.image.Image" title="wechaty.user.image.Image">wechaty.user.image.Image</a><a class="headerlink" href="#wechaty.user.Message.to_image" title="永久链接至目标">¶</a></dt>
+<dd><p>Extract the Image File from the Message, so that we can use
+different image sizes.
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to_mini_program">
+<em class="property">async </em><code class="sig-name descname">to_mini_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.mini_program.MiniProgram" title="wechaty.user.mini_program.MiniProgram">wechaty.user.mini_program.MiniProgram</a><a class="headerlink" href="#wechaty.user.Message.to_mini_program" title="永久链接至目标">¶</a></dt>
+<dd><p>get message mini_program
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to_recalled">
+<em class="property">async </em><code class="sig-name descname">to_recalled</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.message.Message" title="wechaty.user.message.Message">wechaty.user.message.Message</a><a class="headerlink" href="#wechaty.user.Message.to_recalled" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the recalled message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.to_url_link">
+<em class="property">async </em><code class="sig-name descname">to_url_link</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.url_link.UrlLink" title="wechaty.user.url_link.UrlLink">wechaty.user.url_link.UrlLink</a><a class="headerlink" href="#wechaty.user.Message.to_url_link" title="永久链接至目标">¶</a></dt>
+<dd><p>get url_link from message
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Message.type">
+<code class="sig-name descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; chatie_grpc.wechaty.MessageType<a class="headerlink" href="#wechaty.user.Message.type" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the type from the message.
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.MiniProgram">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">MiniProgram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span><span class="p">:</span> <span class="n">wechaty_puppet.schemas.mini_program.MiniProgramPayload</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.MiniProgram" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>mini_program object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.app_id">
+<em class="property">property </em><code class="sig-name descname">app_id</code><a class="headerlink" href="#wechaty.user.MiniProgram.app_id" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program app_id
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.create_from_json">
+<em class="property">classmethod </em><code class="sig-name descname">create_from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload_data</span><span class="p">:</span> <span class="n">dict</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.mini_program.MiniProgram" title="wechaty.user.mini_program.MiniProgram">wechaty.user.mini_program.MiniProgram</a><a class="headerlink" href="#wechaty.user.MiniProgram.create_from_json" title="永久链接至目标">¶</a></dt>
+<dd><p>create the mini_program from json data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.create_from_message">
+<em class="property">async classmethod </em><code class="sig-name descname">create_from_message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="p">:</span> <span class="n">Message</span></em><span class="sig-paren">)</span> &#x2192; MiniProgram<a class="headerlink" href="#wechaty.user.MiniProgram.create_from_message" title="永久链接至目标">¶</a></dt>
+<dd><p>static create MiniProgram method
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.description">
+<em class="property">property </em><code class="sig-name descname">description</code><a class="headerlink" href="#wechaty.user.MiniProgram.description" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program description
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.icon_url">
+<em class="property">property </em><code class="sig-name descname">icon_url</code><a class="headerlink" href="#wechaty.user.MiniProgram.icon_url" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program icon url</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.page_path">
+<em class="property">property </em><code class="sig-name descname">page_path</code><a class="headerlink" href="#wechaty.user.MiniProgram.page_path" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program page_path
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.payload">
+<em class="property">property </em><code class="sig-name descname">payload</code><a class="headerlink" href="#wechaty.user.MiniProgram.payload" title="永久链接至目标">¶</a></dt>
+<dd><p>get the payload data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.thumb_key">
+<em class="property">property </em><code class="sig-name descname">thumb_key</code><a class="headerlink" href="#wechaty.user.MiniProgram.thumb_key" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program thumb_key
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.thumb_url">
+<em class="property">property </em><code class="sig-name descname">thumb_url</code><a class="headerlink" href="#wechaty.user.MiniProgram.thumb_url" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program thumb_url
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.title">
+<em class="property">property </em><code class="sig-name descname">title</code><a class="headerlink" href="#wechaty.user.MiniProgram.title" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program title
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#wechaty.user.MiniProgram.to_json" title="永久链接至目标">¶</a></dt>
+<dd><p>save the mini-program to dict data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.MiniProgram.user_name">
+<em class="property">property </em><code class="sig-name descname">user_name</code><a class="headerlink" href="#wechaty.user.MiniProgram.user_name" title="永久链接至目标">¶</a></dt>
+<dd><p>get mini_program user_name
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.Room">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Room</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>All wechat rooms(groups) will be encapsulated as a Room.</p>
+<dl class="py method">
+<dt id="wechaty.user.Room.add">
+<em class="property">async </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room.add" title="永久链接至目标">¶</a></dt>
+<dd><p>Add contact in a room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.alias">
+<em class="property">async </em><code class="sig-name descname">alias</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">member</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.alias" title="永久链接至目标">¶</a></dt>
+<dd><p>Return contact’s roomAlias in the room</p>
+<p>TODO -&gt; ‘Wechaty Puppet Unsupported API Error. Learn More At
+<a class="reference external" href="https://github.com/wechaty/wechaty-puppet/wiki/Compatibility">https://github.com/wechaty/wechaty-puppet/wiki/Compatibility</a>’, None)&gt;</p>
+<p>the result of the function will always return an empty string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.announce">
+<em class="property">async </em><code class="sig-name descname">announce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">announce_text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.announce" title="永久链接至目标">¶</a></dt>
+<dd><p>SET/GET announce from the room</p>
+<p>It only works when bot is the owner of the room.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.avatar">
+<em class="property">async </em><code class="sig-name descname">avatar</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; wechaty_puppet.file_box.file_box.FileBox<a class="headerlink" href="#wechaty.user.Room.avatar" title="永久链接至目标">¶</a></dt>
+<dd><p>get the avatar of the room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.create">
+<em class="property">async classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contacts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Contact<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">topic</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Room<a class="headerlink" href="#wechaty.user.Room.create" title="永久链接至目标">¶</a></dt>
+<dd><p>create room instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.delete">
+<em class="property">async </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>delete room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.emit">
+<code class="sig-name descname">emit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room.emit" title="永久链接至目标">¶</a></dt>
+<dd><p>emit event for a specific</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.find">
+<em class="property">async classmethod </em><code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.room.RoomQueryFilter<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union[None, wechaty.user.room.Room]<a class="headerlink" href="#wechaty.user.Room.find" title="永久链接至目标">¶</a></dt>
+<dd><p>Try to find a room by filter: {topic: string | RegExp}. If get many,
+return the first one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.find_all">
+<em class="property">async classmethod </em><code class="sig-name descname">find_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>str<span class="p">, </span>wechaty_puppet.schemas.room.RoomQueryFilter<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.find_all" title="永久链接至目标">¶</a></dt>
+<dd><p>find room by query filter</p>
+<p>TODO -&gt; we should remove search_query from puppet-*</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.has">
+<em class="property">async </em><code class="sig-name descname">has</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contact</span><span class="p">:</span> <span class="n">Contact</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Room.has" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if the room has member <cite>contact</cite>, the return is a Promise and
+must be <cite>await</cite>-ed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.is_ready">
+<code class="sig-name descname">is_ready</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#wechaty.user.Room.is_ready" title="永久链接至目标">¶</a></dt>
+<dd><p>check if room’s payload is ready</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.room.Room" title="wechaty.user.room.Room">wechaty.user.room.Room</a><a class="headerlink" href="#wechaty.user.Room.load" title="永久链接至目标">¶</a></dt>
+<dd><p>dynamic load room instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.member">
+<em class="property">async </em><code class="sig-name descname">member</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>RoomMemberQueryFilter<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.member" title="永久链接至目标">¶</a></dt>
+<dd><p>Find all contacts in a room, if get many, return the first one.</p>
+<p># TODO -&gt; need to refactoring this function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.member_list">
+<em class="property">async </em><code class="sig-name descname">member_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>RoomMemberQueryFilter<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.member_list" title="永久链接至目标">¶</a></dt>
+<dd><p>Get all room member from the room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.on">
+<code class="sig-name descname">on</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room.on" title="永久链接至目标">¶</a></dt>
+<dd><p>listen event for contact
+event_name:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.owner">
+<em class="property">async </em><code class="sig-name descname">owner</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Contact<span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.owner" title="永久链接至目标">¶</a></dt>
+<dd><p>get room owner</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.qr_code">
+<em class="property">async </em><code class="sig-name descname">qr_code</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.Room.qr_code" title="永久链接至目标">¶</a></dt>
+<dd><p>TODO -&gt; need to rewrite this function later
+Get QR Code Value of the Room from the room, which can be used as
+scan and join the room.</p>
+<p>‘Wechaty Puppet Unsupported API Error. Learn More At
+<a class="reference external" href="https://github.com/wechaty/wechaty-puppet/wiki/Compatibility">https://github.com/wechaty/wechaty-puppet/wiki/Compatibility</a>’, None)&gt;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.quit">
+<em class="property">async </em><code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room.quit" title="永久链接至目标">¶</a></dt>
+<dd><p>Add contact in a room</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.ready">
+<em class="property">async </em><code class="sig-name descname">ready</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">force_sync</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Room.ready" title="永久链接至目标">¶</a></dt>
+<dd><p>Please not to use <cite>ready()</cite> at the user land.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.say">
+<em class="property">async </em><code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">some_thing</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>Contact<span class="p">, </span>FileBox<span class="p">, </span>MiniProgram<span class="p">, </span>UrlLink<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mention_ids</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union[None, Message]<a class="headerlink" href="#wechaty.user.Room.say" title="永久链接至目标">¶</a></dt>
+<dd><p>Room Say(%s, %s)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Room.topic">
+<em class="property">async </em><code class="sig-name descname">topic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_topic</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#wechaty.user.Room.topic" title="永久链接至目标">¶</a></dt>
+<dd><p>get/set room topic</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.RoomInvitation">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">RoomInvitation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_invitation_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.RoomInvitation" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a>, <a class="reference internal" href="wechaty.html#wechaty.types.Acceptable" title="wechaty.types.Acceptable"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.types.Acceptable</span></code></a></p>
+<p>Room Invitation</p>
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.accept">
+<em class="property">async </em><code class="sig-name descname">accept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.RoomInvitation.accept" title="永久链接至目标">¶</a></dt>
+<dd><p>accept the room invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.age">
+<em class="property">async </em><code class="sig-name descname">age</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#wechaty.user.RoomInvitation.age" title="永久链接至目标">¶</a></dt>
+<dd><p>get the age of the invitation timespan</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.date">
+<em class="property">async </em><code class="sig-name descname">date</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="headerlink" href="#wechaty.user.RoomInvitation.date" title="永久链接至目标">¶</a></dt>
+<dd><p>get the date of the room invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.from_json">
+<em class="property">async classmethod </em><code class="sig-name descname">from_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>chatie_grpc.wechaty.RoomInvitationPayloadResponse<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.room_invitation.RoomInvitation" title="wechaty.user.room_invitation.RoomInvitation">wechaty.user.room_invitation.RoomInvitation</a><a class="headerlink" href="#wechaty.user.RoomInvitation.from_json" title="永久链接至目标">¶</a></dt>
+<dd><p>Load the room invitation info from disk</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.inviter">
+<em class="property">async </em><code class="sig-name descname">inviter</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><a class="headerlink" href="#wechaty.user.RoomInvitation.inviter" title="永久链接至目标">¶</a></dt>
+<dd><p>get the inviter of the invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">room_invitation_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.room_invitation.RoomInvitation" title="wechaty.user.room_invitation.RoomInvitation">wechaty.user.room_invitation.RoomInvitation</a><a class="headerlink" href="#wechaty.user.RoomInvitation.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load RoomInvitation object
+:param room_invitation_id:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.member_count">
+<em class="property">async </em><code class="sig-name descname">member_count</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#wechaty.user.RoomInvitation.member_count" title="永久链接至目标">¶</a></dt>
+<dd><p>get the number of the invitation members</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.member_list">
+<em class="property">async </em><code class="sig-name descname">member_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#wechaty.user.contact.Contact" title="wechaty.user.contact.Contact">wechaty.user.contact.Contact</a><span class="p">]</span><a class="headerlink" href="#wechaty.user.RoomInvitation.member_list" title="永久链接至目标">¶</a></dt>
+<dd><p>get the members of the room invitation</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.to_json">
+<em class="property">async </em><code class="sig-name descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.RoomInvitation.to_json" title="永久链接至目标">¶</a></dt>
+<dd><p>Get the room invitation info when listened on room-invite event</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.to_str">
+<em class="property">async </em><code class="sig-name descname">to_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.RoomInvitation.to_str" title="永久链接至目标">¶</a></dt>
+<dd><p>get room invitation string format description with async way</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.RoomInvitation.topic">
+<em class="property">async </em><code class="sig-name descname">topic</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#wechaty.user.RoomInvitation.topic" title="永久链接至目标">¶</a></dt>
+<dd><p>get the topic of the intivation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.Tag">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">Tag</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Tag" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="wechaty.html#wechaty.accessory.Accessory" title="wechaty.accessory.Accessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">wechaty.accessory.Accessory</span></code></a></p>
+<p>tag object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.Tag.add">
+<em class="property">async </em><code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Contact<span class="p">, </span>Favorite<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Tag.add" title="永久链接至目标">¶</a></dt>
+<dd><p>add tag to contact or favorite
+:param to:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Tag.delete">
+<em class="property">async </em><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Contact<span class="p">, </span>Favorite<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Tag.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>remove tag from contact or favorite
+:param target:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Tag.get">
+<em class="property">classmethod </em><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.tag.Tag" title="wechaty.user.tag.Tag">wechaty.user.tag.Tag</a><a class="headerlink" href="#wechaty.user.Tag.get" title="永久链接至目标">¶</a></dt>
+<dd><p>get tag objecr</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Tag.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.tag.Tag" title="wechaty.user.tag.Tag">wechaty.user.tag.Tag</a><a class="headerlink" href="#wechaty.user.Tag.load" title="永久链接至目标">¶</a></dt>
+<dd><p>load tag instance</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.Tag.remove">
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Contact<span class="p">, </span>Favorite<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.Tag.remove" title="永久链接至目标">¶</a></dt>
+<dd><p>Remove this tag from Contact/Favorite</p>
+<p>tips : This function is depending on the Puppet Implementation,
+see [puppet-compatible-table](<a class="reference external" href="https://github.com/Chatie/">https://github.com/Chatie/</a>
+wechaty/wiki/Puppet#3-puppet-compatible-table)
+:param source:
+:return:</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="wechaty.user.Tag.tag_id">
+<code class="sig-name descname">tag_id</code><em class="property">: str</em><a class="headerlink" href="#wechaty.user.Tag.tag_id" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="wechaty.user.UrlLink">
+<em class="property">class </em><code class="sig-prename descclassname">wechaty.user.</code><code class="sig-name descname">UrlLink</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span><span class="p">:</span> <span class="n">wechaty_puppet.schemas.url_link.UrlLinkPayload</span></em><span class="sig-paren">)</span><a class="headerlink" href="#wechaty.user.UrlLink" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>url_link object which handle the url_link content</p>
+<dl class="py method">
+<dt id="wechaty.user.UrlLink.create">
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#wechaty.user.url_link.UrlLink" title="wechaty.user.url_link.UrlLink">wechaty.user.url_link.UrlLink</a><a class="headerlink" href="#wechaty.user.UrlLink.create" title="永久链接至目标">¶</a></dt>
+<dd><p>create urllink from url string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.UrlLink.description">
+<em class="property">property </em><code class="sig-name descname">description</code><a class="headerlink" href="#wechaty.user.UrlLink.description" title="永久链接至目标">¶</a></dt>
+<dd><p>get description
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.UrlLink.thumbnailUrl">
+<em class="property">property </em><code class="sig-name descname">thumbnailUrl</code><a class="headerlink" href="#wechaty.user.UrlLink.thumbnailUrl" title="永久链接至目标">¶</a></dt>
+<dd><p>get thumbnail url
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.UrlLink.title">
+<em class="property">property </em><code class="sig-name descname">title</code><a class="headerlink" href="#wechaty.user.UrlLink.title" title="永久链接至目标">¶</a></dt>
+<dd><p>get UrlLink title
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="wechaty.user.UrlLink.url">
+<em class="property">property </em><code class="sig-name descname">url</code><a class="headerlink" href="#wechaty.user.UrlLink.url" title="永久链接至目标">¶</a></dt>
+<dd><p>get url
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">python-wechaty</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, wj-Mcat.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/wechaty.user.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
