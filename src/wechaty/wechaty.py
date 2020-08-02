@@ -430,10 +430,10 @@ class Wechaty(AsyncIOEventEmitter):
             loop = asyncio.get_event_loop()
             loop.stop()
 
-        except:
-            traceback.print_exc()
-            loop = asyncio.get_event_loop()
-            loop.stop()
+        # except Exception:
+        #     traceback.print_exc()
+        #     loop = asyncio.get_event_loop()
+        #     loop.stop()
 
     async def restart(self):
         """restart the wechaty bot"""
@@ -691,7 +691,15 @@ class Wechaty(AsyncIOEventEmitter):
 
         # deinit puppet
         log.info('stopping - stop puppet')
-        await self.puppet.stop()
+        try:
+            await self.puppet.stop()
+        except OSError as e:
+            # OSError: [Errno 101] Network is unreachable
+            if e.errno == 101:
+                pass
+            else:
+                raise e
+
         log.info('stopping - unset puppet')
         self._puppet = None
         log.info('wechaty has been stopped gracefully!')

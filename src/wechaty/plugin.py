@@ -21,7 +21,12 @@ limitations under the License.
 from __future__ import annotations
 
 import logging
+import re
 from abc import abstractmethod, ABCMeta
+from collections import defaultdict, OrderedDict
+from copy import deepcopy
+from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
@@ -30,16 +35,10 @@ from typing import (
     Dict,
     Union,
     Any)
-import re
-from datetime import datetime
-from copy import deepcopy
-from dataclasses import dataclass
-from collections import defaultdict, OrderedDict
-from wechaty_puppet import get_logger  # type: ignore
 
+from wechaty_puppet import get_logger  # type: ignore
 from .exceptions import (
     WechatyPluginError,
-    WechatyPayloadError,
 )
 
 if TYPE_CHECKING:
@@ -317,7 +316,7 @@ class WechatyPluginManager:
         if event_name == 'message':
             # https://stackoverflow.com/a/154156/2544762
             # The most Pythonic way to check the type of an object is... not to check it.
-            if not len(args) and 'msg' not in kwargs:
+            if not args and 'msg' not in kwargs:
                 raise WechatyPluginError(
                     'message event requires the first positioned or msg named param')
             msg: Message = kwargs.get('msg') or args[0]
