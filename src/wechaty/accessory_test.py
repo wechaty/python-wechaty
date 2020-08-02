@@ -28,6 +28,10 @@ def get_user_class() -> Type[Accessory]:
 
     class FixtureClass(Accessory):
         """fixture"""
+        # fish-ball: in order to make a Accessory class properly construct,
+        # we should instantiate it from a derived class which has abstract
+        # field to be False
+        abstract = False
 
     return FixtureClass
 
@@ -119,11 +123,11 @@ def test_accessory_read_uninitialized_instance(
 
     instance = user_class()
 
-    with pytest.raises(Exception) as exception:
+    with pytest.raises(AttributeError) as exception:
         assert instance.puppet
     assert str(exception.value) == 'puppet not set'
 
-    with pytest.raises(Exception) as exception:
+    with pytest.raises(AttributeError) as exception:
         assert instance.wechaty
     assert str(exception.value) == 'wechaty not set'
 
@@ -157,12 +161,12 @@ def test_accessory_set_twice(
 
     with pytest.raises(Exception) as exception:
         user_class.set_puppet(EXPECTED_PUPPET1)
-    assert str(exception.value) == 'can not set twice'
+    assert str(exception.value) == 'can not set _puppet twice'
 
     user_class.set_wechaty(EXPECTED_WECHATY1)
     with pytest.raises(Exception) as exception:
         user_class.set_wechaty(EXPECTED_WECHATY1)
-    assert str(exception.value) == 'can not set twice'
+    assert str(exception.value) == 'can not set _wechaty twice'
 
 
 def test_accessory_classmethod_access_puppet():

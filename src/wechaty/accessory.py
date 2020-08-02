@@ -63,12 +63,12 @@ class Accessory(Generic[PayloadType]):
                 )
             )
 
-        if self.puppet is None:
-            raise WechatyAccessoryBindingError(
-                '{} class can not be instantiated without a puppet!'.format(
-                    type(self).__name__
-                )
-            )
+        # if self.puppet is None:
+        #     raise WechatyAccessoryBindingError(
+        #         '{} class can not be instantiated without a puppet!'.format(
+        #             type(self).__name__
+        #         )
+        #     )
 
         self._payload: Optional[PayloadType] = None
 
