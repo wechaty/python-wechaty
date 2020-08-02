@@ -14,6 +14,7 @@ class DingDongPlugin(WechatyPlugin):
 
     async def on_message(self, msg: Message):
         """listen message event"""
+        print(msg)
         from_contact = msg.talker()
         text = msg.text()
         room = msg.room()

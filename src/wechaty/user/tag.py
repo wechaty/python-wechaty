@@ -11,7 +11,9 @@ from typing import (
 )
 
 from collections import defaultdict
-from wechaty_puppet import get_logger   # type: ignore
+
+from wechaty.exceptions import WechatyOperationError
+from wechaty_puppet import get_logger  # type: ignore
 from ..accessory import (
     Accessory,
 )
@@ -31,42 +33,21 @@ class Tag(Accessory):
 
     tag_id: str
 
-    def __init__(
-            self,
-            tag_id: str,
-    ) -> None:
+    def __init__(self, tag_id: str) -> None:
         """
         initialization for tag base class
         :param tag_id:
         """
-        super(Tag, self).__init__()
+        super().__init__()
         log.info('create tag %s', tag_id)
-
-        if isinstance(self, Tag):
-            raise AttributeError(
-                'Tag class can not be instanciated directly!'
-                'See: https://github.com/Chatie/wechaty/issues/1217')
-
-        if self.puppet is None:
-            raise NotImplementedError(
-                'Tag class can not be instanciated without a puppet!')
 
         self.tag_id = tag_id
 
     @classmethod
-    def load(
-            cls,
-            tag_id: str,
-    ) -> Tag:
+    def load(cls, tag_id: str) -> Tag:
         """
         load tag instance
         """
-        if cls is Tag:
-            raise AttributeError(
-                'The global Tag class can not be used directly!'
-                'See: https://github.com/Chatie/wechaty/issues/1217'
-            )
-
         if tag_id in cls._pool:
             return cls._pool[tag_id]
 
@@ -82,16 +63,13 @@ class Tag(Accessory):
         log.info('load tag object %s', tag_id)
         return cls.load(tag_id)
 
-    async def delete(self, target: Union[Contact, Favorite] = None):
+    async def delete(self, target: Union[Contact, Favorite]):
         """
         remove tag from contact or favorite
         :param target:
         :return:
         """
         log.info('delete tag %s', self.tag_id)
-        #
-        if target is None:
-            raise Exception('target param is required')
 
         if target is Contact:
             await self.puppet.tag_contact_delete(tag_id=self.tag_id)
@@ -99,6 +77,8 @@ class Tag(Accessory):
             # TODO -> tag_favorite_delete not implement
             pass
             # await self.puppet.tag_contact_delete()
+        else:
+            raise WechatyOperationError('target param is required to be Contact or Favorite object')
 
     async def add(self, to: Union[Contact, Favorite]):
         """
@@ -138,4 +118,4 @@ class Tag(Accessory):
                 pass
         except Exception as e:
             log.info('remove exception %s', str(e.args))
-            raise RuntimeError('remove error')
+            raise WechatyOperationError('remove error')

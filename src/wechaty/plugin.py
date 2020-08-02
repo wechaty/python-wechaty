@@ -20,7 +20,13 @@ limitations under the License.
 """
 from __future__ import annotations
 
+import logging
+import re
 from abc import abstractmethod, ABCMeta
+from collections import defaultdict, OrderedDict
+from copy import deepcopy
+from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
@@ -29,12 +35,11 @@ from typing import (
     Dict,
     Union,
     Any)
-import re
-from datetime import datetime
-from copy import deepcopy
-from dataclasses import dataclass
-from collections import defaultdict, OrderedDict
-from wechaty_puppet import get_logger   # type: ignore
+
+from wechaty_puppet import get_logger  # type: ignore
+from .exceptions import (
+    WechatyPluginError,
+)
 
 if TYPE_CHECKING:
     from wechaty_puppet import (
@@ -43,17 +48,17 @@ if TYPE_CHECKING:
         EventReadyPayload,
         ScanStatus
     )
-    from wechaty import (
+    from .wechaty import (
+        Wechaty
+    )
+    from .user import (
         Room,
+        RoomInvitation,
         Friendship,
         Contact,
         Message,
-        Wechaty
     )
-    from wechaty.user.room_invitation import RoomInvitation
-
-
-log = get_logger(__name__)
+log: logging.Logger = get_logger(__name__)
 
 
 @dataclass
@@ -76,6 +81,7 @@ class WechatyPlugin(metaclass=ABCMeta):
     listen events from
 
     """
+
     def __init__(self, options: Optional[WechatyPluginOptions] = None):
         self.output: Dict[str, Any] = {}
         self.bot: Optional[Wechaty] = None
@@ -204,6 +210,7 @@ PluginTree = Dict[str, Union[str, List[str]]]
 
 class WechatyPluginManager:
     """manage the wechaty plugin, It will support some features."""
+
     def __init__(self, wechaty: Wechaty):
         self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
@@ -245,7 +252,7 @@ class WechatyPluginManager:
             else:
                 plugin_instance = self._load_plugin_from_github_url(plugin)
             if plugin_instance is None:
-                raise Exception('can"t load plugin %s' % plugin)
+                raise WechatyPluginError('can"t load plugin %s' % plugin)
         else:
             if plugin.name in self._plugins:
                 log.warning('plugin : %s has exist', plugin.name)
@@ -259,7 +266,7 @@ class WechatyPluginManager:
     def remove_plugin(self, name: str):
         """remove plugin"""
         if name not in self._plugins:
-            raise IndexError(f'plugin {name} not exist')
+            raise WechatyPluginError(f'plugin {name} not exist')
         self._plugins.pop(name)
         self._plugin_status.pop(name)
 
@@ -268,7 +275,7 @@ class WechatyPluginManager:
         check the plugins whether
         """
         if name not in self._plugins and name not in self._plugin_status:
-            raise Exception('plugins <%s> not exist' % name)
+            raise WechatyPluginError('plugins <%s> not exist' % name)
 
     def stop_plugin(self, name: str):
         """stop the plugin"""
@@ -301,25 +308,18 @@ class WechatyPluginManager:
 
     async def emit_events(self, event_name: str, *args, **kwargs):
         """
-
         during the try-stage, only support message_events
 
         event_name: get event
         event_payload:
         """
         if event_name == 'message':
-            # this is not type linting, it's needed to be imported at top-level
-            # , So, it must occurs cyclic-import problems, to resolve this, a
-            # simple way is that we import package at local-level.
-
-            # pylint: disable=import-outside-toplevel
-            from wechaty import Message
-            if len(args) == 1 and isinstance(args[0], Message):
-                msg: Message = args[0]
-            elif 'msg' in kwargs and isinstance(kwargs['msg'], Message):
-                msg = kwargs['msg']
-            else:
-                raise ValueError('can"t find the message params')
+            # https://stackoverflow.com/a/154156/2544762
+            # The most Pythonic way to check the type of an object is... not to check it.
+            if not args and 'msg' not in kwargs:
+                raise WechatyPluginError(
+                    'message event requires the first positioned or msg named param')
+            msg: Message = kwargs.get('msg') or args[0]
 
             # this will make the plugins running sequential, _plugins
             # is a sort dict

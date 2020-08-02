@@ -35,6 +35,7 @@ from typing import (
 import json
 from pyee import AsyncIOEventEmitter  # type: ignore
 # from wechaty_puppet import RoomMemberPayload
+from wechaty.exceptions import WechatyOperationError, WechatyPayloadError
 from wechaty_puppet import (  # type: ignore
     FileBox,
     RoomQueryFilter,
@@ -54,7 +55,7 @@ if TYPE_CHECKING:
 log = get_logger('Room')
 
 
-class Room(Accessory):
+class Room(Accessory[RoomPayload]):
     """
     All wechat rooms(groups) will be encapsulated as a Room.
     """
@@ -62,15 +63,9 @@ class Room(Accessory):
 
     def __init__(self, room_id: str) -> None:
         """docs"""
+        super().__init__()
+
         self.room_id = room_id
-        self.payload: Optional[RoomPayload] = None
-
-        if self.__class__ is Room:
-            raise Exception('Room class can not be instanciated directly!')
-
-        if self.puppet is None:
-            raise Exception(
-                'Room class can not be instanciated without a puppet!')
 
     _event_stream: AsyncIOEventEmitter = AsyncIOEventEmitter()
 
@@ -93,9 +88,9 @@ class Room(Accessory):
         create room instance
         """
         if not hasattr(contacts, '__len__'):
-            raise Exception('contacts should be list type')
+            raise WechatyOperationError('contacts should be list type')
         if len(contacts) < 2:
-            raise Exception(
+            raise WechatyOperationError(
                 'contactList need at least 2 contact to create a new room'
             )
 
@@ -113,11 +108,9 @@ class Room(Accessory):
             await room.ready()
             return room
         except Exception as exception:
-            log.error(
-                'Room create error <%s>',
-                str(exception.args)
-            )
-            raise Exception('Room create error')
+            message = 'Room create error <%s>' % str(exception.args)
+            log.error(message)
+            raise WechatyOperationError(message)
 
     @classmethod
     async def find_all(cls,
@@ -203,15 +196,13 @@ class Room(Accessory):
         """
         dynamic load room instance
         """
-        if room_id in cls._pool:
-            room = cls._pool.get(room_id)
-            if room is None:
-                raise Exception('room not found')
+        room = cls._pool.get(room_id)
+        if room is not None:
             return room
 
-        new_room = cls(room_id)
-        cls._pool[room_id] = new_room
-        return new_room
+        room = cls(room_id)
+        cls._pool[room_id] = room
+        return room
 
     def __str__(self):
         """
@@ -224,12 +215,6 @@ class Room(Accessory):
             return 'loading ...'
 
         return 'Room <%s - %s>' % (self.room_id, self.payload.topic)
-
-    def is_ready(self) -> bool:
-        """
-        check if room's payload is ready
-        """
-        return self.payload is not None
 
     async def ready(self, force_sync=False):
         """
@@ -248,7 +233,7 @@ class Room(Accessory):
         self.payload = await self.puppet.room_payload(self.room_id)
 
         if self.payload is None:
-            raise Exception('Room Payload can"t be ready')
+            raise WechatyPayloadError('Room Payload can"t be ready')
 
         member_ids = await self.puppet.room_members(self.room_id)
 
@@ -307,7 +292,7 @@ class Room(Accessory):
                 mini_program=some_thing.payload
             )
         else:
-            raise Exception('arg unsupported: ', some_thing)
+            raise WechatyOperationError('arg unsupported: ', some_thing)
 
         if msg_id is not None:
             msg = self.wechaty.Message.load(msg_id)
@@ -342,7 +327,7 @@ class Room(Accessory):
         log.info('Room delete<%s>', contact)
 
         if contact is None or contact.contact_id is None:
-            raise Exception('Contact is none or contact_id not found')
+            raise WechatyOperationError('Contact is none or contact_id not found')
         await self.puppet.room_delete(self.room_id, contact.contact_id)
         # reload the payload
         await self.ready(force_sync=True)
@@ -361,9 +346,7 @@ class Room(Accessory):
         """
         log.info('Room topic (%s)', new_topic)
 
-        if not self.is_ready():
-            log.warning('Room topic() room not ready')
-            raise Exception('Room not ready')
+        await self.ready()
 
         if new_topic is None:
             if self.payload is not None and self.payload.topic is not None:
@@ -442,7 +425,7 @@ class Room(Accessory):
         the result of the function will always return an empty string
         """
         if member is None:
-            raise Exception('member can"t be none')
+            raise WechatyOperationError('member can"t be none')
         room_member_payload = await self.puppet.room_member_payload(
             room_id=self.room_id, contact_id=member.contact_id)
 
@@ -485,7 +468,7 @@ class Room(Accessory):
                         if member.name.__contains__(query):
                             member_search_result.append(member)
                         elif member.payload.alias is not None and \
-                                member.payload.alias.__contains__(query):
+                            member.payload.alias.__contains__(query):
                             member_search_result.append(member)
 
                     # get room_alias but hostie-server not support
@@ -499,7 +482,7 @@ class Room(Accessory):
                             member_search_result.append(member)
 
                         elif member.payload.alias is not None and \
-                                member.payload.alias.__contains__(
+                            member.payload.alias.__contains__(
                                 query.contact_alias):
 
                             member_search_result.append(member)
@@ -530,8 +513,7 @@ class Room(Accessory):
         get room owner
         """
         log.info('Room <%s> owner', self)
-        if self.payload is None:
-            raise Exception('Room <%s> payload not found', self)
+        await self.ready()
 
         if self.payload.owner_id is None or self.payload.owner_id == '':
             # raise Exception('Room <%s> payload or payload.owner_id not found')
