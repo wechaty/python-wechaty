@@ -27,12 +27,12 @@ from typing import (
     Optional,
     TypeVar, Generic)
 
-from wechaty.exceptions import WechatyAccessoryBindingError
-
 from wechaty_puppet import (  # type: ignore
     get_logger,
     Puppet
 )
+
+from wechaty.exceptions import WechatyAccessoryBindingError
 
 # pylint:disable=R0401
 if TYPE_CHECKING:
