@@ -11,17 +11,14 @@ Welcome to python-wechaty's documentation!
 
 python-wechaty 是一个自动化私人社交软件的聊天SDK，提供了统一的抽象层接口来融合多平台的聊天流程，只需要简单的实现层替换即可完成不同IM软件平台的切换。
 
-快速开始
--------
-
-``python
-import wechaty
-``
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
 
    intro.rst
+   user/index.rst
+   plugins/index.rst
+   template.rst
    ...
 
 

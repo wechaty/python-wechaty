@@ -33,6 +33,7 @@ release = '0.6.6'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx.ext.viewcode',
     'sphinx_rtd_theme'
 ]
 

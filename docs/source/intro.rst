@@ -1,9 +1,2 @@
-intro
+快速开始
 ======
-
-.. toctree::
-   :maxdepth: 0
-
-   user/index.rst
-   plugins/index.rst
-   ...
