@@ -38,18 +38,19 @@ from typing import (
     cast
 )
 
-from wechaty_puppet import get_logger  # type: ignore
+from wechaty_puppet import (    # type: ignore
+    get_logger,
+    EventErrorPayload,
+    EventHeartbeatPayload,
+    EventReadyPayload,
+    ScanStatus
+)
+
 from .exceptions import (
     WechatyPluginError,
 )
 
 if TYPE_CHECKING:
-    from wechaty_puppet import (
-        EventErrorPayload,
-        EventHeartbeatPayload,
-        EventReadyPayload,
-        ScanStatus
-    )
     from .wechaty import (
         Wechaty
     )
@@ -392,7 +393,7 @@ class WechatyPluginManager:
             """
             there must be four arguments: room, invitees, inviter, date
             """
-            if not args or len(args[0]) != 4:
+            if not args or len(args) != 4:
                 raise WechatyPluginError(
                     f'the plugin args of room-join is invalid, the source args:'
                     f'<{args}>, but expected args is room, invitees, inviter, '
@@ -422,7 +423,7 @@ class WechatyPluginManager:
             """
             there must be four arguments: room, leavers, remover, date
             """
-            if not args or len(args[0]) != 4:
+            if not args or len(args) != 4:
                 raise WechatyPluginError(
                     f'the plugin args of room-join is invalid, the source args:'
                     f'<{args}>, but expected args is room, invitees, inviter, '
@@ -432,13 +433,13 @@ class WechatyPluginManager:
             room = args[0]
             assert isinstance(room, Room)
 
-            invitees = args[1]
-            assert isinstance(invitees, list)
-            # must convert the type of invitees to List[Contact]
-            invitees = cast(List[Contact], invitees)
+            leavers = args[1]
+            assert isinstance(leavers, list)
+            # must convert the type of leavers to List[Contact]
+            leavers = cast(List[Contact], leavers)
 
-            inviter = args[2]
-            assert isinstance(inviter, Contact)
+            remover = args[2]
+            assert isinstance(remover, Contact)
 
             date = args[3]
             assert isinstance(date, datetime)
@@ -446,4 +447,58 @@ class WechatyPluginManager:
             for name, plugin in self._plugins.items():
                 log.info('emit %s-plugin ...', name)
                 if self.plugin_status(name) == PluginStatus.Running:
-                    await plugin.on_room_join(room, invitees, inviter, date)
+                    await plugin.on_room_leave(room, leavers, remover, date)
+
+        elif event_name == 'room-topic':
+            if not args or len(args) != 5:
+                raise WechatyPluginError(
+                    f'the plugin args of room-topic is invalid, the source args:'
+                    f'<{args}>, but expected args is room, payload.new_topic,'
+                    f'payload.old_topic, changer, date'
+                )
+            room = args[0]
+            assert isinstance(room, Room)
+
+            new_topic = args[1]
+            assert isinstance(new_topic, str)
+
+            old_topic = args[2]
+            assert isinstance(old_topic, str)
+
+            changer = args[3]
+            assert isinstance(changer, Contact)
+
+            date = args[4]
+            assert isinstance(date, datetime)
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_room_topic(
+                        room, new_topic, old_topic,
+                        changer, date
+                    )
+
+        elif event_name == 'scan':
+            if not args or len(args) != 3:
+                raise WechatyPluginError(
+                    f'the plugin args of scan is invalid, the source args: '
+                    f'{args}, but expected args is payload_status, '
+                    f'qr_code, payload.data'
+                )
+
+            scan_status = args[0]
+            assert isinstance(scan_status, ScanStatus)
+
+            qr_code = args[1]
+            assert isinstance(qr_code, (None, str))
+
+            data = args[2]
+            assert isinstance(data, (None, str))
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_scan(
+                        scan_status, qr_code, data
+                    )
