@@ -166,7 +166,8 @@ class Wechaty(AsyncIOEventEmitter):
 
         self._puppet: Optional[Puppet] = None
 
-        # Create watchdog on start, and allow to shutdown the watchdog by setting it to None
+        # Create watchdog on start, and allow to shutdown the watchdog by
+        # setting it to None
         self._watchdog: Optional[Watchdog] = None
         self._watchdog_task: Optional[asyncio.Task] = None
 
