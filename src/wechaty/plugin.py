@@ -35,8 +35,7 @@ from typing import (
     Dict,
     Union,
     Any,
-    cast
-)
+    cast)
 
 from wechaty_puppet import (    # type: ignore
     get_logger,
@@ -309,6 +308,7 @@ class WechatyPluginManager:
             log.info('init %s-plugin ...', name)
             await plugin.init_plugin(self._wechaty)
 
+    # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     async def emit_events(self, event_name: str, *args, **kwargs):
         """
         during the try-stage, only support message_events
@@ -318,6 +318,7 @@ class WechatyPluginManager:
         """
 
         # import the User types locally
+        # pylint: disable=import-outside-toplevel
         from .user import (
             Room,
             RoomInvitation,
@@ -390,9 +391,7 @@ class WechatyPluginManager:
                     await plugin.on_room_invite(room_invitation)
 
         elif event_name == 'room-join':
-            """
-            there must be four arguments: room, invitees, inviter, date
-            """
+            # there must be four arguments: room, invitees, inviter, date
             if not args or len(args) != 4:
                 raise WechatyPluginError(
                     f'the plugin args of room-join is invalid, the source args:'
@@ -420,9 +419,7 @@ class WechatyPluginManager:
                     await plugin.on_room_join(room, invitees, inviter, date)
 
         elif event_name == 'room-leave':
-            """
-            there must be four arguments: room, leavers, remover, date
-            """
+            # there must be four arguments: room, leavers, remover, date
             if not args or len(args) != 4:
                 raise WechatyPluginError(
                     f'the plugin args of room-join is invalid, the source args:'
@@ -480,7 +477,7 @@ class WechatyPluginManager:
                     )
 
         elif event_name == 'scan':
-            if not args or len(args) != 3:
+            if not args or len(args) < 0 or len(args) > 3:
                 raise WechatyPluginError(
                     f'the plugin args of scan is invalid, the source args: '
                     f'{args}, but expected args is payload_status, '
@@ -491,10 +488,16 @@ class WechatyPluginManager:
             assert isinstance(scan_status, ScanStatus)
 
             qr_code = args[1]
-            assert isinstance(qr_code, (None, str))
+            qr_code = cast(Optional[str], qr_code)
+
+            # pylint: disable=isinstance-second-argument-not-valid-type
+            # assert isinstance(qr_code, Tuple[None, Type[str]])
 
             data = args[2]
-            assert isinstance(data, (None, str))
+            data = cast(Optional[str], data)
+
+            # # pylint: disable=isinstance-second-argument-not-valid-type
+            # assert isinstance(data, (None, str))
 
             for name, plugin in self._plugins.items():
                 log.info('emit %s-plugin ...', name)
