@@ -34,7 +34,9 @@ from typing import (
     Optional,
     Dict,
     Union,
-    Any)
+    Any,
+    cast
+)
 
 from wechaty_puppet import get_logger  # type: ignore
 from .exceptions import (
@@ -313,17 +315,135 @@ class WechatyPluginManager:
         event_name: get event
         event_payload:
         """
+
+        # import the User types locally
+        from .user import (
+            Room,
+            RoomInvitation,
+            Friendship,
+            Contact,
+            Message,
+        )
+
         if event_name == 'message':
             # https://stackoverflow.com/a/154156/2544762
             # The most Pythonic way to check the type of an object is... not to check it.
             if not args and 'msg' not in kwargs:
                 raise WechatyPluginError(
-                    'message event requires the first positioned or msg named param')
-            msg: Message = kwargs.get('msg') or args[0]
+                    f'the plugin args of message is invalid, the source args:'
+                    f'<{args}>, but expected args is message ')
+
+            message = args[0]
+            assert isinstance(message, Message)
 
             # this will make the plugins running sequential, _plugins
             # is a sort dict
             for name, plugin in self._plugins.items():
                 log.info('emit %s-plugin ...', name)
                 if self.plugin_status(name) == PluginStatus.Running:
-                    await plugin.on_message(msg)
+                    await plugin.on_message(message)
+
+        elif event_name == 'friendship':
+            if not args or len(args) != 1:
+                raise WechatyPluginError(
+                    f'the plugin args of friendship event is invalid,'
+                    f'the source args is <{args}>,'
+                    f'but expected args is : Friendship')
+
+            friendship = args[0]
+            assert isinstance(friendship, Friendship)
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_friendship(friendship)
+
+        elif event_name == 'login':
+            if not args or len(args) != 1:
+                raise WechatyPluginError(
+                    f'the plugin args of login event is invalid,'
+                    f'the source args is : <{args}>,'
+                    f'but expected args is : Contact ')
+
+            contact = args[0]
+            assert isinstance(contact, Contact)
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_login(contact)
+
+        elif event_name == 'room-invite':
+            if not args or len(args) != 1:
+                raise WechatyPluginError(
+                    f'the plugin args of room-invite event is invalid,'
+                    f'the source args is : <{args}>,'
+                    f'but expected args is : RoomInvitation ')
+
+            room_invitation = args[0]
+            assert isinstance(room_invitation, RoomInvitation)
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_room_invite(room_invitation)
+
+        elif event_name == 'room-join':
+            """
+            there must be four arguments: room, invitees, inviter, date
+            """
+            if not args or len(args[0]) != 4:
+                raise WechatyPluginError(
+                    f'the plugin args of room-join is invalid, the source args:'
+                    f'<{args}>, but expected args is room, invitees, inviter, '
+                    f'date')
+
+            # get the parameters of room-join event
+            room = args[0]
+            assert isinstance(room, Room)
+
+            invitees = args[1]
+            assert isinstance(invitees, list)
+            # must convert the type of invitees to List[Contact]
+            invitees = cast(List[Contact], invitees)
+
+            inviter = args[2]
+            assert isinstance(inviter, Contact)
+
+            date = args[3]
+            assert isinstance(date, datetime)
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_room_join(room, invitees, inviter, date)
+
+        elif event_name == 'room-leave':
+            """
+            there must be four arguments: room, leavers, remover, date
+            """
+            if not args or len(args[0]) != 4:
+                raise WechatyPluginError(
+                    f'the plugin args of room-join is invalid, the source args:'
+                    f'<{args}>, but expected args is room, invitees, inviter, '
+                    f'date')
+
+            # get the parameters of room-join event
+            room = args[0]
+            assert isinstance(room, Room)
+
+            invitees = args[1]
+            assert isinstance(invitees, list)
+            # must convert the type of invitees to List[Contact]
+            invitees = cast(List[Contact], invitees)
+
+            inviter = args[2]
+            assert isinstance(inviter, Contact)
+
+            date = args[3]
+            assert isinstance(date, datetime)
+
+            for name, plugin in self._plugins.items():
+                log.info('emit %s-plugin ...', name)
+                if self.plugin_status(name) == PluginStatus.Running:
+                    await plugin.on_room_join(room, invitees, inviter, date)

@@ -487,10 +487,18 @@ class Wechaty(AsyncIOEventEmitter):
                     friendship.contact().emit('friendship', friendship)
                     await self.on_friendship(friendship)
 
+                    await self._plugin_manager.emit_events(
+                        'friendship', friendship
+                    )
+
                 puppet.on('friendship', friendship_listener)
 
             elif event_name == 'login':
                 async def login_listener(payload: EventLoginPayload):
+
+                    # init the plugins
+                    await self._plugin_manager.init_plugins()
+
                     # set login contact_id
                     self.contact_id = payload.contact_id
                     log.info('receive <login> event <%s>', payload)
@@ -499,8 +507,8 @@ class Wechaty(AsyncIOEventEmitter):
                     self.emit('login', contact)
                     await self.on_login(contact)
 
-                    # init the plugins
-                    await self._plugin_manager.init_plugins()
+                    # emit the login event to plugins
+                    await self._plugin_manager.emit_events('login', contact)
 
                 puppet.on('login', login_listener)
 
@@ -512,6 +520,9 @@ class Wechaty(AsyncIOEventEmitter):
                     await contact.ready()
                     self.emit('logout', contact)
                     await self.on_logout(contact)
+
+                    # emit the logout event to plugins
+                    await self._plugin_manager.emit_events('logout', contact)
 
                 puppet.on('logout', logout_listener)
 
@@ -528,6 +539,7 @@ class Wechaty(AsyncIOEventEmitter):
                     if room is not None:
                         room.emit('message', room)
 
+                    # emit the message event to plugins
                     await self._plugin_manager.emit_events('message', msg)
 
                 puppet.on('message', message_listener)
@@ -548,6 +560,12 @@ class Wechaty(AsyncIOEventEmitter):
                         payload.room_invitation_id)
                     self.emit('room-invite', invitation)
                     await self.on_room_invite(invitation)
+
+                    # emit the room-invite event to plugins
+                    await self._plugin_manager.emit_events(
+                        'room-invite',
+                        invitation
+                    )
 
                 puppet.on('room-invite', room_invite_listener)
 
@@ -570,6 +588,12 @@ class Wechaty(AsyncIOEventEmitter):
                     await self.on_room_join(room, invitees, inviter, date)
 
                     room.emit('join', invitees, inviter, date)
+
+                    # emit the room-join event to plugins
+                    await self._plugin_manager.emit_events(
+                        'room-join', room,
+                        invitees, inviter, date
+                    )
 
                 puppet.on('room-join', room_join_listener)
 
@@ -601,6 +625,11 @@ class Wechaty(AsyncIOEventEmitter):
                         # await self.puppet.room_member_payload_dirty(
                         #     payload.room_id)
 
+                    # emit the room-leave event to plugins
+                    await self._plugin_manager.emit_events(
+                        'room-leave', leavers, remover, date
+                    )
+
                 puppet.on('room-leave', room_leave_listener)
 
             elif event_name == 'room-topic':
@@ -623,6 +652,14 @@ class Wechaty(AsyncIOEventEmitter):
                     room.emit('topic', payload.new_topic, payload.old_topic,
                               changer, date)
 
+                    # emit the room-topic to plugins
+                    await self._plugin_manager.emit_events(
+                        'room-topic', room,
+                        payload.new_topic,
+                        payload.old_topic,
+                        changer, date
+                    )
+
                 puppet.on('room-topic', room_topic_listener)
 
             elif event_name == 'scan':
@@ -634,6 +671,12 @@ class Wechaty(AsyncIOEventEmitter):
                         qr_terminal(qr_code)
                     self.emit('scan', payload.status, qr_code, payload.data)
                     await self.on_scan(payload.status, qr_code, payload.data)
+
+                    # emit the scan event to plugins
+                    await self._plugin_manager.emit_events(
+                        'scan', payload.status,
+                        qr_code, payload.data
+                    )
 
                 puppet.on('scan', scan_listener)
 
