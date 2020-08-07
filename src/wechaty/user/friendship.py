@@ -175,7 +175,7 @@ class Friendship(Accessory, Acceptable):
         else:
             hello_msg = self.payload.hello
 
-        log.info('get hello message <%s> of friendship <%s>', self.payload)
+        log.info('get hello message <%s> of friendship <%s>', hello_msg, self.payload)
 
         return hello_msg
 
