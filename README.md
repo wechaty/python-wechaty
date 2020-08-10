@@ -40,7 +40,7 @@ See more at [Wiki:Voice Of Developer](https://github.com/Wechaty/wechaty/wiki/Vo
 
 Wechaty is used in many ChatBot projects by thousands of developers. If you want to talk with other developers, just scan the following QR Code in WeChat with secret code _python wechaty_, join our **Wechaty Python Developers' Home**.
 
-![Wechaty Python Developers' Home](https://wechaty.github.io/wechaty/images/bot-qr-code.png)
+![Wechaty Friday.BOT QR Code](https://wechaty.js.org/img/friday-qrcode.svg)
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
