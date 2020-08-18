@@ -51,6 +51,13 @@ from .room import Room
 
 log = get_logger('Message')
 
+SUPPORTED_MESSAGE_FILE_TYPES: List[MessageType] = [
+    MessageType.MESSAGE_TYPE_ATTACHMENT,
+    MessageType.MESSAGE_TYPE_EMOTICON,
+    MessageType.MESSAGE_TYPE_IMAGE,
+    MessageType.MESSAGE_TYPE_VIDEO
+]
+
 
 # pylint: disable=R0904,R0903
 class Message(Accessory[MessagePayload]):
@@ -448,10 +455,20 @@ class Message(Accessory[MessagePayload]):
     async def to_file_box(self) -> FileBox:
         """
         Extract the Media File from the Message, and put it into the FileBox.
+
+        File MessageType is : {
+            MESSAGE_TYPE_ATTACHMENT,
+            MESSAGE_TYPE_EMOTICON,
+            MESSAGE_TYPE_IMAGE,
+            MESSAGE_TYPE_VIDEO
+        }
         """
         log.info('Message to FileBox')
-        if self.type() == MessageType.MESSAGE_TYPE_TEXT:
-            raise WechatyOperationError('text message can"t convert to FileBox')
+        if self.type() not in SUPPORTED_MESSAGE_FILE_TYPES:
+            raise WechatyOperationError(
+                f'this type <{self.type().name}> message can"t be converted to '
+                f'FileBox'
+            )
         file_box = await self.puppet.message_file(self.message_id)
         return file_box
 
