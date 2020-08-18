@@ -44,7 +44,6 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
-
 ## The World's Shortest Python ChatBot: 9 lines of Code
 
 ```python
@@ -53,8 +52,8 @@ from wechaty import Wechaty
 import asyncio
 async def main():
     bot = Wechaty()
-    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://wechaty.github.io/qrcode/{}'.format(status, qrcode)))
-    bot.on('login', lambda user: print('User {} logined'.format(user)))
+    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://wechaty.js.org/qrcode/{}'.format(status, qrcode)))
+    bot.on('login', lambda user: print('User {} logged in'.format(user)))
     bot.on('message', lambda message: print('Message: {}'.format(message)))
     await bot.start()
 
