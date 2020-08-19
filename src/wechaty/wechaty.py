@@ -485,7 +485,13 @@ class Wechaty(AsyncIOEventEmitter):
                     friendship = self.Friendship.load(payload.friendship_id)
                     await friendship.ready()
                     self.emit('friendship', friendship)
-                    friendship.contact().emit('friendship', friendship)
+
+                    # this method will cause _events error, refer to
+                    # :https://github.com/wechaty/python-wechaty/issues/122
+                    # and this feature is considering to be removed, refer to
+                    # https://github.com/wechaty/python-wechaty/issues/127
+
+                    # friendship.contact().emit('friendship', friendship)
                     await self.on_friendship(friendship)
 
                     await self._plugin_manager.emit_events(
