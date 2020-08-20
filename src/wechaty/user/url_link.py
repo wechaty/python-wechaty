@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from typing import (
     Type,
+    Union
 )
 import requests
 from lxml import etree  # type: ignore
