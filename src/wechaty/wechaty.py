@@ -590,6 +590,13 @@ class Wechaty(AsyncIOEventEmitter):
                     inviter = self.Contact.load(payload.inviter_id)
                     await inviter.ready()
 
+                    # time_stamp is from hostie-server, but the value range is
+                    # 10^10 ~ 10^13
+                    # refer to
+                    # :https://github.com/wechaty/python-wechaty/issues/129
+                    if payload.time_stamp > 10000000000000:
+                        payload.time_stamp = payload.time_stamp / 1000
+
                     date = datetime.fromtimestamp(payload.time_stamp)
                     self.emit('room-join', room, invitees, inviter, date)
                     await self.on_room_join(room, invitees, inviter, date)
