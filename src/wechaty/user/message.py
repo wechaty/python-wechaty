@@ -442,7 +442,7 @@ class Message(Accessory[MessagePayload]):
         Message sent date
         :return:
         """
-        time = datetime.fromtimestamp(self.payload.time_stamp)
+        time = datetime.fromtimestamp(self.payload.timestamp)
         return time
 
     def age(self) -> int:
