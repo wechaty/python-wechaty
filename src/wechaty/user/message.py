@@ -25,12 +25,10 @@ import json
 from typing import (
     Optional,
     Union,
-    List,
+    List
 )
 
 from datetime import datetime
-
-from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
 from wechaty_puppet import (  # type: ignore
     FileBox,
     MessagePayload,
@@ -38,6 +36,8 @@ from wechaty_puppet import (  # type: ignore
     MessageType,
     get_logger
 )
+
+from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
 
 from ..accessory import Accessory
 from .mini_program import MiniProgram
@@ -62,14 +62,17 @@ SUPPORTED_MESSAGE_FILE_TYPES: List[MessageType] = [
 # pylint: disable=R0904,R0903
 class Message(Accessory[MessagePayload]):
     """
-    All wechat messages will be encapsulated as a Message.
+    All of wechaty messages will be encapsulated as a Message object.
+
+    you can get all of message attribute through publish method.
     """
 
     Type = MessageType
 
     def __init__(self, message_id: str):
         """
-        initialization
+        the initialization for Message object which only receive the
+        message_id data to fetch payload.
         """
         super().__init__()
 
@@ -77,35 +80,46 @@ class Message(Accessory[MessagePayload]):
 
     def message_type(self) -> MessageType:
         """
-        get message type
+        get the message type
+        for more details, please refer to : https://github.com/Chatie/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
         """
         return self.payload.type
 
     def __str__(self) -> str:
         """
-        format string for message
+        format string for message, which keep consistant with wechaty/wechaty
+
+        refer to : https://github.com/wechaty/wechaty/blob/master/src/user/message.ts#L195
         """
         if not self.is_ready():
-            return f'<{self.message_id}> not ready'
+            return f'Message <{self.message_id}> is not ready'
 
-        room = self.room()
-        room_format = '' if room is None \
-            else f'room <{room}>, '
+        message_list = [
+            'Message',
+            f'#{self.message_type().name.lower()}',
+            # talker can't be None
+            f'[🗣 {self.talker()}',
+        ]
+        if self.room():
+            message_list.append(f'@👥 {self.room()}]')
 
-        to = self.to()
-        to_format = '' if to is None \
-            else f'say to contact <{to}>'
-        return '%stalker %s, %s, %s' % (
-            room_format,
-            self.talker(),
-            to_format,
-            self.text(),
-        )
+        if self.message_type() == MessageType.MESSAGE_TYPE_TEXT:
+            message_list.append(f'\t{self.text()[:70]}')
+
+        return ''.join(message_list)
 
     async def say(self, msg: Union[str, Contact, FileBox, UrlLink, MiniProgram],
                   mention_ids: Optional[List[str]] = None) -> Message:
         """
-        send message
+        send the message to the conversation envrioment which is source of this message.
+
+        If this message is from room, so you can send message to this room.
+        If this message is from contact, so you can send message to this contact, not to room.
+
+        Args:
+            msg: the message object which can be type of str/Contact/FileBox/UrlLink/MiniProgram
+            mention_ids: you can send message with `@person`, the only things you should do is to
+                set contact_id to mention_ids.
         """
         log.info('say() <%s>', msg)
 
@@ -115,7 +129,7 @@ class Message(Accessory[MessagePayload]):
         else:
             talker = self.talker()
             if talker is None:
-                raise WechatyPayloadError(f'Message must be from room/contact')
+                raise WechatyPayloadError('Message must be from room/contact')
             conversation_id = talker.contact_id
 
         # in order to resolve circular dependency problems which is not for
@@ -146,8 +160,8 @@ class Message(Accessory[MessagePayload]):
                 conversation_id=conversation_id,
                 mini_program=msg.payload)
         else:
-            raise WechatyPayloadError(f'message type should be str, '
-                                      f'Contact/FileBox/UrlLink/MiniProgram')
+            raise WechatyPayloadError('message type should be str, '
+                                      'Contact/FileBox/UrlLink/MiniProgram')
 
         message = self.load(message_id)
         await message.ready()
@@ -161,8 +175,19 @@ class Message(Accessory[MessagePayload]):
                    to_id: Optional[str] = None,
                    message_type: Optional[MessageType] = None
                    ) -> Optional[Message]:
-        """
-        Find message in cache
+        """find the message from the server.
+
+        Args:
+            talker_id (Optional[str], optional): the id of talker.
+            message_id (Optional[str], optional): the id of message.
+            room_id (Optional[str], optional): the id of room.
+            text (Optional[str], optional): you can search message by sub-string of the text.
+            to_id (Optional[str], optional): the id of receiver.
+            message_type (Optional[MessageType], optional): the type of the message
+
+        Returns:
+            Optional[Message]: if find the messages, return the first of it.
+                               if can't find message, return None
         """
         log.info('Message find all <%s, %s, %s, <%s, %s, %s>', talker_id,
                  message_id, room_id, text, to_id, message_type)
@@ -192,8 +217,18 @@ class Message(Accessory[MessagePayload]):
                        to_id: Optional[str] = None,
                        message_type: Optional[MessageType] = None
                        ) -> List[Message]:
-        """
-        Find messages in cache
+        """find the message from the server.
+
+        Args:
+            talker_id (Optional[str], optional): the id of talker.
+            message_id (Optional[str], optional): the id of message.
+            room_id (Optional[str], optional): the id of room.
+            text (Optional[str], optional): you can search message by sub-string of the text.
+            to_id (Optional[str], optional): the id of receiver.
+            message_type (Optional[MessageType], optional): the type of the message
+
+        Returns:
+            List[Message]: return all of the searched messages
         """
         log.info('Message find all <%s, %s, %s, <%s, %s, %s>', talker_id,
                  message_id, room_id, text, to_id, message_type)
@@ -211,20 +246,25 @@ class Message(Accessory[MessagePayload]):
         return messages
 
     def talker(self) -> Contact:
-        """
-        get message talker
+        """get the talker of the message
 
-        # TODO ->   Suggestion: talker/to/room/text func can
-        #           be converted to property func
+        Raises:
+            WechatyPayloadError: can't find the talker information from the payload
+
+        Returns:
+            Contact: the talker contact object
         """
         talker_id = self.payload.from_id
         if talker_id is None:
-            raise WechatyPayloadError(f'message must be from Contact')
+            raise WechatyPayloadError('message must be from Contact')
         return self.wechaty.Contact.load(talker_id)
 
     def to(self) -> Optional[Contact]:
-        """
-        get message reply to
+        """get the receiver, which is the Contact type, of the message
+
+        Returns:
+            Optional[Contact]: if the message is private to contact, return the contact object
+                else return None
         """
         to_id = self.payload.to_id
         if to_id is None:
@@ -232,21 +272,37 @@ class Message(Accessory[MessagePayload]):
         return self.wechaty.Contact.load(to_id)
 
     def room(self) -> Optional[Room]:
-        """
-        get message room
+        """get the room from the messge
+
+        Returns:
+            Optional[Room]: if the message is from room, return the contact object.
+                else return .
         """
         room_id = self.payload.room_id
         if room_id is None or room_id == '':
             return None
         return self.wechaty.Room.load(room_id)
 
+    def chatter(self) -> Union[Room, Contact]:
+        """return the chat container object of the message. If the message is from room,
+        return the Room object. else return Contact object
+
+        Returns:
+            Optional[Room, Contact]: return the room/contact object
+        """
+        room: Optional[Room] = self.room()
+        if room:
+            return room
+        talker: Contact = self.talker()
+        return talker
+
     def text(self) -> str:
         """
         get message text
         """
-        if self.payload.text is None:
-            return ''
-        return self.payload.text
+        if self.payload.text:
+            return self.payload.text
+        return ''
 
     async def to_recalled(self) -> Message:
         """
@@ -448,7 +504,7 @@ class Message(Accessory[MessagePayload]):
         :return:
         """
         if self.payload.timestamp > 2145888000:
-            time = datetime.fromtimestamp(self.payload.timestamp/1000)
+            time = datetime.fromtimestamp(self.payload.timestamp / 1000)
         else:
             time = datetime.fromtimestamp(self.payload.timestamp)
         return time
