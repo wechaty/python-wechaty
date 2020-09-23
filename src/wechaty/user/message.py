@@ -38,6 +38,7 @@ from wechaty_puppet import (  # type: ignore
 )
 
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
+from wechaty.utils import timestamp_to_date
 
 from ..accessory import Accessory
 from .mini_program import MiniProgram
@@ -48,6 +49,7 @@ from .contact import Contact
 from .url_link import UrlLink
 from .image import Image
 from .room import Room
+
 
 log = get_logger('Message')
 
@@ -507,7 +509,7 @@ class Message(Accessory[MessagePayload]):
             time = datetime.fromtimestamp(self.payload.timestamp / 1000)
         else:
             time = datetime.fromtimestamp(self.payload.timestamp)
-        return time
+        return timestamp_to_date(self.payload.timestamp)
 
     def age(self) -> int:
         """
