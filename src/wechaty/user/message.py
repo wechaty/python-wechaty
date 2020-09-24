@@ -150,7 +150,6 @@ class Message(Accessory[MessagePayload]):
                 conversation_id=conversation_id,
                 message=msg,
                 mention_ids=mention_ids)
-
         elif isinstance(msg, Contact):
             message_id = await self.puppet.message_send_contact(
                 conversation_id=conversation_id, contact_id=msg.contact_id)
