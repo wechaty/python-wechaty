@@ -259,6 +259,10 @@ class Room(Accessory[RoomPayload]):
         """
         log.info('Room say <%s, %s>', some_thing, mention_ids)
 
+        if not some_thing:
+            log.error('can"t say nothing')
+            return None
+
         # we should import UrlLink type locally because of circular dependency
 
         from wechaty.user.url_link import UrlLink

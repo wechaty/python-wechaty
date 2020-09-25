@@ -94,6 +94,8 @@ from .exceptions import (  # type: ignore
     WechatyOperationError,
 )
 
+from .utils import timestamp_to_date
+
 log: logging.Logger = get_logger('Wechaty')
 
 DEFAULT_TIMEOUT = 300
@@ -590,7 +592,12 @@ class Wechaty(AsyncIOEventEmitter):
                     inviter = self.Contact.load(payload.inviter_id)
                     await inviter.ready()
 
-                    date = datetime.fromtimestamp(payload.time_stamp)
+                    # timestamp is from hostie-server, but the value range is
+                    # 10^10 ~ 10^13
+                    # refer to
+                    # :https://github.com/wechaty/python-wechaty/issues/1290
+                    date = timestamp_to_date(payload.timestamp)
+
                     self.emit('room-join', room, invitees, inviter, date)
                     await self.on_room_join(room, invitees, inviter, date)
 
@@ -620,7 +627,8 @@ class Wechaty(AsyncIOEventEmitter):
                     remover = self.Contact.load(payload.remover_id)
                     await remover.ready()
 
-                    date = datetime.fromtimestamp(payload.time_stamp)
+                    date = timestamp_to_date(payload.timestamp)
+
                     self.emit('room-leave', room, leavers, remover, date)
                     await self.on_room_leave(room, leavers, remover, date)
 
@@ -648,7 +656,7 @@ class Wechaty(AsyncIOEventEmitter):
                     changer = self.Contact.load(payload.changer_id)
                     await changer.ready()
 
-                    date = datetime.fromtimestamp(payload.time_stamp)
+                    date = timestamp_to_date(payload.timestamp)
 
                     self.emit('room-topic', room, payload.new_topic,
                               payload.old_topic, changer, date)

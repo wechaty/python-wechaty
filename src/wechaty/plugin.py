@@ -306,6 +306,7 @@ class WechatyPluginManager:
         log.info('init the plugins ...')
         for name, plugin in self._plugins.items():
             log.info('init %s-plugin ...', name)
+            assert isinstance(plugin, WechatyPlugin)
             await plugin.init_plugin(self._wechaty)
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
