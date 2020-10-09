@@ -111,7 +111,7 @@ class Message(Accessory[MessagePayload]):
         return ''.join(message_list)
 
     async def say(self, msg: Union[str, Contact, FileBox, UrlLink, MiniProgram],
-                  mention_ids: Optional[List[str]] = None) -> Message:
+                  mention_ids: Optional[List[str]] = None) -> Optional[Message]:
         """
         send the message to the conversation envrioment which is source of this message.
 
@@ -124,6 +124,10 @@ class Message(Accessory[MessagePayload]):
                 set contact_id to mention_ids.
         """
         log.info('say() <%s>', msg)
+
+        if not msg:
+            log.error('can"t say nothing')
+            return None
 
         room = self.room()
         if room is not None:
@@ -146,7 +150,6 @@ class Message(Accessory[MessagePayload]):
                 conversation_id=conversation_id,
                 message=msg,
                 mention_ids=mention_ids)
-
         elif isinstance(msg, Contact):
             message_id = await self.puppet.message_send_contact(
                 conversation_id=conversation_id, contact_id=msg.contact_id)

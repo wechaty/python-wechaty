@@ -202,6 +202,10 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         say something
         :param message: message content
         """
+        if not message:
+            log.error('can"t say nothing')
+            return None
+
         if not self.is_ready():
             await self.ready()
 
