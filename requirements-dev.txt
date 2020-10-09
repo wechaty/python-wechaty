@@ -5,7 +5,7 @@ pycodestyle
 pylint
 pylint-quotes
 pytest
-pytype==2020.2.20
+pytype==2020.10.8
 semver
 pyee
 requests
