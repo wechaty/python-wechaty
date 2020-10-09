@@ -63,13 +63,6 @@ class Accessory(Generic[PayloadType]):
                 )
             )
 
-        # if self.puppet is None:
-        #     raise WechatyAccessoryBindingError(
-        #         '{} class can not be instantiated without a puppet!'.format(
-        #             type(self).__name__
-        #         )
-        #     )
-
         self._payload: Optional[PayloadType] = None
 
     @property
@@ -94,7 +87,7 @@ class Accessory(Generic[PayloadType]):
         :return:
         """
         if self._payload:
-            raise WechatyAccessoryBindingError('Cannot set payload more than once.')
+            log.warning(f'<{self}> set payload more than once')
         self._payload = value
 
     def is_ready(self) -> bool:
