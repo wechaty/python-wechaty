@@ -87,7 +87,7 @@ class Accessory(Generic[PayloadType]):
         :return:
         """
         if self._payload:
-            log.warning(f'<{self}> set payload more than once')
+            log.warning('<%s> set payload more than once', self)
         self._payload = value
 
     def is_ready(self) -> bool:

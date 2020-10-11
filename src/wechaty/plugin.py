@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 import re
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta
 from collections import defaultdict, OrderedDict
 from copy import deepcopy
 from dataclasses import dataclass
@@ -93,13 +93,19 @@ class WechatyPlugin(metaclass=ABCMeta):
 
     async def init_plugin(self, wechaty: Wechaty):
         """set wechaty to the plugin"""
-        self.bot = wechaty
 
     @property
-    @abstractmethod
     def name(self) -> str:
-        """you must give a name for wechaty plugin"""
-        raise NotImplementedError
+        """you must give a name for wechaty plugin
+
+        the name of the plugin should not be a required field,
+        and the name of plugin class can be the default name field.
+        """
+        if not self.options.name:
+            # set the class name as the name of the plugin
+            self.options.name = self.__class__.__name__
+
+        return self.options.name
 
     @staticmethod
     def get_dependency_plugins() -> List[str]:
@@ -203,7 +209,6 @@ class WechatyPlugin(metaclass=ABCMeta):
         """if necessary , get the output of the plugin"""
         final_output = deepcopy(self.output)
         self.output = {}
-
         return final_output
 
 
@@ -285,7 +290,7 @@ class WechatyPluginManager:
         self._check_plugins(name)
 
         if self._plugin_status[name] == PluginStatus.Stopped:
-            log.warning('plugins <%s> is stopped', name)
+            log.warning('plugins <%s> has stopped', name)
         self._plugin_status[name] = PluginStatus.Stopped
 
     def start_plugin(self, name: str):
@@ -307,6 +312,8 @@ class WechatyPluginManager:
         for name, plugin in self._plugins.items():
             log.info('init %s-plugin ...', name)
             assert isinstance(plugin, WechatyPlugin)
+            # set wechaty instance to all of the plugin bot attribute
+            plugin.bot = self._wechaty
             await plugin.init_plugin(self._wechaty)
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
