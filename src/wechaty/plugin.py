@@ -91,6 +91,14 @@ class WechatyPlugin(metaclass=ABCMeta):
             options = WechatyPluginOptions()
         self.options = options
 
+    def set_bot(self, bot: Wechaty):
+        """set bot instance to WechatyPlugin
+
+        Args:
+            bot (Wechaty): the instance of Wechaty
+        """
+        self.bot = bot
+
     async def init_plugin(self, wechaty: Wechaty):
         """set wechaty to the plugin"""
 
@@ -313,7 +321,7 @@ class WechatyPluginManager:
             log.info('init %s-plugin ...', name)
             assert isinstance(plugin, WechatyPlugin)
             # set wechaty instance to all of the plugin bot attribute
-            plugin.bot = self._wechaty
+            plugin.set_bot(self._wechaty)
             await plugin.init_plugin(self._wechaty)
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
