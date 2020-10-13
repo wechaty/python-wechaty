@@ -2,5 +2,5 @@ pyee
 requests
 qrcode
 lxml
-wechaty-puppet>=0.0.17
-wechaty-puppet-hostie>=0.2.14
+wechaty-puppet==0.0.17
+wechaty-puppet-hostie==0.2.14
