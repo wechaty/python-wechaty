@@ -210,7 +210,7 @@ If you are interested in the translation and want to look at how it works, it wi
     - [ ] Unit Tests
     - [ ] Documentation
 1. [ ] Class WechatyPuppetHostie
-    - TS SLOC(909): <https://github.com/wechaty/wechaty-puppet-hostie/blob/master/src/grpc/puppet-client.ts>
+    - TS SLOC(909): <https://github.com/wechaty/wechaty-puppet-hostie/blob/master/src/client/puppet-hostie.ts>
     - [ ] Code
     - [ ] Unit Tests
     - [ ] Documentation
