@@ -290,6 +290,10 @@ Project created, publish a empty module `wechaty` on PyPI.
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
 ```
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/wechaty/python-wechaty.svg)](https://starchart.cc/wechaty/python-wechaty)
+
 ## Contributors
 
 [![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/0)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/0)
