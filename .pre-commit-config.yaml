@@ -56,3 +56,12 @@ repos:
     require_serial: true
     stages: [push]
     types: [python]
+
+  - id: bump-version
+    name: bump-version
+    description: "Bumped Version: bump the version when a new commit come in"
+    language: system
+    entry: make version
+    require_serial: true
+    stages: [push]
+    types: [python]
