@@ -210,7 +210,7 @@ If you are interested in the translation and want to look at how it works, it wi
     - [ ] Unit Tests
     - [ ] Documentation
 1. [ ] Class WechatyPuppetHostie
-    - TS SLOC(909): <https://github.com/wechaty/wechaty-puppet-hostie/blob/master/src/grpc/puppet-client.ts>
+    - TS SLOC(909): <https://github.com/wechaty/wechaty-puppet-hostie/blob/master/src/client/puppet-hostie.ts>
     - [ ] Code
     - [ ] Unit Tests
     - [ ] Documentation
@@ -250,7 +250,7 @@ Python Wechaty Scala Wechaty **BETA** Released!
 
 Read more from our Multi-language Wechaty Beta Release event from our blog:
 
-- [Multi Language Wechaty Beta Release Announcement!](https://wechaty.github.io/2020/06/19/multi-language-wechaty-beta-release/)
+- [Multi Language Wechaty Beta Release Announcement!](https://wechaty.js.org/2020/06/19/multi-language-wechaty-beta-release/)
 
 ### v0.4 (Mar 15, 2020) master
 
@@ -289,6 +289,10 @@ Project created, publish a empty module `wechaty` on PyPI.
 ```md
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
 ```
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/wechaty/python-wechaty.svg)](https://starchart.cc/wechaty/python-wechaty)
 
 ## Contributors
 

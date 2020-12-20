@@ -58,10 +58,29 @@ pytype:
 	pytype src/ --disable=import-error,pyi-error
 	pytype examples/ --disable=import-error
 
+.PHONY: uninstall-git-hook
+uninstall-git-hook:
+	pre-commit clean
+	pre-commit gc
+	pre-commit uninstall
+	pre-commit uninstall --hook-type pre-push
+
+.PHONY: install-git-hook
+install-git-hook:
+	# cleanup existing pre-commit configuration (if any)
+	pre-commit clean
+	pre-commit gc
+	# setup pre-commit
+	# Ensures pre-commit hooks point to latest versions
+	pre-commit autoupdate
+	pre-commit install
+	pre-commit install --hook-type pre-push
+
 .PHONY: install
 install:
 	pip3 install -r requirements.txt
 	pip3 install -r requirements-dev.txt
+	$(MAKE) install-git-hook
 
 .PHONY: pytest
 pytest:
