@@ -684,6 +684,11 @@ class Wechaty(AsyncIOEventEmitter):
                         else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
                         qr_terminal(qr_code)
+                        log.info(
+                            'or you can scan qrcode from: '
+                            'https://wechaty.js.org/qrcode/%s',
+                            qr_code
+                        )
                     self.emit('scan', payload.status, qr_code, payload.data)
                     await self.on_scan(payload.status, qr_code, payload.data)
 
