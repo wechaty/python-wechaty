@@ -119,9 +119,9 @@ bot:
 version:
 	@newVersion=$$(awk -F. '{print $$1"."$$2"."$$3+1}' < VERSION) \
 		&& echo $${newVersion} > VERSION \
-		&& echo VERSION = \'$${newVersion}\' > src/version.py \
-		&& git add VERSION src/version.py \
-		&& git commit -m "$${newVersion}" > /dev/null \
+		&& echo VERSION = \'$${newVersion}\' > src/wechaty/version.py \
+		&& git add VERSION src/wechaty/version.py \
+		&& git commit -m "🔥 update version to $${newVersion}" > /dev/null \
 		&& git tag "v$${newVersion}" \
 		&& echo "Bumped version to $${newVersion}"
 
