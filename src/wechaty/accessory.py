@@ -58,7 +58,7 @@ class Accessory(Generic[PayloadType]):
         if self.abstract:
             raise WechatyAccessoryBindingError(
                 'Do not instantiate class {cls} directly, sse with bot.{cls} instead. '
-                'See https://github.com/Chatie/wechaty/issues/1217'.format(
+                'See https://github.com/wechaty/wechaty/issues/1217'.format(
                     cls=type(self).__name__
                 )
             )

@@ -83,7 +83,7 @@ class Message(Accessory[MessagePayload]):
     def message_type(self) -> MessageType:
         """
         get the message type
-        for more details, please refer to : https://github.com/Chatie/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
+        for more details, please refer to : https://github.com/wechaty/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
         """
         return self.payload.type
 
@@ -503,7 +503,7 @@ class Message(Accessory[MessagePayload]):
         Message sent date
         Python2.7: https://docs.python.org/2.7/library/datetime.html#datetime.datetime
         Python3+ ：https://docs.python.org/3.7/library/datetime.html#datetime.datetime
-        for datetime.fromtimestamp. It’s common for this to be restricted to years from 1970 through 2038. 
+        for datetime.fromtimestamp. It’s common for this to be restricted to years from 1970 through 2038.
         2145888000 is 2038-01-01 00:00:00 UTC for second
         2145888000 is 1970-01-26 04:04:48 UTC for millisecond
         :return:
