@@ -25,11 +25,13 @@ from typing import (
     # overload,
     # cast,
     Optional,
-    TypeVar, Generic)
+    TypeVar,
+    Generic,
+)
 
 from wechaty_puppet import (  # type: ignore
     get_logger,
-    Puppet
+    Puppet,
 )
 
 from wechaty.exceptions import WechatyAccessoryBindingError
