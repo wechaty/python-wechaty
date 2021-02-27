@@ -6,10 +6,8 @@ from typing import (
     # Dict,
     Iterable,
 )
-from wechaty_puppet import get_logger   # type: ignore
-
 import pytest   # type: ignore
-
+from wechaty_puppet import get_logger   # type: ignore
 
 # pylint: disable=C0103
 log = get_logger('ConfigTest')
