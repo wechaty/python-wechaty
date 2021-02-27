@@ -68,9 +68,9 @@ def get_install_requires() -> str:
 setuptools.setup(
     name='wechaty',
     version=get_version(),
-    author='Huan LI (李卓桓)',
-    author_email='zixia@zixia.net',
-    description='Wechaty is a Conversational AI Chatbot SDK for WeChat Personal Account',
+    author='Jingjing WU (吴京京)',
+    author_email='wechaty@chatie.io',
+    description='Wechaty is a Conversational RPA SDK for Chatbot Makers',
     long_description=get_long_description(),
     long_description_content_type='text/markdown',
     license='Apache-2.0',
