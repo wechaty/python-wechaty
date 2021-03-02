@@ -84,7 +84,7 @@ class Friendship(Accessory, Acceptable):
         * Remeber not to do this too frequently, or your account
         * may be blocked.
         """
-        log.info('search() <%s, %s>', cls, weixin, phone)
+        log.info('search() <%s, %s, %s>', cls, weixin, phone)
         friend_id = await cls.get_puppet().friendship_search(weixin=weixin,
                                                              phone=phone)
         if friend_id is None:
