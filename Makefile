@@ -91,7 +91,7 @@ pytest:
 test-unit: pytest
 
 .PHONY: test
-test: check-version lint pytest
+test: check-version deploy-version lint pytest
 
 .PHONY: check-version
 check-version:
