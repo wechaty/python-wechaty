@@ -365,7 +365,7 @@ class Wechaty(AsyncIOEventEmitter):
         this is friendly for code typing
         """
 
-    async def on_scan(self, status: ScanStatus, qr_code: Optional[str] = None,
+    async def on_scan(self, qr_code: str, status: ScanStatus,
                       data: Optional[str] = None):
         """
         listen scan event for puppet
@@ -689,13 +689,14 @@ class Wechaty(AsyncIOEventEmitter):
                             'https://wechaty.js.org/qrcode/%s',
                             qr_code
                         )
-                    self.emit('scan', payload.status, qr_code, payload.data)
-                    await self.on_scan(payload.status, qr_code, payload.data)
+                    self.emit('scan', qr_code, payload.status, payload.data)
+                    await self.on_scan(qr_code, payload.status, payload.data)
 
                     # emit the scan event to plugins
                     await self._plugin_manager.emit_events(
-                        'scan', payload.status,
-                        qr_code, payload.data
+                        'scan', qr_code,
+                        payload.status,
+                        payload.data
                     )
 
                 puppet.on('scan', scan_listener)

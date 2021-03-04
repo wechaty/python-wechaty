@@ -205,7 +205,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         this is friendly for code typing
         """
 
-    async def on_scan(self, status: ScanStatus, qr_code: Optional[str] = None,
+    async def on_scan(self, qr_code: str, status: ScanStatus,
                       data: Optional[str] = None):
         """
         listen scan event for puppet
@@ -500,11 +500,11 @@ class WechatyPluginManager:
                     f'qr_code, payload.data'
                 )
 
-            scan_status = args[0]
-            assert isinstance(scan_status, ScanStatus)
+            qr_code = args[0]
+            assert isinstance(qr_code, str)
 
-            qr_code = args[1]
-            qr_code = cast(Optional[str], qr_code)
+            scan_status = args[1]
+            assert isinstance(scan_status, str)
 
             # pylint: disable=isinstance-second-argument-not-valid-type
             # assert isinstance(qr_code, Tuple[None, Type[str]])
@@ -519,5 +519,6 @@ class WechatyPluginManager:
                 log.info('emit %s-plugin ...', name)
                 if self.plugin_status(name) == PluginStatus.Running:
                     await plugin.on_scan(
-                        scan_status, qr_code, data
+                        qr_code,
+                        scan_status, data
                     )
