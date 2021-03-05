@@ -32,7 +32,6 @@ pylint:
 	pylint \
 		--load-plugins pylint_quotes \
 		--disable=W0511,R0801,cyclic-import \
-		--ignore=./src/wechaty/version.py \
 		$(SOURCE_GLOB)
 
 .PHONY: pycodestyle
@@ -91,7 +90,7 @@ pytest:
 test-unit: pytest
 
 .PHONY: test
-test: check-version deploy-version lint pytest
+test: check-version lint pytest
 
 .PHONY: check-version
 check-version:
@@ -118,16 +117,6 @@ bot:
 
 .PHONY: version
 version:
-	@newVersion=$$(awk -F. '{print $$1"."$$2"."$$3+1}' < VERSION) \
-		&& echo $${newVersion} > VERSION \
-		&& echo VERSION = \'$${newVersion}\' > src/wechaty/version.py \
-		&& git add VERSION src/wechaty/version.py \
-		&& git commit -m "🔥 update version to $${newVersion}" > /dev/null \
-		&& git tag "v$${newVersion}" \
-		&& echo "Bumped version to $${newVersion}"
-
-.PHONY: bump_version
-bump_version:
 	@newVersion=$$(awk -F. '{print $$1"."$$2"."$$3+1}' < VERSION) \
 		&& echo $${newVersion} > VERSION \
 		&& echo VERSION = \'$${newVersion}\' > src/wechaty/version.py \
