@@ -55,8 +55,14 @@ mypy:
 
 .PHONY: pytype
 pytype:
-	pytype src/ --disable=import-error,pyi-error
-	pytype examples/ --disable=import-error
+	pytype \
+		-V 3.8 \
+		--disable=import-error,pyi-error \
+		src/
+	pytype \
+		-V 3.8 \
+		--disable=import-error \
+		examples/
 
 .PHONY: uninstall-git-hook
 uninstall-git-hook:
