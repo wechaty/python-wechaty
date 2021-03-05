@@ -101,7 +101,7 @@ class Tag(Accessory):
         Remove this tag from Contact/Favorite
 
         tips : This function is depending on the Puppet Implementation,
-        see [puppet-compatible-table](https://github.com/Chatie/
+        see [puppet-compatible-table](https://github.com/wechaty/
         wechaty/wiki/Puppet#3-puppet-compatible-table)
         :param source:
         :return:

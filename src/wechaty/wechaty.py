@@ -133,7 +133,7 @@ class Wechaty(AsyncIOEventEmitter):
         super().__init__()
 
         if options is None:
-            options = WechatyOptions(puppet='wechaty-puppet-hostie')
+            options = WechatyOptions(puppet='wechaty-puppet-service')
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
@@ -199,17 +199,17 @@ class Wechaty(AsyncIOEventEmitter):
             return options.puppet
 
         if isinstance(options.puppet, PuppetModuleName):
-            if options.puppet != 'wechaty-puppet-hostie':
-                raise TypeError('Python Wechaty only supports wechaty-puppet-hostie right now.'
+            if options.puppet != 'wechaty-puppet-service':
+                raise TypeError('Python Wechaty only supports wechaty-puppet-service right now.'
                                 'This puppet is not supported: ' + options.puppet)
 
             #
-            # wechaty-puppet-hostie
+            # wechaty-puppet-service
             #
-            hostie_module = __import__('wechaty_puppet_hostie')
+            hostie_module = __import__('wechaty_puppet_service')
             if not hasattr(hostie_module, 'HostiePuppet'):
                 raise WechatyConfigurationError('HostiePuppet not exist in '
-                                                'wechaty-puppet-hostie')
+                                                'wechaty-puppet-service')
 
             hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
             if not issubclass(hostie_puppet_class, Puppet):

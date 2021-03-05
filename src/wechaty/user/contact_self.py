@@ -1,13 +1,16 @@
-from wechaty import FileBox, get_logger
-from wechaty.exceptions import WechatyOperationError
-from .contact import Contact
+"""ContactSelf"""
 from typing import Optional
 import asyncio
 
-log = get_logger('contact_self')
+from wechaty import FileBox, get_logger
+from wechaty.exceptions import WechatyOperationError
+from .contact import Contact
+
+log = get_logger('ContactSelf')
 
 
 class ContactSelf(Contact):
+    """ContactSelf"""
 
     async def avatar(self, file: Optional[FileBox] = None) -> FileBox:
         """
@@ -15,7 +18,7 @@ class ContactSelf(Contact):
         :param file:
         :return:
         """
-        log.info('Contact', 'avatar(%s)' % file.name if file else '')
+        log.info('avatar(%s)' % file.name if file else '')
         if not file:
             file_box = await super().avatar(None)
             return file_box
@@ -32,8 +35,9 @@ class ContactSelf(Contact):
         """
         try:
             puppet_id: str = self.puppet.self_id()
-        except Exception as e:
-            raise WechatyOperationError('Can not get qr_code, user might be either not logged in or already logged out')
+        except Exception:
+            raise WechatyOperationError(
+                'Can not get qr_code, user might be either not logged in or already logged out')
 
         if self.contact_id != puppet_id:
             raise WechatyOperationError('only can get qr_code for the login user self')

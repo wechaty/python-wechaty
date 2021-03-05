@@ -1,5 +1,4 @@
-Python Wechaty Contribution Guide
-=================================
+# Python Wechaty Contribution Guide
 
 ## Introduction
 
@@ -9,7 +8,7 @@ In order to help everyone start easier, and understand our project faster, we wr
 
 ## Request your donut (hostie) token
 
-Now python-wechaty only supports donut puppet. So before you start, you should request a token for `wechaty-puppet-hostie` first.
+Now python-wechaty only supports donut puppet. So before you start, you should request a token for `wechaty-puppet-service` first.
 
 You can follow either of the two issues below to request a donut token:
 
@@ -50,31 +49,31 @@ Wechaty has different puppet implementations, see:
 
 > <https://github.com/Wechaty/wechaty-puppet/wiki/Directory>
 
-And our `python-wechat` is designed be able to plug to any of them (for now, implements `wechaty-puppet-hostie` only)
+And our `python-wechat` is designed be able to plug to any of them (for now, implements `wechaty-puppet-service` only)
 
-But different puppet shares some common protocol, so before we write a `python-puppet` implementation, we should have this abstract base class. 
+But different puppet shares some common protocol, so before we write a `python-puppet` implementation, we should have this abstract base class.
 
 This repository defines all method signatures and specified payload formats about how to communicate with the puppet-server.
 
 When the `python-wechaty` want to call a RPC method to puppet-server, it calls the methods defined in `python-wechat-puppet`, but the method implementation is not here, you should find them under the puppet implementation project, which we are about to show next.
 
-### 3. python-wechaty-puppet-hostie
+### 3. python-wechaty-puppet-service
 
-* GitHub: <https://github.com/wechaty/python-wechaty-puppet-hostie>
-* PyPI: <https://pypi.org/project/wechaty-puppet-hostie/> [![PyPI Version](https://img.shields.io/pypi/v/wechaty-puppet-hostie?color=blue)](https://pypi.org/project/wechaty-puppet-hostie)
+* GitHub: <https://github.com/wechaty/python-wechaty-puppet-service>
+* PyPI: <https://pypi.org/project/wechaty-puppet-service/> [![PyPI Version](https://img.shields.io/pypi/v/wechaty-puppet-service?color=blue)](https://pypi.org/project/wechaty-puppet-service)
 
-So, the `python-wecahty-puppet-hostie` implements the methods defined in `python-wechaty-puppet`, which are used in the `python-wechaty`.
+So, the `python-wecahty-puppet-service` implements the methods defined in `python-wechaty-puppet`, which are used in the `python-wechaty`.
 
 If you want to debug the actual call to the puppet server, here is where you've been looking for.
 
 Finding the puppet method in the `python-wechaty` project will lead you to the `wecahty_puppet` package in your IDE, you can follow the method overrides to find the implementation in you IDE, it will lead you here.
 
-### 4. chatie_grpc
+### 4. wechaty_grpc
 
-* GitHub: <https://github.com/Chatie/grpc>
-* PyPI: <https://pypi.org/project/chatie_grpc/> [![PyPI Version](https://img.shields.io/pypi/v/chatie_grpc?color=blue)](https://pypi.org/project/wechaty-puppet-hostie)
+* GitHub: <https://github.com/wechaty/grpc>
+* PyPI: <https://pypi.org/project/wechaty-grpc/> [![PyPI Version](https://img.shields.io/pypi/v/wechaty-grpc?color=blue)](https://pypi.org/project/wechaty-puppet-service)
 
-So if you look into the `puppet_stub` method in the `python-wechaty-puppet-hostie` project, you will find the `chatie_grpc` package.
+So if you look into the `puppet_stub` method in the `python-wechaty-puppet-service` project, you will find the `wechaty-grpc` package.
 
 This package is auto generated from the grpc Protocol Buffer project, which defines all api format to the puppet-server.
 
@@ -103,13 +102,13 @@ Here we show a working practise in PyCharm IDE, if you have a better way, or wan
 * Find the "Run/Debug Configuration" on the dropdown box to the left of the "Run" icon in the top-right area.
 * Click "Edit Configurations..."
 * Select the newly added virtual environment as the Python interpreter
-* Add WECHATY_PUPPET_HOSTIE_TOKEN=\<your_token\> in the "Environment variables" row
+* Add WECHATY_PUPPET_SERVICE_TOKEN=\<your_token\> in the "Environment variables" row
 * Run `pip install -r requirements.txt` in the Terminal panel (you can see the terminal has been already working on your virtual environment automatically)
 * Set the Script path to your bot.py, for example, select `ding-dong-bot.py`
 
 Now you can run your bot by clicking the "Run" button.
 
-### 2. Add the python-wechaty repositories as git submodules.
+### 2. Add the python-wechaty repositories as git submodules
 
 If you want to modify the python-wechaty repository during debugging your bot, you should first replace the running code from PyPI modules to your source directory.
 
@@ -119,22 +118,22 @@ Here I recommend a convenient way to make it, if you are using PyCharm and run a
 
 2. Add it into your getting-started project as a submodule.
 
-For example:
+    For example:
 
-```
-git submodule add https://github.com/yourname/python-wechaty
-```
+    ```sh
+    git submodule add https://github.com/yourname/python-wechaty
+    ```
 
-Now the remote `origin` stands for your own forked repo.
+    Now the remote `origin` stands for your own forked repo.
 
 3. Add an extra remote `wechaty` as the official one:
 
-```
-cd python-wechaty
-git remote add origin wechaty https://github.com/wechaty/python-wechaty
-```
+    ```sh
+    cd python-wechaty
+    git remote add origin wechaty https://github.com/wechaty/python-wechaty
+    ```
 
-So if you want to pull from the official latest changes, just use `git pull wechaty master`.
+    So if you want to pull from the official latest changes, just use `git pull wechaty master`.
 
 4. Set the `???/src` folder in your submodule as `Source Root` in PyCharm
 
@@ -146,7 +145,7 @@ So feel free to change the code as your submodule and have a test.
 
 If your are done, now you can commit the submodule and push to your forked repo (origin master).
 
-```
+```sh
 cd python-wechaty
 git commit -am "your comment"
 git push origin master
