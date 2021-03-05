@@ -23,7 +23,7 @@ clean:
 	rm -fr dist/* .pytype
 
 .PHONY: lint
-lint: pylint pycodestyle flake8 mypy pytype
+lint: pylint pycodestyle flake8 mypy
 
 
 # disable: TODO list temporay
@@ -55,8 +55,14 @@ mypy:
 
 .PHONY: pytype
 pytype:
-	pytype src/ --disable=import-error,pyi-error
-	pytype examples/ --disable=import-error
+	pytype \
+		-V 3.8 \
+		--disable=import-error,pyi-error \
+		src/
+	pytype \
+		-V 3.8 \
+		--disable=import-error \
+		examples/
 
 .PHONY: uninstall-git-hook
 uninstall-git-hook:
@@ -119,8 +125,7 @@ bot:
 version:
 	@newVersion=$$(awk -F. '{print $$1"."$$2"."$$3+1}' < VERSION) \
 		&& echo $${newVersion} > VERSION \
-		&& echo VERSION = \'$${newVersion}\' > src/wechaty/version.py \
-		&& git add VERSION src/wechaty/version.py \
+		&& git add VERSION \
 		&& git commit -m "🔥 update version to $${newVersion}" > /dev/null \
 		&& git tag "v$${newVersion}" \
 		&& echo "Bumped version to $${newVersion}"

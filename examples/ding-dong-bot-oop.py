@@ -2,9 +2,10 @@
 # pylint: disable=R0801
 import asyncio
 import logging
-from typing import Optional, Union
+from typing import List, Optional, Union
 
-from wechaty_puppet import FileBox, ScanStatus  # type: ignore
+from wechaty_puppet import FileBox  # type: ignore
+from wechaty_puppet.schemas.event import EventReadyPayload  # type: ignore
 
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
@@ -19,6 +20,8 @@ class MyBot(Wechaty):
     oop developer
     """
     def __init__(self):
+        """initialization function
+        """
         super().__init__()
 
     async def on_message(self, msg: Message):
@@ -40,13 +43,31 @@ class MyBot(Wechaty):
             await conversation.say(file_box)
 
     async def on_login(self, contact: Contact):
-        print(f'user: {contact} has login')
+        """login event
 
-    async def on_scan(self, status: ScanStatus, qr_code: Optional[str] = None,
-                      data: Optional[str] = None):
-        contact = self.Contact.load(self.contact_id)
-        print(f'user <{contact}> scan status: {status.name} , '
-              f'qr_code: {qr_code}')
+        Args:
+            contact (Contact): the account logined
+        """
+        print('user: %s has login', contact)
+
+    async def on_ready(self, payload: EventReadyPayload):
+        """all initialization jobs should be done here.
+
+        eg: get all of friends/rooms/room-members
+
+        Args:
+            payload (EventReadyPayload): the data of ready event
+        """
+        log.info('ready event <%s>', payload)
+        # 1. get all of friends
+        friends: List[Contact] = await self.Contact.find_all()
+        for friend in friends:
+            log.info('load friend<%s>', friend)
+
+        # 2. get all of rooms
+        rooms: List[Room] = await self.Room.find_all()
+        for room in rooms:
+            log.info('load room<%s>', room)
 
 
 bot: Optional[MyBot] = None

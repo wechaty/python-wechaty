@@ -39,15 +39,6 @@ repos:
     stages: [push]
     types: [python]
 
-  - id: pytype
-    name: pytype
-    description: "pytype: checks and infers types for your Python code"
-    language: system
-    entry: make pytype
-    require_serial: true
-    stages: [push]
-    types: [python]
-
   - id: pytest
     name: pytest
     description: "pytest: run python pytest unit test"

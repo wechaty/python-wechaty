@@ -2,6 +2,7 @@
 setup
 """
 import os
+from typing import List
 
 import semver
 import setuptools
@@ -59,7 +60,7 @@ def get_long_description() -> str:
         return readme_fh.read()
 
 
-def get_install_requires() -> str:
+def get_install_requires() -> List[str]:
     """get install_requires"""
     with open('requirements.txt', 'r') as requirements_fh:
         return requirements_fh.read().splitlines()
