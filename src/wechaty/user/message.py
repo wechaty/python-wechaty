@@ -152,7 +152,9 @@ class Message(Accessory[MessagePayload]):
                 mention_ids=mention_ids)
         elif isinstance(msg, Contact):
             message_id = await self.puppet.message_send_contact(
-                conversation_id=conversation_id, contact_id=msg.contact_id)
+                conversation_id=conversation_id,
+                contact_id=msg.contact_id,
+            )
         elif isinstance(msg, FileBox):
             message_id = await self.puppet.message_send_file(
                 conversation_id=conversation_id, file=msg)
@@ -503,7 +505,7 @@ class Message(Accessory[MessagePayload]):
         Message sent date
         Python2.7: https://docs.python.org/2.7/library/datetime.html#datetime.datetime
         Python3+ ：https://docs.python.org/3.7/library/datetime.html#datetime.datetime
-        for datetime.fromtimestamp. It’s common for this to be restricted to years from 1970 through 2038. 
+        for datetime.fromtimestamp. It’s common for this to be restricted to years from 1970 through 2038.
         2145888000 is 2038-01-01 00:00:00 UTC for second
         2145888000 is 1970-01-26 04:04:48 UTC for millisecond
         :return:
