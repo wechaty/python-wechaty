@@ -206,12 +206,12 @@ class Wechaty(AsyncIOEventEmitter):
             #
             # wechaty-puppet-service
             #
-            hostie_module = __import__('wechaty_puppet_service')
-            if not hasattr(hostie_module, 'PuppetService'):
+            puppet_service_module = __import__('wechaty_puppet_service')
+            if not hasattr(puppet_service_module, 'PuppetService'):
                 raise WechatyConfigurationError('PuppetService not exist in '
                                                 'wechaty-puppet-service')
 
-            puppet_service_class = getattr(hostie_module, 'PuppetService')
+            puppet_service_class = getattr(puppet_service_module, 'PuppetService')
             if not issubclass(puppet_service_class, Puppet):
                 raise WechatyConfigurationError(f'Type {puppet_service_class} '
                                                 f'is not correct')
