@@ -23,7 +23,7 @@ clean:
 	rm -fr dist/* .pytype
 
 .PHONY: lint
-lint: pylint pycodestyle flake8 mypy pytype
+lint: pylint pycodestyle flake8 mypy
 
 
 # disable: TODO list temporay
