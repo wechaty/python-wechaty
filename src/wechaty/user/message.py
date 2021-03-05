@@ -152,7 +152,9 @@ class Message(Accessory[MessagePayload]):
                 mention_ids=mention_ids)
         elif isinstance(msg, Contact):
             message_id = await self.puppet.message_send_contact(
-                conversation_id=conversation_id, contact_id=msg.contact_id)
+                conversation_id=conversation_id,
+                contact_id=msg.contact_id,
+            )
         elif isinstance(msg, FileBox):
             message_id = await self.puppet.message_send_file(
                 conversation_id=conversation_id, file=msg)

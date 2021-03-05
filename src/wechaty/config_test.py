@@ -6,7 +6,9 @@ from typing import (
     # Dict,
     Iterable,
 )
+
 import pytest   # type: ignore
+
 from wechaty_puppet import get_logger   # type: ignore
 
 # pylint: disable=C0103

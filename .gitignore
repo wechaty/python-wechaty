@@ -112,5 +112,4 @@ token.txt
 **/log.txt
 docs/build/
 docs/source/_build
-**/.vscode/
 .pyre/
