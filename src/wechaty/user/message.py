@@ -83,7 +83,7 @@ class Message(Accessory[MessagePayload]):
     def message_type(self) -> MessageType:
         """
         get the message type
-        for more details, please refer to : https://github.com/Chatie/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
+        for more details, please refer to : https://github.com/wechaty/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
         """
         return self.payload.type
 

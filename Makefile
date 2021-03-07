@@ -96,11 +96,11 @@ pytest:
 test-unit: pytest
 
 .PHONY: test
-test: check-version lint pytest
+test: check-python-version lint pytest
 
-.PHONY: check-version
-check-version:
-	./scripts/check_version.py
+.PHONY: check-python-version
+check-python-version:
+	./scripts/check_python_version.py
 
 code:
 	code .

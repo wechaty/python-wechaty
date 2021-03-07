@@ -133,7 +133,7 @@ class Wechaty(AsyncIOEventEmitter):
         super().__init__()
 
         if options is None:
-            options = WechatyOptions(puppet='wechaty-puppet-hostie')
+            options = WechatyOptions(puppet='wechaty-puppet-service')
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
@@ -199,24 +199,24 @@ class Wechaty(AsyncIOEventEmitter):
             return options.puppet
 
         if isinstance(options.puppet, PuppetModuleName):
-            if options.puppet != 'wechaty-puppet-hostie':
-                raise TypeError('Python Wechaty only supports wechaty-puppet-hostie right now.'
+            if options.puppet != 'wechaty-puppet-service':
+                raise TypeError('Python Wechaty only supports wechaty-puppet-service right now.'
                                 'This puppet is not supported: ' + options.puppet)
 
             #
-            # wechaty-puppet-hostie
+            # wechaty-puppet-service
             #
-            hostie_module = __import__('wechaty_puppet_hostie')
-            if not hasattr(hostie_module, 'HostiePuppet'):
-                raise WechatyConfigurationError('HostiePuppet not exist in '
-                                                'wechaty-puppet-hostie')
+            puppet_service_module = __import__('wechaty_puppet_service')
+            if not hasattr(puppet_service_module, 'PuppetService'):
+                raise WechatyConfigurationError('PuppetService not exist in '
+                                                'wechaty-puppet-service')
 
-            hostie_puppet_class = getattr(hostie_module, 'HostiePuppet')
-            if not issubclass(hostie_puppet_class, Puppet):
-                raise WechatyConfigurationError(f'Type {hostie_puppet_class} '
+            puppet_service_class = getattr(puppet_service_module, 'PuppetService')
+            if not issubclass(puppet_service_class, Puppet):
+                raise WechatyConfigurationError(f'Type {puppet_service_class} '
                                                 f'is not correct')
 
-            return hostie_puppet_class(options.puppet_options)
+            return puppet_service_class(options.puppet_options)
 
         raise WechatyConfigurationError('puppet expected type is [Puppet, '
                                         'PuppetModuleName(str)]')
