@@ -212,9 +212,6 @@ If you are interested in the translation and want to look at how it works, it wi
     - [ ] Documentation
 1. [ ] Class WechatyPuppetHostie
     - TS SLOC(909): <https://github.com/wechaty/wechaty-puppet-service/blob/master/src/client/puppet-service.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
 
 ## Usage
 
