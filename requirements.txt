@@ -3,4 +3,4 @@ requests
 qrcode
 lxml
 wechaty-puppet>=0.3.dev2
-wechaty-puppet-service>=0.7.dev3
+wechaty-puppet-service>=0.7.dev8
