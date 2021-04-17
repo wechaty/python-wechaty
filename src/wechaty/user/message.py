@@ -57,7 +57,8 @@ SUPPORTED_MESSAGE_FILE_TYPES: List[MessageType] = [
     MessageType.MESSAGE_TYPE_ATTACHMENT,
     MessageType.MESSAGE_TYPE_EMOTICON,
     MessageType.MESSAGE_TYPE_IMAGE,
-    MessageType.MESSAGE_TYPE_VIDEO
+    MessageType.MESSAGE_TYPE_VIDEO,
+    MessageType.MESSAGE_TYPE_AUDIO
 ]
 
 
