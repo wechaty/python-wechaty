@@ -14,3 +14,4 @@ apscheduler
 lxml
 pre-commit
 mkdocs
+mkdocs-material

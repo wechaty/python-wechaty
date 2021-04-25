@@ -1,7 +1,22 @@
 site_name: python-wechaty
+repo_url: http://github.com/wechaty/python-wechaty
+repo_name: GitHub
+site_description: 'python-wechaty AI Chatbot'
+copyright: '@wechaty community'
 nav:
-    - Introduction: getting-started.md
+    - Home: 'index.md'
+    - Introduction:
+      - 'getting-started': 'introduction/getting-started.md'
     - Tutorials: tutorials.md
     - How to: how-to.md
     - References: reference.md
-theme: readthedocs
+theme:
+  name: material
+  logo: img/wechaty-icon-white.svg
+
+markdown_extensions:
+    - toc:
+        baselevel: 2
+
+plugins:
+    - search
