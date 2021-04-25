@@ -13,3 +13,4 @@ qrcode
 apscheduler
 lxml
 pre-commit
+mkdocs

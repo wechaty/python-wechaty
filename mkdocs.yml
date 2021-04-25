@@ -1,0 +1,7 @@
+site_name: python-wechaty
+nav:
+    - Introduction: getting-started.md
+    - Tutorials: tutorials.md
+    - How to: how-to.md
+    - References: reference.md
+theme: readthedocs
