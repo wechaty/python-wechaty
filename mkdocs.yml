@@ -4,12 +4,18 @@ repo_name: GitHub
 site_description: 'python-wechaty AI Chatbot'
 copyright: '@wechaty community'
 nav:
-    - Home: 'index.md'
-    - Introduction:
-      - 'getting-started': 'introduction/getting-started.md'
-    - Tutorials: tutorials.md
-    - How to: how-to.md
-    - References: reference.md
+    - 首页: 'index.md'
+    - 介绍:
+      - '开始上手': 'introduction/getting-started.md'
+      - '相关视频': 'introduction/videos.md'
+    - 教程: tutorials.md
+    - 开箱即用:
+      - '如何使用免费Web协议': 'how-to/use-web-protocol.md'
+      - '如何使用Padlocal协议': 'how-to/use-padlocal-protocol.md'
+      - '如何添加好友': 'how-to/add-friendship.md'
+      - '关键字入群': 'how-to/create-room-inviter.md'
+      
+    # - References: reference
 theme:
   name: material
   logo: img/wechaty-icon-white.svg
