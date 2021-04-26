@@ -19,6 +19,7 @@ nav:
 theme:
   name: material
   logo: img/wechaty-icon-white.svg
+  favicon: img/favicon.ico
 
 markdown_extensions:
     - toc:
