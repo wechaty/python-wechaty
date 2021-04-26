@@ -24,6 +24,8 @@ theme:
   favicon: img/favicon.ico
 
 markdown_extensions:
+    - pymdownx.highlight
+    - pymdownx.superfences
     - toc:
         baselevel: 2
 
