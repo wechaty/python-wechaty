@@ -6,6 +6,8 @@ copyright: '@wechaty community'
 nav:
     - 首页: 'index.md'
     - 介绍:
+      - '使用免费Web协议': 'introduction/use-web-protocol.md'
+      - '使用Padlocal协议': 'introduction/use-padlocal-protocol.md'
       - '开始上手': 'introduction/getting-started.md'
       - '相关视频': 'introduction/videos.md'
     - 教程: tutorials.md

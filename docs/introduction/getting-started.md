@@ -1,23 +1,57 @@
-# Welcome to python-wechaty
+## 快速开始
 
-![python-wechaty](/img/getting-started/python-wechaty.png)
+1、 安装
 
-## 一、Wechaty 是什么
+```shell
+pip install --upgrade wechaty
+```
 
-Wechaty 是一个开源聊天机器人框架SDK，具有高度封装、高可用的特性，支持NodeJs, Python, Go 和Java 等多语言版本。在过去的4年中，服务了数万名开发者，收获了 Github 的 1w+ Star。同时配置了完整的 DevOps 体系并持续按照 Apache 的方式管理技术社区。
+2、 设置TOKEN
 
-## 二、Python-Wechaty 是什么
+```shell
+export token=your_token_at_here
+# or
+export WECHATY_PUPPET_SERVICE_TOKEN=your_token_at_here
+```
 
-> 理论上python-wechaty可以对接任何IM平台
+或者通过代码来设置环境变量:
 
-python-wechaty是基于Wechaty生态派生出的Python编程语言客户端，能够让开发者使用少量代码对接到各个即时通讯软件平台。在过去的一年里，python-wechaty致力于提升代码鲁棒性、添加社区开箱即用的工具、以及完善软件开发文档。
+```python
+import os
+os.environ['token'] = 'your_token_at_here'
+# or 
+os.environ['WECHATY_PUPPET_SERVICE_TOKEN'] = 'your_token_at_here'
+```
 
-目前可对接：
+3、 聊天机器人
 
-- [微信](https://github.com/wechaty/wechaty-puppet-wechat)
-- [微信公众号](https://github.com/wechaty/wechaty-puppet-official-account)
-- [钉钉](https://github.com/wechaty/wechaty-puppet-dingtalk)
-- [飞书](https://github.com/wechaty/wechaty-puppet-lark)
-- [WhatsApp](https://github.com/wechaty/wechaty-puppet-whatsapp)
-- [Gitter](https://github.com/wechaty/wechaty-puppet-gitter)
-- ...
+```python
+import asyncio
+
+from wechaty import Wechaty
+
+class MyBot(Wechaty):
+    async def on_message(self, msg: Message):
+        from_contact = msg.talker()
+        text = msg.text()
+        room = msg.room()
+        if text == 'ding':
+            conversation: Union[
+                Room, Contact] = from_contact if room is None else room
+            await conversation.ready()
+            await conversation.say('dong')
+            file_box = FileBox.from_url(
+                'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/'
+                'u=1116676390,2305043183&fm=26&gp=0.jpg',
+                name='ding-dong.jpg')
+            await conversation.say(file_box)
+
+asyncio.run(MyBot().start())
+```
+
+以上代码展示了基于python-wechaty如何开发聊天机器人的整体步骤：安装、设置TOKEN环境变量以及编写聊天机器人。示例机器人代码可查看：[ding-dong-bot-oop.py](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/basic/ding-dong-bot-oop.py)
+
+## 快速上手
+
+- [使用padlocal协议](./how-to/use-padlocal-protocol.md)
+- [使用web协议](./how-to/use-web-protocol.md)
