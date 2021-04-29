@@ -28,16 +28,9 @@
 ## 三、启动Padlocal网关服务
 
 ### 3.1 脚本
-=======
-# Python Wechaty如何使用PadLocal Puppet Service
-
-本文描述Python语言下如何使用iPad协议的PadLocal Token。其他Wechaty多语言开发也能做参考。
 
 - [wechaty-puppet-padlocal](https://github.com/padlocal/wechaty-puppet-padlocal)
 - [TOKEN 申请方法](https://wechaty.js.org/docs/puppet-services/)
-
-## 搭建PadLocal Token Gateway
->>>>>>> d21fe5f2ace593e8af080999fc7ff07199ba5c37
 
 ```shell
 # 设置环境变量
