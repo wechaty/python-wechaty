@@ -541,7 +541,12 @@ class Message(Accessory[MessagePayload]):
                 f'this type <{self.type().name}> message can"t be converted to '
                 f'FileBox'
             )
-        file_box = await self.puppet.message_file(self.message_id)
+        msg_type: MessageType = self.type()
+        if msg_type == MessageType.MESSAGE_TYPE_IMAGE:
+            file_box = await self.puppet.message_image(self.message_id)
+        else:
+            file_box = await self.puppet.message_file(self.message_id)
+        
         return file_box
 
     def to_image(self) -> Image:
