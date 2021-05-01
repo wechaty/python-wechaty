@@ -12,10 +12,19 @@ nav:
       - '相关视频': 'introduction/videos.md'
     - 教程: tutorials.md
     - 开箱即用:
-      - '如何使用免费Web协议': 'how-to/use-web-protocol.md'
-      - '如何使用Padlocal协议': 'how-to/use-padlocal-protocol.md'
       - '如何添加好友': 'how-to/add-friendship.md'
       - '关键字入群': 'how-to/create-room-inviter.md'
+    - 模块详解:
+      - '介绍': 'references/index.md'
+      - 'Wechaty模块': 'references/wechaty.md'
+      - '消息模块': 'references/message.md'
+      - '联系人模块': 'references/contact.md'
+      - '登录人模块': 'references/contact-self.md'
+      - '好友关系模块': 'references/friendship.md'
+      - '群聊模块': 'references/room.md'
+      - '群聊邀请模块': 'references/room-invitation.md'
+    - FAQ:
+      - '什么是Puppet': 'faq/what-is-a-puppet.md'
       
     # - References: reference
 theme:
