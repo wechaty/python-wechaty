@@ -24,6 +24,7 @@ nav:
       - '群聊模块': 'references/room.md'
       - '群聊邀请模块': 'references/room-invitation.md'
     - FAQ:
+      - '基础常见问题': 'faq/common.md'
       - '什么是Puppet': 'faq/what-is-a-puppet.md'
       
     # - References: reference
