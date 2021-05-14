@@ -64,7 +64,7 @@ from wechaty_puppet import (  # type: ignore
 )
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch  # type: ignore
-from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
 
 from wechaty.user.url_link import UrlLink  # type: ignore
 
