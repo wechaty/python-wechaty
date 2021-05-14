@@ -12,9 +12,9 @@ from wechaty import (
     Contact,
     Room,
     Message,
-    Image
+    Image,
+    MiniProgram
 )
-from wechaty.user.mini_program import MiniProgram
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

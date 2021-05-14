@@ -599,7 +599,7 @@ class Message(Accessory[MessagePayload]):
             raise WechatyPayloadError(
                 'can not get url_link_payload by message: %s'
                 % self.message_id)
-        return UrlLink(payload)
+        return self.wechaty.UrlLink(payload)
 
     async def to_mini_program(self) -> MiniProgram:
         """
@@ -618,4 +618,4 @@ class Message(Accessory[MessagePayload]):
                 'no miniProgram payload for message %s'
                 % self.message_id
             )
-        return MiniProgram(payload)
+        return self.wechaty.MiniProgram(payload)
