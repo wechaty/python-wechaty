@@ -64,7 +64,9 @@ from wechaty_puppet import (  # type: ignore
 )
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
 from wechaty_puppet.state_switch import StateSwitch  # type: ignore
-from wechaty_puppet.watch_dog import WatchdogFood, Watchdog  # type: ignore
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
+
+from wechaty.user.url_link import UrlLink  # type: ignore
 
 from .utils import (
     qr_terminal
@@ -157,6 +159,7 @@ class Wechaty(AsyncIOEventEmitter):
         self.RoomInvitation: Type[RoomInvitation] = RoomInvitation
         self.Favorite: Type[Favorite] = Favorite
         self.MiniProgram: Type[MiniProgram] = MiniProgram
+        self.UrlLink: Type[UrlLink] = UrlLink
         # TODO -> url-link, miniprogram
 
         self.started: bool = False
@@ -730,6 +733,7 @@ class Wechaty(AsyncIOEventEmitter):
         self.Image = type('Image', (Image,), meta_info)
         self.Message = type('Message', (Message,), meta_info)
         self.MiniProgram = type('MiniProgram', (MiniProgram,), meta_info)
+        self.UrlLink = type('UrlLink', (UrlLink,), meta_info)
         self.Room = type('Room', (Room,), meta_info)
         self.RoomInvitation = type('RoomInvitation', (RoomInvitation,), meta_info)
         self.Tag = type('Tag', (Tag,), meta_info)
