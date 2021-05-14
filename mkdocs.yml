@@ -38,6 +38,9 @@ markdown_extensions:
     - pymdownx.superfences
     - toc:
         baselevel: 2
+google_analytics:
+  - G-1TDFTF2BYD
+  - auto
 
 plugins:
     - search
