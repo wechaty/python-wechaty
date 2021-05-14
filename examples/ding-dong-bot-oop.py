@@ -4,14 +4,19 @@ import asyncio
 import logging
 from typing import List, Optional, Union
 
-from wechaty_puppet import FileBox  # type: ignore
-from wechaty_puppet.schemas.event import EventReadyPayload  # type: ignore
-
-from wechaty import Wechaty, Contact
-from wechaty.user import Message, Room
+from wechaty import (
+    MessageType,
+    FileBox,
+    RoomMemberQueryFilter,
+    Wechaty,
+    Contact,
+    Room,
+    Message,
+    Image
+)
 
 logging.basicConfig(level=logging.INFO)
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class MyBot(Wechaty):
@@ -19,18 +24,23 @@ class MyBot(Wechaty):
     listen wechaty event with inherited functions, which is more friendly for
     oop developer
     """
+
     def __init__(self):
         """initialization function
         """
+        self.login_user: Optional[Contact] = None
         super().__init__()
 
+    # pylint: disable=R0912,R0914,R0915
     async def on_message(self, msg: Message):
         """
         listen for message event
         """
-        from_contact = msg.talker()
-        text = msg.text()
-        room = msg.room()
+        from_contact: Contact = msg.talker()
+        text: str = msg.text()
+        room: Optional[Room] = msg.room()
+        msg_type: MessageType = msg.type()
+        file_box: Optional[FileBox] = None
         if text == '#ding':
             conversation: Union[
                 Room, Contact] = from_contact if room is None else room
@@ -42,32 +52,85 @@ class MyBot(Wechaty):
                 name='ding-dong.jpg')
             await conversation.say(file_box)
 
+        elif msg_type == MessageType.MESSAGE_TYPE_IMAGE:
+            logger.info('receving image file')
+            # file_box: FileBox = await msg.to_file_box()
+            image: Image = msg.to_image()
+
+            hd_file_box: FileBox = await image.hd()
+            await hd_file_box.to_file('./hd-image.jpg', overwrite=True)
+
+            thumbnail_file_box: FileBox = await image.thumbnail()
+            await thumbnail_file_box.to_file('./thumbnail-image.jpg', overwrite=True)
+            artwork_file_box: FileBox = await image.artwork()
+            await artwork_file_box.to_file('./artwork-image.jpg', overwrite=True)
+            # reply the image
+            await msg.say(hd_file_box)
+
+        # pylint: disable=C0301
+        elif msg_type in [MessageType.MESSAGE_TYPE_AUDIO, MessageType.MESSAGE_TYPE_ATTACHMENT, MessageType.MESSAGE_TYPE_VIDEO]:
+            logger.info('receving file ...')
+            file_box = await msg.to_file_box()
+            if file_box:
+                await file_box.to_file(file_box.name)
+
+        elif text == 'get room members' and room:
+            logger.info('get room members ...')
+            room_members: List[Contact] = await room.member_list()
+            names: List[str] = [
+                room_member.name for room_member in room_members]
+            await msg.say('\n'.join(names))
+
+        elif text.startswith('remove room member:'):
+            logger.info('remove room member:')
+            if not room:
+                await msg.say('this is not room zone')
+                return
+
+            room_member_name = text[len('remove room member:') + 1:]
+
+            room_member: Optional[Contact] = await room.member(
+                query=RoomMemberQueryFilter(name=room_member_name)
+            )
+            if room_member:
+                if self.login_user and self.login_user.contact_id in room.payload.admin_ids:
+                    await room.delete(room_member)
+                else:
+                    await msg.say('登录用户不是该群管理员...')
+
+            else:
+                await msg.say(f'can not fine room member by name<{room_member_name}>')
+        elif text.startswith('get room topic'):
+            logger.info('get room topic')
+            if room:
+                topic: Optional[str] = await room.topic()
+                if topic:
+                    await msg.say(topic)
+
+        elif text.startswith('rename room topic:new-topic'):
+            logger.info('rename room topic ...')
+            if room:
+                new_topic = text[len('rename room topic:') + 1:]
+                await msg.say(new_topic)
+        elif text.startswith('add new friend:'):
+            logger.info('add new friendship ...')
+            identity_info = text[len('add new friend:') + 1:]
+            weixin_contact: Optional[Contact] = await self.Friendship.search(weixin=identity_info)
+            phone_contact: Optional[Contact] = await self.Friendship.search(phone=identity_info)
+            contact: Optional[Contact] = weixin_contact or phone_contact
+            if contact:
+                self.Friendship.add(contact, 'hello world ...')
+        else:
+            pass
+
     async def on_login(self, contact: Contact):
         """login event
 
         Args:
             contact (Contact): the account logined
         """
-        print('user: %s has login', contact)
-
-    async def on_ready(self, payload: EventReadyPayload):
-        """all initialization jobs should be done here.
-
-        eg: get all of friends/rooms/room-members
-
-        Args:
-            payload (EventReadyPayload): the data of ready event
-        """
-        log.info('ready event <%s>', payload)
-        # 1. get all of friends
-        friends: List[Contact] = await self.Contact.find_all()
-        for friend in friends:
-            log.info('load friend<%s>', friend)
-
-        # 2. get all of rooms
-        rooms: List[Room] = await self.Room.find_all()
-        for room in rooms:
-            log.info('load room<%s>', room)
+        logger.info('Contact<%s> has logined ...', contact)
+        self.login_user = contact
 
 
 bot: Optional[MyBot] = None
