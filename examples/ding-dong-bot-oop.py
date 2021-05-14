@@ -14,6 +14,7 @@ from wechaty import (
     Message,
     Image
 )
+from wechaty.user.mini_program import MiniProgram
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -74,6 +75,12 @@ class MyBot(Wechaty):
             if file_box:
                 await file_box.to_file(file_box.name)
 
+        elif msg_type == MessageType.MESSAGE_TYPE_MINI_PROGRAM:
+            logger.info('receving mini-program ...')
+            mini_program: Optional[MiniProgram] = await msg.to_mini_program()
+            if mini_program:
+                await msg.say(mini_program)
+
         elif text == 'get room members' and room:
             logger.info('get room members ...')
             room_members: List[Contact] = await room.member_list()
@@ -107,7 +114,7 @@ class MyBot(Wechaty):
                 if topic:
                     await msg.say(topic)
 
-        elif text.startswith('rename room topic:new-topic'):
+        elif text.startswith('rename room topic:'):
             logger.info('rename room topic ...')
             if room:
                 new_topic = text[len('rename room topic:') + 1:]
@@ -120,6 +127,10 @@ class MyBot(Wechaty):
             contact: Optional[Contact] = weixin_contact or phone_contact
             if contact:
                 self.Friendship.add(contact, 'hello world ...')
+
+        elif text.startswith('at me'):
+            await msg.say(self.login_user)
+
         else:
             pass
 
