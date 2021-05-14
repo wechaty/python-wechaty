@@ -338,7 +338,7 @@ class Room(Accessory[RoomPayload]):
 
     async def quit(self):
         """
-        Add contact in a room
+        Quit from a room
         """
         log.info('Room quit <%s>', self)
 
