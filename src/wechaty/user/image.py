@@ -66,9 +66,6 @@ class Image(Accessory):
         :return:
         """
         log.info('@classmethod create(%s)', image_id)
-        # obj = super().__new__(cls)
-        # obj.__init__(image_id)
-        # return obj
         return cls(image_id)
 
     async def thumbnail(self) -> FileBox:
@@ -78,7 +75,7 @@ class Image(Accessory):
         """
         log.info('thumbnail() for <%s>', self.image_id)
         image_file = await self.puppet.message_image(
-            message_id=self.image_id, image_type=ImageType.Thumbnail)
+            message_id=self.image_id, image_type=ImageType.IMAGE_TYPE_HD)
         return image_file
 
     async def hd(self) -> FileBox:
@@ -88,7 +85,7 @@ class Image(Accessory):
         """
         log.info('hd() for <%s>', self.image_id)
         image_file = await self.puppet.message_image(
-            message_id=self.image_id, image_type=ImageType.HD)
+            message_id=self.image_id, image_type=ImageType.IMAGE_TYPE_HD)
         return image_file
 
     async def artwork(self) -> FileBox:
@@ -96,7 +93,7 @@ class Image(Accessory):
         docstring
         :return:
         """
-        log.info('artwork() for <%d>', self.image_id)
+        log.info('artwork() for <%s>', self.image_id)
         image_file = await self.puppet.message_image(
-            message_id=self.image_id, image_type=ImageType.Artwork)
+            message_id=self.image_id, image_type=ImageType.IMAGE_TYPE_ARTWORK)
         return image_file
