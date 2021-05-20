@@ -558,7 +558,7 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'ready':
                 async def ready_listener(payload: EventReadyPayload):
-                    log.info('receive <ready> event <%s>')
+                    log.info('receive <ready> event <%s>', payload)
                     self.emit('ready', payload)
                     self._ready_state.on(True)
                     await self.on_ready(payload)
@@ -567,7 +567,7 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'room-invite':
                 async def room_invite_listener(payload: EventRoomInvitePayload):
-                    log.info('receive <room-invite> event <%s>')
+                    log.info('receive <room-invite> event <%s>', payload)
                     invitation = self.RoomInvitation.load(
                         payload.room_invitation_id)
                     self.emit('room-invite', invitation)
@@ -583,7 +583,7 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'room-join':
                 async def room_join_listener(payload: EventRoomJoinPayload):
-                    log.info('receive <room-join> event <%s>')
+                    log.info('receive <room-join> event <%s>', payload)
                     room = self.Room.load(payload.room_id)
                     await room.ready()
 
@@ -616,7 +616,7 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'room-leave':
                 async def room_leave_listener(payload: EventRoomLeavePayload):
-                    log.info('receive <room-leave> event <%s>')
+                    log.info('receive <room-leave> event <%s>', payload)
                     room = self.Room.load(payload.room_id)
                     # room info is dirty now
                     await room.ready(force_sync=True)
@@ -652,8 +652,9 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'room-topic':
                 async def room_topic_listener(payload: EventRoomTopicPayload):
-                    log.info('receive <room-topic> event <%s>')
-                    room = self.Room.load(payload.room_id)
+                    log.info('receive <room-topic> event <%s>', payload)
+
+                    room: Room = self.Room.load(payload.room_id)
                     await room.ready()
 
                     changer = self.Contact.load(payload.changer_id)
@@ -682,7 +683,7 @@ class Wechaty(AsyncIOEventEmitter):
 
             elif event_name == 'scan':
                 async def scan_listener(payload: EventScanPayload):
-                    log.info('receive <scan> event <%s>')
+                    log.info('receive <scan> event <%s>', payload)
                     qr_code = '' if payload.qrcode is None \
                         else payload.qrcode
                     if payload.status == ScanStatus.Waiting:
