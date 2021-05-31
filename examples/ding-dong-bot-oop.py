@@ -32,6 +32,9 @@ class MyBot(Wechaty):
         self.login_user: Optional[Contact] = None
         super().__init__()
 
+    async def on_ready(self, _):
+        logger.info('ready event')
+
     # pylint: disable=R0912,R0914,R0915
     async def on_message(self, msg: Message):
         """
@@ -129,7 +132,24 @@ class MyBot(Wechaty):
                 self.Friendship.add(contact, 'hello world ...')
 
         elif text.startswith('at me'):
-            await msg.say(self.login_user)
+            if room:
+                talker = msg.talker()
+                await room.say('hello', mention_ids=[talker.contact_id])
+
+        elif text.startswith('my alias'):
+            talker = msg.talker()
+            alias = await talker.alias()
+            await msg.say('your alias is:' + (alias or ''))
+
+        elif text.startswith('set alias:'):
+            talker = msg.talker()
+            new_alias = text[len('set alias:'):]
+
+            # set your new alias
+            alias = await talker.alias(new_alias)
+            # get your new alias
+            alias = await talker.alias()
+            await msg.say('your new alias is:' + (alias or ''))
 
         else:
             pass
