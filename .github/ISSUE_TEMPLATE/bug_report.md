@@ -1,38 +1,28 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
+title: "\U0001F41B\U0001F41B  Bug Report: title-of-your-problem"
+labels: "\U0001F41B bug"
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Describe your problem
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+> A clear and concise description of what the bug is.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Reproduce your problem
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+```python
+simple code to reproduce your problem
+```
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+## Error info 
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+* log info
 
-**Additional context**
+* screen shot image
+
+## Additional context
+
 Add any other context about the problem here.
