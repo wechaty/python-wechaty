@@ -32,9 +32,6 @@ class MyBot(Wechaty):
         self.login_user: Optional[Contact] = None
         super().__init__()
 
-    async def on_ready(self, _):
-        logger.info('ready event')
-
     # pylint: disable=R0912,R0914,R0915
     async def on_message(self, msg: Message):
         """
