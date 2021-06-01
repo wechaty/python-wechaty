@@ -45,6 +45,7 @@ from wechaty_puppet import (  # type: ignore
 )
 # from wechaty.utils import type_check
 from ..accessory import Accessory
+from ..config import AT_SEPARATOR
 
 if TYPE_CHECKING:
     from .contact import Contact
@@ -269,6 +270,18 @@ class Room(Accessory[RoomPayload]):
         from wechaty.user.mini_program import MiniProgram
         from wechaty.user.contact import Contact
         if isinstance(some_thing, str):
+            if mention_ids:
+                mention_info = []
+                for mention_id in mention_ids:
+                    mention_contact: Contact = self.wechaty.Contact.load(mention_id)
+                    await mention_contact.ready()
+                    alias = await mention_contact.alias()
+                    name = mention_contact.name
+                    mention_info.append('@' + (alias or name))
+                
+                mention_text = AT_SEPARATOR.join(mention_info)
+                some_thing = mention_text + ' ' + some_thing
+
             msg_id = await self.puppet.message_send_text(
                 conversation_id=self.room_id, message=some_thing,
                 mention_ids=mention_ids

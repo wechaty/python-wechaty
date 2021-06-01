@@ -271,19 +271,11 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         if self.payload is None:
             raise WechatyPayloadError('can"t load contact payload <%s>' % self)
 
-        # if new_alias is None:
-        #     if self.payload.alias is None:
-        #         return ''
-        #     return self.payload.alias
-
         try:
             alias = await self.puppet.contact_alias(self.contact_id, new_alias)
+            
+            # reload the contact payload
             await self.ready(force_sync=True)
-            if new_alias != self.payload.alias:
-                log.info(
-                    'Contact alias(%s) sync with server fail: \
-                    set(%s) is not equal to get(%s)',
-                    new_alias, new_alias, self.payload.alias)
             return alias
         # pylint:disable=W0703
         except Exception as exception:

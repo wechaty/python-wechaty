@@ -45,6 +45,10 @@ DATA_PATH = os.path.realpath(
     ),
 )
 
+# http://jkorpela.fi/chars/spaces.html
+# String.fromCharCode(8197)
+AT_SEPARATOR = chr(0x2005)
+
 
 def global_exception_handler(exception: Exception) -> None:
     """
