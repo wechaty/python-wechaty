@@ -60,13 +60,15 @@ class MyBot(Wechaty):
 
             hd_file_box: FileBox = await image.hd()
             await hd_file_box.to_file('./hd-image.jpg', overwrite=True)
-
-            thumbnail_file_box: FileBox = await image.thumbnail()
-            await thumbnail_file_box.to_file('./thumbnail-image.jpg', overwrite=True)
-            artwork_file_box: FileBox = await image.artwork()
-            await artwork_file_box.to_file('./artwork-image.jpg', overwrite=True)
+            
             # reply the image
-            await msg.say(hd_file_box)
+            image_filebox = FileBox.from_file('./hd-image.jpg')
+            await community.say(image_filebox)
+            # await msg.say(hd_file_box)
+            
+        elif msg_type==MessageType.MESSAGE_TYPE_URL:
+            content = await msg.to_url_link()
+            await community.say(content)
 
         # pylint: disable=C0301
         elif msg_type in [MessageType.MESSAGE_TYPE_AUDIO, MessageType.MESSAGE_TYPE_ATTACHMENT, MessageType.MESSAGE_TYPE_VIDEO]:
