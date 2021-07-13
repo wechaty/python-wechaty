@@ -63,12 +63,12 @@ class MyBot(Wechaty):
             
             # reply the image
             image_filebox = FileBox.from_file('./hd-image.jpg')
-            await community.say(image_filebox)
+            await room.say(image_filebox)
             # await msg.say(hd_file_box)
             
         elif msg_type==MessageType.MESSAGE_TYPE_URL:
             content = await msg.to_url_link()
-            await community.say(content)
+            await room.say(content)
 
         # pylint: disable=C0301
         elif msg_type in [MessageType.MESSAGE_TYPE_AUDIO, MessageType.MESSAGE_TYPE_ATTACHMENT, MessageType.MESSAGE_TYPE_VIDEO]:
