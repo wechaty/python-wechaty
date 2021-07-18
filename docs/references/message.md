@@ -2,44 +2,42 @@
 title: Message
 ---
 
-All wechat messages will be encapsulated as a Message.
+消息处理对象。
 
 ## Message
 
-All wechat messages will be encapsulated as a Message.
+接受和发送的消息都封装成`Message`对象。
 
 [Examples/Ding-Dong-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/ding-dong-bot.ts)
 
-**Kind**: global class
+**Kind**: 全局对象
 
 * [Message](message.md#Message)
   * _instance_
-    * [.from\(\)](message.md#Message+from) ⇒ `Contact` \| `null`
-    * [.to\(\)](message.md#Message+to) ⇒ `Contact` \| `null`
-    * [.room\(\)](message.md#Message+room) ⇒ `Room` \| `null`
-    * [~~.content\(\)~~](message.md#Message+content)
-    * [.text\(\)](message.md#Message+text) ⇒ `string`
-    * [.say\(textOrContactOrFile\)](message.md#Message+say) ⇒ `Promise <void>`
+    * [.from\(\)](message.md#Message+from) ⇒ `Contact` \| `None`
+    * [.to\(\)](message.md#Message+to) ⇒ `Contact` \| `None`
+    * [.room\(\)](message.md#Message+room) ⇒ `Room` \| `None`
+    * [.text\(\)](message.md#Message+text) ⇒ `str`
+    * [.say\(textOrContactOrFile\)](message.md#Message+say) ⇒ `None`
     * [.type\(\)](message.md#Message+type) ⇒ `MessageType`
-    * [.self\(\)](message.md#Message+self) ⇒ `boolean`
-    * [.mention\(\)](message.md#Message+mention) ⇒ `Promise <Contact []>`
-    * [.mentionSelf\(\)](message.md#Message+mentionSelf) ⇒ `Promise <boolean>`
-    * [.forward\(to\)](message.md#Message+forward) ⇒ `Promise <void>`
-    * [.date\(\)](message.md#Message+date) ⇒ `Date`
+    * [.self\(\)](message.md#Message+self) ⇒ `bool`
+    * [.mention\(\)](message.md#Message+mention) ⇒ `List[Contact]`
+    * [.mention_self\(\)](message.md#Message+mentionSelf) ⇒ `<boolean>`
+    * [.forward\(to\)](message.md#Message+forward) ⇒ `<void>`
+    * [.date\(\)](message.md#Message+date) ⇒ `datetime`
     * [.age\(\)](message.md#Message+age) ⇒ `number`
-    * [~~.file\(\)~~](message.md#Message+file)
-    * [.toFileBox\(\)](message.md#Message+toFileBox) ⇒ `Promise <FileBox>`
-    * [.toContact\(\)](message.md#Message+toContact) ⇒ `Promise <Contact>`
-    * [.toUrlLink\(\)](message.md#Message+toUrlLink) ⇒ `Promise <UrlLink>`
+    * [.to_file_box\(\)](message.md#Message+toFileBox) ⇒ `FileBox`
+    * [.to_contact\(\)](message.md#Message+toContact) ⇒ `Contact`
+    * [.to_url_link\(\)](message.md#Message+toUrlLink) ⇒ `UrlLink`
   * _static_
-    * [.find\(\)](message.md#Message.find) ⇒ `Promise <Message>`
-    * [.findAll\(\)](message.md#Message.findAll) ⇒ `Promise <Message []>`
+    * [.find\(\)](message.md#Message.find) ⇒ `Message`
+    * [.find_all\(\)](message.md#Message.findAll) ⇒ `Message`
 
-### message.from\(\) ⇒ `Contact | null`
+### message.from\(\) ⇒ `Contact | None`
 
-Get the sender from a message.
+获取消息的发送者。
 
-**Kind**: instance method of [`Message`](message.md#Message) **Example**
+**数据类型**: instance method of [`Message`](message.md#Message) **Example**
 
 ```javascript
 const bot = new Wechaty()
@@ -58,9 +56,9 @@ bot
 .start()
 ```
 
-### message.to\(\) ⇒ `Contact` \| `null`
+### message.to\(\) ⇒ `Contact` \| `None`
 
-Get the destination of the message Message.to\(\) will return null if a message is in a room, use Message.room\(\) to get the room.
+Get the destination of the message Message.to\(\) will return None if a message is in a room, use Message.room\(\) to get the room.
 
 **Kind**: instance method of [`Message`](message.md#Message)
 
@@ -83,9 +81,9 @@ bot
 .start()
 ```
 
-### message.room\(\) ⇒ `Room` \| `null`
+### message.room\(\) ⇒ `Room` \| `None`
 
-Get the room from the message. If the message is not in a room, then will return `null`
+Get the room from the message. If the message is not in a room, then will return `None`
 
 **Kind**: instance method of [`Message`](message.md#Message)
 
@@ -139,7 +137,7 @@ bot
 .start()
 ```
 
-### message.toRecalled\(\) ⇒ `Promise <Message | null>`
+### message.toRecalled\(\) ⇒ `Promise <Message | None>`
 
 Get the text content of the recalled message
 
@@ -378,7 +376,7 @@ Get Url Link of the Message Extract the Url Link from the Message, and encapsula
 
 **Kind**: instance method of [`Message`](message.md#Message)
 
-### Message.find\(\) ⇒ `Promise <Message | null>`
+### Message.find\(\) ⇒ `Promise <Message | None>`
 
 Find message in cache
 

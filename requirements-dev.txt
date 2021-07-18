@@ -15,3 +15,4 @@ lxml
 pre-commit
 mkdocs
 mkdocs-material
+types-requests

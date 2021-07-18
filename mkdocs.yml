@@ -14,6 +14,15 @@ nav:
     - 开箱即用:
       - '如何添加好友': 'how-to/add-friendship.md'
       - '关键字入群': 'how-to/create-room-inviter.md'
+    - 插件系统:
+      - '介绍': 'plugins/introduction.md'
+      - '关键字入群插件': 'plugins/keywords.md'
+      - '自动回复插件': 'plugins/auto-replay.md'
+      - '任务调度插件': 'plugins/scheduler.md'
+      - '群消息同步插件': 'plugins/message-forward.md'
+      - 'Rasa Connector 插件': 'plugins/rasa.md'
+      - 'Github Webhook 插件': 'plugins/github-webhook'
+      - 'Gitlab Webhook 插件': 'plugins/gitlab-webhook'
     - 模块详解:
       - '介绍': 'references/index.md'
       - 'Wechaty模块': 'references/wechaty.md'
