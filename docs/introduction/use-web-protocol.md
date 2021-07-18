@@ -78,7 +78,7 @@ os.environ['WECHATY_PUPPET_SERVICE_ENDPOINT'] = '10.12.123.23:8080'
 
 ## 四、编写代码
 
-> talke is cheep, show you the code
+> talk is cheep, show you the code
 
 ```python
 import asyncio
