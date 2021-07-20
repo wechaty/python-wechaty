@@ -290,7 +290,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
         False for not friend of the bot, null for unknown.
         """
-        if self.payload is None or self.payload is None:
+        if not self.payload or not self.payload.friend:
             return None
         return self.payload.friend
 
