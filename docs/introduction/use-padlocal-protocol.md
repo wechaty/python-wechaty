@@ -105,6 +105,7 @@ export endpoint=127.0.0.1:9001
 ### 4.2 TOKEN的作用
 
 总而言之:
+
 * 如果是公网环境下，可只需要设置`TOKEN`即可（因为你的token已经注册在chatie server上，故可以获取到目标资源服务器的ip和port）
 * 如果是内网环境下，可只需要使用`ENDPOINT`(`localhost:port`)来让python-wechaty连接目标资源服务器。
 
