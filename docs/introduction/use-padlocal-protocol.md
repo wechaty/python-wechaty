@@ -82,6 +82,8 @@ docker run -ti \
 export WECHATY_PUPPET_SERVICE_TOKEN=1fe5f846-3cfb-401d-b20c-XXXXX
 # or
 export TOKEN=1fe5f846-3cfb-401d-b20c-XXXXX
+# or
+export token=1fe5f846-3cfb-401d-b20c-XXXXX
 ```
 
 可是如果是在本地测试时，则通过ENDPOINT来找到启动的网关服务。
@@ -90,22 +92,30 @@ export TOKEN=1fe5f846-3cfb-401d-b20c-XXXXX
 export WECHATY_PUPPET_SERVICE_TOKEN=1fe5f846-3cfb-401d-b20c-XXXXX
 # or
 export TOKEN=1fe5f846-3cfb-401d-b20c-XXXXX
+# or
+export token=1fe5f846-3cfb-401d-b20c-XXXXX
 
 export WECHATY_PUPPET_SERVICE_ENDPOINT=127.0.0.1:9001
+# or
+export ENDPOINT=127.0.0.1:9001
+# or
+export endpoint=127.0.0.1:9001
 ```
 
 ### 4.2 TOKEN的作用
 
-总而言之，当公网环境下，只需要设置TOKEN即可（因为可以注册部署机器上的IP和端口），如果是内网环境测试，需要使用ENDPOINT来找到对应的连接信息。
+总而言之:
+* 如果是公网环境下，可只需要设置`TOKEN`即可（因为你的token已经注册在chatie server上，故可以获取到目标资源服务器的ip和port）
+* 如果是内网环境下，可只需要使用`ENDPOINT`(`localhost:port`)来让python-wechaty连接目标资源服务器。
 
-> TOKEN的主要作用在于安全和找到对应的服务。
+> 如果是token是padlocal类型，则在python-wechaty程序内部可直接设置`export endpoint=localhost:port`来连接Gateway Server。
 
 当然，以上的写法是使用Bash的方式来设置环境变量，也是可以通过python代码来设置环境变量，详细可看：
 
 ```python
 import os
-os.environ['TOKEN'] = "1fe5f846-3cfb-401d-b20c-XXXXX"
-os.environ['WECHATY_PUPPET_SERVICE_ENDPOINT'] = "127.0.0.1:9001"
+os.environ['token'] = "1fe5f846-3cfb-401d-b20c-XXXXX"
+os.environ['endpoint'] = "127.0.0.1:9001"
 ```
 
 ## 五、示例代码
