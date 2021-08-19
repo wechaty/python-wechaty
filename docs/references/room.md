@@ -2,7 +2,7 @@
 title: Room
 ---
 
-All wechat rooms(groups) will be encapsulated as a Room.
+微信群聊（组）的相关功能被封装在 `Room` 类中。
 
 ## Classes
 
@@ -16,13 +16,13 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
 
 [RoomQueryFilter](room.md#RoomQueryFilter)
 
-The filter to find the room: {topic: string \| RegExp} [RoomEventName](room.md#RoomEventName)
+过滤条件的类，包含两个 `str` 类型的字段 `topic`, `id` 对应群名称和群 id .[RoomEventName](room.md#RoomEventName)
 
-Room Class Event Type [RoomEventFunction](room.md#RoomEventFunction)
+群聊事件类型 [RoomEventFunction](room.md#RoomEventFunction)
 
-Room Class Event Function [RoomMemberQueryFilter](room.md#RoomMemberQueryFilter)
+群聊事件的方法 [RoomMemberQueryFilter](room.md#RoomMemberQueryFilter)
 
-The way to search member by Room.member\(\)
+通过 `Room.member()` 可以搜索当前群里的某一个成员。
 
 ## Room
 
@@ -60,17 +60,17 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
 
 ### room.sync\(\) ⇒ `Promise <void>`
 
-Force reload data for Room, Sync data from lowlevel API again.
+使用 lowlevel API 强制同步 `Room` 的数据。
 
 **Kind**: instance method of [`Room`](room.md#Room) **Example**
 
-```javascript
+```python
 await room.sync()
 ```
 
 ### room.say\(textOrContactOrFileOrUrlLinkOrMiniProgram, ...mentionList\) ⇒ `Promise <void>`
 
-Send message inside Room, if set mentionList, wechaty will mention the contact list as well.
+向群（组）中发送消息，如果携带了联系人列表 `mentionList` 参数，将会在群里同时 @ 这些联系人。
 
 > Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
@@ -82,64 +82,55 @@ Send message inside Room, if set mentionList, wechaty will mention the contact l
 | ...mentionList | `Contact []` | Send content inside Room, and mention @contact list. |
 
 #### Exampl
+```python
+from wechaty import Wechaty, FileBox, UrlLink, MiniProgram
 
-```javascript
-import { FileBox }  from 'file-box'
-import {
-  Wechaty,
-  UrlLink,
-  MiniProgram,
-}  from 'wechaty'
-
-const bot = new Wechaty()
+bot = new Wechaty()
 await bot.start()
-// after logged in...
-const room = await bot.Room.find({topic: 'wechaty'})
+# after logged in...
+room = await bot.Room.find('wechaty')
 
-// 1. Send text inside Room
-
+# 1. Send text inside Room
 await room.say('Hello world!')
 
-// 2. Send media file inside Room
+# 2. Send media file inside Room
+file_box1 = FileBox.from_url(url='https://wechaty.github.io/wechaty/images/bot-qr-code.png', name='QRCode')
+file_box2 = FileBox.from_file("./test.txt") # 注意路径，以及文件不能为空
+await room.say(file_box1)
+await room.say(file_box2)
 
-import { FileBox }  from 'file-box'
-const fileBox1 = FileBox.fromUrl('https://wechaty.github.io/wechaty/images/bot-qr-code.png')
-const fileBox2 = FileBox.fromLocal('/tmp/text.txt')
-await room.say(fileBox1)
-await room.say(fileBox2)
+# 3. Send Contact Card in a room
+contact_card = await self.Contact.find('master')
+await room.say(contact_card)
 
-// 3. Send Contact Card in a room
+# 4. Send text inside room and mention @mention contact
+members = await special_room.member_list() # all members in this room
+some_members_id =  [m.contact_id for m in members[:3]]
+await room.say('Hello world!', some_members_id)
 
-const contactCard = await bot.Contact.find({name: 'lijiarui'}) // change 'lijiarui' to any of the room member
-await room.say(contactCard)
+# 5. send Link inside room
+from wechaty_puppet.schemas.url_link import UrlLinkPayload
+url_payload = UrlLinkPayload(
+  description="WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love",
+  thumbnailUrl="https://avatars0.githubusercontent.com/u/25162437?s=200&v=4",
+  title="Welcome to Wechaty",
+  url='https://github.com/wechaty/wechaty',
+)
+link_payload = UrlLink(url_payload)
+await room.say(link_payload)
 
-// 4. Send text inside room and mention @mention contact
-
-const members = await room.memberAll() // all members in this room
-const someMembers = members.slice(0, 3);
-await room.say('Hello world!', ...someMembers)
-
-// 5. send Link inside room
-
-const linkPayload = new UrlLink({
-  description : 'WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love',
-  thumbnailUrl: 'https://avatars0.githubusercontent.com/u/25162437?s=200&v=4',
-  title       : 'Welcome to Wechaty',
-  url         : 'https://github.com/wechaty/wechaty',
-})
-await room.say(linkPayload)
-
-// 6. send MiniProgram (only supported by `wechaty-puppet-macpro`)
-
-const miniProgram = new MiniProgram ({
-  appid              : 'gh_0aa444a25adc',
-  title              : '我正在使用Authing认证身份，你也来试试吧',
-  pagePath           : 'routes/explore.html',
-  description        : '身份管家',
-  thumbUrl           : '30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400',
-  thumbKey           : '42f8609e62817ae45cf7d8fefb532e83',
-});
-await room.say(miniProgram);
+# 6. send MiniProgram (only supported by `wechaty-puppet-macpro`)
+from wechaty_puppet.schemas.mini_program import MiniProgramPayload
+mini_program_payload = MiniProgramPayload(
+  appid="gh_0aa444a25adc",
+  title="我正在使用Authing认证身份，你也来试试吧",
+  pagePath="routes/explore.html",
+  description="身份管家",
+  thumbUrl="30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400",
+  thumbKey="42f8609e62817ae45cf7d8fefb532e83"
+)
+mini_program = MiniProgram(mini_program_payload)
+await room.say(mini_program);
 ```
 
 ### room.on\(event, listener\) ⇒ `this`
