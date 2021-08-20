@@ -84,53 +84,56 @@ await room.sync()
 #### Exampl
 ```python
 from wechaty import Wechaty, FileBox, UrlLink, MiniProgram
+import asyncio
 
-bot = new Wechaty()
-await bot.start()
-# after logged in...
-room = await bot.Room.find('wechaty')
+class MyBot(Wechaty):
+  async def on_login(self, contact: Contact):
+    # after logged in...
+    room = await bot.Room.find('wechaty') # 可以根据 room 的 topic 和 id 进行查找
 
-# 1. Send text inside Room
-await room.say('Hello world!')
+    # 1. Send text inside Room
+    await room.say('Hello world!')
 
-# 2. Send media file inside Room
-file_box1 = FileBox.from_url(url='https://wechaty.github.io/wechaty/images/bot-qr-code.png', name='QRCode')
-file_box2 = FileBox.from_file("./test.txt") # 注意路径，以及文件不能为空
-await room.say(file_box1)
-await room.say(file_box2)
+    # 2. Send media file inside Room
+    file_box1 = FileBox.from_url(url='https://wechaty.github.io/wechaty/images/bot-qr-code.png', name='QRCode')
+    file_box2 = FileBox.from_file("./test.txt") # 注意路径，以及文件不能为空
+    await room.say(file_box1)
+    await room.say(file_box2)
 
-# 3. Send Contact Card in a room
-contact_card = await self.Contact.find('master')
-await room.say(contact_card)
+    # 3. Send Contact Card in a room
+    contact_card = await self.Contact.find('master')
+    await room.say(contact_card)
 
-# 4. Send text inside room and mention @mention contact
-members = await special_room.member_list() # all members in this room
-some_members_id =  [m.contact_id for m in members[:3]]
-await room.say('Hello world!', some_members_id)
+    # 4. Send text inside room and mention @mention contact
+    members = await special_room.member_list() # all members in this room
+    some_members_id =  [m.contact_id for m in members[:3]]
+    await room.say('Hello world!', some_members_id)
 
-# 5. send Link inside room
-from wechaty_puppet.schemas.url_link import UrlLinkPayload
-url_payload = UrlLinkPayload(
-  description="WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love",
-  thumbnailUrl="https://avatars0.githubusercontent.com/u/25162437?s=200&v=4",
-  title="Welcome to Wechaty",
-  url='https://github.com/wechaty/wechaty',
-)
-link_payload = UrlLink(url_payload)
-await room.say(link_payload)
+    # 5. send Link inside room
+    from wechaty_puppet.schemas.url_link import UrlLinkPayload
+    url_payload = UrlLinkPayload(
+      description="WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love",
+      thumbnailUrl="https://avatars0.githubusercontent.com/u/25162437?s=200&v=4",
+      title="Welcome to Wechaty",
+      url='https://github.com/wechaty/wechaty',
+    )
+    link_payload = UrlLink(url_payload)
+    await room.say(link_payload)
 
-# 6. send MiniProgram (only supported by `wechaty-puppet-macpro`)
-from wechaty_puppet.schemas.mini_program import MiniProgramPayload
-mini_program_payload = MiniProgramPayload(
-  appid="gh_0aa444a25adc",
-  title="我正在使用Authing认证身份，你也来试试吧",
-  pagePath="routes/explore.html",
-  description="身份管家",
-  thumbUrl="30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400",
-  thumbKey="42f8609e62817ae45cf7d8fefb532e83"
-)
-mini_program = MiniProgram(mini_program_payload)
-await room.say(mini_program);
+    # 6. send MiniProgram (only supported by `wechaty-puppet-macpro`)
+    from wechaty_puppet.schemas.mini_program import MiniProgramPayload
+    mini_program_payload = MiniProgramPayload(
+      appid="gh_0aa444a25adc",
+      title="我正在使用Authing认证身份，你也来试试吧",
+      pagePath="routes/explore.html",
+      description="身份管家",
+      thumbUrl="30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400",
+      thumbKey="42f8609e62817ae45cf7d8fefb532e83"
+    )
+    mini_program = MiniProgram(mini_program_payload)
+    await room.say(mini_program);
+
+asyncio.run(MyBot().start())
 ```
 
 ### room.on\(event, listener\) ⇒ `this`
