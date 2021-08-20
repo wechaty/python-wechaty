@@ -81,7 +81,7 @@ await room.ready()
 | textOrContactOrFileOrUrlLinkOrMiniProgram | `string` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | Send `text`, `media file` or `link` inside Room.   You can use [FileBox](https://www.npmjs.com/package/file-box) to send file |
 | ...mentionList | `List[contact_id]` | Send content inside Room, and mention @contact list. |
 
-#### Exampl
+#### Example
 ```python
 from wechaty import Wechaty, FileBox, UrlLink, MiniProgram
 import asyncio
