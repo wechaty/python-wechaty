@@ -38,18 +38,18 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
 
 * [Room](room.md#Room)
   * _instance_
-    * [.sync\(\)](room.md#Room+sync) ⇒ `Promise <void>`
-    * [.say\(textOrContactOrFileOrUrl, ...mentionList\)](room.md#Room+say) ⇒ `Promise <void>`
+    * [.ready\(force_sync=False\)](room.md#Room+ready) ⇒ `Promise <void>`
+    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `Promise <void>`
     * [.on\(event, listener\)](room.md#Room+on) ⇒ `Room`
     * [.add\(contact\)](room.md#Room+add) ⇒ `Promise <void>`
-    * [.del\(contact\)](room.md#Room+del) ⇒ `Promise <void>`
+    * [.delete\(contact\)](room.md#Room+delete) ⇒ `Promise <void>`
     * [.quit\(\)](room.md#Room+quit) ⇒ `Promise <void>`
     * [.topic\(\[newTopic\]\)](room.md#Room+topic) ⇒ `Promise <void | string>`
     * [.announce\(\[text\]\)](room.md#Room+announce) ⇒ `Promise <void | string>`
-    * [.qrcode\(\)](room.md#Room+qrcode) ⇒ `Promise <string>`
+    * [.qr_code\(\)](room.md#Room+qr_code) ⇒ `Promise <string>`
     * [.alias\(contact\)](room.md#Room+alias) ⇒ `Promise <null | string>`
     * [.has\(contact\)](room.md#Room+has) ⇒ `Promise <boolean>`
-    * [.memberAll\(\[query\]\)](room.md#Room+memberAll) ⇒ `Promise <Contact []>`
+    * [.member_list\(\[query\]\)](room.md#Room+member_list) ⇒ `Promise <Contact []>`
     * [.member\(queryArg\)](room.md#Room+member) ⇒ `Promise <Contact | null>`
     * [.owner\(\)](room.md#Room+owner) ⇒ `Contact` \| `null`
     * [.avatar\(\)](room.md#room-owner-contact-or-null) ⇒ `Promise <FileBox>`
@@ -58,14 +58,14 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
     * [.findAll\(\[query\]\)](room.md#Room.findAll) ⇒ `Promise <Room []>`
     * [.find\(query\)](room.md#Room.find) ⇒ `Promise <Room | null>`
 
-### room.sync\(\) ⇒ `Promise <void>`
+### room.ready\(force_sync=False\) ⇒ `Promise <void>`
 
-使用 lowlevel API 强制同步 `Room` 的数据。
+同步 `Room` 的数据。
 
 **Kind**: instance method of [`Room`](room.md#Room) **Example**
 
 ```python
-await room.sync()
+await room.ready()
 ```
 
 ### room.say\(textOrContactOrFileOrUrlLinkOrMiniProgram, ...mentionList\) ⇒ `Promise <void>`
@@ -79,7 +79,7 @@ await room.sync()
 | Param | Type | Description |
 | :--- | :--- | :--- |
 | textOrContactOrFileOrUrlLinkOrMiniProgram | `string` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | Send `text`, `media file` or `link` inside Room.   You can use [FileBox](https://www.npmjs.com/package/file-box) to send file |
-| ...mentionList | `Contact []` | Send content inside Room, and mention @contact list. |
+| ...mentionList | `List[contact_id]` | Send content inside Room, and mention @contact list. |
 
 #### Exampl
 ```python
@@ -123,12 +123,12 @@ class MyBot(Wechaty):
     # 6. send MiniProgram (only supported by `wechaty-puppet-macpro`)
     from wechaty_puppet.schemas.mini_program import MiniProgramPayload
     mini_program_payload = MiniProgramPayload(
-      appid="gh_0aa444a25adc",
+      appid="gh_0xxxxxxxxx4a25adc",
       title="我正在使用Authing认证身份，你也来试试吧",
       pagePath="routes/explore.html",
       description="身份管家",
-      thumbUrl="30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400",
-      thumbKey="42f8609e62817ae45cf7d8fefb532e83"
+      thumbUrl="xxxxxxxxxxxxxxxxxx",
+      thumbKey="42f860xxxxxxxfefb532e83"
     )
     mini_program = MiniProgram(mini_program_payload)
     await room.say(mini_program);
