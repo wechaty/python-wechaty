@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import re
 from typing import (
     Optional,
     Union,
@@ -415,7 +416,7 @@ class Message(Accessory[MessagePayload]):
         async def get_alias_or_name(member: Contact) -> str:
             if room is not None:
                 alias = await room.alias(member)
-                if alias is not None:
+                if alias:
                     return alias
             return member.name
 
@@ -424,20 +425,13 @@ class Message(Accessory[MessagePayload]):
         mention_names = [
             await get_alias_or_name(member)
             for member in mention_list]
-        # TOD -> need to remove
-        reversed(mention_names)
 
-        # const textWithoutMention = mentionNameList.reduce((prev, cur) => {
-        #     const escapedCur = escapeRegExp(cur)
-        #     const regex = new RegExp(`@${escapedCur}(\u2005|\u0020|$)`)
-        #     return prev.replace(regex, '')
-        # }, text)
+        while len(mention_names) > 0:
+            escaped_cur = mention_names.pop()
+            pattern = re.compile(f'@{escaped_cur}(\u2005|\u0020|$)')
+            text = re.sub(pattern, '', text)
 
-        # import re
-        # from functools import reduce
-        # def reg_replace(pre, cur) -> str:
-        #     regex =
-        return ''
+        return text
 
     async def mention_self(self) -> bool:
         """

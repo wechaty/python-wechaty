@@ -5,6 +5,7 @@ pycodestyle
 pylint
 pylint-quotes
 pytest
+pytest-asyncio
 pytype>=2021.3.3
 semver
 pyee
