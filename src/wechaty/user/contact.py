@@ -302,7 +302,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if self.payload is None:
             return False
-        return self.payload.type == ContactType.Official
+        return self.payload.type == ContactType.CONTACT_TYPE_OFFICIAL
 
     def is_personal(self) -> bool:
         """
@@ -310,7 +310,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if self.payload is None:
             return False
-        return self.payload.type == ContactType.Personal
+        return self.payload.type == ContactType.CONTACT_TYPE_PERSONAL
 
     def type(self) -> ContactType:
         """
@@ -334,7 +334,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if self.payload is not None:
             return self.payload.gender
-        return ContactGender.Unknown
+        return ContactGender.CONTACT_GENDER_UNSPECIFIED
 
     def province(self) -> Optional[str]:
         """
