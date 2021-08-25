@@ -3,10 +3,11 @@
 qr_code helper utils
 """
 import platform
+from typing import Any
 import qrcode
 
 
-def qr_terminal(data: str, version=None):
+def qr_terminal(data: str, version: Any = None) -> None:
     """
     create qr_code
     :param data: qrcode data

@@ -35,6 +35,6 @@ def test_config(
     assert data == 'test', 'data should equals test'
 
 
-def test_get_logger():
+def test_get_logger() -> None:
     """test"""
     assert get_logger, 'log should exist'

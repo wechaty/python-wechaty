@@ -1,5 +1,5 @@
 """ContactSelf"""
-from typing import Optional
+from typing import Any, Optional
 import asyncio
 
 from wechaty import FileBox, get_logger
@@ -52,7 +52,7 @@ class ContactSelf(Contact):
         return super().name
 
     @name.setter
-    def name(self, name: Optional[str]):
+    def name(self, name: Optional[str]) -> None:
         puppet_id: str = self.puppet.self_id()
 
         if self.contact_id != puppet_id:
@@ -60,7 +60,7 @@ class ContactSelf(Contact):
 
         asyncio.run(self.puppet.contact_self_name(name))
 
-    async def signature(self, signature: str):
+    async def signature(self, signature: str) -> Any:
         """
 
         :param signature:

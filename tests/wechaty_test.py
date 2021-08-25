@@ -1,8 +1,7 @@
 """
 Unit test
 """
-import pytest
 
 
-def ding_dong_test():
-    pass
+def ding_dong_test() -> None:
+    """TODO: Implement tests for the ding dong bot"""

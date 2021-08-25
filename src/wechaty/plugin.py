@@ -91,7 +91,7 @@ class WechatyPlugin(metaclass=ABCMeta):
             options = WechatyPluginOptions()
         self.options = options
 
-    def set_bot(self, bot: Wechaty):
+    def set_bot(self, bot: Wechaty) -> None:
         """set bot instance to WechatyPlugin
 
         Args:
@@ -99,7 +99,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         """
         self.bot = bot
 
-    async def init_plugin(self, wechaty: Wechaty):
+    async def init_plugin(self, wechaty: Wechaty) -> None:
         """set wechaty to the plugin"""
 
     @property
@@ -122,56 +122,56 @@ class WechatyPlugin(metaclass=ABCMeta):
         """
         return []
 
-    async def on_error(self, payload: EventErrorPayload):
+    async def on_error(self, payload: EventErrorPayload) -> None:
         """
         listen error event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_heartbeat(self, payload: EventHeartbeatPayload):
+    async def on_heartbeat(self, payload: EventHeartbeatPayload) -> None:
         """
         listen heartbeat event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_friendship(self, friendship: Friendship):
+    async def on_friendship(self, friendship: Friendship) -> None:
         """
         listen friendship event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_login(self, contact: Contact):
+    async def on_login(self, contact: Contact) -> None:
         """
         listen login event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_logout(self, contact: Contact):
+    async def on_logout(self, contact: Contact) -> None:
         """
         listen logout event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_message(self, msg: Message):
+    async def on_message(self, msg: Message) -> None:
         """
         listen message event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_ready(self, payload: EventReadyPayload):
+    async def on_ready(self, payload: EventReadyPayload) -> None:
         """
         listen ready event for puppet
 
         this is friendly for code typing
         """
 
-    async def on_room_invite(self, room_invitation: RoomInvitation):
+    async def on_room_invite(self, room_invitation: RoomInvitation) -> None:
         """
         listen room_invitation event for puppet
 
@@ -179,7 +179,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         """
 
     async def on_room_join(self, room: Room, invitees: List[Contact],
-                           inviter: Contact, date: datetime):
+                           inviter: Contact, date: datetime) -> None:
         """
         listen room_join event for puppet
 
@@ -187,7 +187,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         """
 
     async def on_room_leave(self, room: Room, leavers: List[Contact],
-                            remover: Contact, date: datetime):
+                            remover: Contact, date: datetime) -> None:
         """
         listen room_leave event for puppet
 
@@ -198,7 +198,7 @@ class WechatyPlugin(metaclass=ABCMeta):
 
     # pylint: disable=R0913
     async def on_room_topic(self, room: Room, new_topic: str, old_topic: str,
-                            changer: Contact, date: datetime):
+                            changer: Contact, date: datetime) -> None:
         """
         listen room_topic event for puppet
 
@@ -206,7 +206,7 @@ class WechatyPlugin(metaclass=ABCMeta):
         """
 
     async def on_scan(self, qr_code: str, status: ScanStatus,
-                      data: Optional[str] = None):
+                      data: Optional[str] = None) -> None:
         """
         listen scan event for puppet
 
@@ -249,7 +249,7 @@ class WechatyPluginManager:
         log.info('load plugin from github url <%s>', github_url)
         return None
 
-    def add_plugin(self, plugin: Union[str, WechatyPlugin]):
+    def add_plugin(self, plugin: Union[str, WechatyPlugin]) -> None:
         """add plugin to the manager, if the plugin name exist, it will not to
         be installed"""
         if isinstance(plugin, str):
@@ -278,21 +278,21 @@ class WechatyPluginManager:
         # default wechaty plugin status is Running
         self._plugin_status[plugin_instance.name] = PluginStatus.Running
 
-    def remove_plugin(self, name: str):
+    def remove_plugin(self, name: str) -> None:
         """remove plugin"""
         if name not in self._plugins:
             raise WechatyPluginError(f'plugin {name} not exist')
         self._plugins.pop(name)
         self._plugin_status.pop(name)
 
-    def _check_plugins(self, name: str):
+    def _check_plugins(self, name: str) -> None:
         """
         check the plugins whether
         """
         if name not in self._plugins and name not in self._plugin_status:
             raise WechatyPluginError('plugins <%s> not exist' % name)
 
-    def stop_plugin(self, name: str):
+    def stop_plugin(self, name: str) -> None:
         """stop the plugin"""
         log.info('stopping the plugin <%s>', name)
         self._check_plugins(name)
@@ -301,7 +301,7 @@ class WechatyPluginManager:
             log.warning('plugins <%s> has stopped', name)
         self._plugin_status[name] = PluginStatus.Stopped
 
-    def start_plugin(self, name: str):
+    def start_plugin(self, name: str) -> None:
         """starting the plugin"""
         log.info('starting the plugin <%s>', name)
         self._check_plugins(name)
@@ -312,7 +312,7 @@ class WechatyPluginManager:
         self._check_plugins(name)
         return self._plugin_status[name]
 
-    async def init_plugins(self):
+    async def init_plugins(self) -> None:
         """
         set wechaty to plugins
         """
@@ -325,7 +325,7 @@ class WechatyPluginManager:
             await plugin.init_plugin(self._wechaty)
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
-    async def emit_events(self, event_name: str, *args, **kwargs):
+    async def emit_events(self, event_name: str, *args: Any, **kwargs: Any) -> None:
         """
         during the try-stage, only support message_events
 

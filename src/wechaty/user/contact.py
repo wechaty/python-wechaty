@@ -73,7 +73,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         super().__init__()
         self.contact_id: str = contact_id
 
-    def get_id(self):
+    def get_id(self) -> str:
         """
         get contact_id
         :return:
@@ -161,7 +161,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
         return contacts
 
-    async def ready(self, force_sync: bool = False):
+    async def ready(self, force_sync: bool = False) -> None:
         """
         load contact object from puppet
         :return:
@@ -179,7 +179,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
                 raise WechatyPayloadError('can"t load contact payload')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         get contact string representation
         """
@@ -370,7 +370,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                 for tag_id in tag_ids]
         return tags
 
-    async def sync(self):
+    async def sync(self) -> None:
         """
         sync the contact data
         """

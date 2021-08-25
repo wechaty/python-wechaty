@@ -94,7 +94,7 @@ class Friendship(Accessory, Acceptable):
         return contact
 
     @classmethod
-    async def add(cls, contact: Contact, hello: str):
+    async def add(cls, contact: Contact, hello: str) -> None:
         """
         add friendship
         """
@@ -104,7 +104,7 @@ class Friendship(Accessory, Acceptable):
         )
 
     @classmethod
-    async def delete(cls, contact: Contact):
+    async def delete(cls, contact: Contact) -> None:
         """
         delete friendship
         """
@@ -123,7 +123,7 @@ class Friendship(Accessory, Acceptable):
         return 'Friendship # type: {0}  contact: <{1}>  hello msg: <{2}>' \
             .format(self.type().name, self._payload.contact_id, self.hello())
 
-    async def ready(self, force_sync: bool = False):
+    async def ready(self, force_sync: bool = False) -> None:
         """
         load friendship payload
         """
@@ -140,7 +140,7 @@ class Friendship(Accessory, Acceptable):
         contact = self.wechaty.Contact.load(self.payload.contact_id)
         return contact
 
-    async def accept(self):
+    async def accept(self) -> None:
         """
         accept friendship
         """

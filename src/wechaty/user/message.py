@@ -386,7 +386,7 @@ class Message(Accessory[MessagePayload]):
         # otherwise, process the message and get the mention list
 
         if self.payload is not None and self.payload.mention_ids is not None:
-            async def id_to_contact(contact_id) -> Contact:
+            async def id_to_contact(contact_id: str) -> Contact:
                 contact = self.wechaty.Contact.load(contact_id)
                 await contact.ready()
                 return contact
@@ -448,7 +448,7 @@ class Message(Accessory[MessagePayload]):
             return False
         return self_id in self.payload.mention_ids
 
-    async def ready(self):
+    async def ready(self) -> None:
         """
         sync load message
         """
@@ -468,7 +468,7 @@ class Message(Accessory[MessagePayload]):
             to_contact = self.wechaty.Contact.load(self.payload.to_id)
             await to_contact.ready()
 
-    async def forward(self, to: Union[Room, Contact]):
+    async def forward(self, to: Union[Room, Contact]) -> None:
         """
         doc
         :param to:
