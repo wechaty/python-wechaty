@@ -3,7 +3,7 @@ import asyncio
 import logging
 from typing import Optional, Union
 
-from wechaty_puppet import FileBox  # type: ignore
+from wechaty_puppet import FileBox
 
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room

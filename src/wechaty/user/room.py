@@ -36,7 +36,7 @@ import json
 from pyee import AsyncIOEventEmitter  # type: ignore
 # from wechaty_puppet import RoomMemberPayload
 from wechaty.exceptions import WechatyOperationError, WechatyPayloadError
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     FileBox,
     RoomQueryFilter,
     RoomMemberQueryFilter,

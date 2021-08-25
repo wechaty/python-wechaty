@@ -28,7 +28,7 @@ from typing import (
 )
 
 
-from wechaty_puppet import (    # type: ignore
+from wechaty_puppet import (
     FileBox, ImageType, get_logger
 )
 

@@ -13,7 +13,7 @@ from typing import (
 from collections import defaultdict
 
 from wechaty.exceptions import WechatyOperationError
-from wechaty_puppet import get_logger  # type: ignore
+from wechaty_puppet import get_logger
 from ..accessory import (
     Accessory,
 )

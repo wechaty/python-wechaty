@@ -7,9 +7,9 @@ from typing import (
     Iterable,
 )
 
-import pytest   # type: ignore
+import pytest
 
-from wechaty_puppet import get_logger   # type: ignore
+from wechaty_puppet import get_logger
 
 # pylint: disable=C0103
 log = get_logger('ConfigTest')

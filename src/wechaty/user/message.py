@@ -30,7 +30,7 @@ from typing import (
 )
 
 from datetime import datetime
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     FileBox,
     MessagePayload,
     MessageQueryFilter,

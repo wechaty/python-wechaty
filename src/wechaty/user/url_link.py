@@ -8,8 +8,8 @@ from typing import (
     Union
 )
 import requests
-from lxml import etree  # type: ignore
-from wechaty_puppet import UrlLinkPayload, get_logger  # type: ignore
+from lxml import etree
+from wechaty_puppet import UrlLinkPayload, get_logger
 
 log = get_logger('UrlLink')
 

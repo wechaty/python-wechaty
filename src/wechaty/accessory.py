@@ -29,7 +29,7 @@ from typing import (
     Generic,
 )
 
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     get_logger,
     Puppet,
 )

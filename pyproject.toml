@@ -1,0 +1,13 @@
+[tool.mypy]
+warn_unused_ignores = true
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = [
+    "qrcode.*",
+    "wechaty_puppet.*",
+    "pytest.*",
+    "grpclib.*",
+    "lxml.*"
+]
+ignore_missing_imports = true

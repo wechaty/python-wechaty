@@ -3,7 +3,7 @@
 qr_code helper utils
 """
 import platform
-import qrcode   # type: ignore
+import qrcode
 
 
 def qr_terminal(data: str, version=None):

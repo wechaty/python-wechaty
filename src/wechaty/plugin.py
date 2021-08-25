@@ -37,7 +37,7 @@ from typing import (
     Any,
     cast)
 
-from wechaty_puppet import (    # type: ignore
+from wechaty_puppet import (
     get_logger,
     EventErrorPayload,
     EventHeartbeatPayload,

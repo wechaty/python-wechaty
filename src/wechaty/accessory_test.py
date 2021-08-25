@@ -10,7 +10,7 @@ from typing import (
     Type,
     cast,
 )
-import pytest   # type: ignore
+import pytest
 
 from .accessory import (
     Accessory,

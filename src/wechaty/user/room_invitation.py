@@ -25,7 +25,7 @@ import json
 from datetime import datetime
 
 from wechaty.exceptions import WechatyOperationError
-from wechaty_puppet import RoomInvitationPayload, get_logger  # type: ignore
+from wechaty_puppet import RoomInvitationPayload, get_logger
 from .contact import Contact
 from ..types import Acceptable
 from ..accessory import Accessory

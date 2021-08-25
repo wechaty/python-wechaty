@@ -35,7 +35,7 @@ from typing import (
 from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     ContactGender,
     ContactPayload,
     ContactQueryFilter,

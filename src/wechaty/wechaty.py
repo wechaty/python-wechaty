@@ -40,7 +40,7 @@ import requests.exceptions
 from grpclib.exceptions import StreamTerminatedError
 from pyee import AsyncIOEventEmitter  # type: ignore
 
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     Puppet,
     EventLoginPayload,
     EventLogoutPayload,
@@ -62,11 +62,11 @@ from wechaty_puppet import (  # type: ignore
 
     get_logger,
 )
-from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions  # type: ignore
-from wechaty_puppet.state_switch import StateSwitch  # type: ignore
-from wechaty_puppet.watch_dog import WatchdogFood, Watchdog     # type: ignore
+from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions
+from wechaty_puppet.state_switch import StateSwitch
+from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
 
-from wechaty.user.url_link import UrlLink  # type: ignore
+from wechaty.user.url_link import UrlLink
 
 from .utils import (
     qr_terminal
@@ -90,7 +90,7 @@ from .plugin import (
     WechatyPluginManager
 )
 
-from .exceptions import (  # type: ignore
+from .exceptions import (
     WechatyStatusError,
     WechatyConfigurationError,
     WechatyOperationError,

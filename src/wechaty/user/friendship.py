@@ -28,7 +28,7 @@ from typing import (
 import json
 
 from wechaty.exceptions import WechatyOperationError
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     FriendshipType,
     FriendshipPayload,
     get_logger
