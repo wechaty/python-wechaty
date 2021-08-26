@@ -209,7 +209,7 @@ class MyBot(Wechaty):
                     break
 
     async def on_room_join(self, room: Room, invitees: List[Contact],
-                           inviter: Contact, date: datetime):
+                           inviter: Contact, date: datetime) -> None:
         """on_room_join when there are new contacts to the room
 
         Args:
@@ -227,7 +227,7 @@ class MyBot(Wechaty):
         room.say(f'welcome {",".join(names)} to the wechaty group !')
 
 
-async def main():
+async def main() -> None:
     """doc"""
     bot = MyBot()
     await bot.start()
