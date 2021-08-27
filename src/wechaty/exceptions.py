@@ -19,17 +19,20 @@ limitations under the License.
 """
 
 
+from typing import Any
+
+
 class WechatyError(Exception):
     """ Wechaty error """
 
-    def __init__(self, message, code=None, params=None):
+    def __init__(self, message: str, code: Any = None, params: Any = None):
         super().__init__(message, code, params)
 
         self.message = message
         self.code = code
         self.params = params
 
-    def __str__(self):
+    def __str__(self) -> str:
         return repr(self)
 
 

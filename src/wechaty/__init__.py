@@ -4,7 +4,7 @@
 # import types from wechaty_puppet
 #
 
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     FileBox,
     MessageType,
     MessagePayload,
