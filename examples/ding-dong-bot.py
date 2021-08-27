@@ -3,7 +3,7 @@ import asyncio
 import logging
 from typing import Optional, Union
 
-from wechaty_puppet import FileBox  # type: ignore
+from wechaty_puppet import FileBox
 
 from wechaty import Wechaty, Contact
 from wechaty.user import Message, Room
@@ -17,7 +17,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-async def message(msg: Message):
+async def message(msg: Message) -> None:
     """back on message"""
     from_contact = msg.talker()
     text = msg.text()
@@ -36,7 +36,7 @@ async def message(msg: Message):
 bot: Optional[Wechaty] = None
 
 
-async def main():
+async def main() -> None:
     """doc"""
     # pylint: disable=W0603
     global bot

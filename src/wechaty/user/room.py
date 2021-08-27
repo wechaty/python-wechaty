@@ -26,6 +26,8 @@ from collections import defaultdict
 # from threading import Event, Thread
 
 from typing import (
+    Any,
+    Callable,
     Dict,
     List,
     Optional,
@@ -36,7 +38,7 @@ import json
 from pyee import AsyncIOEventEmitter  # type: ignore
 # from wechaty_puppet import RoomMemberPayload
 from wechaty.exceptions import WechatyOperationError, WechatyPayloadError
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     FileBox,
     RoomQueryFilter,
     RoomMemberQueryFilter,
@@ -70,14 +72,14 @@ class Room(Accessory[RoomPayload]):
 
     _event_stream: AsyncIOEventEmitter = AsyncIOEventEmitter()
 
-    def on(self, event_name: str, func):
+    def on(self, event_name: str, func: Callable[..., Any]) -> None:
         """
         listen event for contact
         event_name:
         """
         self._event_stream.on(event_name, func)
 
-    def emit(self, event_name: str, *args, **kwargs):
+    def emit(self, event_name: str, *args: Any, **kwargs: Any) -> None:
         """
         emit event for a specific
         """
@@ -205,7 +207,7 @@ class Room(Accessory[RoomPayload]):
         cls._pool[room_id] = room
         return room
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         string format for room instance
         """
@@ -217,7 +219,7 @@ class Room(Accessory[RoomPayload]):
 
         return 'Room <%s - %s>' % (self.room_id, self.payload.topic)
 
-    async def ready(self, force_sync=False):
+    async def ready(self, force_sync: bool = False) -> None:
         """
         Please not to use `ready()` at the user land.
         """
@@ -278,7 +280,7 @@ class Room(Accessory[RoomPayload]):
                     alias = await mention_contact.alias()
                     name = mention_contact.name
                     mention_info.append('@' + (alias or name))
-                
+
                 mention_text = AT_SEPARATOR.join(mention_info)
                 some_thing = mention_text + ' ' + some_thing
 
@@ -327,7 +329,7 @@ class Room(Accessory[RoomPayload]):
 
     # async def on(self, event: str, listener: Callable):
 
-    async def add(self, contact: Contact):
+    async def add(self, contact: Contact) -> None:
         """
         Add contact in a room
         """
@@ -337,7 +339,7 @@ class Room(Accessory[RoomPayload]):
         # reload the payload
         await self.ready(force_sync=True)
 
-    async def delete(self, contact: Contact):
+    async def delete(self, contact: Contact) -> None:
         """
         delete room
         """
@@ -349,7 +351,7 @@ class Room(Accessory[RoomPayload]):
         # reload the payload
         await self.ready(force_sync=True)
 
-    async def quit(self):
+    async def quit(self) -> None:
         """
         Add contact in a room
         """

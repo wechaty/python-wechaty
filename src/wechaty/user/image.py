@@ -28,7 +28,7 @@ from typing import (
 )
 
 
-from wechaty_puppet import (    # type: ignore
+from wechaty_puppet import (
     FileBox, ImageType, get_logger
 )
 
@@ -42,8 +42,8 @@ class Image(Accessory):
     User Image class
     """
 
-    def __str__(self):
-        return 'Image<%d>' % self.image_id
+    def __str__(self) -> str:
+        return 'Image<%s>' % self.image_id
 
     def __init__(
             self,

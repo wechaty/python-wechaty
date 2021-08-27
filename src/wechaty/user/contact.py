@@ -35,7 +35,7 @@ from typing import (
 from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
@@ -73,7 +73,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         super().__init__()
         self.contact_id: str = contact_id
 
-    def get_id(self):
+    def get_id(self) -> str:
         """
         get contact_id
         :return:
@@ -161,7 +161,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
         return contacts
 
-    async def ready(self, force_sync: bool = False):
+    async def ready(self, force_sync: bool = False) -> None:
         """
         load contact object from puppet
         :return:
@@ -179,7 +179,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
                 raise WechatyPayloadError('can"t load contact payload')
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         get contact string representation
         """
@@ -302,7 +302,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if self.payload is None:
             return False
-        return self.payload.type == ContactType.Official
+        return self.payload.type == ContactType.CONTACT_TYPE_OFFICIAL
 
     def is_personal(self) -> bool:
         """
@@ -310,7 +310,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if self.payload is None:
             return False
-        return self.payload.type == ContactType.Personal
+        return self.payload.type == ContactType.CONTACT_TYPE_PERSONAL
 
     def type(self) -> ContactType:
         """
@@ -334,7 +334,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if self.payload is not None:
             return self.payload.gender
-        return ContactGender.Unknown
+        return ContactGender.CONTACT_GENDER_UNSPECIFIED
 
     def province(self) -> Optional[str]:
         """
@@ -370,7 +370,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                 for tag_id in tag_ids]
         return tags
 
-    async def sync(self):
+    async def sync(self) -> None:
         """
         sync the contact data
         """
