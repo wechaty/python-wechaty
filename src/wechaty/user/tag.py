@@ -13,7 +13,7 @@ from typing import (
 from collections import defaultdict
 
 from wechaty.exceptions import WechatyOperationError
-from wechaty_puppet import get_logger  # type: ignore
+from wechaty_puppet import get_logger
 from ..accessory import (
     Accessory,
 )
@@ -63,7 +63,7 @@ class Tag(Accessory):
         log.info('load tag object %s', tag_id)
         return cls.load(tag_id)
 
-    async def delete(self, target: Union[Contact, Favorite]):
+    async def delete(self, target: Union[Contact, Favorite]) -> None:
         """
         remove tag from contact or favorite
         :param target:
@@ -80,7 +80,7 @@ class Tag(Accessory):
         else:
             raise WechatyOperationError('target param is required to be Contact or Favorite object')
 
-    async def add(self, to: Union[Contact, Favorite]):
+    async def add(self, to: Union[Contact, Favorite]) -> None:
         """
         add tag to contact or favorite
         :param to:
@@ -96,7 +96,7 @@ class Tag(Accessory):
             pass
             # self.puppet.tag_favorite_add(self.tag_id, to)
 
-    def remove(self, source: Union[Contact, Favorite]):
+    def remove(self, source: Union[Contact, Favorite]) -> None:
         """
         Remove this tag from Contact/Favorite
 

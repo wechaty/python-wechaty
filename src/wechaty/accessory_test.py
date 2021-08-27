@@ -7,10 +7,11 @@ from __future__ import annotations
 
 from typing import (
     Any,
+    Generator,
     Type,
     cast,
 )
-import pytest   # type: ignore
+import pytest
 
 from .accessory import (
     Accessory,
@@ -37,12 +38,12 @@ def get_user_class() -> Type[Accessory]:
 
 
 @pytest.fixture(name='user_class')
-def fixture_user_class():
+def fixture_user_class() -> Generator[Type[Accessory], None, None]:
     """fixture for fixture class"""
     yield get_user_class()
 
 
-def test_indenpendent_user_classes():
+def test_indenpendent_user_classes() -> None:
     """two child class should not be equal"""
     user_class1 = get_user_class()
     user_class2 = get_user_class()
@@ -50,7 +51,7 @@ def test_indenpendent_user_classes():
     assert user_class1 != user_class2, 'two child class should not be equal'
 
 
-def test_user_classes_should_share():
+def test_user_classes_should_share() -> None:
     """doc"""
 
     user_class = get_user_class()
@@ -67,7 +68,7 @@ def test_user_classes_should_share():
         'child1 should get the wechaty from static value'
 
 
-def test_indenpendent_user_classes_instances():
+def test_indenpendent_user_classes_instances() -> None:
     """doc"""
 
     user_class1 = get_user_class()
@@ -95,7 +96,7 @@ def test_indenpendent_user_classes_instances():
 
 def test_accessory_read_initialized_class(
         user_class: Type[Accessory],
-):
+) -> None:
     """
     should read excepted value by reading static wechaty & puppet after init
     """
@@ -117,7 +118,7 @@ def test_accessory_read_initialized_class(
 
 def test_accessory_read_uninitialized_instance(
         user_class: Type[Accessory],
-):
+) -> None:
     """should throw if read instance wechaty & puppet before initialization"""
     # pytest.skip('tbd')
 
@@ -134,7 +135,7 @@ def test_accessory_read_uninitialized_instance(
 
 def test_accessory_read_initialized_instance(
         user_class: Type[Accessory],
-):
+) -> None:
     """
     should get expected value by reading instance wechaty & puppet after init
     """
@@ -155,7 +156,7 @@ def test_accessory_read_initialized_instance(
 
 def test_accessory_set_twice(
         user_class: Type[Accessory],
-):
+) -> None:
     """doc"""
     user_class.set_puppet(EXPECTED_PUPPET1)
 
@@ -169,7 +170,7 @@ def test_accessory_set_twice(
     assert str(exception.value) == 'can not set _wechaty twice'
 
 
-def test_accessory_classmethod_access_puppet():
+def test_accessory_classmethod_access_puppet() -> None:
     """
     docstring
     """
@@ -189,7 +190,7 @@ def test_accessory_classmethod_access_puppet():
         'user_class1 & user_class2 get_puppet() should be different'
 
 
-def test_accessory_classmethod_access_wechaty():
+def test_accessory_classmethod_access_wechaty() -> None:
     """
     docstring
     """

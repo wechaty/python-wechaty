@@ -26,14 +26,14 @@ class MyBot(Wechaty):
     oop developer
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """initialization function
         """
         self.login_user: Optional[Contact] = None
         super().__init__()
 
     # pylint: disable=R0912,R0914,R0915
-    async def on_message(self, msg: Message):
+    async def on_message(self, msg: Message) -> None:
         """
         listen for message event
         """
@@ -151,7 +151,7 @@ class MyBot(Wechaty):
         else:
             pass
 
-    async def on_login(self, contact: Contact):
+    async def on_login(self, contact: Contact) -> None:
         """login event
 
         Args:
@@ -164,7 +164,7 @@ class MyBot(Wechaty):
 bot: Optional[MyBot] = None
 
 
-async def main():
+async def main() -> None:
     """doc"""
     # pylint: disable=W0603
     global bot

@@ -25,7 +25,7 @@ import json
 from datetime import datetime
 
 from wechaty.exceptions import WechatyOperationError
-from wechaty_puppet import RoomInvitationPayload, get_logger  # type: ignore
+from wechaty_puppet import RoomInvitationPayload, get_logger
 from .contact import Contact
 from ..types import Acceptable
 from ..accessory import Accessory
@@ -47,14 +47,14 @@ class RoomInvitation(Accessory, Acceptable):
         self.invitation_id: str = room_invitation_id
         log.info('__init__ () <%s>', self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         # this function should not have to log info
         # log.info('__str__ ()')
         msg = self.invitation_id if self.invitation_id is not None \
             else 'loading'
         return 'RoomInvitation <%s>' % msg
 
-    async def to_str(self):
+    async def to_str(self) -> str:
         """
         get room invitation string format description with async way
         """
@@ -84,7 +84,7 @@ class RoomInvitation(Accessory, Acceptable):
         invitation = RoomInvitation(room_invitation_id)
         return invitation
 
-    async def accept(self):
+    async def accept(self) -> None:
         """
         accept the room invitation
         """

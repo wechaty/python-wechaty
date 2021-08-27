@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import re
 from typing import (
     Optional,
     Union,
@@ -29,7 +30,7 @@ from typing import (
 )
 
 from datetime import datetime
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     FileBox,
     MessagePayload,
     MessageQueryFilter,
@@ -385,7 +386,7 @@ class Message(Accessory[MessagePayload]):
         # otherwise, process the message and get the mention list
 
         if self.payload is not None and self.payload.mention_ids is not None:
-            async def id_to_contact(contact_id) -> Contact:
+            async def id_to_contact(contact_id: str) -> Contact:
                 contact = self.wechaty.Contact.load(contact_id)
                 await contact.ready()
                 return contact
@@ -415,7 +416,7 @@ class Message(Accessory[MessagePayload]):
         async def get_alias_or_name(member: Contact) -> str:
             if room is not None:
                 alias = await room.alias(member)
-                if alias is not None:
+                if alias:
                     return alias
             return member.name
 
@@ -424,20 +425,13 @@ class Message(Accessory[MessagePayload]):
         mention_names = [
             await get_alias_or_name(member)
             for member in mention_list]
-        # TOD -> need to remove
-        reversed(mention_names)
 
-        # const textWithoutMention = mentionNameList.reduce((prev, cur) => {
-        #     const escapedCur = escapeRegExp(cur)
-        #     const regex = new RegExp(`@${escapedCur}(\u2005|\u0020|$)`)
-        #     return prev.replace(regex, '')
-        # }, text)
+        while len(mention_names) > 0:
+            escaped_cur = mention_names.pop()
+            pattern = re.compile(f'@{escaped_cur}(\u2005|\u0020|$)')
+            text = re.sub(pattern, '', text)
 
-        # import re
-        # from functools import reduce
-        # def reg_replace(pre, cur) -> str:
-        #     regex =
-        return ''
+        return text
 
     async def mention_self(self) -> bool:
         """
@@ -454,7 +448,7 @@ class Message(Accessory[MessagePayload]):
             return False
         return self_id in self.payload.mention_ids
 
-    async def ready(self):
+    async def ready(self) -> None:
         """
         sync load message
         """
@@ -474,7 +468,7 @@ class Message(Accessory[MessagePayload]):
             to_contact = self.wechaty.Contact.load(self.payload.to_id)
             await to_contact.ready()
 
-    async def forward(self, to: Union[Room, Contact]):
+    async def forward(self, to: Union[Room, Contact]) -> None:
         """
         doc
         :param to:

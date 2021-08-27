@@ -22,9 +22,10 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
+    Any,
     List,
 )
-from wechaty_puppet import get_logger   # type: ignore
+from wechaty_puppet import get_logger
 
 if TYPE_CHECKING:
     from .tag import Tag
@@ -40,7 +41,7 @@ class Favorite:
     def __init__(self, favorite_id: str):
         self.favorite_id = favorite_id
 
-    def get_id(self):
+    def get_id(self) -> str:
         """
         get favorite_id
         :return:
@@ -55,7 +56,7 @@ class Favorite:
         # TODO -> favorite tags
         return []
 
-    async def find_all(self):
+    async def find_all(self) -> Any:
         """
         get all favorite tags
         """

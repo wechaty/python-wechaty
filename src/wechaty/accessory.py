@@ -29,7 +29,7 @@ from typing import (
     Generic,
 )
 
-from wechaty_puppet import (  # type: ignore
+from wechaty_puppet import (
     get_logger,
     Puppet,
 )
@@ -56,7 +56,7 @@ class Accessory(Generic[PayloadType]):
 
     abstract: bool = True
 
-    def __init__(self):
+    def __init__(self) -> None:
         if self.abstract:
             raise WechatyAccessoryBindingError(
                 'Do not instantiate class {cls} directly, sse with bot.{cls} instead. '
@@ -83,7 +83,7 @@ class Accessory(Generic[PayloadType]):
         return self._payload
 
     @payload.setter
-    def payload(self, value: PayloadType):
+    def payload(self, value: PayloadType) -> None:
         """
         :param value:
         :return:
@@ -100,14 +100,14 @@ class Accessory(Generic[PayloadType]):
         return self._puppet is not None and self._payload is not None
 
     @classmethod
-    def set_puppet(cls, new_puppet: Puppet):
+    def set_puppet(cls, new_puppet: Puppet) -> None:
         """doc"""
         if cls._puppet is not None:
             raise AttributeError('can not set _puppet twice')
         cls._puppet = new_puppet
 
     @classmethod
-    def set_wechaty(cls, new_wechaty: Wechaty):
+    def set_wechaty(cls, new_wechaty: Wechaty) -> None:
         """doc"""
         if cls._wechaty is not None:
             raise AttributeError('can not set _wechaty twice')

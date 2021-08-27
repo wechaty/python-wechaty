@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING
 from dataclasses import asdict
 
 from wechaty import Accessory
-from wechaty_puppet import MiniProgramPayload, get_logger   # type: ignore
+from wechaty_puppet import MiniProgramPayload, get_logger
 from wechaty.utils import default_str
 
 if TYPE_CHECKING:
