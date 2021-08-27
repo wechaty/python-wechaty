@@ -1,8 +1,9 @@
+from typing import Any
 import qrcode
 import platform
 
 
-def qr_terminal_str(data,version=None):
+def qr_terminal_str(data: Any, version: Any = None) -> str:
     """
 
     :param data: qrcode data
@@ -24,7 +25,7 @@ def qr_terminal_str(data,version=None):
         qr.make()
     else:
         qr.make(fit=True)
-    output = white_block*(qr.modules_count+2) + new_line
+    output = white_block * (qr.modules_count + 2) + new_line
     for mn in qr.modules:
         output += white_block
         for m in mn:
@@ -33,10 +34,11 @@ def qr_terminal_str(data,version=None):
             else:
                 output += white_block
         output += white_block + new_line
-    output += white_block*(qr.modules_count+2) + new_line
+    output += white_block * (qr.modules_count + 2) + new_line
     return output
 
 
-def draw(data, version=None):
-    output = qr_terminal_str(data,version)
-    print (output)
+def draw(data: Any, version: Any = None) -> None:
+    """doc"""
+    output = qr_terminal_str(data, version)
+    print(output)

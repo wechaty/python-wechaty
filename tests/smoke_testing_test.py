@@ -8,7 +8,7 @@ Unit Test
 #     Iterable,
 # )
 
-import pytest   # type: ignore
+import pytest
 
 # from agent import Agent
 
