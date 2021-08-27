@@ -2,7 +2,7 @@
 from typing import List, Optional, Union
 import asyncio
 from datetime import datetime
-from wechaty_puppet import get_logger   # type: ignore
+from wechaty_puppet import get_logger
 from wechaty import (
     MessageType,
     FileBox,
