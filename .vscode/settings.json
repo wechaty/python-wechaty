@@ -1,5 +1,4 @@
 {
-  "python.pythonPath": "/Users/mcat/miniconda3/envs/wechaty/bin/python",
       "python.linting.enabled": true,
 
       "python.linting.pylintEnabled": true,
