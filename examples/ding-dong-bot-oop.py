@@ -226,7 +226,7 @@ class MyBot(Wechaty):
             await invitee.ready()
             names.append(invitee.name)
 
-        room.say(f'welcome {",".join(names)} to the wechaty group !')
+        await room.say(f'welcome {",".join(names)} to the wechaty group !')
 
 
 async def main() -> None:
