@@ -23,6 +23,7 @@ upgrade me for more super powers!
 Please wait... I'm trying to login in...
 '''
 
+# pylint: disable=W0602
 bot: Optional[Wechaty] = None
 MAX_CONTACTS = 17
 INTERVAL = 7
