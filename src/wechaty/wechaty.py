@@ -228,9 +228,9 @@ class Wechaty(AsyncIOEventEmitter):
 
     def __str__(self) -> str:
         """str format of the Room object"""
-        return 'Wechaty<{0}, {1}>'.format(self.name, self.contact_id)
+        return f'Wechaty<{self.name}, {self.contact_id}>'
 
-    @classmethod
+@classmethod
     def instance(cls: Type[Wechaty], options: Optional[WechatyOptions] = None
                  ) -> Wechaty:
         """

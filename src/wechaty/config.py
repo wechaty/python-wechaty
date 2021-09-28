@@ -120,7 +120,7 @@ class Config:
         self.docker = docker
 
         if self.api_host is not None and not valid_api_host(self.api_host):
-            raise WechatyConfigurationError('api host %s is not valid' % self.api_host)
+            raise WechatyConfigurationError(f'api host %s is not valid {self.api_host}')
 
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'

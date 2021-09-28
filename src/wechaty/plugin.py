@@ -267,7 +267,7 @@ class WechatyPluginManager:
             else:
                 plugin_instance = self._load_plugin_from_github_url(plugin)
             if plugin_instance is None:
-                raise WechatyPluginError('can"t load plugin %s' % plugin)
+                raise WechatyPluginError(f'can"t load plugin {plugin}')
         else:
             if plugin.name in self._plugins:
                 log.warning('plugin : %s has exist', plugin.name)
@@ -290,7 +290,7 @@ class WechatyPluginManager:
         check the plugins whether
         """
         if name not in self._plugins and name not in self._plugin_status:
-            raise WechatyPluginError('plugins <%s> not exist' % name)
+            raise WechatyPluginError(f'plugins <{name}> not exist')
 
     def stop_plugin(self, name: str) -> None:
         """stop the plugin"""
