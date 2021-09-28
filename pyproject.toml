@@ -12,3 +12,9 @@ module = [
     "lxml.*"
 ]
 ignore_missing_imports = true
+
+# refer to: https://docs.pytest.org/en/stable/mark.html
+[tool.pytest.ini_options]
+markers = [
+    "asyncio"
+]
