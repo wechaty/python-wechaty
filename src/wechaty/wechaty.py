@@ -230,7 +230,7 @@ class Wechaty(AsyncIOEventEmitter):
         """str format of the Room object"""
         return f'Wechaty<{self.name}, {self.contact_id}>'
 
-@classmethod
+    @classmethod
     def instance(cls: Type[Wechaty], options: Optional[WechatyOptions] = None
                  ) -> Wechaty:
         """
