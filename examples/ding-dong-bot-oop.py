@@ -14,7 +14,8 @@ from wechaty import (
     Image,
     MiniProgram,
     Friendship,
-    FriendshipType
+    FriendshipType,
+    EventReadyPayload
 )
 
 logger = get_logger(__name__)
@@ -32,8 +33,9 @@ class MyBot(Wechaty):
         self.login_user: Optional[Contact] = None
         super().__init__()
 
-    async def on_ready(self, payload) -> None:
-        logger.info('ready event<%s>', payload)
+    async def on_ready(self, payload: EventReadyPayload) -> None:
+        """listen for on-ready event"""
+        logger.info('ready event %s...', payload)
 
     # pylint: disable=R0912,R0914,R0915
     async def on_message(self, msg: Message) -> None:

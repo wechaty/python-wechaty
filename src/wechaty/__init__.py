@@ -32,6 +32,7 @@ from wechaty_puppet import (
 
     # Event
     EventType,
+    EventReadyPayload,
 
     RoomQueryFilter,
     RoomMemberQueryFilter,
@@ -125,6 +126,7 @@ __all__ = [
 
     # Event
     'EventType',
+    'EventReadyPayload',
 
     'ScanStatus',
 
