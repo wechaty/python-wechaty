@@ -12,7 +12,7 @@
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
 -->
 
-[中文文档](https://python-wechaty.readthedocs.io/zh_CN/latest/)
+[📄 Chinese Document](https://wechaty.readthedocs.io/zh_CN/latest/)
 
 ## Connecting Chatbots
 
