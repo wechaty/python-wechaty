@@ -29,6 +29,7 @@ export WECHATY_LOG="verbose"
 export WECHATY_PUPPET="wechaty-puppet-wechat"
 export WECHATY_PUPPET_SERVER_PORT="8080"
 export WECHATY_TOKEN="python-wechaty-uos-token"
+export WECHATY_PUPPET_SERVICE_NO_TLS_INSECURE_SERVER="true"
 
 docker run -ti \
 --name wechaty_puppet_service_token_gateway \
