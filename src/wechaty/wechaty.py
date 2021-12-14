@@ -99,6 +99,7 @@ from .exceptions import (
 )
 
 from .utils import timestamp_to_date
+from urllib.parse import quote
 
 log: logging.Logger = get_logger('Wechaty')
 
@@ -693,7 +694,7 @@ class Wechaty(AsyncIOEventEmitter):
                         log.info(
                             'or you can scan qrcode from: '
                             'https://wechaty.js.org/qrcode/%s',
-                            qr_code
+                            quote(qr_code)
                         )
                     self.emit('scan', qr_code, payload.status, payload.data)
                     await self.on_scan(qr_code, payload.status, payload.data)
