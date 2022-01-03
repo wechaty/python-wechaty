@@ -133,3 +133,7 @@ version:
 .PHONY: deploy-version
 deploy-version:
 	echo "VERSION = '$$(cat VERSION)'" > src/wechaty/version.py
+
+.PHONY: doc
+doc:
+	mkdocs serve
