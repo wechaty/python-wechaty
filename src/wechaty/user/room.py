@@ -19,9 +19,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
-
+import types
 import asyncio
 import dataclasses
+from asyncio import Task
 from collections import defaultdict
 # from threading import Event, Thread
 
@@ -36,7 +37,6 @@ from typing import (
 )
 import json
 from pyee import AsyncIOEventEmitter  # type: ignore
-# from wechaty_puppet import RoomMemberPayload
 from wechaty.exceptions import WechatyOperationError, WechatyPayloadError
 from wechaty_puppet import (
     FileBox,
@@ -47,7 +47,8 @@ from wechaty_puppet import (
 )
 # from wechaty.utils import type_check
 from ..accessory import Accessory
-from ..config import AT_SEPARATOR
+from ..config import AT_SEPARATOR, PARALLEL_TASK_NUM
+from wechaty.utils.async_helper import gather_with_concurrency
 
 if TYPE_CHECKING:
     from .contact import Contact
@@ -116,83 +117,129 @@ class Room(Accessory[RoomPayload]):
             raise WechatyOperationError(message)
 
     @classmethod
-    async def find_all(cls,
-                       query: Union[str, RoomQueryFilter] = None) -> List[Room]:
+    def _filter_rooms(cls,
+                      rooms: List[Room], query: Union[str, RoomQueryFilter, Callable[[Room], bool]]
+                      ) -> List[Room]:
         """
-        find room by query filter
+        filter rooms with query which can be string, RoomQueryFilter, or callable<filter> function
 
-        TODO -> we should remove search_query from puppet-*
+        Args:
+            rooms: list of room
+            query:  the query message
+        Returns: the filtered contacts
+        """
+        func: Callable[[Room], bool]
+
+        if isinstance(query, str):
+            def filter_func(room: Room) -> bool:
+                payload = room.payload
+                if not payload:
+                    return False
+                if query == payload.id or query in payload.topic:
+                    return True
+                return False
+            func = filter_func
+        elif isinstance(query, RoomQueryFilter):
+            def filter_func(room: Room) -> bool:
+                # to pass the type checking
+                assert isinstance(query, RoomQueryFilter)
+                payload = room.payload
+                if not payload:
+                    return False
+
+                if query.id == payload.id or query.topic in payload.topic:
+                    return True
+                return False
+            func = filter_func
+        elif isinstance(query, types.FunctionType):
+            func = query
+        else:
+            raise WechatyOperationError(f'Query Argument<{query}> is not correct')
+
+        assert not not func
+        rooms = list(filter(func, rooms))
+        return rooms
+
+    @classmethod
+    async def find_all(cls,
+                       query: Optional[Union[str, RoomQueryFilter, Callable[[Contact], bool]]] = None) -> List[Room]:
+        """
+        find all rooms based on query, which can be string, RoomQueryFilter, or callable<filter> function
+
+        Args:
+            query: the query body to build filter
+
+        Examples:
+            >>> # 1. find rooms based query string
+            >>> Room.find_all('your-room-id')   # find: <your-room-id> == room.room_id
+            >>> Room.find_all('room-topic')     # find: <room-topic> in room.topic()
+
+            >>> # 2. find rooms based RoomQueryFilter object
+            >>> query = RoomQueryFilter(topic='room-topic')     # find: <room-topic> in room.topic()
+            >>> query = RoomQueryFilter(id='your-room-id')      # find: <your-room-id> == room.room_id
+            >>> query = RoomQueryFilter(topic='room-topic', id='your-room-id')      # find: <your-room-id> == room.room_id and <room-topic> in room.topic()
+            >>> Room.find_all(query)
+
+            >>> # 3. find rooms based on callable query function
+            >>> def filter_rooms(room: Room) -> bool:
+            >>>     if room.room_id == "your-room-id":
+            >>>         return True
+            >>>     if room.payload.topic == 'room-topic':
+            >>>         return True
+            >>>     return False
+
+        Returns: the filtered rooms
+
         """
         log.info('Room find_all <%s>', query)
 
+        # 1. load rooms with concurrent tasks
         room_ids = await cls.get_puppet().room_search()
-        rooms = [cls.load(room_id) for room_id in room_ids]
+        rooms: List[Room] = [cls.load(room_id) for room_id in room_ids]
+        tasks: List[Task] = [asyncio.create_task(room.ready()) for room in rooms]
+        await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
 
-        # using async parallel pattern to load room payload
-        await asyncio.gather(*[room.ready() for room in rooms])
+        # 2. filter the rooms
+        if not query:
+            return rooms
 
-        # search by any field contains query word
-        if query is not None:
-            if isinstance(query, str):
-                rooms = list(
-                    filter(
-                        lambda x: False if not x.payload else
-                        (x.payload.id.__contains__(query)) or
-                        (x.payload.topic.__contains__(query)),
-                        rooms
-                    )
-                )
-
-            if isinstance(query, RoomQueryFilter):
-                newQuery: Dict = dataclasses.asdict(query)
-                rooms = list(
-                    filter(
-                        lambda x: False if not x.payload else
-                        (x.payload.id == newQuery.get('id') or not newQuery.get('id')) and
-                        (x.payload.topic == newQuery.get('topic') or not newQuery.get('topic')),
-                        rooms
-                    )
-                )
+        rooms = cls._filter_rooms(rooms, query)
         return rooms
 
     @classmethod
     async def find(cls,
-                   query: Union[str, RoomQueryFilter] = None) -> Union[None, Room]:
+                   query: Union[str, RoomQueryFilter, Callable[[Room], bool]] = None) -> Optional[Room]:
         """
-        Try to find a room by filter: {topic: string | RegExp}. If get many,
-        return the first one.
+        Try to find a room by query, if there are many rooms, it will return only the first one
+
+        Examples:
+            >>> # 1. find rooms based query string
+            >>> Room.find_all('your-room-id')   # find: <your-room-id> == room.room_id
+            >>> Room.find_all('room-topic')     # find: <room-topic> in room.topic()
+
+            >>> # 2. find rooms based RoomQueryFilter object
+            >>> query = RoomQueryFilter(topic='room-topic')     # find: <room-topic> in room.topic()
+            >>> query = RoomQueryFilter(id='your-room-id')      # find: <your-room-id> == room.room_id
+            >>> query = RoomQueryFilter(topic='room-topic', id='your-room-id')      # find: <your-room-id> == room.room_id and <room-topic> in room.topic()
+            >>> Room.find(query)
+
+            >>> # 3. find rooms based on callable query function
+            >>> def filter_rooms(room: Room) -> bool:
+            >>>     if room.room_id == "your-room-id":
+            >>>         return True
+            >>>     if room.payload.topic == 'room-topic':
+            >>>         return True
+            >>>     return False
+            >>> Room.find(filter_rooms)
+
+        Returns:
+            Optional[Room]: Room or None
         """
         log.info('Room find <%s>', query)
-
         rooms = await cls.find_all(query)
-
-        if rooms is None or len(rooms) < 1:
+        if not rooms:
             return None
-
-        if len(rooms) > 1:
-            log.warning('Room find() got more than one(%d) result', len(rooms))
-
-        for index, room in enumerate(rooms):
-            # TODO -> room_valid function is not implemented in puppet
-            # this code need to be changed later
-
-            valid = cls.get_puppet() is not None
-
-            if valid:
-                log.warning(
-                    'Room find() confirm room[#%d] with id=%s '
-                    'is valid result, return it.',
-                    index,
-                    room.room_id
-                )
-                return room
-            log.info(
-                'Room find() confirm room[#%d] with id=%s '
-                'is INVALID result, try next',
-                index,
-                room.room_id)
-        log.info('Room find() got %d rooms but no one is valid.', len(rooms))
-        return None
+        return rooms[0]
 
     @classmethod
     def load(cls, room_id: str) -> Room:
