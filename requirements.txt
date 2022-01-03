@@ -4,3 +4,4 @@ qrcode
 lxml
 wechaty-puppet>=0.3.dev10
 wechaty-puppet-service>=0.8.4
+quart

@@ -112,9 +112,12 @@ class WechatyOptions:
     """
     WechatyOptions instance
     """
-    name: Optional[str] = None
-    puppet: Optional[Union[PuppetModuleName, Puppet]] = None
-    puppet_options: Optional[PuppetOptions] = None
+    name: str = 'Python Wechaty'
+    puppet: Union[PuppetModuleName, Puppet] = 'wechaty-puppet-service'
+    puppet_options: PuppetOptions = PuppetOptions()
+
+    host: str = '0.0.0.0'
+    port: int = 5000
 
 
 # pylint:disable=R0902,R0904
@@ -511,7 +514,7 @@ class Wechaty(AsyncIOEventEmitter):
                 async def login_listener(payload: EventLoginPayload) -> None:
 
                     # init the plugins
-                    await self._plugin_manager.init_plugins()
+                    await self._plugin_manager.start()
 
                     # set login contact_id
                     self.contact_id = payload.contact_id

@@ -20,6 +20,7 @@ limitations under the License.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 from abc import ABCMeta
@@ -35,7 +36,9 @@ from typing import (
     Dict,
     Union,
     Any,
-    cast)
+    cast
+)
+from quart import Quart
 
 from wechaty_puppet import (
     get_logger,
@@ -101,6 +104,9 @@ class WechatyPlugin(metaclass=ABCMeta):
 
     async def init_plugin(self, wechaty: Wechaty) -> None:
         """set wechaty to the plugin"""
+
+    async def blueprint(self, app: Quart) -> None:
+        """register blueprint into default web server"""
 
     @property
     def name(self) -> str:
@@ -234,6 +240,8 @@ class WechatyPluginManager:
         # supported now.
         self._dependency_tree: PluginTree = defaultdict()
 
+        self.app: Quart = Quart('Wechaty Server')
+
     # pylint: disable=R1711
     @staticmethod
     def _load_plugin_from_local_file(plugin_path: str) -> Optional[WechatyPlugin]:
@@ -312,17 +320,38 @@ class WechatyPluginManager:
         self._check_plugins(name)
         return self._plugin_status[name]
 
-    async def init_plugins(self) -> None:
+    async def start(self) -> None:
         """
         set wechaty to plugins
         """
-        log.info('init the plugins ...')
+        log.info('start the plugins ...')
+
+        # 1. init the plugins
         for name, plugin in self._plugins.items():
             log.info('init %s-plugin ...', name)
             assert isinstance(plugin, WechatyPlugin)
             # set wechaty instance to all of the plugin bot attribute
             plugin.set_bot(self._wechaty)
             await plugin.init_plugin(self._wechaty)
+            await plugin.blueprint(self.app)
+
+        # 2. if there are blueprints, it will start the webserver
+        rules = list(self.app.url_map.iter_rules())
+        if len(rules) > 1:
+
+            # check the host & port configuration
+
+            # pylint: disable=W0212
+            host, port = self._wechaty._options.host, self._wechaty._options.port
+            log.info('============================starting web service========================')
+            log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
+
+            task = self.app.run_task(
+                host=host,
+                port=port
+            )
+            asyncio.create_task(task)
+            log.info('============================web service has started========================')
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     async def emit_events(self, event_name: str, *args: Any, **kwargs: Any) -> None:
