@@ -20,9 +20,11 @@ limitations under the License.
 """
 from __future__ import annotations
 
+import types
 import asyncio
 import dataclasses
 import json
+from asyncio import Task
 from typing import (
     TYPE_CHECKING,
     Dict,
@@ -30,11 +32,14 @@ from typing import (
     Optional,
     Type,
     Union,
+    Callable,
 )
 
 from pyee import AsyncIOEventEmitter  # type: ignore
 
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
+from wechaty.config import PARALLEL_TASK_NUM
+from wechaty.utils.async_helper import gather_with_concurrency
 from wechaty_puppet import (
     ContactGender,
     ContactPayload,
@@ -72,6 +77,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         super().__init__()
         self.contact_id: str = contact_id
+        self.payload: Optional[ContactPayload] = None
 
     def get_id(self) -> str:
         """
@@ -98,66 +104,137 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return new_contact
 
     @classmethod
-    async def find(cls: Type[Contact], query: Union[str, ContactQueryFilter]) \
-        -> Optional[Contact]:
+    def _filter_contacts(cls,
+                         contacts: List[Contact],
+                         query: Union[str, ContactQueryFilter, Callable[[Contact], bool]]) -> List[Contact]:
+
+        func: Callable[[Contact], bool]
+        if isinstance(query, str):
+
+            def filter_func(contact: Contact) -> bool:
+                payload = contact.payload
+                if not payload:
+                    return False
+                if query in payload.alias or query in payload.name:
+                    return True
+                if query == payload.id or quit == payload.weixin:
+                    return True
+                return False
+            func = filter_func
+
+        elif isinstance(query, ContactQueryFilter):
+
+            def filter_func(contact: Contact) -> bool:
+                payload = contact.payload
+
+                # to pass the type checking
+                assert isinstance(query, ContactQueryFilter)
+                if not payload:
+                    return False
+
+                if query.alias and query.alias in payload.alias:
+                    return True
+                if query.name and query.name in payload.name:
+                    return True
+
+                if query.id and query.id == payload.id:
+                    return True
+                if query.weixin and query.weixin == payload.weixin:
+                    return True
+
+                return False
+            func = filter_func
+        elif isinstance(types, types.FunctionType):
+            func = query
+        else:
+            raise WechatyOperationError(f'Query Argument<{query}> is not correct')
+
+        assert not not func
+        contacts = list(filter(func, contacts))
+        return contacts
+
+    @classmethod
+    async def find(cls,
+                   query: Union[str, ContactQueryFilter, Callable[[Contact], bool]]
+                   ) -> Optional[Contact]:
         """
-        find a single target contact
-        :param query:
-        :return:
+        find the first of contacts based on query, which can be string, ContactQueryFilter, or callable<filter> function
+
+        Args:
+            query: the query body to build filter
+        Args:
+            query:
+
+        Examples:
+            >>> # 1. find contacts based query string, will match one of: contact_id, weixin, name and alias
+            >>> # what's more, contact_id and weixin will follow extract match, name and alias will follow fuzzy match
+            >>> Contact.find('your-contact-id/weixin')   # find: <your-contact-id> == contact.contact_id
+            >>> Contact.find('name/alias')     # find: <name> in contact.name
+
+            >>> # 2. find contacts based ContactQueryFilter object, will match all fields
+            >>> query = ContactQueryFilter(id='your-contact-id', weixin='weixin')     # find: <your-contact-id> == contact.contact_id
+            >>> query = ContactQueryFilter(name='your-contact-name')      # find: <your-contact-name> in contact.name
+            >>> Contact.find(query)
+
+            >>> # 3. find contacts based on callable query function
+            >>> def filter_contacts(contact: Contact) -> bool:
+            >>>     if contact.contact_id == "your-contact-id":
+            >>>         return True
+            >>>     return False
+            >>> Contact.find(filter_contacts)
+        Returns: filtered contact, None or Contact
         """
         log.info('find() <%s, %s>', cls, query)
 
-        contact_list = await cls.find_all(query)
-        if len(contact_list) == 0:
+        contacts = await cls.find_all(query)
+        if not contacts:
             return None
-        return contact_list[0]
+        return contacts[0]
 
     @classmethod
     async def find_all(cls: Type[Contact],
-                       query: Optional[Union[str, ContactQueryFilter]] = None
+                       query: Optional[Union[str, ContactQueryFilter, Callable[[Contact], bool]]] = None
                        ) -> List[Contact]:
         """
-        find all contact friends
-        :param query:
-        :return:
+        find all contacts based on query, which can be string, ContactQueryFilter, or callable<filter> function
+
+        Args:
+            query: the query body to build filter
+        Args:
+            query:
+
+        Examples:
+            >>> # 1. find contacts based query string, will match one of: contact_id, weixin, name and alias
+            >>> # what's more, contact_id and weixin will follow extract match, name and alias will follow fuzzy match
+            >>> Contact.find_all('your-contact-id/weixin')   # find: <your-contact-id> == contact.contact_id
+            >>> Contact.find_all('name/alias')     # find: <name> in contact.name
+
+            >>> # 2. find contacts based ContactQueryFilter object, will match all fields
+            >>> query = ContactQueryFilter(id='your-contact-id', weixin='weixin')     # find: <your-contact-id> == contact.contact_id
+            >>> query = ContactQueryFilter(name='your-contact-name')      # find: <your-contact-name> in contact.name
+            >>> Contact.find_all(query)
+
+            >>> # 3. find contacts based on callable query function
+            >>> def filter_contacts(contact: Contact) -> bool:
+            >>>     if contact.contact_id == "your-contact-id":
+            >>>         return True
+            >>>     return False
+            >>> Contact.find_all(filter_contacts)
+        Returns: filtered contacts/
         """
         log.info('find_all() <%s, %s>', cls, query)
 
-        contact_ids = await cls.get_puppet().contact_list()
+        # 1. load contacts with concurrent tasks
+        contact_ids: List[str] = await cls.get_puppet().contact_list()
 
-        # filter Contact by contact id to make sure its valid if contact_id.startswith('wxid_')
         contacts: List[Contact] = [cls.load(contact_id) for contact_id in contact_ids]
+        tasks: List[Task] = [asyncio.create_task(contact.ready()) for contact in contacts]
+        await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
 
-        # load contact parallel using asyncio.gather method
-        # async load
-        await asyncio.gather(*[contact.ready() for contact in contacts])
+        # 2. filter contacts
+        if not query:
+            return contacts
 
-        if query is not None:
-            if isinstance(query, str):
-                contacts = list(
-                    filter(
-                        lambda x: False if not x.payload else
-                        (x.payload.alias.__contains__(query)) or
-                        (x.payload.id.__contains__(query)) or
-                        (x.payload.name.__contains__(query)) or
-                        (x.payload.weixin.__contains__(query)),
-                        contacts
-                    )
-                )
-
-            if isinstance(query, ContactQueryFilter):
-                new_query: Dict = dataclasses.asdict(query)
-                contacts = list(
-                    filter(
-                        lambda x: x.payload and (
-                            (x.payload.alias == new_query.get('alias') or not new_query.get('alias')) and
-                            (x.payload.id == new_query.get('id') or not new_query.get('id')) and
-                            (x.payload.name == new_query.get('name') or not new_query.get('name')) and
-                            (x.payload.weixin == new_query.get('weixin') or not new_query.get('weixin'))
-                        ),
-                        contacts
-                    )
-                )
 
         return contacts
 
@@ -183,7 +260,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         get contact string representation
         """
-        if not self.is_ready():
+        if not self.is_ready() or not self.payload:
             return 'Contact <{}>'.format(self.contact_id)
 
         if self.payload.alias.strip() != '':
@@ -256,7 +333,9 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         get contact name
         """
-        return '' if not self.is_ready() else self.payload.name
+        if not self.payload:
+            return ''
+        return self.payload.name
 
     async def alias(self,
                     new_alias: Optional[str] = None
@@ -273,7 +352,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
         try:
             alias = await self.puppet.contact_alias(self.contact_id, new_alias)
-            
+
             # reload the contact payload
             await self.ready(force_sync=True)
             return alias
@@ -292,7 +371,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         if not self.payload or not self.payload.friend:
             return None
-        return self.payload.friend
+        return self.payload.friends
 
     def is_offical(self) -> bool:
         """

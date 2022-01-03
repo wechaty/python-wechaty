@@ -49,6 +49,9 @@ DATA_PATH = os.path.realpath(
 # String.fromCharCode(8197)
 AT_SEPARATOR = chr(0x2005)
 
+# refer to:https://github.com/wechaty/python-wechaty/issues/285#issuecomment-997441596
+PARALLEL_TASK_NUM = 100
+
 
 def global_exception_handler(exception: Exception) -> None:
     """
