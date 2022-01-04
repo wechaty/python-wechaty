@@ -78,9 +78,8 @@ setuptools.setup(
     url='https://github.com/wechaty/python-wechaty',
     packages=setuptools.find_packages('src'),
     package_dir={'': 'src'},
+    package_data={'wechaty': ['**/*.pyi', '*.pyi']},
     install_requires=get_install_requires(),
-    # packages=setuptools.find_packages('wip'),
-    # package_dir={'': 'wip'},
     classifiers=[
         'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: Apache Software License',
