@@ -432,14 +432,19 @@ class Wechaty(AsyncIOEventEmitter):
 
         except (requests.exceptions.ConnectionError, StreamTerminatedError, OSError):
 
-            # TODO: this problem is the most common error, so I add chinese & detail info for developer. this should be
-            error_info = """The network is not good, the bot will try to restart after 60 seconds.  But here are some suggestions for you:
+            # TODO: this problem is the most common error, so I add chinese & detail info for
+            #  developer. this should be removed later.
+            # pylint: disable=C0301
+            error_info = '''The network is not good, the bot will try to restart after 60 seconds.
+But here are some suggestions for you:
 * 查看token是否可用？（过期或协议不可用）
 * docker 服务是否正常启动？
 * python-wechaty bot 是否正常启动？
 * python-wechaty bot 是否能ping通docker服务？
 * 由于版本细节问题，目前python-wechaty 支持最好的wechaty镜像为：[wechaty/wechaty:0.65](https://hub.docker.com/layers/wechaty/wechaty/0.65/images/sha256-d39b9fb5dece3a8ffa88b80a8ccfd916be14b9d0de72115732c3ee714b0d6a96?context=explore)
-"""
+
+I suggest that you should follow the template code from: https://wechaty.readthedocs.io/zh_CN/latest/ to avoid the unnecessary bugs.
+'''
             log.error(error_info)
             await asyncio.sleep(60)
             await self.restart()
