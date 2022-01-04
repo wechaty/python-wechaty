@@ -7,10 +7,9 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Downloads](https://pepy.tech/badge/wechaty)](https://pepy.tech/project/wechaty)
 [![Wechaty in Python](https://img.shields.io/badge/Wechaty-Python-blue)](https://github.com/wechaty/python-wechaty)
-
-<!--
+[![PyPI](https://github.com/wechaty/python-wechaty/actions/workflows/pypi.yml/badge.svg)](https://github.com/wechaty/python-wechaty/actions/workflows/pypi.yml)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
--->
+![JetBrains Black Box Logo logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*1lb7oaa*_ga*MjE5ODE2MzAwLjE2MzYxODMyNTE.*_ga_V0XZL7QHEB*MTY0MTI2NzU5OS41LjEuMTY0MTI2NzY3OC4w&_ga=2.157122558.411488113.1641267600-219816300.1636183251)
 
 [📄 Chinese Document](https://wechaty.readthedocs.io/zh_CN/latest/)
 
@@ -296,14 +295,17 @@ Project created, publish a empty module `wechaty` on PyPI.
 
 ## Contributors
 
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/0)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/0)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/1)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/1)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/2)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/2)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/3)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/3)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/4)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/4)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/5)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/5)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/6)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/6)
-[![contributor](https://sourcerer.io/fame/huan/wechaty/python-wechaty/images/7)](https://sourcerer.io/fame/huan/wechaty/python-wechaty/links/7)
+<a href="https://github.com/wechaty/python-wechaty/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=wechaty/python-wechaty" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
+
+## Support
+
+Thanks the following supported Software. 
+
+[![test image size](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_gl=1*1lb7oaa*_ga*MjE5ODE2MzAwLjE2MzYxODMyNTE.*_ga_V0XZL7QHEB*MTY0MTI2NzU5OS41LjEuMTY0MTI2NzY3OC4w&_ga=2.157122558.411488113.1641267600-219816300.1636183251)](https://jb.gg/OpenSourceSupport)
 
 ## Committers
 
