@@ -20,7 +20,7 @@ all : clean lint
 
 .PHONY: clean
 clean:
-	rm -fr dist/* .pytype
+	rm -fr dist/* .pytype ./src/wechaty/**/*.pyi ./src/wechaty/*.pyi
 
 .PHONY: lint
 lint: pylint pycodestyle flake8 mypy
@@ -111,6 +111,7 @@ run:
 
 .PHONY: dist
 dist:
+	make stub
 	python3 setup.py sdist bdist_wheel
 
 .PHONY: publish
@@ -137,3 +138,8 @@ deploy-version:
 .PHONY: doc
 doc:
 	mkdocs serve
+
+.PHONY: stub
+stub:
+	echo "generating stub file for static code type hinting ..."
+	stubgen ./src -o ./src
