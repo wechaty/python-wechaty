@@ -477,6 +477,10 @@ class Wechaty(AsyncIOEventEmitter):
                         self.emit('error', payload)
                         await self.on_error(payload)
                     else:
+                        # Fixme: there is always <error> event, which the reason is not clear
+                        # if there is no valid error message, it should not throw the error
+                        if not payload:
+                            return
                         log.error('internal error <%s>', payload)
 
                 puppet.on('error', error_listener)
