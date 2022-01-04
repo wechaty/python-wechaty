@@ -70,7 +70,7 @@ class MyBot(Wechaty):
         await contact.say(fileBox2)
 
         # 3. 发送名片到联系人
-        contactCard = self.Contact.load('laoweek')  # 把`lijiarui`更改为您在微信中的任意联系人的姓名
+        contactCard = self.Contact.load('lijiarui')  # 把`lijiarui`更改为您在微信中的任意联系人的姓名
         await contact.say(contactCard)
 
         # 4. 发送链接到联系人
@@ -105,7 +105,7 @@ asyncio.run(MyBot().start())
 
 **类型**:  [`Contact`](contact.md#Contact) 的实例方法
 
-**Example: **
+**示例:**
 
 ```python
 name: str = contact.name
@@ -117,13 +117,18 @@ name: str = contact.name
 
 >  测试表明如果过于频繁地设置别名会导致失败\(每分钟60次\).
 
-**Kind**:  [`Contact`](contact.md#Contact)对象的实例方法
+**类型**:  [`Contact`](contact.md#Contact)对象的实例方法
+
+**返回值**: Promise&lt;string \| null&gt;
 
 | 参数 | 类型 |
 | :--- | :--- |
 | newAlias | `none` \| `string` \| `null` |
 
-**Example** _\( **获取**联系人对象的别名\(备注\), 返回 {\(Promise&lt;string \| null&gt;\)}\)_
+
+
+**示例:**
+_\(**获取**联系人对象的别名\(备注\)_
 
 ```python
 alias = await contact.alias()
@@ -133,7 +138,9 @@ else:
     print('您已经为联系人设置了别名 ' + contact.name + ':' + alias)
 ```
 
-**Example** _\(为一个联系人**设置**别名\(备注\)\)_
+**示例**
+
+_\(为一个联系人**设置**别名\(备注\)\)_
 
 ```python
 try:
@@ -143,7 +150,9 @@ except Exception:
     print(f"改变{contact.name}的备注失败~")
 ```
 
-**Example** _\(**删除**给联系人设置的别名\(备注\)\)_
+**示例** 
+
+_\(**删除**给联系人设置的别名\(备注\)\)_
 
 ```python
 try:
@@ -164,7 +173,7 @@ except Exception:
 
 **返回值**: `boolean` \| `null` - 如果是自己的朋友则返回True, 不是则返回False, Unknown(未知)则返回None.
 
- **示例**
+**示例**
 
 ```python
 isFriend = contact.is_friend()
