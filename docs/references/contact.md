@@ -20,22 +20,22 @@ title: Contact
 
 * [Contact](contact.md#Contact)
   * _实例方法_
-    * [.say\(textOrContactOrFileOrUrl\)](contact.md#Contact+say) ⇒ `Promise <void>`
-    * [.name](contact.md#Contact+name)⇒ `string`
-    * [.alias\(newAlias\)](contact.md#Contact+alias) ⇒ `Promise <None | string | void>`
-    * [.friend\(\)](contact.md#Contact+friend) ⇒ `boolean` \| `None`
+    * [.say\(textOrContactOrFileOrUrl\)](contact.md#Contact+say) ⇒ `Message`
+    * [.name](contact.md#Contact+name)⇒ `str`
+    * [.alias\(new\_alias\)](contact.md#Contact+alias) ⇒ `None | str | None`
+    * [.friend\(\)](contact.md#Contact+friend) ⇒ `bool` \| `None`
     * [.type\(\)](contact.md#Contact+type) ⇒ `ContactType.CONTACT_TYPE_UNSPECIFIED` \| `ContactType.CONTACT_TYPE_PERSONAL` \| `ContactType.CONTACT_TYPE_OFFICIAL` \| `CONTACT_TYPE_CORPORATION`
     * [.gender\(\)](contact.md#Contact+gender) ⇒ `ContactGender.CONTACT_GENDER_UNSPECIFIED` \| `ContactGender.CONTACT_GENDER_MALE` \| `ContactGender.CONTACT_GENDER_FEMALE`
-    * [.province\(\)](contact.md#Contact+province) ⇒ `string` \| `None`
-    * [.city\(\)](contact.md#Contact+city) ⇒ `string` \| `None`
-    * [.avatar\(\)](contact.md#Contact+avatar) ⇒ `Promise <FileBox>`
-    * [.sync\(\)](contact.md#Contact+sync) ⇒ `Promise <void>`
-    * [.self\(\)](contact.md#Contact+self) ⇒ `boolean`
+    * [.province\(\)](contact.md#Contact+province) ⇒ `str` \| `None`
+    * [.city\(\)](contact.md#Contact+city) ⇒ `str` \| `None`
+    * [.avatar\(\)](contact.md#Contact+avatar) ⇒ `FileBox`
+    * [.sync\(\)](contact.md#Contact+sync) ⇒ `None`
+    * [.self\(\)](contact.md#Contact+self) ⇒ `bool`
   * _静态方法_
-    * [.find\(query\)](contact.md#Contact.find) ⇒ `Promise <Contact | None>`
-    * [.findAll\(\[queryArg\]\)](contact.md#Contact.findAll) ⇒ `Promise <Contact []>`
+    * [.find\(query\)](contact.md#Contact.find) ⇒ `Contact | None`
+    * [.findAll\(\[queryArg\]\)](contact.md#Contact.findAll) ⇒ `List[Contact]`
 
-### contact.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Promise <void>`
+### contact.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `None`
 
 > 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
@@ -43,7 +43,7 @@ title: Contact
 
 | 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| 文本, 联系人对象, 文件对象, 链接或者小程序对象 | `string` \| [`Contact`](contact.md#Contact) \| `FileBox` \| `UrlLink` \| `MiniProgram` | 发送文本、联系人名片、文件或链接到目标联系人。  您可以使用 [FileBox](https://www.npmjs.com/package/file-box) 类来发送文件。 |
+| 文本, 联系人对象, 文件对象, 链接或者小程序对象 | `str` \| [`Contact`](contact.md#Contact) \| `FileBox` \| `UrlLink` \| `MiniProgram` | 发送文本、联系人名片、文件或链接到目标联系人。  您可以使用 [FileBox](https://www.npmjs.com/package/file-box) 类来发送文件。 |
 
 #### 示例
 
@@ -99,7 +99,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.name ⇒ `string`
+### contact.name ⇒ `str`
 
 获取联系人对象的名字
 
@@ -111,7 +111,7 @@ asyncio.run(MyBot().start())
 name: str = contact.name
 ```
 
-### contact.alias\(newAlias\) ⇒ `Promise <null | string | void>`
+### contact.alias\(newAlias\) ⇒ `None | str | None`
 
 为一个联系人获取 / 设置 / 删除别名
 
@@ -123,7 +123,7 @@ name: str = contact.name
 
 | 参数 | 类型 |
 | :--- | :--- |
-| newAlias | `none` \| `string` \| `null` |
+| newAlias | `None` \| `str` \| `None` |
 
 
 
@@ -163,7 +163,7 @@ except Exception:
     print(f"删除{contact.name}的备注失败!")
 ```
 
-### contact.friend\(\) ⇒ `boolean` \| `null`
+### contact.friend\(\) ⇒ `bool` \| `None`
 
 检查这个联系人对象是否是自己的朋友
 
@@ -171,7 +171,7 @@ except Exception:
 
 **类型**: [`Contact`](contact.md#Contact) 的实例方法
 
-**返回值**: `boolean` \| `null` - 如果是自己的朋友则返回True, 不是则返回False, Unknown(未知)则返回None.
+**返回值**: `bool` \| `None` - 如果是自己的朋友则返回True, 不是则返回False, Unknown(未知)则返回None.
 
 **示例**
 
@@ -228,7 +228,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.province\(\) ⇒ `string` \| `null`
+### contact.province\(\) ⇒ `str` \| `None`
 
 获取一个联系人-的省份信息
 
@@ -240,7 +240,7 @@ asyncio.run(MyBot().start())
 province: str = contact.province()
 ```
 
-### contact.city\(\) ⇒ `string` \| `null`
+### contact.city\(\) ⇒ `str` \| `None`
 
 获取联系人所设置的城市
 
@@ -252,7 +252,7 @@ province: str = contact.province()
 city: str = contact.city()
 ```
 
-### contact.avatar\(\) ⇒ `Promise <FileBox>`
+### contact.avatar\(\) ⇒ `FileBox`
 
 获取联系人头像图片的文件流
 
@@ -277,7 +277,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.sync\(\) ⇒ `Promise <void>`
+### contact.sync\(\) ⇒ `None`
 
 强制重新加载联系人的数据，再次从低级 API 同步数据。
 
@@ -289,13 +289,13 @@ asyncio.run(MyBot().start())
 await contact.sync()
 ```
 
-### contact.self\(\) ⇒ `boolean`
+### contact.self\(\) ⇒ `bool`
 
 检查该联系人对象是不是Bot自身
 
 **类型**: [`Contact`](contact.md#Contact)的实例方法
 
-**返回值**: `boolean` - 如果该联系人对象是Bot自身则返回True, 若不是则返回False 
+**返回值**: `bool` - 如果该联系人对象是Bot自身则返回True, 若不是则返回False 
 
 **示例**
 
@@ -303,7 +303,7 @@ await contact.sync()
 isSelf: bool = contact.self()
 ```
 
-### Contact.find\(query\) ⇒ `Promise <Contact | null>`
+### Contact.find\(query\) ⇒ `Contact | None`
 
 尝试通过过滤器查找联系人: {name: string \| RegExp} / {alias: string \| RegExp}
 
@@ -333,7 +333,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### Contact.findAll\(\[queryArg\]\) ⇒ `Promise <Contact []>`
+### Contact.findAll\(\[queryArg\]\) ⇒ `List[Contact]`
 
 通过 `name` 或者 `alias` 查找并获取联系人对象
 
@@ -342,7 +342,7 @@ asyncio.run(MyBot().start())
 #### 定义
 
 * `name`   由用户自己设置的名字, 叫做name
-* `alias`  由Bot为联系人设置的名字(备注/别名). 该值可以传入正则表达式用于搜索用户
+* `alias`  由Bot为联系人设置的名字\(备注/别名\). 该值可以传入正则表达式用于搜索用户
 
 **类型**: [`Contact`](contact.md#Contact)的静态方法
 
@@ -374,5 +374,5 @@ asyncio.run(MyBot().start())
 
 | **属性名** | 类型     | **描述**                                                     |
 | ---------- | -------- | ------------------------------------------------------------ |
-| name       | `string` | 由用户本身(user-self)设置的名字, 叫做name                    |
-| alias      | `string` | 由Bot为联系人设置的名字(备注/别名). 该值可以传入正则表达式用于搜索用户, 更多细节详见[issues#365](https://github.com/wechaty/wechaty/issues/365) |
+| name       | `str` | 由用户本身(user-self)设置的名字, 叫做name                    |
+| alias      | `str` | 由Bot为联系人设置的名字(备注/别名). 该值可以传入正则表达式用于搜索用户, 更多细节详见[issues#365](https://github.com/wechaty/wechaty/issues/365) |
