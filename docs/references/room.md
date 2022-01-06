@@ -28,7 +28,7 @@ title: Room
 
 微信群聊（组）的相关功能被封装在 `Room` 类中。
 
-[Examples/Room-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/room-bot.ts)
+[示例/Room-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/advanced/room_bot.py)
 
 **类型**: 全局类
 
