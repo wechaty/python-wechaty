@@ -8,382 +8,519 @@ title: Message
 
 接受和发送的消息都封装成`Message`对象。
 
-[Examples/Ding-Dong-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/ding-dong-bot.ts)
+[示例/Ding-Dong-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/ding-dong-bot.py)
 
-**Kind**: 全局对象
+**类型**: 全局对象
 
 * [Message](message.md#Message)
-  * _instance_
-    * [.from\(\)](message.md#Message+from) ⇒ `Contact` \| `None`
+  * _实例方法_
+    * ~~[.from\(\)](message.md#Message+from)~~ ⇒ `Contact` \| `None`
+    * [.talker\(\)](message.md#Message+talker) ⇒ `Contact` \| `None`
     * [.to\(\)](message.md#Message+to) ⇒ `Contact` \| `None`
     * [.room\(\)](message.md#Message+room) ⇒ `Room` \| `None`
     * [.text\(\)](message.md#Message+text) ⇒ `str`
     * [.say\(textOrContactOrFile\)](message.md#Message+say) ⇒ `None`
     * [.type\(\)](message.md#Message+type) ⇒ `MessageType`
-    * [.self\(\)](message.md#Message+self) ⇒ `bool`
-    * [.mention\(\)](message.md#Message+mention) ⇒ `List[Contact]`
-    * [.mention_self\(\)](message.md#Message+mentionSelf) ⇒ `<boolean>`
-    * [.forward\(to\)](message.md#Message+forward) ⇒ `<void>`
+    * [.is_self\(\)](message.md#Message+isSelf) ⇒ `bool`
+    * ~~[.mention\(\)](message.md#Message+mention)~~ ⇒ `List[Contact]`
+    * [.mention_self\(\)](message.md#Message+mentionSelf) ⇒ `bool`
+    * [.mention_text\(\)](message.md#Message+mentionText) ⇒ `str`
+    * [.mention_list\(\)](message.md#Message+mentionList) ⇒ `List[Contact]`
+    * [.forward\(to\)](message.md#Message+forward) ⇒ `None`
     * [.date\(\)](message.md#Message+date) ⇒ `datetime`
-    * [.age\(\)](message.md#Message+age) ⇒ `number`
+    * [.age\(\)](message.md#Message+age) ⇒ `int`
     * [.to_file_box\(\)](message.md#Message+toFileBox) ⇒ `FileBox`
+    * [.to_image\(\)](message.md#Message+toImage) ⇒ `Image`
     * [.to_contact\(\)](message.md#Message+toContact) ⇒ `Contact`
     * [.to_url_link\(\)](message.md#Message+toUrlLink) ⇒ `UrlLink`
-  * _static_
+    * [.to_url_linkto_mini_program\(\)](message.md#Message+toMiniProgram) ⇒ `UrlLink`
+    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](contact.md#Message+say) ⇒ `Message`
+    * [.to_recalled\(\)](contact.md#Message+toRecalled) ⇒ `Message`
+    * [.recall\(\)](contact.md#Message+recall)
+  * _静态方法_
     * [.find\(\)](message.md#Message.find) ⇒ `Message`
     * [.find_all\(\)](message.md#Message.findAll) ⇒ `Message`
+    
 
-### message.from\(\) ⇒ `Contact | None`
+### ~~message.from\(\)~~ ⇒ `Contact | None`
+
+已弃用, 详见[message.talker\(\)](message.md#Message+talker)
+
+### message.talker\(\) ⇒ `Contact | None`
 
 获取消息的发送者。
 
-**数据类型**: instance method of [`Message`](message.md#Message) **Example**
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-```javascript
-const bot = new Wechaty()
-bot
-.on('message', async m => {
-  const contact = msg.from()
-  const text = msg.text()
-  const room = msg.room()
-  if (room) {
-    const topic = await room.topic()
-    console.log(`Room: ${topic} Contact: ${contact.name()} Text: ${text}`)
-  } else {
-    console.log(`Contact: ${contact.name()} Text: ${text}`)
-  }
-})
-.start()
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        print(msg.talker())
+
+asyncio.run(MyBot().start())
 ```
 
 ### message.to\(\) ⇒ `Contact` \| `None`
 
-Get the destination of the message Message.to\(\) will return None if a message is in a room, use Message.room\(\) to get the room.
+获取消息的接收者, 如果消息是在群聊发出的`Message.to()`会返回None, 请使用 `Message.room()` 获取群聊对象.
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-#### Example
+#### 示例
 
-```javascript
-const bot = new Wechaty()
-bot
-.on('message', async m => {
-  const contact = message.from()
-  const text = message.text()
-  const toContact = message.to()
-  if (toContact) {
-    const name = toContact.name()
-    console.log(`toContact: ${name} Contact: ${contact.name()} Text: ${text}`)
-  } else {
-    console.log(`Contact: ${contact.name()} Text: ${text}`)
-  }
-})
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, Message, Contact
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        talker: Contact = msg.talker()
+        text: str = msg.text()
+        to_contact = msg.to()
+        if to_contact:
+            name = to_contact.name
+            print(f"接收者: {name} 联系人: {talker.name} 内容: {text}")
+        else:
+            print(f"联系人: {talker.name} 内容: {text}")
+
+
+asyncio.run(MyBot().start())
 ```
 
 ### message.room\(\) ⇒ `Room` \| `None`
 
-Get the room from the message. If the message is not in a room, then will return `None`
+获取消息来自的群聊. 如果消息不是来自群聊, 则返回None
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法
 
-#### Example
+#### 示例
 
-```javascript
-const bot = new Wechaty()
-bot
-.on('message', async m => {
-  const contact = msg.from()
-  const text = msg.text()
-  const room = msg.room()
-  if (room) {
-    const topic = await room.topic()
-    console.log(`Room: ${topic} Contact: ${contact.name()} Text: ${text}`)
-  } else {
-    console.log(`Contact: ${contact.name()} Text: ${text}`)
-  }
-})
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, Message, Contact
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        talker: Contact = msg.talker()
+        text: str = msg.text()
+        room = msg.room()
+        if room:
+            room_name = await room.topic()
+            print(f"群聊名: {room_name} 联系人(消息发送者): {talker.name} 内容: {text}")
+        else:
+            print(f"联系人: {talker.name} 内容: {text}")
+
+
+asyncio.run(MyBot().start())
 ```
 
 ### ~~message.content\(\)~~
 
-_**Deprecated**_
+_**已弃用**_
 
-use [text](message.md#Message+text) instead
+请使用[text](message.md#Message+text)
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.text\(\) ⇒ `string`
+### message.text\(\) ⇒ `str`
 
-Get the text content of the message
+获取对话的消息文本
 
-**Kind**: instance method of [`Message`](message.md#Message) **Example**
+**类型**: [`Message`](message.md#Message)的实例方法  
 
-```javascript
-const bot = new Wechaty()
-bot
-.on('message', async m => {
-  const contact = msg.from()
-  const text = msg.text()
-  const room = msg.room()
-  if (room) {
-    const topic = await room.topic()
-    console.log(`Room: ${topic} Contact: ${contact.name()} Text: ${text}`)
-  } else {
-    console.log(`Contact: ${contact.name()} Text: ${text}`)
-  }
-})
-.start()
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message, Contact
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        talker: Contact = msg.talker()
+        text: str = msg.text()
+        room = msg.room()
+        if room:
+            room_name = await room.topic()
+            print(f"群聊名: {room_name} 联系人(消息发送者): {talker.name} 内容: {text}")
+        else:
+            print(f"联系人: {talker.name} 内容: {text}")
+
+
+asyncio.run(MyBot().start())
 ```
 
-### message.toRecalled\(\) ⇒ `Promise <Message | None>`
+###  message.recall\(\) ⇒ `bool`
 
-Get the text content of the recalled message
+撤回这条信息
 
-**Kind**: instance method of [`Message`](message.md#message) **Example**
+**类型**: [`Message`](message.md#Message)的实例方法
 
-```javascript
-const bot = new Wechaty()
-bot
-.on('message', async m => {
-  if (m.type() === bot.Message.Type.Recalled) {
-    const recalledMessage = await m.toRecalled()
-    console.log(`Message: ${recalledMessage} has been recalled.`)
-  }
-})
-.start()
+**返回值**: 返回撤回消息是否成功, 成功为`True`, 失败则为`False`
+
+
+### message.to_recalled\(\) ⇒ `Message | None`
+
+获取撤回的信息的文本
+
+**类型**: [`Message`](message.md#Message)的实例方法   
+
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message
+from wechaty_puppet import MessageType
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        if msg.type() == MessageType.MESSAGE_TYPE_RECALLED:
+            recalled_message = await msg.to_recalled()
+            print(f"{recalled_message}被撤回")
+
+asyncio.run(MyBot().start())
 ```
 
 ### message.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Promise <void>`
 
-Reply a Text, Contact Card, Media File or Link message to the sender.
+向联系人或群聊发送一段文字, 名片, 媒体文件或者链接
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Message`](message.md#Message) **See**: [Examples/ding-dong-bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/ding-dong-bot.ts)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-| Param | Type | Description |
+**参阅**: [Examples/ding-dong-bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/ding-dong-bot.py)
+
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| textOrContactOrFileOrUrlLinkOrMiniProgram | `string` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | send text, Contact, UrlLink, MiniProgram or file to bot.   You can use [FileBox](https://www.npmjs.com/package/file-box) to send file |
+| textOrContactOrFileOrUrlLinkOrMiniProgram | `string` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | 发送 `文本`, `媒体文件` 或者 `链接`. 您可以使用 [FileBox](https://github.com/wechaty/python-wechaty-puppet/tree/master/src/wechaty_puppet/file_box) 类来发送文件。 |
 
-#### Example
+#### 示例
 
-```javascript
-import { FileBox }  from 'file-box'
-import {
-  Wechaty,
-  UrlLink,
-  MiniProgram,
-}  from 'wechaty'
+```python
+import asyncio
+from wechaty import Wechaty, Message
+from wechaty import Wechaty, Contact, FileBox, UrlLink
 
-const bot = new Wechaty()
-bot
-.on('message', async m => {
 
-// 1. send Image
+class MyBot(Wechaty):
 
-  if (/^ding$/i.test(m.text())) {
-    const fileBox = FileBox.fromUrl('https://wechaty.github.io/wechaty/images/bot-qr-code.png')
-    await msg.say(fileBox)
-  }
+    async def on_message(self, msg: Message) -> None:
+        text = msg.text()
 
-// 2. send Text
+        # 1. 发送文字到联系人
+        if text == "叮":
+            await msg.say('咚')
+            return
 
-  if (/^dong$/i.test(m.text())) {
-    await msg.say('dingdingding')
-  }
+        # 2. 发送媒体文件到联系人
+        if text == "媒体":
+            file_box1 = FileBox.from_url('https://wechaty.github.io/wechaty/images/bot-qr-code.png', "bot-qr-code.png")
+            file_box2 = FileBox.from_file('text.txt', "text.txt")
+            await msg.say(file_box1)
+            await msg.say(file_box2)
+            return
 
-// 3. send Contact
+        # 3. 发送名片到联系人
+        if text == "名片":
+            contact_card = self.Contact.load('lijiarui')  # 把`lijiarui`更改为您在微信中的任意联系人的姓名
+            await msg.say(contact_card)
+            return
 
-  if (/^lijiarui$/i.test(m.text())) {
-    const contactCard = await bot.Contact.find({name: 'lijiarui'})
-    if (!contactCard) {
-      console.log('not found')
-      return
-    }
-    await msg.say(contactCard)
-  }
+        # 4. 发送链接到联系人
+        if text == "链接":
+            url_link = UrlLink.create(
+                description='WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love',
+                thumbnail_url='https://avatars0.githubusercontent.com/u/25162437?s=200&v=4',
+                title='Welcome to Wechaty',
+                url='https://github.com/wechaty/wechaty',
+            )
+            await msg.say(url_link)
+            return
 
-// 4. send UrlLink
+        # 5. 发送小程序 (暂时只有`wechaty-puppet-macpro`支持该服务)
 
-  if (/^link$/i.test(m.text())) {
-    const urlLink = new UrlLink({
-      description: 'Wechaty is a Bot SDK for Wechat Individual Account which can help you create a bot in 6 lines of javascript, with cross-platform support including Linux, Windows, Darwin(OSX/Mac) and Docker.',
-      thumbnailUrl: 'https://camo.githubusercontent.com/f310a2097d4aa79d6db2962fa42bb3bb2f6d43df/68747470733a2f2f6368617469652e696f2f776563686174792f696d616765732f776563686174792d6c6f676f2d656e2e706e67',
-      title: 'Wechaty',
-      url: 'https://github.com/wechaty/wechaty',
-    });
+        if text == "小程序":
+            miniProgram = self.MiniProgram.create_from_json({
+                "appid": 'gh_0aa444a25adc',
+                "title": '我正在使用Authing认证身份，你也来试试吧',
+                "pagePath": 'routes/explore.html',
+                "description": '身份管家',
+                "thumbUrl": '30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400',
+                "thumbKey": '42f8609e62817ae45cf7d8fefb532e83',
+            })
+            await msg.say(miniProgram)
+            return
 
-    await msg.say(urlLink);
-  }
-
-// 5. send MiniProgram (only supported by `wechaty-puppet-macpro`)
-
-  if (/^mini-program$/i.test(m.text())) {
-    const miniProgram = new MiniProgram ({
-      appid              : 'gh_0aa444a25adc',
-      title              : '我正在使用Authing认证身份，你也来试试吧',
-      pagePath           : 'routes/explore.html',
-      description        : '身份管家',
-      thumbUrl           : '30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400',
-      thumbKey           : '42f8609e62817ae45cf7d8fefb532e83',
-    });
-
-    await msg.say(miniProgram);
-  }
-})
-.start()
+asyncio.run(MyBot().start())
 ```
 
 ### message.type\(\) ⇒ `MessageType`
 
-Get the type from the message.
+获取消息的类型
 
-> Tips: MessageType is Enum here. &lt;/br&gt;
->
-> * MessageType.Unknown
-> * MessageType.Attachment
-> * MessageType.Audio
-> * MessageType.Contact
-> * MessageType.Emoticon
-> * MessageType.Image
-> * MessageType.Text
-> * MessageType.Video
-> * MessageType.Url
+> 注意: `MessageType`是枚举类型; <br/>
+>     `from wechaty_puppet import MessageType`
+>*    MessageType.MESSAGE_TYPE_UNSPECIFIED
+>*    MessageType.MESSAGE_TYPE_ATTACHMENT
+>*    MessageType.MESSAGE_TYPE_AUDIO
+>*    MessageType.MESSAGE_TYPE_CONTACT
+>*    MessageType.MESSAGE_TYPE_EMOTICON
+>*    MessageType.MESSAGE_TYPE_IMAGE
+>*    MessageType.MESSAGE_TYPE_TEXT
+>*    MessageType.MESSAGE_TYPE_VIDEO
+>*    MessageType.MESSAGE_TYPE_CHAT_HISTORY
+>*    MessageType.MESSAGE_TYPE_LOCATION
+>*    MessageType.MESSAGE_TYPE_MINI_PROGRAM 
+>*    MessageType.MESSAGE_TYPE_TRANSFER 
+>*    MessageType.MESSAGE_TYPE_RED_ENVELOPE 
+>*    MessageType.MESSAGE_TYPE_RECALLED 
+>*    MessageType.MESSAGE_TYPE_URL 
 
-**Kind**: instance method of [`Message`](message.md#Message) **Example**
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-```javascript
-const bot = new Wechaty()
-if (message.type() === bot.Message.Type.Text) {
-  console.log('This is a text message')
-}
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message
+from wechaty_puppet import MessageType
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        if msg.type() == MessageType.MESSAGE_TYPE_TEXT:
+            print(f"这是个文本消息")
+
+asyncio.run(MyBot().start())
+
 ```
 
-### message.self\(\) ⇒ `boolean`
+### message.is_self\(\) ⇒ `bool`
 
-Check if a message is sent by self.
+检查这个消息是否是由自己发出的
 
-**Kind**: instance method of [`Message`](message.md#Message) **Returns**: `boolean` - - Return `true` for send from self, `false` for send from others. **Example**
+**类型**: [`Message`](message.md#Message)的实例方法  
 
-```javascript
-if (message.self()) {
- console.log('this message is sent by myself!')
-}
+**返回值**: `bool` - - 返回 `True` 如果是Bot发出的消息, 如果是他人发出的则返回`False`. 
+
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message
+from wechaty_puppet import MessageType
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        if msg.is_self():
+            print("这个是Bot自己发出的消息")
+        else:
+            print("这是由别人发出的消息")
+
+asyncio.run(MyBot().start())
 ```
 
-### message.mention\(\) ⇒ `Promise <Contact []>`
+### ~~message.mention\(\)~~ ⇒ `List[Contact]`
 
-Get message mentioned contactList.
+已弃用, 请使用[.mention_list\(\)](message.md#Message+mentionList)
 
-Message event table as follows
+### message.mention_list\(\) ⇒ `List[Contact]`
 
-|  | Web | Mac PC Client | iOS Mobile | android Mobile |
+以列表的形式获取消息所提及\(@\)的人.
+
+消息事件表如下
+
+|  | Web\(网页版\) | Mac PC Client\(苹果电脑端\) | iOS Mobile\(IOS系统移动端\) | android Mobile\(安卓移动端\) |
 | :--- | :---: | :---: | :---: | :---: |
 | \[You were mentioned\] tip \(\[有人@我\]的提示\) | ✘ | √ | √ | √ |
 | Identify magic code \(8197\) by copy & paste in mobile | ✘ | √ | √ | ✘ |
 | Identify magic code \(8197\) by programming | ✘ | ✘ | ✘ | ✘ |
 | Identify two contacts with the same roomAlias by \[You were  mentioned\] tip | ✘ | ✘ | √ | √ |
 
-**Kind**: instance method of [`Message`](message.md#Message) **Returns**: `Promise <Contact []>` - - Return message mentioned contactList **Example**
+以下是表格的中文粗译
 
-```javascript
-const contactList = await message.mention()
-console.log(contactList)
+|  | Web\(网页版\) | Mac PC Client\(苹果电脑端\) | iOS Mobile\(IOS系统移动端\) | android Mobile\(安卓移动端\) |
+| :--- | :---: | :---: | :---: | :---: |
+| \[有人@我\]的提示 | ✘ | √ | √ | √ |
+| 区分移动端复制粘贴的魔法代码 `0d8197 \u0x2005` | ✘ | √ | √ | ✘ |
+| 通过编程区分魔法代码`0d8197 \u0x2005`| ✘ | ✘ | ✘ | ✘ |
+| 区分两个拥有相同群聊昵称的人的\[有人@我\]的提示  | ✘ | ✘ | √ | √ |
+
+注: `\u0x2005` 为不可见字符, 提及\(@\)的消息的格式一般为 `@Gary\u0x2005`
+
+**类型**: [`Message`](message.md#Message)的实例方法  
+
+**返回值**: `List[Contact]` - - 以列表的形式获取消息所提及\(@\)的人.
+
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty,  Message
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        contact_mention_list = await msg.mention_list()
+        print(contact_mention_list)
+
+asyncio.run(MyBot().start())
 ```
 
-### message.mentionSelf\(\) ⇒ `Promise <boolean>`
+### message.mention_self\(\) ⇒ `bool`
 
-Check if a message is mention self.
+**类型**: [`Message`](message.md#Message)的实例方法  
 
-**Kind**: instance method of [`Message`](message.md#Message) **Returns**: `Promise <boolean>` - - Return `true` for mention me. **Example**
+**返回值**: `bool` - - 如果这个消息提及(@)了Bot, 则返回True 
 
-```javascript
-if (await message.mentionSelf()) {
- console.log('this message were mentioned me! [You were mentioned] tip ([有人@我]的提示)')
-}
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        print(await msg.mention_self())
+
+asyncio.run(MyBot().start())
 ```
 
-### message.forward\(to\) ⇒ `Promise <void>`
+### message.mention_text\(\) ⇒ `str`
 
-Forward the received message. This action doesn't trigger the on-message events.
+返回过滤掉`@name`后的消息 
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法  
 
-| Param | Type | Description |
+**返回值**: `str` - - 返回过滤掉`@name`后的消息 
+
+**示例**
+
+```python
+import asyncio
+from wechaty import Wechaty, Message
+
+class MyBot(Wechaty):
+    # 原消息为 `@Gary Helloworld`
+    async def on_message(self, msg: Message) -> None:
+        print(await msg.mention_text()) # 打印`Helloworld`
+
+asyncio.run(MyBot().start())
+```
+
+### message.forward\(to\) ⇒ `None`
+
+转发接收到的信息. 此操作不会触发on-message事件.
+
+**类型**: [`Message`](message.md#Message)的实例方法  
+
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| to | `Sayable` \| `Array` | Room or Contact The recipient of the message, the room, or the contact |
+| to | `Sayable` \| `Array` | 群聊或者联系人, 消息的收件人、群聊房间或联系人 |
 
-#### Example
+#### 示例
 
-```javascript
-const bot = new Wechaty()
-bot
-.on('message', async m => {
-  const room = await bot.Room.find({topic: 'wechaty'})
-  if (room) {
-    await m.forward(room)
-    console.log('forward this message to wechaty room!')
-  }
-})
-.start()
+```python
+import asyncio
+from wechaty import Wechaty,  Message
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        room = await self.Room.find("wechaty")
+        if room:
+            await msg.forward(room)
+            print("成功转发消息到wechaty群聊")
+            
+asyncio.run(MyBot().start())
 ```
 
-### message.date\(\) ⇒ `Date`
+### message.date\(\) ⇒ `datetime`
 
-Message sent date
+获取消息发送的时间
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
 ### message.age\(\) ⇒ `number`
 
-Returns the message age in seconds.
+获取当前距离已接收到的这条消息的时间的间隔
 
-For example, the message is sent at time `8:43:01`, and when we received it in Wechaty, the time is `8:43:15`, then the age\(\) will return `8:43:15 - 8:43:01 = 14 (seconds)`
+举个例子, 有条消息是`8:43:01`发送的, 而当我们在Wechaty中接收到它的时候时间已经为 `8:43:15`, 那么这时 `age()`返回的值为 `8:43:15 - 8:43:01 = 14 (秒)`
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
 ### ~~message.file\(\)~~
 
-_**Deprecated**_
+_**已弃用**_
 
-use [toFileBox](message.md#Message+toFileBox) instead
+请使用 [to_file_box](message.md#Message+toFileBox)
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.toFileBox\(\) ⇒ `Promise <FileBox>`
+### message.to_file_box\(\) ⇒ `FileBox`
 
-Extract the Media File from the Message, and put it into the FileBox.
+从消息中提取媒体文件，并将其封装为FileBox类返回。
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.toContact\(\) ⇒ `Promise <Contact>`
+ .to_image
 
-Get Share Card of the Message Extract the Contact Card from the Message, and encapsulate it into Contact class
+### message.to_mini_program\(\) ⇒ `MiniProgram`
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+从消息中提取小程序卡片，并将其封装为MiniProgramM类返回。
 
-**Kind**: instance method of [`Message`](message.md#Message)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-### message.toUrlLink\(\) ⇒ `Promise <UrlLink>`
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-Get Url Link of the Message Extract the Url Link from the Message, and encapsulate it into UrlLink class
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+### message.to_image\(\) ⇒ `Image`
 
-**Kind**: instance method of [`Message`](message.md#Message)
+从消息中提取图像文件，以便我们可以使用不同的图像大小。
 
-### Message.find\(\) ⇒ `Promise <Message | None>`
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-Find message in cache
+**类型**: [`Message`](message.md#Message)的实例方法 
 
-**Kind**: static method of [`Message`](message.md#Message)
+
+### message.toContact\(\) ⇒ `Contact`
+
+获取消息中的联系人卡片, 并从卡片中提取联系人将其封装到联系人类中返回
+
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+
+**类型**: [`Message`](message.md#Message)的实例方法 
+
+### message.toUrlLink\(\) ⇒ `UrlLink`
+
+获取消息的UrlLink, 并从消息中提取UrlLink，封装到UrlLink类中返回
+
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+
+**类型**: [`Message`](message.md#Message)的实例方法 
+
+### Message.find\(\) ⇒ `Message | None`
+
+在缓存中查找消息
+
+**Kind**:  [`Message`](message.md#Message)的静态方法
 
 ### Message.findAll\(\) ⇒ `Promise <Message []>`
 
-Find messages in cache
+在缓存中查找消息
 
-**Kind**: static method of [`Message`](message.md#Message)
+**类型**: [`Message`](message.md#Message)的静态方法

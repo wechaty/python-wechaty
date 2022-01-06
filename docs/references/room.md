@@ -41,7 +41,7 @@ title: Room
 * [Room](room.md#Room)
   * _实例方法_
     * [.ready\(force_sync=False\)](room.md#Room+ready) ⇒ `None`
-    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `None`
+    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `Message`
     * [.on\(event, listener\)](room.md#Room+on) ⇒ `Room`
     * [.add\(contact\)](room.md#Room+add) ⇒ `None`
     * [.delete\(contact\)](room.md#Room+delete) ⇒ `None`
@@ -82,7 +82,7 @@ await room.ready()
 
 | 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| textOrContactOrFileOrUrlLinkOrMiniProgram | `str` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | 在房间内发送 `文本`, `媒体文件`或者`连接`. 您可以使用 [FileBox](https://github.com/wechaty/python-wechaty-puppet/tree/master/src/wechaty_puppet/file_box) 类来发送文件。  |
+| textOrContactOrFileOrUrlLinkOrMiniProgram | `str` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | 在房间内发送 `文本`, `媒体文件` 或者 `链接`. 您可以使用 [FileBox](https://github.com/wechaty/python-wechaty-puppet/tree/master/src/wechaty_puppet/file_box) 类来发送文件。  |
 | ...mentionList | `List[contact_id]` | 在群聊内发送内容，如果提供了联系人的id列表, 将会一并提及\(@\)他\(她\)们|
 
 #### 示例
