@@ -10,13 +10,13 @@ title: Contact
 ## Contact
 
 所有的微信联系人（朋友）都会被封装成一个`Contact`联系人对象。示例: 
-[Examples/Contact-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/contact-bot.ts)
+[Examples/Contact-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/basic/contact-bot.py)
 
 **类型**: 全局**属性**
 
 | **属性名** | 类型 | **描述** |
 | :--- | :--- | :--- |
-| id | `string` | 获取联系人对象的id. 此函数取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) |
+| id | `str` | 获取联系人对象的id. 此函数取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) |
 
 * [Contact](contact.md#Contact)
   * _实例方法_
@@ -24,7 +24,7 @@ title: Contact
     * [.name](contact.md#Contact+name)⇒ `str`
     * [.alias\(new\_alias\)](contact.md#Contact+alias) ⇒ `None | str | None`
     * [.friend\(\)](contact.md#Contact+friend) ⇒ `bool` \| `None`
-    * [.type\(\)](contact.md#Contact+type) ⇒ `ContactType.CONTACT_TYPE_UNSPECIFIED` \| `ContactType.CONTACT_TYPE_PERSONAL` \| `ContactType.CONTACT_TYPE_OFFICIAL` \| `CONTACT_TYPE_CORPORATION`
+    * [.type\(\)](contact.md#Contact+type) ⇒ `ContactType.CONTACT_TYPE_UNSPECIFIED` \| `ContactType.CONTACT_TYPE_PERSONAL` \| `ContactType.CONTACT_TYPE_OFFICIAL` \| `ContactType.CONTACT_TYPE_CORPORATION`
     * [.gender\(\)](contact.md#Contact+gender) ⇒ `ContactGender.CONTACT_GENDER_UNSPECIFIED` \| `ContactGender.CONTACT_GENDER_MALE` \| `ContactGender.CONTACT_GENDER_FEMALE`
     * [.province\(\)](contact.md#Contact+province) ⇒ `str` \| `None`
     * [.city\(\)](contact.md#Contact+city) ⇒ `str` \| `None`
@@ -43,7 +43,7 @@ title: Contact
 
 | 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| 文本, 联系人对象, 文件对象, 链接或者小程序对象 | `str` \| [`Contact`](contact.md#Contact) \| `FileBox` \| `UrlLink` \| `MiniProgram` | 发送文本、联系人名片、文件或链接到目标联系人。  您可以使用 [FileBox](https://www.npmjs.com/package/file-box) 类来发送文件。 |
+| 文本, 联系人对象, 文件对象, 链接或者小程序对象 | `str` \| [`Contact`](contact.md#Contact) \| `FileBox` \| `UrlLink` \| `MiniProgram` | 发送文本、联系人名片、文件或链接到目标联系人。  您可以使用 [FileBox](https://github.com/wechaty/python-wechaty-puppet/tree/master/src/wechaty_puppet/file_box) 类来发送文件。 |
 
 #### 示例
 
@@ -222,7 +222,7 @@ class MyBot(Wechaty):
 
     async def on_message(self, msg: Message) -> None:
         contact = msg.talker()
-        # 联系人是否为男性?
+        # 判断联系人是否为男性
         print(contact.gender() == ContactGender.CONTACT_GENDER_MALE)
 
 asyncio.run(MyBot().start())
@@ -375,4 +375,4 @@ asyncio.run(MyBot().start())
 | **属性名** | 类型     | **描述**                                                     |
 | ---------- | -------- | ------------------------------------------------------------ |
 | name       | `str` | 由用户本身(user-self)设置的名字, 叫做name                    |
-| alias      | `str` | 由Bot为联系人设置的名字(备注/别名). 该值可以传入正则表达式用于搜索用户, 更多细节详见[issues#365](https://github.com/wechaty/wechaty/issues/365) |
+| alias      | `str` | 由Bot为联系人设置的名字(备注/别名). 该值可以传入正则表达式用于搜索用户, 更多细节详见[issues#365](https://github.com/wechaty/wechaty/issues/365)和[源码](https://github.com/wechaty/python-wechaty-puppet/blob/master/src/wechaty_puppet/schemas/contact.py) |
