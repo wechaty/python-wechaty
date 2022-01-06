@@ -39,7 +39,7 @@ title: Room
 | id | `str` | 获取群聊（组）对象的id. 此函数取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) |
 
 * [Room](room.md#Room)
-  * _示例方法_
+  * _实例方法_
     * [.ready\(force_sync=False\)](room.md#Room+ready) ⇒ `None`
     * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `None`
     * [.on\(event, listener\)](room.md#Room+on) ⇒ `Room`
