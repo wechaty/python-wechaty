@@ -8,9 +8,9 @@ title: Room
 
 [Room](room.md#Room)
 
-All wechat rooms\(groups\) will be encapsulated as a Room.
+微信群聊（组）的相关功能被封装在 `Room` 类中。
 
-[Examples/Room-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/room-bot.ts)
+[Examples/Room-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/advanced/room_bot.py)
 
 ## Typedefs
 
@@ -26,18 +26,20 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
 
 ## Room
 
-All wechat rooms\(groups\) will be encapsulated as a Room.
+微信群聊（组）的相关功能被封装在 `Room` 类中。
 
 [Examples/Room-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/room-bot.ts)
 
-**Kind**: global class **Properties**
+**类型**: 全局类
 
-| Name | Type | Description |
+**属性**
+
+| 名称 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| id | `string` | Get Room id. This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) |
+| id | `str` | 获取群聊（组）对象的id. 此函数取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) |
 
 * [Room](room.md#Room)
-  * _instance_
+  * _示例方法_
     * [.ready\(force_sync=False\)](room.md#Room+ready) ⇒ `None`
     * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `None`
     * [.on\(event, listener\)](room.md#Room+on) ⇒ `Room`
@@ -53,7 +55,7 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
     * [.member\(queryArg\)](room.md#Room+member) ⇒ `Contact | None`
     * [.owner\(\)](room.md#Room+owner) ⇒ `Contact | None`
     * [.avatar\(\)](room.md#room-owner-contact-or-null) ⇒ `FileBox`
-  * _static_
+  * _静态方法_
     * [.create\(contactList, \[topic\]\)](room.md#Room.create) ⇒ `Room`
     * [.find_all\(\[query\]\)](room.md#Room.findAll) ⇒ `List[Room]`
     * [.find\(query\)](room.md#Room.find) ⇒ `Room | None`
@@ -62,7 +64,9 @@ All wechat rooms\(groups\) will be encapsulated as a Room.
 
 同步 `Room` 的数据。
 
-**Kind**: instance method of [`Room`](room.md#Room) **Example**
+**类型**: [`Room`](room.md#Room)的实例方法 
+
+**示例**
 
 ```python
 await room.ready()
@@ -72,16 +76,16 @@ await room.ready()
 
 向群（组）中发送消息，如果携带了联系人列表 `mention_list` 参数，将会在群里同时 @ 这些联系人。
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)的实例方法
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| textOrContactOrFileOrUrlLinkOrMiniProgram | `string` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | Send `text`, `media file` or `link` inside Room.   You can use [FileBox](https://www.npmjs.com/package/file-box) to send file |
-| ...mentionList | `List[contact_id]` | Send content inside Room, and mention @contact list. |
+| textOrContactOrFileOrUrlLinkOrMiniProgram | `str` \| `Contact` \| `FileBox` \| `UrlLink` \| `MiniProgram` | 在房间内发送 `文本`, `媒体文件`或者`连接`. 您可以使用 [FileBox](https://github.com/wechaty/python-wechaty-puppet/tree/master/src/wechaty_puppet/file_box) 类来发送文件。  |
+| ...mentionList | `List[contact_id]` | 在群聊内发送内容，如果提供了联系人的id列表, 将会一并提及\(@\)他\(她\)们|
 
-#### Example
+#### 示例
 ```python
 from wechaty import Wechaty, FileBox, UrlLink, MiniProgram
 import asyncio
@@ -89,50 +93,46 @@ import asyncio
 
 class MyBot(Wechaty):
     async def on_login(self, contact: Contact):
-        # after logged in...
+        # 等待登入
         room = await bot.Room.find('wechaty')  # 可以根据 room 的 topic 和 id 进行查找
 
-        # 1. Send text inside Room
+        # 1. 向房间发送文本
         await room.say('Hello world!')
 
-        # 2. Send media file inside Room
+        # 2.发送语音文件到群聊
         file_box1 = FileBox.from_url(
             url='https://wechaty.github.io/wechaty/images/bot-qr-code.png', name='QRCode')
         file_box2 = FileBox.from_file("./test.txt")  # 注意路径，以及文件不能为空
         await room.say(file_box1)
         await room.say(file_box2)
 
-        # 3. Send Contact Card in a room
+        # 3. 发送名片到群聊
         contact_card = await self.Contact.find('master')
         await room.say(contact_card)
 
-        # 4. Send text inside room and mention @mention contact
-        members = await special_room.member_list()  # all members in this room
+        # 4. 在群聊内发送文本, 并提及(@) `some_members_id`列表里面提供的人
+        members = await special_room.member_list()  # 房间内的所有联系人对象
         some_members_id = [m.contact_id for m in members[:3]]
         await room.say('Hello world!', some_members_id)
 
-        # 5. send Link inside room
-        from wechaty_puppet.schemas.url_link import UrlLinkPayload
-        url_payload = UrlLinkPayload(
-            description="WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love",
-            thumbnailUrl="https://avatars0.githubusercontent.com/u/25162437?s=200&v=4",
-            title="Welcome to Wechaty",
+        # 5. 在群聊内发送连接
+        urlLink = UrlLink.create(
+            description='WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love',
+            thumbnail_url='https://avatars0.githubusercontent.com/u/25162437?s=200&v=4',
+            title='Welcome to Wechaty',
             url='https://github.com/wechaty/wechaty',
         )
-        link_payload = UrlLink(url_payload)
-        await room.say(link_payload)
+        await room.say(urlLink)
 
-        # 6. send MiniProgram (only supported by `wechaty-puppet-macpro`)
-        from wechaty_puppet.schemas.mini_program import MiniProgramPayload
-        mini_program_payload = MiniProgramPayload(
-            appid="gh_0xxxxxxxxx4a25adc",
-            title="我正在使用Authing认证身份，你也来试试吧",
-            pagePath="routes/explore.html",
-            description="身份管家",
-            thumbUrl="xxxxxxxxxxxxxxxxxx",
-            thumbKey="42f860xxxxxxxfefb532e83"
-        )
-        mini_program = MiniProgram(mini_program_payload)
+        # 6. 发送小程序 (暂时只有`wechaty-puppet-macpro`支持该功能)
+        miniProgram = self.MiniProgram.create_from_json({
+            "appid": 'gh_0aa444a25adc',
+            "title": '我正在使用Authing认证身份，你也来试试吧',
+            "pagePath": 'routes/explore.html',
+            "description": '身份管家',
+            "thumbUrl": '30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400',
+            "thumbKey": '42f8609e62817ae45cf7d8fefb532e83',
+        })
         await room.say(mini_program)
 
 asyncio.run(MyBot().start())
@@ -140,37 +140,22 @@ asyncio.run(MyBot().start())
 
 ### room.on\(event, listener\) ⇒ `this`
 
-**Kind**: instance method of [`Room`](room.md#Room) **Returns**: `this` - - Room for chain
+**类型**: [`Room`](room.md#Room)的实例方法 
 
-| Param | Type | Description |
+**返回值**: `this` - - Room for chain  <!--不太确定该如何翻译这个, 暂时保留-->
+
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| event | [`RoomEventName`](room.md#RoomEventName) | Emit WechatyEvent |
-| listener | [`RoomEventFunction`](room.md#RoomEventFunction) | Depends on the WechatyEvent |
+| event | [`RoomEventName`](room.md#RoomEventName) | 发出的微信事件 |
+| listener | [`RoomEventFunction`](room.md#RoomEventFunction) | 收到事件所触发的函数 |
 
-#### Example _\(Event:join \)_
-
-```python
-bot = Wechaty()
-await bot.start()
-# after logged in...
-# change `event-room` to any room topic in your wechat
-room = await bot.Room.find("wechaty")
-
-async def on_join(invitee_list, inviter):
-    log.info('room.on(join) id:', room.room_id)
-    check_room_join(bot, room, invitee_list, inviter)
-
-if room:
-    room.on('join', on_join)
-```
-
-#### Example _\(Event:leave \)_
+#### 示例 _\(Event:join \)_
 
 ```python
 bot = Wechaty()
 await bot.start()
-# after logged in...
-room = await bot.Room.find("wechaty") # change `event-room` to any room topic in your wechat
+# 等待机器人登入
+room = await bot.Room.find("event-room") # 把`event-room`改为您在微信中加入的任意群聊的群聊名称
 
 async def on_leave(leaver_list, remover):
     log.info('Bot' + 'Room EVENT: leave - "%s" leave(remover "%s"), bye bye' % (','.join(leaver_list), remover or 'unknown'))
@@ -179,13 +164,28 @@ if room:
     room.on('leave', on_leave)
 ```
 
-#### Example _\(Event:topic \)_
+#### 示例 _\(Event:leave \)_
 
 ```python
 bot = Wechaty()
 await bot.start()
-# after logged in...
-room = await bot.Room.find("wechaty") # change `event-room` to any room topic in your wechat
+# 等待机器人登入
+room = await bot.Room.find("event-room") # 把`event-room`改为您在微信中加入的任意群聊的群聊名称
+
+async def on_leave(leaver_list, remover):
+    log.info('Bot' + '群聊事件: 离开 - "%s" leave(remover "%s"), bye bye' % (','.join(leaver_list), remover or 'unknown'))
+
+if room:
+    room.on('leave', on_leave)
+```
+
+#### 示例 _\(Event:topic \)_
+
+```python
+bot = Wechaty()
+await bot.start()
+# 等待机器人登入
+room = await bot.Room.find("wechaty") # 把`wechaty`改为您在微信中加入的任意群聊的群聊名称
 
 async def on_topic(topic, old_topic, changer):
     log.info('Bot' + 'Room EVENT: topic - changed from "%s" to "%s" by member "%s"' % (old_topic, topic, changer.name()))
@@ -194,13 +194,13 @@ if room:
     room.on('topic', on_topic)
 ```
 
-#### Example _\(Event:invite \)_
+#### 示例 _\(Event:invite \)_
 
 ```python
 bot = Wechaty()
 await bot.start()
-# after logged in...
-room = await bot.Room.find("wechaty") # change `event-room` to any room topic in your wechat
+# 等待机器人登入
+room = await bot.Room.find("wechaty") # 把`wechaty`改为您在微信中加入的任意群聊的群聊名称
 
 async def on_invite(room_invitation):
     room_invitation.accept()
@@ -211,26 +211,26 @@ if room:
 
 ### room.add\(contact\) ⇒ `None`
 
-Add contact in a room
+将一个联系人添加到群聊
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 >
-> see [Web version of WeChat closed group interface](https://github.com/wechaty/wechaty/issues/1441)
+> 请参阅[网页版微信封闭了群聊接口](https://github.com/wechaty/wechaty/issues/1441)
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法
 
-| Param | Type |
+| 参数 | 类型 |
 | :--- | :--- |
 | contact | `Contact` |
 
-#### Exampl
+#### 示例
 
 ```python
 bot = Wechaty()
 await bot.start()
 # after logged in...
-contact = await bot.Contact.find('lijiarui') # change 'lijiarui' to any contact in your wechat
-room = await bot.Room.find('wechat')   # change 'wechat' to any room topic in your wechat
+contact = await bot.Contact.find('lijiarui') # 把'lijiarui'改为您通讯录中的任意联系人
+room = await bot.Room.find('wechaty')  # 把`wechaty`改为您在微信中加入的任意群聊的群聊名称
 if room:
     try:
         await room.add(contact)
@@ -240,19 +240,19 @@ if room:
 
 ### room.delete\(contact\) ⇒ `None`
 
-Delete a contact from the room It works only when the bot is the owner of the room
+从房间中删除联系人, 该功能仅当机器人是房间的所有者\(群主\)时才有效
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 >
-> see [Web version of WeChat closed group interface](https://github.com/wechaty/wechaty/issues/1441)
+> 请参阅[网页版微信封闭了群聊接口](https://github.com/wechaty/wechaty/issues/1441)
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法
 
-| Param | Type |
+| 参数 | 类型 |
 | :--- | :--- |
 | contact | `Contact` |
 
-#### Example
+#### 示例
 
 ```python
 bot = Wechaty()
@@ -269,11 +269,13 @@ if room:
 
 ### room.quit\(\) ⇒ `None`
 
-Bot quit the room itself
+机器人自行离开该群聊
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Room`](room.md#Room) **Example**
+**类型**: [`Room`](room.md#Room)类的实例方法 
+
+**示例**
 
 ```python
 await room.quit()
@@ -281,126 +283,168 @@ await room.quit()
 
 ### room.topic\(\[newTopic\]\) ⇒ `None | str`
 
-SET/GET topic from the room
+设置/获取 群聊的名称
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| \[newTopic\] | `string` | If set this para, it will change room topic. |
+| \[newTopic\] | `str` | 如果设置了该参数, 则会修改群聊名 |
 
-#### Example _\(When you say anything in a room, it will get room topic. \)_
+#### 示例 _\(当任意联系人在群聊内发送消息, 您都会得到该群聊的名称 \)_
 
 ```python
-topic = await room.topic()
-print(f'topic: {topic}')
+import asyncio
+from wechaty import Wechaty, Room, Contact, Message
+
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        room: "Room" = msg.room()
+        topic = await room.topic()
+        print(f'群聊名: {topic}')
+
+asyncio.run(MyBot().start())
 ```
 
-#### Example _\(When you say anything in a room, it will change room topic. \)_
+#### 示例 _\(每当机器人登陆账号时, 机器人都会改变群聊的名字. \)_
 
 ```python
-old_topic = await room.topic()
-new_topic = await room.topic('change topic to wechaty!')
-print(f'room topic change from {old_topic} to {new_topic}')
+import asyncio
+from wechaty import Wechaty, Room, Contact, Message
+
+class MyBot(Wechaty):
+
+    async def on_login(self, contact: Contact) -> None:
+        room = await bot.Room.find('your room')  # 替换为您所加入的任意群聊
+        old_topic = await room.topic()
+        new_topic = await room.topic('Wechaty!')
+        print(f'群聊名从{old_topic}改为{new_topic}')
+
+asyncio.run(MyBot().start())
+
 ```
 
 ### room.announce\(\[text\]\) ⇒ `None | str`
 
-SET/GET announce from the room
+`设置/获取` 群聊的公告
 
-> Tips: It only works when bot is the owner of the room.
+> 注意: 这个功能只有机器人是群主时才可以使用
 >
-> This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| \[text\] | `string` | If set this para, it will change room announce. |
+| \[text\] | `str` | 如果设置了这个参数, 则会更改群聊的公告 |
 
-#### Example _\(When you say anything in a room, it will get room announce. \)_
+#### Example _\(当群聊内的任意联系人发送消息时, 您都会在控制台收到群公告的内容\)_
 
 ```python
-room = await bot.Room.find('your room')
-announce = await room.announce()
-print(f'room announce is : {announce}')
+import asyncio
+from wechaty import Wechaty, Room, Contact, Message
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        room: "Room" = msg.room()
+        announce = await room.announce()
+        print(f'群公告为: {announce}')
+
+asyncio.run(MyBot().start())
 ```
 
-#### Example _\(When you say anything in a room, it will change room announce. \)_
+#### Example _\(每当机器人登陆账号时, 都会改变群聊公告的内容\)_
 
 ```python
-room = await bot.Room.find('your room')
-old_announce = await room.announce()
-new_announce = await room.announce('change announce to wechaty!')
-print(f'room announce change from {old_announce} to {new_announce}')
+import asyncio
+from wechaty import Wechaty, Room, Contact, Message
+
+class MyBot(Wechaty):
+
+    async def on_login(self, contact: Contact) -> None:
+        room = await bot.Room.find('your room')  # 替换为您所加入的任意群聊
+        old_announce = await room.announce()
+        new_announce = await room.announce('改变为wechaty!')
+        print(f'群聊的公告从{old_announce}改变为{new_announce}')
+
+asyncio.run(MyBot().start())
+
+
 ```
 
 ### room.qr_code\(\) ⇒ `str`
 
-Get QR Code of the Room from the room, which can be used as scan and join the room.
+获取可以用于扫描加入房间的二维码。
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-### room.alias\(contact\) ⇒ `Promise <string | null>`
+### room.alias\(contact\) ⇒ `str | None`
 
-Return contact's roomAlias in the room
+返回群聊内联系人的别名\(备注\)
 
-**Kind**: instance method of [`Room`](room.md#Room) **Returns**: `Promise <string | null>` - - If a contact has an alias in room, return string, otherwise return null
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-| Param | Type |
+**返回值**: `str | None` - - 如果用户在群聊内有备注则返回字符串类型的备注, 没有则返回None
+
+| 参数 | 类型 |
 | :--- | :--- |
 | contact | `Contact` |
 
-#### Exampl
+#### 示例
 
 ```python
-room = await bot.Room.find('your room')
-contact = await bot.Contact.find('lijiarui')
-alias = await room.alias(contact)
-print(f'{contact.name()} alias is {alias}')
+room = await bot.Room.find('your room')  # 要发送消息的群聊名
+contact = await bot.Contact.find('lijiarui')  # 找到目标联系人
+alias = await room.alias(contact)  # 获取该联系人的备注(别名)
+print(f'{contact.name()}的别名是{alias}')
 ```
 
 ### room.has\(contact\) ⇒ `bool`
 
-Check if the room has member `contact`, the return is a Promise and must be `await`-ed
+检查这个群聊内是否有`contact`, 返回一个布尔类型的值
 
-**Kind**: instance method of [`Room`](room.md#Room) **Returns**: `Promise.` - Return `true` if has contact, else return `false`.
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-| Param | Type |
+**返回值**: `bool` - 返回 `True` 如果群聊内有该联系人, 没有则返回 `false`.
+
+| 参数 | 类型 |
 | :--- | :--- |
 | contact | `Contact` |
 
-#### Example _\(Check whether 'lijiarui' is in the room 'wechaty'\)_
+#### Example _\(检查好'lijiarui'是否在群聊'wechaty'内\)_
 
 ```python
 contact = await bot.Contact.find('lijiarui')
 room = await bot.Room.find('wechaty')
 if contact and room:
     if await room.has(contact):
-        print(f'{contact.name()} is in the room wechaty!')
+        print(f'{contact.name()} 在群聊wechaty房间内!')
     else:
-        print(f'{contact.name()} is not in the room wechaty!')
+        print(f'{contact.name()} 不在群聊wechaty房间内!')
 ```
 
 ### room.member_list\(\[query\]\) ⇒ `List[Contact]>`
 
-Find all contacts in a room
+获取一个列表, 里面包含了所有联系人对象
 
 #### definition
 
-* `name`                 the name-string set by user-self, should be called name, equal to `Contact.name()`
-* `roomAlias`            the name-string set by user-self in the room, should be called roomAlias
-* `contactAlias`         the name-string set by bot for others, should be called alias, equal to `Contact.alias()`
+* `name`                 由联系人自身设置的名字, 叫做`name`, 等同于`Contact.name()`
+* `roomAlias`            由联系人自身在群聊内设置的群别名\(备注, 昵称\), 叫做群昵称`roomAlias`
+* `contactAlias`         由机器人为联系人设置的备注\(别名\), 叫做联系人备注`alias`, 等同于 `Contact.alias()`
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| \[query\] | [`RoomMemberQueryFilter`](room.md#RoomMemberQueryFilter) \| `string` | Optional parameter, When use memberAll\(name:string\), return all matched members, including name, roomAlias, contactAlias |
+| \[query\] | [`RoomMemberQueryFilter`](room.md#RoomMemberQueryFilter) \| `str` | 可选的参数, 当时用 memberAll\(name:str\)时, 返回所有匹配到的成员, 包含名字, 群昵称, 联系人备注 |
 
-#### Example
+#### 示例
 
 ```python
 member_list = await room.member_list()
@@ -412,45 +456,57 @@ print(f'contact list with all name, room alias, alias are abc: {member_contact_l
 
 ### room.member\(queryArg\) ⇒ `Contact | None`
 
-Find all contacts in a room, if get many, return the first one.
+查找一个房间里的联系人，如果获取到的联系人多于一个，则返回第一个。
 
-**Kind**: instance method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的实例方法 
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| queryArg | [`RoomMemberQueryFilter`](room.md#RoomMemberQueryFilter) \| `string` | When use member\(name:string\), return all matched members, including name, roomAlias, contactAlias |
+| queryArg | [`RoomMemberQueryFilter`](room.md#RoomMemberQueryFilter) \| `str` | When use member\(name:string\), return all matched members, including name, roomAlias, contactAlias |
 
-#### Example _\(Find member by name\)_
+#### 示例 _\(通过名字寻找联系人\)_
 
 ```python
 room = await bot.Room.find('wechaty')
 if room:
     member = await room.member('lijiarui')
     if member:
-        print(f'wechaty room got the member: {member.name()}')
+        print(f'wechaty 群聊内找到了联系人: {member.name()}')
     else:
-        print(f'cannot get member in wechaty room!')
+        print(f'wechaty群聊内找不到该联系人')
 ```
 
-#### Example _\(Find member by MemberQueryFilter\)_
+#### 示例Example _\(通过MemberQueryFilter类来查找\)_
 
 ```python
-room = await bot.Room.find('wechaty')
-if room:
-    member = await room.member('lijiarui')
-    if member:
-        print(f'wechaty room got the member: {member.name()}')
-    else:
-        print(f'cannot get member in wechaty room!')
+import asyncio
+from wechaty import Wechaty, Room, Message
+from wechaty_puppet.schemas.room import RoomMemberQueryFilter
+
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        room: "Room" = msg.room()
+        if room:
+            member = await room.member(RoomMemberQueryFilter(name="lijiarui"))
+            if member:
+                print(f'wechaty room got the member: {member.name}')
+            else:
+                print(f'cannot get member in wechaty room!')
+
+
+asyncio.run(MyBot().start())
 ```
 
 ### room.owner\(\) ⇒ `Contact` \| `null`
 
-Get room's owner from the room.
+获取该群聊的群主.
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Room`](room.md#Room) **Example**
+**类型**: [`Room`](room.md#Room)类的实例方法  
+
+**示例**
 
 ```python
 owner = await room.owner()
@@ -458,11 +514,13 @@ owner = await room.owner()
 
 ### room.avatar\(\) ⇒ `FileBox`
 
-Get room's avatar
+获取群聊的头像.
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Room`](room.md#room) **Example**
+**类型**: [`Room`](room.md#Room)类的实例方法  
+
+**示例**
 
 ```python
 owner = await room.avatar()
@@ -470,39 +528,39 @@ owner = await room.avatar()
 
 ### Room.create\(contactList, \[topic\]\) ⇒ [`Room`](room.md#Room)
 
-Create a new room.
+创建一个新的群聊
 
-**Kind**: static method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的静态方法
 
-| Param | Type |
+| 参数 | 类型 |
 | :--- | :--- |
-| contactList | `Array` |
-| \[topic\] | `string` |
+| contactList | `List` |
+| \[topic\] | `str` |
 
-#### Example _\(Creat a room with 'lijiarui' and 'juxiaomi', the room topic is 'ding - created'\)_
+#### 示例 _\(用联系人'lijiarui' 和 'juxiaomi'创建一个群聊, 群聊的名称为'ding - created'\)_
 
 ```python
 helper_contact_a = await bot.Contact.find('lijiarui')
 helper_contact_b = await bot.Contact.find('juxiaomi')
 contact_list = [helper_contact_a, helper_contact_b]
-print('Bot contact_list: %s', contact_list.join(','))
+print('机器人创建所用的联系人列表为: %s', contact_list.join(','))
 room = await Room.create(contact_list, 'ding')
 print('Bot createDingRoom() new ding room created: %s', room)
-await room.topic('ding - created')
-await room.say('ding - created')
+await room.topic('ding - created')  # 设置群聊名称
+await room.say('ding - 创建完成')
 ```
 
 ### Room.find_all\(\[query\]\) ⇒ `List[Room]`
 
-Find room by by filter: {topic: string \| RegExp}, return all the matched room
+通过过滤器寻找群聊: {topic: str \| RegExp}, 通过一个列表返回所有匹配的群聊对象
 
-**Kind**: static method of [`Room`](room.md#Room)
+**类型**: [`Room`](room.md#Room)类的静态方法
 
-| Param | Type |
+| 参数 | 类型 |
 | :--- | :--- |
 | \[query\] | [`RoomQueryFilter`](room.md#RoomQueryFilter) |
 
-#### Exampl
+#### 示例
 
 ```python
 room_list = await bot.Room.find_all()
@@ -511,15 +569,17 @@ room_list = await bot.Room.find_all('wechaty')
 
 ### Room.find\(query\) ⇒ `Room`
 
-Try to find a room by filter: {topic: string \| RegExp}. If get many, return the first one.
+通过过滤器寻找群聊: {topic: str \| RegExp}, 如果获取到了多个群聊, 则返回第一个
 
-**Kind**: static method of [`Room`](room.md#Room) **Returns**: `Room` - If can find the room, return Room, or return null
+**类型**: [`Room`](room.md#Room)类的静态方法
 
-| Param | Type |
+**返回值**: `Room` - 如果可以找到该群聊, 则返回该群聊的对象, 如果不能则返回None
+
+| 参数 | 类型 |
 | :--- | :--- |
 | query | [`RoomQueryFilter`](room.md#RoomQueryFilter) |
 
-#### Exampl
+#### 示例
 
 ```python
 room_list = await bot.Room.find()
@@ -528,46 +588,56 @@ room_list = await bot.Room.find('wechaty')
 
 ## RoomQueryFilter
 
-The filter to find the room: {topic: string \| RegExp}
+查找群聊的过滤器: {topic: string \| RegExp}
 
-**Kind**: global typedef **Properties**
+**类型**: 全局类型定义 
 
-| Name | Type |
-| :--- | :--- |
-| topic | `string` |
+**属性**
+
+| 参数 | 类型 | 描述 |
+| :--- | :--- | :--- |
+| topic | `str` | 群聊的名称| 
+| id | `str` | 群聊的id | 
 
 ## RoomEventName
 
-Room Class Event Type
+群聊类的事件类型(Room Class Event Type)
 
-**Kind**: global typedef **Properties**
+**类型**: 全局类型定义 
 
-| Name | Type | Description |
+**属性**
+
+| 名称 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| join | `string` | Emit when anyone join any room. |
-| topic | `string` | Get topic event, emitted when someone change room topic. |
-| leave | `string` | Emit when anyone leave the room.                                If someone leaves the room by themselves, wechat will not notice other people in the room, so the bot will never get the "leave" event. |
+| join | `str` | 当有人进入群聊时触发. |
+| topic | `str` | 获取群名事件, 当有人改变群聊名称时候 |
+| leave | `str` | 当有人退出群聊时触发. <br/>`注意: 如果有人自己退出群聊，微信不会提醒房间里的其他人，所以机器人在此情况不会收到“leave”事件`。 |
 
 ## RoomEventFunction
 
-Room Class Event Function
+群聊事件函数, 供开发者重写
 
-**Kind**: global typedef **Properties**
+**类型**: 全局类型定义 
 
-| Name | Type | Description |
-| :--- | :--- | :--- |
-| room-join | `function` | \(this: Room, inviteeList: Contact\[\] , inviter: Contact\)  =&gt; void |
-| room-topic | `function` | \(this: Room, topic: string, oldTopic: string, changer: Contact\) =&gt; void |
-| room-leave | `function` | \(this: Room, leaver: Contact\) =&gt; void |
+**属性**
 
+| 名称 | 类型 | 参数 | 描述| 
+| :--- | :--- | :--- |:--- |
+| on_room_join | `function` | \(self: Wechaty, room_invitation: RoomInvitation\); None | 有人加入群聊时触发 |
+| on_room_topic | `function` | \(self: Wechaty, room: Room, new_topic: str, old_topic: str, changer: Contact, date: datetime\); None | 有人改变群聊名称时触发 |
+| on_room_leave | `function` | \(self: Wechaty, room: Room, leavers: List\[Contact\],remover: Contact, date: datetime\); None | 有人被移出群聊时触发 |
+| on_room_invite | `function` | \(self, room_invitation: RoomInvitation\); None | 有人邀请Bot加入群聊时触发 |
 ## RoomMemberQueryFilter
 
-The way to search member by Room.member\(\)
+寻找群成员的一种方法Room.member\(\)
 
-**Kind**: global typedef **Properties**
+**类型**: 全局类型定义 
 
-| Name | Type | Description |
+**属性**
+
+| 名称 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| name | `string` | Find the contact by wechat name in a room, equal to `Contact.name()`. |
-| roomAlias | `string` | Find the contact by alias set by the bot for others in a room. |
-| contactAlias | `string` | Find the contact by alias set by the contact out of a room, equal to `Contact.alias()`. [More Detail](https://github.com/wechaty/wechaty/issues/365) |
+| name | `string` | 由联系人自身设置的名字, 叫做`name`, 等同于`Contact.name()`. |
+| roomAlias | `string` | 由联系人自身在群聊内设置的群别名\(备注, 昵称\), 叫做群昵称`roomAlias` |
+| contactAlias | `string` | 由机器人为联系人设置的备注\(别名\), 叫做联系人备注`alias`, 等同于 `Contact.alias()`. 详见[issues#365](https://github.com/wechaty/wechaty/issues/365) |
+      

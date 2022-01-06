@@ -49,14 +49,13 @@ title: Contact
 
 ```python
 import asyncio
-from wechaty import Wechaty
-from wechaty import FileBox, UrlLink
+from wechaty import Wechaty, Contact, FileBox, UrlLink
 from wechaty_puppet import ContactQueryFilter
 
 
 class MyBot(Wechaty):
 
-    async def on_login(self, payload) -> None:
+    async def on_login(self, contact: Contact) -> None:
         contact = await self.Contact.find(
             ContactQueryFilter(name="lijiarui"))  # 把`lijiarui`更改为您在微信中的任意联系人的姓名
 
@@ -321,12 +320,12 @@ isSelf: bool = contact.self()
 
 ```python
 import asyncio
-from wechaty import Wechaty
+from wechaty import Wechaty, Contact
 from wechaty_puppet import ContactQueryFilter
 
 class MyBot(Wechaty):
 
-    async def on_login(self, payload) -> None:
+    async def on_login(self, contact: Contact) -> None:
         contact = await self.Contact.find(ContactQueryFilter(name="lijiarui"))
         contact = await self.Contact.find(ContactQueryFilter(alias="ruirui"))
         
@@ -354,12 +353,12 @@ asyncio.run(MyBot().start())
 
 ```python
 import asyncio
-from wechaty import Wechaty
+from wechaty import Wechaty, Contact
 from wechaty_puppet import ContactQueryFilter
 
 class MyBot(Wechaty):
 
-    async def on_login(self, payload) -> None:
+    async def on_login(self, contact: Contact) -> None:
         contact = await self.Contact.find_all()  # 获取一个列表, 里面包含了Bot所有的联系人
         contact = await self.Contact.find_all(ContactQueryFilter(name="lijiarui"))  # 获取一个包含所有名字为lijiarui的联系人的列表
         contact = await self.Contact.find_all(ContactQueryFilter(alias="ruirui"))   # 获取一个包含所有别名(备注)为ruirui的联系人的列表

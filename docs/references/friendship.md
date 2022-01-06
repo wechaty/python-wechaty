@@ -2,11 +2,11 @@
 title: Friendship
 ---
 
-Send, receive friend request, and friend confirmation events.
+发送、接收好友请求和好友确认事件。
 
 ## Friendship
 
-Send, receive friend request, and friend confirmation events.
+发送、接收好友请求和好友确认事件。
 
 1. send request
 2. receive request\(in friend event\)
