@@ -273,7 +273,6 @@ def _load_default_plugins() -> List[WechatyPlugin]:
     Returns:
     """
     # TODO: to be implemented
-    pass
 
 
 class WechatyPluginManager:
