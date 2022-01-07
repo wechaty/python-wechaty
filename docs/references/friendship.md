@@ -116,7 +116,7 @@ bot.on('friendship', friendship => {
 
 **类型**: [`Friendship`](friendship.md#Friendship)的实例方法  
 
-**类型** _\(If request content is \`ding\`, then accept the friendship\)_
+**示例** _\(If request content is \`ding\`, then accept the friendship\)_
 
 ```javascript
 const bot = new Wechaty()
