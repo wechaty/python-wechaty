@@ -36,7 +36,7 @@ from typing import (
     Dict,
     Union,
     Any,
-    cast
+    cast, Tuple
 )
 from quart import Quart
 
@@ -65,6 +65,43 @@ if TYPE_CHECKING:
     )
 log: logging.Logger = get_logger(__name__)
 
+
+def _list_routes_txt(app: Quart) -> str:
+    """
+    refer to: https://gitlab.com/pgjones/quart/-/blob/main/src/quart/cli.py#L283
+    Args:
+        app: the instance of Quart
+
+    Returns: routes info
+
+    """
+    rules = list(app.url_map.iter_rules())
+    if len(rules) == 0:
+        return 'No routes were registered.'
+
+    rules = sorted(rules, key=lambda rule: rule.endpoint)
+
+    headers = ("Endpoint", "Methods", "Websocket", "Rule")
+    rule_methods = [", ".join(sorted(rule.methods)) for rule in rules]
+
+    widths = (
+        max(len(rule.endpoint) for rule in rules),
+        max(len(methods) for methods in rule_methods),
+        len("Websocket"),
+        max(len(rule.rule) for rule in rules),
+    )
+    widths = [max(len(header), width) for header, width in zip(headers, widths)]
+
+    # pylint: disable=C0209
+    row = "{{0:<{0}}} | {{1:<{1}}} | {{2:<{2}}} | {{3:<{3}}}".format(*widths)
+
+    routes_txt = ''
+    routes_txt += row.format(*headers).strip()
+    routes_txt += row.format(*("-" * width for width in widths))
+
+    for rule, methods in zip(rules, rule_methods):
+        routes_txt += row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip()
+    return routes_txt
 
 @dataclass
 class WechatyPluginOptions:
@@ -227,12 +264,22 @@ class WechatyPlugin(metaclass=ABCMeta):
 
 
 PluginTree = Dict[str, Union[str, List[str]]]
+EndPoint = Tuple[str, int]
+
+
+def _load_default_plugins() -> List[WechatyPlugin]:
+    """
+    load the system default plugins to enable more default features
+    Returns:
+    """
+    # TODO: to be implemented
+    pass
 
 
 class WechatyPluginManager:
     """manage the wechaty plugin, It will support some features."""
 
-    def __init__(self, wechaty: Wechaty):
+    def __init__(self, wechaty: Wechaty, endpoint: EndPoint):
         self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
         self._plugin_status: Dict[str, PluginStatus] = {}
@@ -241,6 +288,8 @@ class WechatyPluginManager:
         self._dependency_tree: PluginTree = defaultdict()
 
         self.app: Quart = Quart('Wechaty Server')
+        self.dependency_tree: PluginTree = defaultdict()
+        self.endpoint: Tuple[str, int] = endpoint
 
     # pylint: disable=R1711
     @staticmethod
@@ -320,6 +369,20 @@ class WechatyPluginManager:
         self._check_plugins(name)
         return self._plugin_status[name]
 
+    @property
+    def server_endpoint(self) -> str:
+        """
+        send the endpoint of wechaty bot service
+        Returns: <host>:<port>, eg: http://0.0.0.0:5000
+        """
+        prefix = ''
+        host, port = self.endpoint[0], self.endpoint[1]
+        if not host.startswith('http'):
+            prefix = 'http://'
+
+        url = f'{prefix}{host}:{port}'
+        return url
+
     async def start(self) -> None:
         """
         set wechaty to plugins
@@ -331,27 +394,29 @@ class WechatyPluginManager:
             log.info('init %s-plugin ...', name)
             assert isinstance(plugin, WechatyPlugin)
             # set wechaty instance to all of the plugin bot attribute
+
             plugin.set_bot(self._wechaty)
             await plugin.init_plugin(self._wechaty)
             await plugin.blueprint(self.app)
+        # check the host & port configuration
 
-        # 2. if there are blueprints, it will start the webserver
-        rules = list(self.app.url_map.iter_rules())
-        if len(rules) > 1:
+        # pylint: disable=W0212
+        host, port = self.endpoint[0], self.endpoint[1]
 
-            # check the host & port configuration
+        log.info('============================starting web service========================')
+        log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
-            # pylint: disable=W0212
-            host, port = self._wechaty._options.host, self._wechaty._options.port
-            log.info('============================starting web service========================')
-            log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
+        task = self.app.run_task(
+            host=host,
+            port=port
+        )
+        asyncio.create_task(task)
 
-            task = self.app.run_task(
-                host=host,
-                port=port
-            )
-            asyncio.create_task(task)
-            log.info('============================web service has started========================')
+        # 3. list all valid endpoints in web service
+        routes_txt = _list_routes_txt(self.app)
+        log.info(routes_txt)
+
+        log.info('============================web service has started========================')
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     async def emit_events(self, event_name: str, *args: Any, **kwargs: Any) -> None:

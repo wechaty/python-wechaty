@@ -235,7 +235,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         if not query:
             return contacts
 
-
+        contacts = cls._filter_contacts(contacts, query)
         return contacts
 
     async def ready(self, force_sync: bool = False) -> None:

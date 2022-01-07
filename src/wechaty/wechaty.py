@@ -66,7 +66,6 @@ from wechaty_puppet import (
 )
 from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions
 from wechaty_puppet.state_switch import StateSwitch
-from wechaty_puppet.watch_dog import WatchdogFood, Watchdog
 
 from wechaty.user.url_link import UrlLink
 
@@ -175,13 +174,10 @@ class Wechaty(AsyncIOEventEmitter):
         self._ready_state = StateSwitch()
 
         self._puppet: Optional[Puppet] = None
-
-        # Create watchdog on start, and allow to shutdown the watchdog by
-        # setting it to None
-        self._watchdog: Optional[Watchdog] = None
-        self._watchdog_task: Optional[asyncio.Task] = None
-
-        self._plugin_manager: WechatyPluginManager = WechatyPluginManager(self)
+        self._plugin_manager: WechatyPluginManager = WechatyPluginManager(
+            self,
+            (options.host, options.port)
+        )
 
     @property
     def puppet(self) -> Puppet:
@@ -387,35 +383,6 @@ class Wechaty(AsyncIOEventEmitter):
         :return:
         """
 
-        async def start_watchdog() -> None:
-            try:
-                self._watchdog = Watchdog(DEFAULT_TIMEOUT)
-                watch_dog_id = id(self._watchdog)
-                food = WatchdogFood(timeout=3)
-
-                async def ask_for_food(last_food: WatchdogFood, last_feed: datetime) -> None:
-                    log.debug('dog ask for food <%s> <%s> ...',
-                              last_food, last_feed)
-                    # Cancel when stopped, or the puppet.ding() call will got an error
-                    if self.puppet and self._watchdog and id(self._watchdog) == watch_dog_id:
-                        await self.puppet.ding()
-
-                self._watchdog.on('sleep', ask_for_food)
-                self._watchdog.feed(food)
-                # If we set _watchdog to None or a new one, this loop should break.
-                while self._watchdog and id(self._watchdog) == watch_dog_id:
-                    log.debug('bot tick <%s>', datetime.now())
-                    await self._watchdog.sleep()
-                    is_death = self._watchdog.starved_to_death()
-                    if is_death:
-                        await self.restart()
-                        break
-            except asyncio.CancelledError:
-                # When we stop the bot, we call cancel on the self._watchdog_task.
-                # In this case, a CancelledError will raise then, just exit this function
-                # to terminate the watchdog
-                pass
-
         # If the network is shut-down, we should catch the connection
         # error and restart after a minute.
         try:
@@ -427,8 +394,6 @@ class Wechaty(AsyncIOEventEmitter):
             await self.puppet.start()
 
             self.started = True
-
-            self._watchdog_task = asyncio.create_task(start_watchdog())
 
         except (requests.exceptions.ConnectionError, StreamTerminatedError, OSError):
 
@@ -472,10 +437,6 @@ I suggest that you should follow the template code from: https://wechaty.readthe
                 def dong_listener(payload: EventDongPayload) -> None:
                     log.debug('receive <dong> event <%s>', payload)
                     self.emit('dong', payload.data)
-                    # feed food to the dog
-                    food = WatchdogFood(timeout=30)
-                    if self._watchdog:
-                        self._watchdog.feed(food)
 
                 puppet.on('dong', dong_listener)
             elif event_name == 'error':
@@ -761,32 +722,9 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         stop the wechaty
         """
         log.info('wechaty is stopping ...')
+        await self.puppet.stop()
         self.started = False
 
-        # Shutdown the watchdog
-        if self._watchdog:
-            log.info('stopping - unsubscribe watchdog events')
-            self._watchdog.remove_all_listeners()
-            log.info('stopping - unset watchdog')
-            self._watchdog = None
-        if self._watchdog_task:
-            log.info('stopping - stop watchdog task')
-            self._watchdog_task.cancel()
-            log.info('stopping - unset watchdog task')
-            self._watchdog_task = None
-
-        # deinit puppet
-        log.info('stopping - stop puppet')
-        try:
-            await self.puppet.stop()
-        except OSError as e:
-            # OSError: [Errno 101] Network is unreachable
-            if e.errno == 101:
-                pass
-            else:
-                raise e
-
-        log.info('stopping - unset puppet')
         self._puppet = None
         log.info('wechaty has been stopped gracefully!')
 
@@ -799,7 +737,7 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         user = self.ContactSelf.load(user_id)
         return user
 
-    def self(self) -> Contact:
+    def self(self) -> ContactSelf:
         """
         get user self
         :return: user_self

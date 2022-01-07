@@ -31,7 +31,7 @@ lint: pylint pycodestyle flake8 mypy
 pylint:
 	pylint \
 		--load-plugins pylint_quotes \
-		--disable=W0511,R0801,cyclic-import \
+		--disable=W0511,R0801,cyclic-import,C4001 \
 		$(SOURCE_GLOB)
 
 .PHONY: pycodestyle
@@ -111,7 +111,6 @@ run:
 
 .PHONY: dist
 dist:
-	make stub
 	python3 setup.py sdist bdist_wheel
 
 .PHONY: publish
@@ -138,8 +137,3 @@ deploy-version:
 .PHONY: doc
 doc:
 	mkdocs serve
-
-.PHONY: stub
-stub:
-	echo "generating stub file for static code type hinting ..."
-	stubgen ./src -o ./src
