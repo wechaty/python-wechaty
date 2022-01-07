@@ -10,7 +10,7 @@ title: Room
 
 微信群聊（组）的相关功能被封装在 `Room` 类中。
 
-[Examples/Room-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/advanced/room_bot.py)
+[示例/Room-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/advanced/room_bot.py)
 
 ## Typedefs
 

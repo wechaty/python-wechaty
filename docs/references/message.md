@@ -14,7 +14,7 @@ title: Message
 
 * [Message](message.md#Message)
   * _实例方法_
-    * ~~[.from\(\)](message.md#Message+from)~~ ⇒ `Contact` \| `None`
+    * [~~.from\(\)~~](message.md#Message+from) ⇒ `Contact` \| `None`
     * [.talker\(\)](message.md#Message+talker) ⇒ `Contact` \| `None`
     * [.to\(\)](message.md#Message+to) ⇒ `Contact` \| `None`
     * [.room\(\)](message.md#Message+room) ⇒ `Room` \| `None`
@@ -22,7 +22,7 @@ title: Message
     * [.say\(textOrContactOrFile\)](message.md#Message+say) ⇒ `None`
     * [.type\(\)](message.md#Message+type) ⇒ `MessageType`
     * [.is_self\(\)](message.md#Message+isSelf) ⇒ `bool`
-    * ~~[.mention\(\)](message.md#Message+mention)~~ ⇒ `List[Contact]`
+    * [~~.mention\(\)~~](message.md#Message+mention) ⇒ `List[Contact]`
     * [.mention_self\(\)](message.md#Message+mentionSelf) ⇒ `bool`
     * [.mention_text\(\)](message.md#Message+mentionText) ⇒ `str`
     * [.mention_list\(\)](message.md#Message+mentionList) ⇒ `List[Contact]`
@@ -36,7 +36,7 @@ title: Message
     * [.to_url_linkto_mini_program\(\)](message.md#Message+toMiniProgram) ⇒ `UrlLink`
     * [.say\(textOrContactOrFileOrUrl, mention_ids\)](contact.md#Message+say) ⇒ `Message`
     * [.to_recalled\(\)](contact.md#Message+toRecalled) ⇒ `Message`
-    * [.recall\(\)](contact.md#Message+recall)
+    * [.recall\(\)](contact.md#Message+recall) ⇒ `bool`
   * _静态方法_
     * [.find\(\)](message.md#Message.find) ⇒ `Message`
     * [.find_all\(\)](message.md#Message.findAll) ⇒ `Message`
@@ -507,7 +507,7 @@ _**已弃用**_
 
 ### message.toUrlLink\(\) ⇒ `UrlLink`
 
-获取消息的UrlLink, 并从消息中提取UrlLink，封装到UrlLink类中返回
+获取消息的UrlLink, 从消息中提取UrlLink，并封装到UrlLink类中返回
 
 > 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
