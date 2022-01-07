@@ -20,22 +20,24 @@ title: Contact
 
 * [Contact](contact.md#Contact)
   * _实例方法_
-    * [.say\(textOrContactOrFileOrUrl\)](contact.md#Contact+say) ⇒ `Message`
+    * [.say\(textOrContactOrFileOrUrl\)](contact.md#Contact+say) ⇒ `Optional[Message]`
     * [.name](contact.md#Contact+name)⇒ `str`
-    * [.alias\(new\_alias\)](contact.md#Contact+alias) ⇒ `None | str | None`
-    * [.friend\(\)](contact.md#Contact+friend) ⇒ `bool` \| `None`
+    * [.alias\(new\_alias\)](contact.md#Contact+alias) ⇒ `Union[None, str]`
+    * [.is_friend\(\)](contact.md#Contact+friend) ⇒ `bool`
+    * [.is_offical\(\)](contact.md#Contact+offical) ⇒ `bool`
+    * [.is_personal\(\)](contact.md#Contact+personal) ⇒ `bool`
     * [.type\(\)](contact.md#Contact+type) ⇒ `ContactType.CONTACT_TYPE_UNSPECIFIED` \| `ContactType.CONTACT_TYPE_PERSONAL` \| `ContactType.CONTACT_TYPE_OFFICIAL` \| `ContactType.CONTACT_TYPE_CORPORATION`
     * [.gender\(\)](contact.md#Contact+gender) ⇒ `ContactGender.CONTACT_GENDER_UNSPECIFIED` \| `ContactGender.CONTACT_GENDER_MALE` \| `ContactGender.CONTACT_GENDER_FEMALE`
-    * [.province\(\)](contact.md#Contact+province) ⇒ `str` \| `None`
-    * [.city\(\)](contact.md#Contact+city) ⇒ `str` \| `None`
+    * [.province\(\)](contact.md#Contact+province) ⇒ `Optional[str]`
+    * [.city\(\)](contact.md#Contact+city) ⇒ `Optional[str]`
     * [.avatar\(\)](contact.md#Contact+avatar) ⇒ `FileBox`
     * [.sync\(\)](contact.md#Contact+sync) ⇒ `None`
-    * [.self\(\)](contact.md#Contact+self) ⇒ `bool`
+    * [.is_self\(\)](contact.md#Contact+self) ⇒ `bool`
   * _静态方法_
-    * [.find\(query\)](contact.md#Contact.find) ⇒ `Contact | None`
-    * [.findAll\(\[queryArg\]\)](contact.md#Contact.findAll) ⇒ `List[Contact]`
+    * [.find\(query\)](contact.md#Contact.find) ⇒ `Optional[Contact]`
+    * [.find_all\(\[queryArg\]\)](contact.md#Contact.findAll) ⇒ `List[Contact]`
 
-### contact.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `None`
+### contact.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Optional[Message]`
 
 > 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
@@ -110,7 +112,7 @@ asyncio.run(MyBot().start())
 name: str = contact.name
 ```
 
-### contact.alias\(newAlias\) ⇒ `None | str | None`
+### contact.alias\(newAlias\) ⇒ `Union[None, str]`
 
 为一个联系人获取 / 设置 / 删除别名
 
@@ -118,13 +120,11 @@ name: str = contact.name
 
 **类型**:  [`Contact`](contact.md#Contact)对象的实例方法
 
-**返回值**: Promise&lt;string \| null&gt;
+**返回值**: Union\[None, str\]
 
 | 参数 | 类型 |
 | :--- | :--- |
-| newAlias | `None` \| `str` \| `None` |
-
-
+| newAlias | Optional\[str\] |
 
 **示例:**
 _\(**获取**联系人对象的别名\(备注\)_
@@ -162,7 +162,7 @@ except Exception:
     print(f"删除{contact.name}的备注失败!")
 ```
 
-### contact.friend\(\) ⇒ `bool` \| `None`
+### contact.is_friend\(\) ⇒ `bool`
 
 检查这个联系人对象是否是自己的朋友
 
@@ -170,12 +170,46 @@ except Exception:
 
 **类型**: [`Contact`](contact.md#Contact) 的实例方法
 
-**返回值**: `bool` \| `None` - 如果是自己的朋友则返回True, 不是则返回False, Unknown(未知)则返回None.
+**返回值**: `Optional[bool]` - 如果是自己的朋友则返回True, 不是则返回False, Unknown(未知)则返回None.
 
 **示例**
 
 ```python
 isFriend = contact.is_friend()
+print(isFriend)
+```
+
+### contact.is_offical\(\) ⇒ `bool`
+
+检查这个联系人对象是否是公众号
+
+> 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+
+**类型**: [`Contact`](contact.md#Contact) 的实例方法
+
+**返回值**: `Optional[bool]` - 如果是公众号则返回True, 不是则返回False, Unknown(未知)则返回None.
+
+**示例**
+
+```python
+isFriend = contact.is_offical()
+print(isFriend)
+```
+
+### contact.is_personal\(\) ⇒ `bool`
+
+检查这个联系人对象是否是个人账号
+
+> 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+
+**类型**: [`Contact`](contact.md#Contact) 的实例方法
+
+**返回值**: `Optional[bool]` - 如果是个人账号则返回True, 不是则返回False, Unknown(未知)则返回None.
+
+**示例**
+
+```python
+isFriend = contact.is_personal()
 print(isFriend)
 ```
 
@@ -227,7 +261,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.province\(\) ⇒ `str` \| `None`
+### contact.province\(\) ⇒ `Optional[str]`
 
 获取一个联系人-的省份信息
 
@@ -239,7 +273,7 @@ asyncio.run(MyBot().start())
 province: str = contact.province()
 ```
 
-### contact.city\(\) ⇒ `str` \| `None`
+### contact.city\(\) ⇒ `Optional[str]`
 
 获取联系人所设置的城市
 
@@ -288,7 +322,7 @@ asyncio.run(MyBot().start())
 await contact.sync()
 ```
 
-### contact.self\(\) ⇒ `bool`
+### contact.is_self\(\) ⇒ `bool`
 
 检查该联系人对象是不是Bot自身
 
@@ -302,7 +336,7 @@ await contact.sync()
 isSelf: bool = contact.self()
 ```
 
-### Contact.find\(query\) ⇒ `Contact | None`
+### Contact.find\(query\) ⇒ `Optional[Contact]`
 
 尝试通过过滤器查找联系人: {name: string \| RegExp} / {alias: string \| RegExp}
 
@@ -310,7 +344,7 @@ isSelf: bool = contact.self()
 
 **类型**: [`Contact`](contact.md#Contact)的静态方法 
 
-**返回值**: `Promise.` - 如果能找到联系人，则返回找到的联系人对象，否则返回`None`
+**返回值**: `Optional[Contact]` - 如果能找到联系人，则返回找到的联系人对象，否则返回`None`
 
 | 参数 | 类型 |
 | :--- | :--- |
@@ -332,11 +366,11 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### Contact.findAll\(\[queryArg\]\) ⇒ `List[Contact]`
+### Contact.find_all\(\[queryArg\]\) ⇒ `List[Contact]`
 
 通过 `name` 或者 `alias` 查找并获取联系人对象
 
-使用 Contact.findAll\(\) 获取机器人的联系人列表。 包括来自机器人加入的房间内的联系人。
+使用 Contact.find_all\(\) 获取机器人的联系人列表。 包括来自机器人加入的房间内的联系人。
 
 #### 定义
 

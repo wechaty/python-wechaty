@@ -41,24 +41,24 @@ title: Room
 * [Room](room.md#Room)
   * _实例方法_
     * [.ready\(force_sync=False\)](room.md#Room+ready) ⇒ `None`
-    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `Message`
-    * [.on\(event, listener\)](room.md#Room+on) ⇒ `Room`
+    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](room.md#Room+say) ⇒ `Union[None, Message]`
+    * [.on\(event, listener\)](room.md#Room+on) ⇒ `None`
     * [.add\(contact\)](room.md#Room+add) ⇒ `None`
     * [.delete\(contact\)](room.md#Room+delete) ⇒ `None`
     * [.quit\(\)](room.md#Room+quit) ⇒ `None`
-    * [.topic\(\[newTopic\]\)](room.md#Room+topic) ⇒ `None | str`
-    * [.announce\(\[text\]\)](room.md#Room+announce) ⇒ `None | str`
+    * [.topic\(\[newTopic\]\)](room.md#Room+topic) ⇒ `Optional[str]`
+    * [.announce\(\[text\]\)](room.md#Room+announce) ⇒ `Optional[str]`
     * [.qr_code\(\)](room.md#Room+qr_code) ⇒ `str`
-    * [.alias\(contact\)](room.md#Room+alias) ⇒ `None | str`
+    * [.alias\(contact\)](room.md#Room+alias) ⇒ `Optional[str]`
     * [.has\(contact\)](room.md#Room+has) ⇒ `bool`
     * [.member_list\(\[query\]\)](room.md#Room+member_list) ⇒ `List[Contact]>`
-    * [.member\(queryArg\)](room.md#Room+member) ⇒ `Contact | None`
-    * [.owner\(\)](room.md#Room+owner) ⇒ `Contact | None`
+    * [.member\(queryArg\)](room.md#Room+member) ⇒ `Optional[Contact]`
+    * [.owner\(\)](room.md#Room+owner) ⇒ `Optional[Contact]`
     * [.avatar\(\)](room.md#room-owner-contact-or-null) ⇒ `FileBox`
   * _静态方法_
     * [.create\(contactList, \[topic\]\)](room.md#Room.create) ⇒ `Room`
+    * [.find\(query\)](room.md#Room.find) ⇒ `Optional[Room]`
     * [.find_all\(\[query\]\)](room.md#Room.findAll) ⇒ `List[Room]`
-    * [.find\(query\)](room.md#Room.find) ⇒ `Room | None`
 
 ### room.ready\(force_sync=False\) ⇒ `None`
 
@@ -72,7 +72,7 @@ title: Room
 await room.ready()
 ```
 
-### room.say\(textOrContactOrFileOrUrlLinkOrMiniProgram, ...mentionList\) ⇒ `None`
+### room.say\(textOrContactOrFileOrUrlLinkOrMiniProgram, ...mentionList\) ⇒ `Union[None, Message]`
 
 向群（组）中发送消息，如果携带了联系人列表 `mention_list` 参数，将会在群里同时 @ 这些联系人。
 
@@ -138,11 +138,10 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### room.on\(event, listener\) ⇒ `this`
+### room.on\(event, listener\) ⇒ `None`
 
 **类型**: [`Room`](room.md#Room)的实例方法 
 
-**返回值**: `this` - - Room for chain  <!--不太确定该如何翻译这个, 暂时保留-->
 
 | 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
@@ -281,7 +280,7 @@ if room:
 await room.quit()
 ```
 
-### room.topic\(\[newTopic\]\) ⇒ `None | str`
+### room.topic\(\[newTopic\]\) ⇒ `Optional[str]`
 
 设置/获取 群聊的名称
 
@@ -326,7 +325,7 @@ asyncio.run(MyBot().start())
 
 ```
 
-### room.announce\(\[text\]\) ⇒ `None | str`
+### room.announce\(\[text\]\) ⇒ `Optional[str]`
 
 `设置/获取` 群聊的公告
 
@@ -340,7 +339,7 @@ asyncio.run(MyBot().start())
 | :--- | :--- | :--- |
 | \[text\] | `str` | 如果设置了这个参数, 则会更改群聊的公告 |
 
-#### Example _\(当群聊内的任意联系人发送消息时, 您都会在控制台收到群公告的内容\)_
+#### 示例 _\(当群聊内的任意联系人发送消息时, 您都会在控制台收到群公告的内容\)_
 
 ```python
 import asyncio
@@ -356,7 +355,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-#### Example _\(每当机器人登陆账号时, 都会改变群聊公告的内容\)_
+#### 示例 _\(每当机器人登陆账号时, 都会改变群聊公告的内容\)_
 
 ```python
 import asyncio
@@ -383,13 +382,13 @@ asyncio.run(MyBot().start())
 
 **类型**: [`Room`](room.md#Room)类的实例方法 
 
-### room.alias\(contact\) ⇒ `str | None`
+### room.alias\(contact\) ⇒ `Optional[str]`
 
 返回群聊内联系人的别名\(备注\)
 
 **类型**: [`Room`](room.md#Room)类的实例方法 
 
-**返回值**: `str | None` - - 如果用户在群聊内有备注则返回字符串类型的备注, 没有则返回None
+**返回值**: `Optional[str]` - - 如果用户在群聊内有备注则返回字符串类型的备注, 没有则返回None
 
 | 参数 | 类型 |
 | :--- | :--- |
@@ -454,7 +453,7 @@ member_contact_list = await room.member_list('abc')
 print(f'contact list with all name, room alias, alias are abc: {member_contact_list}')
 ```
 
-### room.member\(queryArg\) ⇒ `Contact | None`
+### room.member\(queryArg\) ⇒ `Optional[Contact]`
 
 查找一个房间里的联系人，如果获取到的联系人多于一个，则返回第一个。
 
@@ -476,7 +475,7 @@ if room:
         print(f'wechaty群聊内找不到该联系人')
 ```
 
-#### 示例Example _\(通过MemberQueryFilter类来查找\)_
+#### 示例 _\(通过MemberQueryFilter类来查找\)_
 
 ```python
 import asyncio
@@ -498,7 +497,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### room.owner\(\) ⇒ `Contact` \| `null`
+### room.owner\(\) ⇒ `Optional[Contact]`
 
 获取该群聊的群主.
 
@@ -567,13 +566,13 @@ room_list = await bot.Room.find_all()
 room_list = await bot.Room.find_all('wechaty')
 ```
 
-### Room.find\(query\) ⇒ `Room`
+### Room.find\(query\) ⇒ `Optional[Room]`
 
 通过过滤器寻找群聊: {topic: str \| RegExp}, 如果获取到了多个群聊, 则返回第一个
 
 **类型**: [`Room`](room.md#Room)类的静态方法
 
-**返回值**: `Room` - 如果可以找到该群聊, 则返回该群聊的对象, 如果不能则返回None
+**返回值**: `Optional[Room]` - 如果可以找到该群聊, 则返回该群聊的对象, 如果不能则返回None
 
 | 参数 | 类型 |
 | :--- | :--- |

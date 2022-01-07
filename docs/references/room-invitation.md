@@ -18,7 +18,7 @@ title: RoomInvitation
   * [.date\(\)](room-invitation.md#RoomInvitation+date) ⇒ `datetime`
   * [.age\(\)](room-invitation.md#RoomInvitation+age) ⇒ `int`
 
-### roomInvitation.accept\(\) ⇒ `None`
+### room_invitation.accept\(\) ⇒ `None`
 
 接受群聊邀请
 
@@ -44,7 +44,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### roomInvitation.inviter\(\) ⇒ `Contact`
+### room_invitation.inviter\(\) ⇒ `Contact`
 
 获取群聊邀请的邀请人
 
@@ -71,7 +71,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### roomInvitation.topic\(\) ⇒ `str`
+### room_invitation.topic\(\) ⇒ `str`
 
 获取群聊邀请的群聊名
 
@@ -96,18 +96,18 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### ~~roomInvitation.roomTopic\(\)~~
+### ~~room_invitation.roomTopic\(\)~~
 
 **类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
 **已弃用:**: 请使用 topic\(\)
 
-### roomInvitation.date\(\) ⇒ `datetime`
+### room_invitation.date\(\) ⇒ `datetime`
 
 获取群聊邀请的日期
 
 **类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
 
-### roomInvitation.age\(\) ⇒ `int`
+### room_invitation.age\(\) ⇒ `int`
 
 获取当前距离已接收到的这条群聊邀请的时间的间隔, 单位为秒
 

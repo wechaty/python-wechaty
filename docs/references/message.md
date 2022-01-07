@@ -14,10 +14,10 @@ title: Message
 
 * [Message](message.md#Message)
   * _实例方法_
-    * [~~.from\(\)~~](message.md#Message+from) ⇒ `Contact` \| `None`
-    * [.talker\(\)](message.md#Message+talker) ⇒ `Contact` \| `None`
-    * [.to\(\)](message.md#Message+to) ⇒ `Contact` \| `None`
-    * [.room\(\)](message.md#Message+room) ⇒ `Room` \| `None`
+    * [~~.from\(\)~~](message.md#Message+from) ⇒ `Contact`
+    * [.talker\(\)](message.md#Message+talker) ⇒ `Contact`
+    * [.to\(\)](message.md#Message+to) ⇒ `Optional[Contact]`
+    * [.room\(\)](message.md#Message+room) ⇒ `Optional[Room]`
     * [.text\(\)](message.md#Message+text) ⇒ `str`
     * [.say\(textOrContactOrFile\)](message.md#Message+say) ⇒ `None`
     * [.type\(\)](message.md#Message+type) ⇒ `MessageType`
@@ -34,19 +34,19 @@ title: Message
     * [.to_contact\(\)](message.md#Message+toContact) ⇒ `Contact`
     * [.to_url_link\(\)](message.md#Message+toUrlLink) ⇒ `UrlLink`
     * [.to_url_linkto_mini_program\(\)](message.md#Message+toMiniProgram) ⇒ `UrlLink`
-    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](contact.md#Message+say) ⇒ `Message`
+    * [.say\(textOrContactOrFileOrUrl, mention_ids\)](contact.md#Message+say) ⇒ `Optional[Message]`
     * [.to_recalled\(\)](contact.md#Message+toRecalled) ⇒ `Message`
     * [.recall\(\)](contact.md#Message+recall) ⇒ `bool`
   * _静态方法_
-    * [.find\(\)](message.md#Message.find) ⇒ `Message`
-    * [.find_all\(\)](message.md#Message.findAll) ⇒ `Message`
+    * [.find\(\)](message.md#Message.find) ⇒ `Optional[Message]`
+    * [.find_all\(\)](message.md#Message.findAll) ⇒ `List[Message]`
     
 
-### ~~message.from\(\)~~ ⇒ `Contact | None`
+### ~~message.from\(\)~~ ⇒ `Contact`
 
 已弃用, 详见[message.talker\(\)](message.md#Message+talker)
 
-### message.talker\(\) ⇒ `Contact | None`
+### message.talker\(\) ⇒ `Contact`
 
 获取消息的发送者。
 
@@ -66,7 +66,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.to\(\) ⇒ `Contact` \| `None`
+### message.to\(\) ⇒ `Optional[Contact]`
 
 获取消息的接收者, 如果消息是在群聊发出的`Message.to()`会返回None, 请使用 `Message.room()` 获取群聊对象.
 
@@ -94,7 +94,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.room\(\) ⇒ `Room` \| `None`
+### message.room\(\) ⇒ `Optional[Room]`
 
 获取消息来自的群聊. 如果消息不是来自群聊, 则返回None
 
@@ -167,7 +167,7 @@ asyncio.run(MyBot().start())
 **返回值**: 返回撤回消息是否成功, 成功为`True`, 失败则为`False`
 
 
-### message.to_recalled\(\) ⇒ `Message | None`
+### message.to_recalled\(\) ⇒ `Message`
 
 获取撤回的信息的文本
 
@@ -190,7 +190,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Promise <void>`
+### message.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Optional[Message]`
 
 向联系人或群聊发送一段文字, 名片, 媒体文件或者链接
 
@@ -513,13 +513,13 @@ _**已弃用**_
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### Message.find\(\) ⇒ `Message | None`
+### Message.find\(\) ⇒ `Optional[Message]`
 
 在缓存中查找消息
 
 **Kind**:  [`Message`](message.md#Message)的静态方法
 
-### Message.findAll\(\) ⇒ `Promise <Message []>`
+### Message.findAll\(\) ⇒ `List[Message]`
 
 在缓存中查找消息
 

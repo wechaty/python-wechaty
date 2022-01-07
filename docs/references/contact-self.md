@@ -12,14 +12,14 @@ title: ContactSelf
 
 **类型**: 公共类
 
-* [ContactSelf](contact-self.md#contactself)
+* [contact_self](contact-self.md#contactself)
   * [intance](contact-self.md#contactself)
-    * [contactSelf.avatar\(\[file\]\) ⇒ `None | FileBox`](contact-self.md#contactselfavatarfile-⇒-promise)
-    * [contactSelf.qrcode\(\) ⇒ `str`](contact-self.md#contactselfqrcode-⇒-promise)
-    * [contactSelf.signature\(signature\) ⇒ `str`](contact-self.md#contactselfsignaturesignature)
-    * [contactSelf.name\(\[name\]\) ⇒ `None | str`](contact-self.md#contactselfname-⇒-promisestring)
+    * [contact_self.avatar\(\[file\]\) ⇒ `None | FileBox`](contact-self.md#contactselfavatarfile-⇒-promise)
+    * [contact_self.qrcode\(\) ⇒ `str`](contact-self.md#contactselfqrcode-⇒-promise)
+    * [contact_self.signature\(signature\) ⇒ `str`](contact-self.md#contactselfsignaturesignature)
+    * [contact_self.name\(\[name\]\) ⇒ `None | str`](contact-self.md#contactselfname-⇒-promisestring)
 
-### contactSelf.avatar\(\[file\]\) ⇒ `None | FileBox`
+### contact_self.avatar\(\[file\]\) ⇒ `FileBox`
 
 获取/设置 机器人所使用账号的头像
 
@@ -71,7 +71,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contactSelf.qrcode\(\) ⇒ `str`
+### contact_self.qrcode\(\) ⇒ `str`
 
 获取机器人账号的二维码链接
 
@@ -95,7 +95,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contactSelf.signature\(signature\) ⇒ `None`
+### contact_self.signature\(signature\) ⇒ `None`
 
 更改机器人账号的签名
 
@@ -126,7 +126,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contactSelf.name\(\[name\]\) ⇒ `None | str`
+### contact_self.name\(\[name\]\) ⇒ `Optional[str]`
 
 获取或者更改机器人的名字
 
