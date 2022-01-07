@@ -18,15 +18,15 @@ title: Friendship
 
 * [Friendship](friendship.md#Friendship)
   * _实例方法_
-    * [.accept\(\)](friendship.md#Friendship+accept) ⇒ `Promise <void>`
-    * [.hello\(\)](friendship.md#Friendship+hello) ⇒ `string`
+    * [.accept\(\)](friendship.md#Friendship+accept) ⇒ `None`
+    * [.hello\(\)](friendship.md#Friendship+hello) ⇒ `str`
     * [.contact\(\)](friendship.md#Friendship+contact) ⇒ `Contact`
     * [.type\(\)](friendship.md#Friendship+type) ⇒ `FriendshipType`
   * _静态方法_
     * [~~.send\(\)~~](friendship.md#Friendship.send)
-    * [.add\(contact, hello\)](friendship.md#Friendship.add) ⇒ `Promise <void>`
+    * [.add\(contact, hello\)](friendship.md#Friendship.add) ⇒ `None`
 
-### friendship.accept\(\) ⇒ `Promise <void>`
+### friendship.accept\(\) ⇒ `None`
 
 接受朋友请求
 
