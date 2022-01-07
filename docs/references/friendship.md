@@ -8,31 +8,31 @@ title: Friendship
 
 发送、接收好友请求和好友确认事件。
 
-1. send request
-2. receive request\(in friend event\)
-3. confirmation friendship\(friend event\)
+1. 发送请求
+2. 接收请求\(in friend event\)
+3. 接受请求\(friend event\)
 
-[Examples/Friend-Bot](https://github.com/wechaty/wechaty/blob/1523c5e02be46ebe2cc172a744b2fbe53351540e/examples/friend-bot.ts)
+[示例/Friend-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/advanced/friendship-bot.py)
 
-**Kind**: global class
+**类型**: 全局类
 
 * [Friendship](friendship.md#Friendship)
-  * _instance_
+  * _实例方法_
     * [.accept\(\)](friendship.md#Friendship+accept) ⇒ `Promise <void>`
     * [.hello\(\)](friendship.md#Friendship+hello) ⇒ `string`
     * [.contact\(\)](friendship.md#Friendship+contact) ⇒ `Contact`
     * [.type\(\)](friendship.md#Friendship+type) ⇒ `FriendshipType`
-  * _static_
+  * _静态方法_
     * [~~.send\(\)~~](friendship.md#Friendship.send)
     * [.add\(contact, hello\)](friendship.md#Friendship.add) ⇒ `Promise <void>`
 
 ### friendship.accept\(\) ⇒ `Promise <void>`
 
-Accept Friend Request
+接受朋友请求
 
-**Kind**: instance method of [`Friendship`](friendship.md#Friendship)  
+**类型**: [`Friendship`](friendship.md#Friendship)的实例方法  
 
-#### Example
+#### 示例
 
 ```javascript
 const bot = new Wechaty()
@@ -60,12 +60,15 @@ bot.on('friendship', async friendship => {
 .start()
 ```
 
-### friendship.hello\(\) ⇒ `string`
+### friendship.hello\(\) ⇒ `str`
 
 Get verify message from
 
-**Kind**: instance method of [`Friendship`](friendship.md#Friendship)  
-**Example** _\(If request content is \`ding\`, then accept the friendship\)_
+**类型**: [`Friendship`](friendship.md#Friendship)的实例方法  
+
+**示例** 
+
+_\(If request content is \`ding\`, then accept the friendship\)_
 
 ```javascript
 const bot = new Wechaty()
@@ -84,11 +87,11 @@ bot.on('friendship', async friendship => {
 
 ### friendship.contact\(\) ⇒ `Contact`
 
-Get the contact from friendship
+获取邀请的联系人对象
 
-**Kind**: instance method of [`Friendship`](friendship.md#Friendship)  
+**类型**: [`Friendship`](friendship.md#Friendship)的实例方法  
 
-#### Example
+#### 示例
 
 ```javascript
 const bot = new Wechaty()
@@ -102,17 +105,18 @@ bot.on('friendship', friendship => {
 
 ### friendship.type\(\) ⇒ `FriendshipType`
 
-Return the Friendship Type
+返回Friendship请求的类型
 
-> Tips: FriendshipType is enum here. &lt;/br&gt;
+> 提示: FriendshipType在这里是枚举类型. &lt;/br&gt;
 >
-> * FriendshipType.Unknown
-> * FriendshipType.Confirm
-> * FriendshipType.Receive
-> * FriendshipType.Verify
+> * FriendshipType.FriendshipTypeFRIENDSHIP_TYPE_UNSPECIFIED
+> * FriendshipType.FRIENDSHIP_TYPE_CONFIRM 
+> * FriendshipType.FRIENDSHIP_TYPE_RECEIVE 
+> * FriendshipType.FRIENDSHIP_TYPE_VERIFY 
 
-**Kind**: instance method of [`Friendship`](friendship.md#Friendship)  
-**Example** _\(If request content is \`ding\`, then accept the friendship\)_
+**类型**: [`Friendship`](friendship.md#Friendship)的实例方法  
+
+**类型** _\(If request content is \`ding\`, then accept the friendship\)_
 
 ```javascript
 const bot = new Wechaty()
@@ -130,11 +134,11 @@ bot.on('friendship', async friendship => {
 
 ### ~~Friendship.send\(\)~~
 
-_**Deprecated**_
+_**已弃用**_
 
-use [Friendship\#add](friendship.md#friendship-add-contact-hello-promise) instead
+请使用[Friendship\#add](friendship.md#friendship-add-contact-hello-promise)
 
-**Kind**: static method of [`Friendship`](friendship.md#Friendship)
+**类型**:  [`Friendship`](friendship.md#Friendship)的静态方法
 
 ### Friendship.add\(contact, hello\) ⇒ `Promise <void>`
 
@@ -142,9 +146,9 @@ Send a Friend Request to a `contact` with message `hello`.
 
 The best practice is to send friend request once per minute. Remeber not to do this too frequently, or your account may be blocked.
 
-**Kind**: static method of [`Friendship`](friendship.md#Friendship)
+**类型**:  [`Friendship`](friendship.md#Friendship)的静态方法
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
 | contact | `Contact` | Send friend request to contact |
 | hello | `string` | The friend request content |
