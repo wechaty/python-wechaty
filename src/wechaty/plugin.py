@@ -79,17 +79,17 @@ def _list_routes_txt(app: Quart) -> str:
     if len(rules) == 0:
         return 'No routes were registered.'
 
-    rules = sorted(rules, key=lambda rule: rule.endpoint)
+    rules = list(sorted(rules, key=lambda rule: rule.endpoint))
 
     headers = ("Endpoint", "Methods", "Websocket", "Rule")
-    rule_methods = [", ".join(sorted(rule.methods)) for rule in rules]
+    rule_methods = [", ".join(sorted(rule.methods)) for rule in rules if rule.methods]
 
-    widths = (
+    widths = [
         max(len(rule.endpoint) for rule in rules),
         max(len(methods) for methods in rule_methods),
         len("Websocket"),
         max(len(rule.rule) for rule in rules),
-    )
+    ]
     widths = [max(len(header), width) for header, width in zip(headers, widths)]
 
     # pylint: disable=C0209
@@ -102,6 +102,7 @@ def _list_routes_txt(app: Quart) -> str:
     for rule, methods in zip(rules, rule_methods):
         routes_txt += row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip()
     return routes_txt
+
 
 @dataclass
 class WechatyPluginOptions:
