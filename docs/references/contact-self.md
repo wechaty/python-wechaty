@@ -14,12 +14,12 @@ title: ContactSelf
 
 * [contact_self](contact-self.md#contactself)
   * [intance](contact-self.md#contactself)
-    * [contact_self.avatar\(\[file\]\) ⇒ `None | FileBox`](contact-self.md#contactselfavatarfile-⇒-promise)
+    * [contact_self.avatar\(\[file\]\) ⇒ `FileBox`](contact-self.md#contactselfavatarfile-⇒-promise)
     * [contact_self.qrcode\(\) ⇒ `str`](contact-self.md#contactselfqrcode-⇒-promise)
-    * [contact_self.signature\(signature\) ⇒ `str`](contact-self.md#contactselfsignaturesignature)
-    * [contact_self.name\(\[name\]\) ⇒ `None | str`](contact-self.md#contactselfname-⇒-promisestring)
+    * [contact_self.signature\(signature\) ⇒ `Any`](contact-self.md#contactselfsignaturesignature)
+    * [contact_self.name\(\[name\]\) ⇒ `str | None`](contact-self.md#contactselfname-⇒-promisestring)
 
-### contact_self.avatar\(\[file\]\) ⇒ `FileBox`
+### async def avatar(self, file: `Optional[FileBox]` = None) ⇒ `FileBox`
 
 获取/设置 机器人所使用账号的头像
 
@@ -71,7 +71,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact_self.qrcode\(\) ⇒ `str`
+### async def qr_code(self) ⇒ `str`
 
 获取机器人账号的二维码链接
 
@@ -95,7 +95,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact_self.signature\(signature\) ⇒ `None`
+### async def signature(self, signature: `str`) ⇒ `Any`
 
 更改机器人账号的签名
 
@@ -126,17 +126,15 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact_self.name\(\[name\]\) ⇒ `Optional[str]`
+### `@property` def name(self) ⇒ `str`  
+### `@name.setter` def name(self) ⇒ `str`  
 
 获取或者更改机器人的名字
 
 **类型**: [`ContactSelf`](contact-self.md#contactself)的实例方法
 
-| 参数 | 描述 |
-| :--- | :--- |
-| \[name\] | 想让账号更改的新的别名 |
 
-#### 示例
+#### 示例 \(更改名字与获取名字\)
 
 ```python
 import sys
@@ -149,9 +147,9 @@ from wechaty.user import ContactSelf
 class MyBot(Wechaty):
 
     async def on_login(self, contact: ContactSelf) -> None:
-        old_name = contact.name
+        old_name = contact.name  # 获取Bot账号的名字
         try:
-            contact.name = f"{old_name}{datetime.now()}"
+            contact.name = f"{old_name}{datetime.now()}"  # 更改Bot账号的名字
         except Exception as e:
             print("更改名字失败", e, file=sys.stderr)
 
