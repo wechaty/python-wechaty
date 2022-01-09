@@ -51,14 +51,14 @@ class ContactSelf(Contact):
         """
         return super().name
 
-    @name.setter
-    def name(self, name: Optional[str]) -> None:
-        puppet_id: str = self.puppet.self_id()
-
-        if self.contact_id != puppet_id:
-            raise WechatyOperationError('only can get qr_code for the login user self')
-
-        asyncio.run(self.puppet.contact_self_name(name))
+    async def set_name(self, name: str) -> None:
+        """
+        set the name of login contact
+        Args:
+            name: new name
+        """
+        await self.puppet.contact_self_name(name)
+        await self.ready(force_sync=True)
 
     async def signature(self, signature: str) -> Any:
         """
