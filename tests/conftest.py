@@ -6,6 +6,7 @@ import pytest
 from wechaty_grpc.wechaty.puppet import MessageType
 from wechaty_puppet.puppet import Puppet
 from wechaty_puppet.schemas.message import MessageQueryFilter
+from wechaty_puppet.schemas.room import RoomQueryFilter
 from wechaty_puppet.schemas.types import (
     MessagePayload,
     RoomPayload,
@@ -52,6 +53,9 @@ class FakePuppet(Puppet):
     async def message_search(self, query: Optional[MessageQueryFilter] = None) -> List[str]:
         return [query.id]
 
+    async def room_search(self, query: Optional[MessageQueryFilter] = None) -> List[str]:
+        return self.fake_rooms[query.id] if query else self.fake_rooms.keys()
+
     async def room_members(self, room_id: str) -> List[str]:
         return [
             room_member
@@ -82,6 +86,14 @@ async def test_bot() -> Wechaty:
     puppet.add_contact(ContactPayload("wechaty_user", name="Wechaty User"))
     puppet.add_contact(ContactPayload("fake_user", name="Fake User"))
     puppet.add_contact(ContactPayload("test_user", name="Test User"))
+    puppet.add_room(
+        RoomPayload(
+            id="test_room",
+            topic="test_room",
+            owner_id="wechaty_user",
+            member_ids=["wechaty_user", "fake_user", "test_user"],
+        )
+    )
     puppet.add_room(
         RoomPayload(
             id="fake_room",
