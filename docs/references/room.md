@@ -60,7 +60,7 @@ title: Room
     * [.find\(query\)](room.md#Room.find) ⇒ `Optional[Room]`
     * [.find_all\(\[query\]\)](room.md#Room.findAll) ⇒ `List[Room]`
 
-### room.ready\(force_sync=False\) ⇒ `None`
+### async def ready\(self, force_sync: `bool` = None\)  ⇒ `None`
 
 同步 `Room` 的数据。
 
@@ -72,7 +72,7 @@ title: Room
 await room.ready()
 ```
 
-### room.say\(textOrContactOrFileOrUrlLinkOrMiniProgram, ...mentionList\) ⇒ `Union[None, Message]`
+### async def say\(self, some_thing: `Union[str, Contact, FileBox, MiniProgram, UrlLink]`, mention_ids: `Optional[List[str]]` = None\)⇒ `Union[None, Message]`
 
 向群（组）中发送消息，如果携带了联系人列表 `mention_list` 参数，将会在群里同时 @ 这些联系人。
 
@@ -138,7 +138,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### room.on\(event, listener\) ⇒ `None`
+### def on\(self, event_name: `str`, func: `Callable`\) ⇒ `None`
 
 **类型**: [`Room`](room.md#Room)的实例方法 
 
@@ -208,7 +208,7 @@ if room:
     room.on('invite', on_invite)
 ```
 
-### room.add\(contact\) ⇒ `None`
+### async def add\(self, contact: `Contact`\) ⇒ `None`
 
 将一个联系人添加到群聊
 
@@ -237,7 +237,7 @@ if room:
         log.error(e)
 ```
 
-### room.delete\(contact\) ⇒ `None`
+### async def delete\(self, contact: `Contact`\) ⇒ `None`
 
 从房间中删除联系人, 该功能仅当机器人是房间的所有者\(群主\)时才有效
 
@@ -266,7 +266,7 @@ if room:
         log.error(e)
 ```
 
-### room.quit\(\) ⇒ `None`
+### async def quit\(self\) ⇒ `None`
 
 机器人自行离开该群聊
 
@@ -280,7 +280,7 @@ if room:
 await room.quit()
 ```
 
-### room.topic\(\[newTopic\]\) ⇒ `Optional[str]`
+### async def topic\(self, new_topic: `str` = None\) ⇒ `Optional[str]`
 
 设置/获取 群聊的名称
 
@@ -325,7 +325,7 @@ asyncio.run(MyBot().start())
 
 ```
 
-### room.announce\(\[text\]\) ⇒ `Optional[str]`
+### async def announce\(self, announce_text: `str` = None\) ⇒ `Optional[str]`
 
 `设置/获取` 群聊的公告
 
@@ -374,7 +374,7 @@ asyncio.run(MyBot().start())
 
 ```
 
-### room.qr_code\(\) ⇒ `str`
+### async def qr_code\(self\) ⇒ `str`
 
 获取可以用于扫描加入房间的二维码。
 
@@ -382,7 +382,7 @@ asyncio.run(MyBot().start())
 
 **类型**: [`Room`](room.md#Room)类的实例方法 
 
-### room.alias\(contact\) ⇒ `Optional[str]`
+### async def alias\(self, member: `Contact`\) ⇒ `Optional[str]`
 
 返回群聊内联系人的别名\(备注\)
 
@@ -403,7 +403,7 @@ alias = await room.alias(contact)  # 获取该联系人的备注(别名)
 print(f'{contact.name()}的别名是{alias}')
 ```
 
-### room.has\(contact\) ⇒ `bool`
+### async def has\(self, contact: `Contact`\)⇒ `bool`
 
 检查这个群聊内是否有`contact`, 返回一个布尔类型的值
 
@@ -415,7 +415,7 @@ print(f'{contact.name()}的别名是{alias}')
 | :--- | :--- |
 | contact | `Contact` |
 
-#### Example _\(检查好'lijiarui'是否在群聊'wechaty'内\)_
+#### 示例 _\(检查好'lijiarui'是否在群聊'wechaty'内\)_
 
 ```python
 contact = await bot.Contact.find('lijiarui')
@@ -427,7 +427,7 @@ if contact and room:
         print(f'{contact.name()} 不在群聊wechaty房间内!')
 ```
 
-### room.member_list\(\[query\]\) ⇒ `List[Contact]>`
+### async def member_list(self, query: `Union[str, RoomMemberQueryFilter]` = None) ⇒ `List[Contact]>`
 
 获取一个列表, 里面包含了所有联系人对象
 
@@ -453,7 +453,7 @@ member_contact_list = await room.member_list('abc')
 print(f'contact list with all name, room alias, alias are abc: {member_contact_list}')
 ```
 
-### room.member\(queryArg\) ⇒ `Optional[Contact]`
+### async def member(self, query: `Union[str, RoomMemberQueryFilter]` = None) ⇒ `Optional[Contact]`
 
 查找一个房间里的联系人，如果获取到的联系人多于一个，则返回第一个。
 
@@ -497,7 +497,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### room.owner\(\) ⇒ `Optional[Contact]`
+### async def owner\(self\) ⇒ `Optional[Contact]`
 
 获取该群聊的群主.
 
@@ -511,7 +511,7 @@ asyncio.run(MyBot().start())
 owner = await room.owner()
 ```
 
-### room.avatar\(\) ⇒ `FileBox`
+### async def avatar\(self\) ⇒ `FileBox`
 
 获取群聊的头像.
 
@@ -525,7 +525,7 @@ owner = await room.owner()
 owner = await room.avatar()
 ```
 
-### Room.create\(contactList, \[topic\]\) ⇒ [`Room`](room.md#Room)
+### `@classmethod` async def create\(cls, contacts: `List[Contact]`, topic: `str`\) ⇒ [`Room`](room.md#Room)
 
 创建一个新的群聊
 
@@ -549,7 +549,7 @@ await room.topic('ding - created')  # 设置群聊名称
 await room.say('ding - 创建完成')
 ```
 
-### Room.find_all\(\[query\]\) ⇒ `List[Room]`
+### `@classmethod` async def find_all(cls, query: `Optional[Union[str, RoomQueryFilter, Callable[[Contact], bool]]]` = None) ⇒ `List[Room]`
 
 通过过滤器寻找群聊: {topic: str \| RegExp}, 通过一个列表返回所有匹配的群聊对象
 
@@ -566,7 +566,7 @@ room_list = await bot.Room.find_all()
 room_list = await bot.Room.find_all('wechaty')
 ```
 
-### Room.find\(query\) ⇒ `Optional[Room]`
+### `@classmethod` async def find(cls, query: `Optional[Union[str, RoomQueryFilter, Callable[[Contact], bool]]]` = None) ⇒ `Optional[Room]`
 
 通过过滤器寻找群聊: {topic: str \| RegExp}, 如果获取到了多个群聊, 则返回第一个
 

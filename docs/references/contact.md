@@ -10,7 +10,7 @@ title: Contact
 ## Contact
 
 所有的微信联系人（朋友）都会被封装成一个`Contact`联系人对象。示例: 
-[Examples/Contact-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/basic/contact-bot.py)
+[示例/Contact-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/basic/contact-bot.py)
 
 **类型**: 全局**属性**
 
@@ -37,7 +37,7 @@ title: Contact
     * [.find\(query\)](contact.md#Contact.find) ⇒ `Optional[Contact]`
     * [.find_all\(\[queryArg\]\)](contact.md#Contact.findAll) ⇒ `List[Contact]`
 
-### contact.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Optional[Message]`
+### async def say\(self, message: `Union[str, Message, FileBox, Contact, UrlLink]`\) ⇒ `Optional[Message]`
 
 > 提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
@@ -100,7 +100,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.name ⇒ `str`
+### `@property` def name\(self\) ⇒ `str`
 
 获取联系人对象的名字
 
@@ -112,7 +112,7 @@ asyncio.run(MyBot().start())
 name: str = contact.name
 ```
 
-### contact.alias\(newAlias\) ⇒ `Union[None, str]`
+### async def alias\(self, `new_alias: Optional[str]` = None\) ⇒ `Union[None, str]`
 
 为一个联系人获取 / 设置 / 删除别名
 
@@ -162,7 +162,7 @@ except Exception:
     print(f"删除{contact.name}的备注失败!")
 ```
 
-### contact.is_friend\(\) ⇒ `bool`
+### def is_friend\(self\) ⇒ `Optional[bool]`
 
 检查这个联系人对象是否是自己的朋友
 
@@ -179,7 +179,7 @@ isFriend = contact.is_friend()
 print(isFriend)
 ```
 
-### contact.is_offical\(\) ⇒ `bool`
+### def is_offical\(self\) ⇒ `bool`
 
 检查这个联系人对象是否是公众号
 
@@ -196,7 +196,7 @@ isFriend = contact.is_offical()
 print(isFriend)
 ```
 
-### contact.is_personal\(\) ⇒ `bool`
+### def is_personal\(self) ⇒ `bool`
 
 检查这个联系人对象是否是个人账号
 
@@ -213,7 +213,7 @@ isFriend = contact.is_personal()
 print(isFriend)
 ```
 
-### contact.type\(\) ⇒ `ContactType.CONTACT_TYPE_UNSPECIFIED` \| `ContactType.CONTACT_TYPE_PERSONAL` \| `ContactType.CONTACT_TYPE_OFFICIAL` \| `CONTACT_TYPE_CORPORATION`
+### def type\(self\) ⇒ `ContactType.CONTACT_TYPE_UNSPECIFIED` \| `ContactType.CONTACT_TYPE_PERSONAL` \| `ContactType.CONTACT_TYPE_OFFICIAL` \| `CONTACT_TYPE_CORPORATION`
 
 返回联系人的类型
 
@@ -236,7 +236,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.gender\(\) ⇒ `ContactGender.CONTACT_GENDER_UNSPECIFIED` \| `ContactGender.CONTACT_GENDER_MALE` \| `ContactGender.CONTACT_GENDER_FEMALE`
+### def gender(self)\(\) ⇒ `ContactGender.CONTACT_GENDER_UNSPECIFIED` \| `ContactGender.CONTACT_GENDER_MALE` \| `ContactGender.CONTACT_GENDER_FEMALE`
 
 获取联系人的性别
 
@@ -261,7 +261,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.province\(\) ⇒ `Optional[str]`
+### def province\(self\) ⇒ `Optional[str]`
 
 获取一个联系人-的省份信息
 
@@ -273,7 +273,7 @@ asyncio.run(MyBot().start())
 province: str = contact.province()
 ```
 
-### contact.city\(\) ⇒ `Optional[str]`
+### def city(self) ⇒ `Optional[str]`
 
 获取联系人所设置的城市
 
@@ -285,7 +285,7 @@ province: str = contact.province()
 city: str = contact.city()
 ```
 
-### contact.avatar\(\) ⇒ `FileBox`
+### sync def avatar\(self, file_box: `Optional[FileBox]` = None\) ⇒ `FileBox`
 
 获取联系人头像图片的文件流
 
@@ -310,7 +310,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### contact.sync\(\) ⇒ `None`
+### async def sync\(self\) ⇒ `None`
 
 强制重新加载联系人的数据，再次从低级 API 同步数据。
 
@@ -322,7 +322,7 @@ asyncio.run(MyBot().start())
 await contact.sync()
 ```
 
-### contact.is_self\(\) ⇒ `bool`
+### def is_self\(self\) ⇒ `bool`
 
 检查该联系人对象是不是Bot自身
 
@@ -333,16 +333,16 @@ await contact.sync()
 **示例**
 
 ```python
-isSelf: bool = contact.self()
+is_self: bool = contact.self()
 ```
 
-### Contact.find\(query\) ⇒ `Optional[Contact]`
+### `@classmethod` async def find\(cls, query: `Union[str, ContactQueryFilter, Callable[[Contact], bool]]`\) ⇒ `Optional[Contact]`
 
 尝试通过过滤器查找联系人: {name: string \| RegExp} / {alias: string \| RegExp}
 
 通过联系人的名字(name)或者别名(alias)来获取联系人对象, 如果查找的结果大于一个, 则返回第一个.
 
-**类型**: [`Contact`](contact.md#Contact)的静态方法 
+**类型**: [`Contact`](contact.md#Contact)的**静态方法** 
 
 **返回值**: `Optional[Contact]` - 如果能找到联系人，则返回找到的联系人对象，否则返回`None`
 
@@ -366,7 +366,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### Contact.find_all\(\[queryArg\]\) ⇒ `List[Contact]`
+### `@classmethod` async def find_all\(cls, query: `Optional[Union[str, ContactQueryFilter, Callable[[Contact], bool]]]` = None\) -> `List[Contact]`
 
 通过 `name` 或者 `alias` 查找并获取联系人对象
 
@@ -377,7 +377,7 @@ asyncio.run(MyBot().start())
 * `name`   由用户自己设置的名字, 叫做name
 * `alias`  由Bot为联系人设置的名字\(备注/别名\). 该值可以传入正则表达式用于搜索用户
 
-**类型**: [`Contact`](contact.md#Contact)的静态方法
+**类型**: [`Contact`](contact.md#Contact)的**静态方法**
 
 | 参数 | 类型 |
 | :--- | :--- |

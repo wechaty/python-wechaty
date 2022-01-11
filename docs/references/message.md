@@ -42,11 +42,11 @@ title: Message
     * [.find_all\(\)](message.md#Message.findAll) ⇒ `List[Message]`
     
 
-### ~~message.from\(\)~~ ⇒ `Contact`
+### ~~def from\(self\)~~ ⇒ `Contact`
 
 已弃用, 详见[message.talker\(\)](message.md#Message+talker)
 
-### message.talker\(\) ⇒ `Contact`
+### def talker\(self\) ⇒ `Contact`
 
 获取消息的发送者。
 
@@ -66,7 +66,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.to\(\) ⇒ `Optional[Contact]`
+### def to\(self\) ⇒ `Optional[Contact]`
 
 获取消息的接收者, 如果消息是在群聊发出的`Message.to()`会返回None, 请使用 `Message.room()` 获取群聊对象.
 
@@ -94,7 +94,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.room\(\) ⇒ `Optional[Room]`
+### def room\(self\) ⇒ `Optional[Room]`
 
 获取消息来自的群聊. 如果消息不是来自群聊, 则返回None
 
@@ -122,7 +122,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### ~~message.content\(\)~~
+### ~~def content\(\)~~
 
 _**已弃用**_
 
@@ -130,7 +130,7 @@ _**已弃用**_
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.text\(\) ⇒ `str`
+### def text\(self\) ⇒ `str`
 
 获取对话的消息文本
 
@@ -158,7 +158,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-###  message.recall\(\) ⇒ `bool`
+### async def recall\(self\) ⇒ `bool`
 
 撤回这条信息
 
@@ -167,7 +167,7 @@ asyncio.run(MyBot().start())
 **返回值**: 返回撤回消息是否成功, 成功为`True`, 失败则为`False`
 
 
-### message.to_recalled\(\) ⇒ `Message`
+### async def to_recalled\(self\) ⇒ `Message`
 
 获取撤回的信息的文本
 
@@ -190,7 +190,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.say\(textOrContactOrFileOrUrlLinkOrMiniProgram\) ⇒ `Optional[Message]`
+### async def say(self, msg: `Union[str, Contact, FileBox, UrlLink, MiniProgram]`, mention_ids: `Optional[List[str]]` = None)  ⇒ `Optional[Message]`
 
 向联系人或群聊发送一段文字, 名片, 媒体文件或者链接
 
@@ -264,7 +264,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.type\(\) ⇒ `MessageType`
+### def type\(self\) ⇒ `MessageType`
 
 获取消息的类型
 
@@ -305,7 +305,7 @@ asyncio.run(MyBot().start())
 
 ```
 
-### message.is_self\(\) ⇒ `bool`
+### def is_self\(self\) ⇒ `bool`
 
 检查这个消息是否是由自己发出的
 
@@ -331,11 +331,11 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### ~~message.mention\(\)~~ ⇒ `List[Contact]`
+### ~~def mention\(\)~~ ⇒ `List[Contact]`
 
 已弃用, 请使用[.mention_list\(\)](message.md#Message+mentionList)
 
-### message.mention_list\(\) ⇒ `List[Contact]`
+### async def mention_list\(self\) ⇒ `List[Contact]`
 
 以列表的形式获取消息所提及\(@\)的人.
 
@@ -378,7 +378,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.mention_self\(\) ⇒ `bool`
+### async def mention_self\(self\) ⇒ `bool`
 
 **类型**: [`Message`](message.md#Message)的实例方法  
 
@@ -398,7 +398,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.mention_text\(\) ⇒ `str`
+### async def mention_text\(self\)⇒ `str`
 
 返回过滤掉`@name`后的消息 
 
@@ -420,7 +420,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.forward\(to\) ⇒ `None`
+### async def forward\(self, to: `Union[Room, Contact]`\) ⇒ `None`
 
 转发接收到的信息. 此操作不会触发on-message事件.
 
@@ -428,7 +428,7 @@ asyncio.run(MyBot().start())
 
 | 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| to | `Sayable` \| `Array` | 群聊或者联系人, 消息的收件人、群聊房间或联系人 |
+| to | `Union[Room, Contact]` \| 群聊或者联系人, 消息的收件人、群聊房间或联系人 |
 
 #### 示例
 
@@ -447,13 +447,13 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### message.date\(\) ⇒ `datetime`
+### def date\(self\) ⇒ `datetime`
 
 获取消息发送的时间
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.age\(\) ⇒ `number`
+### def age\(self\) ⇒ `int`
 
 获取当前距离已接收到的这条消息的时间的间隔
 
@@ -461,7 +461,7 @@ asyncio.run(MyBot().start())
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### ~~message.file\(\)~~
+### ~~def file\(\)~~
 
 _**已弃用**_
 
@@ -469,7 +469,7 @@ _**已弃用**_
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.to_file_box\(\) ⇒ `FileBox`
+### async def to_file_box\(self\) ⇒ `FileBox`
 
 从消息中提取媒体文件，并将其封装为FileBox类返回。
 
@@ -479,7 +479,7 @@ _**已弃用**_
 
  .to_image
 
-### message.to_mini_program\(\) ⇒ `MiniProgram`
+### async def to_mini_program\(self\) ⇒ `MiniProgram`
 
 从消息中提取小程序卡片，并将其封装为MiniProgramM类返回。
 
@@ -488,7 +488,7 @@ _**已弃用**_
 **类型**: [`Message`](message.md#Message)的实例方法 
 
 
-### message.to_image\(\) ⇒ `Image`
+### def to_image\(self\) ⇒ `Image`
 
 从消息中提取图像文件，以便我们可以使用不同的图像大小。
 
@@ -497,7 +497,7 @@ _**已弃用**_
 **类型**: [`Message`](message.md#Message)的实例方法 
 
 
-### message.toContact\(\) ⇒ `Contact`
+### async def to_contact\(self\) ⇒ `Contact`
 
 获取消息中的联系人卡片, 并从卡片中提取联系人将其封装到联系人类中返回
 
@@ -505,7 +505,7 @@ _**已弃用**_
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### message.toUrlLink\(\) ⇒ `UrlLink`
+### async def to_url_link\(self\) ⇒ `UrlLink`
 
 获取消息的UrlLink, 从消息中提取UrlLink，并封装到UrlLink类中返回
 
@@ -513,13 +513,13 @@ _**已弃用**_
 
 **类型**: [`Message`](message.md#Message)的实例方法 
 
-### Message.find\(\) ⇒ `Optional[Message]`
+### `@classmethod` async def find(cls, talker_id: `Optional[str]` = None, message_id: `Optional[str]` = None, room_id: `Optional[str]` = None, text: `Optional[str]` = None, to_id: `Optional[str]` = None, message_type: `Optional[MessageType]` = None) ⇒ `Optional[Message]`
 
 在缓存中查找消息
 
 **Kind**:  [`Message`](message.md#Message)的静态方法
 
-### Message.findAll\(\) ⇒ `List[Message]`
+### `@classmethod` async def find_all(cls, talker_id: `Optional[str]` = None, message_id: `Optional[str]` = None, room_id: `Optional[str]` = None, text: `Optional[str]` = None, to_id: `Optional[str]` = None, message_type: `Optional[MessageType]` = None) ⇒ `List[Message]`
 
 在缓存中查找消息
 

@@ -13,13 +13,14 @@ title: ContactSelf
 **类型**: 公共类
 
 * [contact_self](contact-self.md#contactself)
-  * [intance](contact-self.md#contactself)
-    * [contact_self.avatar\(\[file\]\) ⇒ `FileBox`](contact-self.md#contactselfavatarfile-⇒-promise)
-    * [contact_self.qrcode\(\) ⇒ `str`](contact-self.md#contactselfqrcode-⇒-promise)
-    * [contact_self.signature\(signature\) ⇒ `Any`](contact-self.md#contactselfsignaturesignature)
-    * [contact_self.name\(\[name\]\) ⇒ `str | None`](contact-self.md#contactselfname-⇒-promisestring)
+  * [实例方法](contact-self.md#contactself)
+    * [contact_self.avatar\(\[file\]\) ⇒ `Optinal[FileBox]`](contact-self.md#contactselfavatarfile-⇒-promise)
+    * [contact_self.qrcode\(\) ⇒ `str`](contact-self.md#contactselfqrcode-⇒-str)
+    * [contact_self.signature\(signature\) ⇒ `None`](contact-self.md#contactselfsignaturesignature)
+    * [contact_self.name\(\) ⇒ `str`](contact-self.md#contactselfname-⇒-str)
+    * [contact_self.set_name\(\[name\]\) ⇒ `None`](contact-self.md#contactselfset_name-⇒-str)
 
-### async def avatar(self, file: `Optional[FileBox]` = None) ⇒ `FileBox`
+### async def avatar(self, file: `Optional[FileBox]` = None) ⇒ `Optinal[FileBox]`
 
 获取/设置 机器人所使用账号的头像
 
@@ -95,7 +96,7 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### async def signature(self, signature: `str`) ⇒ `Any`
+### async def signature(self, signature: `str`) ⇒ `None`
 
 更改机器人账号的签名
 
@@ -126,10 +127,9 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### `@property` def name(self) ⇒ `str`  
-### `@name.setter` def name(self) ⇒ `str`  
+### `@property` def name(self) ⇒ `str`   
 
-获取或者更改机器人的名字
+获取机器人的名字
 
 **类型**: [`ContactSelf`](contact-self.md#contactself)的实例方法
 
@@ -148,10 +148,30 @@ class MyBot(Wechaty):
 
     async def on_login(self, contact: ContactSelf) -> None:
         old_name = contact.name  # 获取Bot账号的名字
-        try:
-            contact.name = f"{old_name}{datetime.now()}"  # 更改Bot账号的名字
-        except Exception as e:
-            print("更改名字失败", e, file=sys.stderr)
+        print(old_name)
 
+asyncio.run(MyBot().start())
+```
+
+### async def set_name(self, name: `str`) -> `None`:
+
+获取机器人的名字
+
+**类型**: [`ContactSelf`](contact-self.md#contactself)的实例方法
+
+```python
+import sys
+import asyncio
+from datetime import datetime
+from wechaty import Wechaty
+from wechaty.user import ContactSelf
+
+
+class MyBot(Wechaty):
+
+    async def on_login(self, contact: ContactSelf) -> None:
+        old_name = contact.name  # 获取Bot账号的名字
+        contact.set_name(f"{old_name}{datetime.now()}")  # 更改Bot账号的名字
+        
 asyncio.run(MyBot().start())
 ```
