@@ -2,93 +2,115 @@
 title: RoomInvitation
 ---
 
-Accept room invitation
+对群聊邀请事件的封装
 
 ## RoomInvitation
 
-accept room invitation
+接受群聊的邀请
 
-**Kind**: global class
+**类型**: 全局类
 
 * [RoomInvitation](room-invitation.md#RoomInvitation)
-  * [.accept\(\)](room-invitation.md#RoomInvitation+accept) ⇒ `Promise <void>`
-  * [.inviter\(\)](room-invitation.md#RoomInvitation+inviter) ⇒ `Promise <Contact>`
-  * [.topic\(\)](room-invitation.md#RoomInvitation+topic) ⇒ `Promise <string>`
-  * [~~.roomTopic\(\)~~](room-invitation.md#RoomInvitation+roomTopic) ⇒ `Promise <string>`
-  * [.date\(\)](room-invitation.md#RoomInvitation+date) ⇒ `Promise <Date>`
-  * [.age\(\)](room-invitation.md#RoomInvitation+age) ⇒ `Promise <number>`
+  * [.accept\(\)](room-invitation.md#RoomInvitation+accept) ⇒ `None`
+  * [.inviter\(\)](room-invitation.md#RoomInvitation+inviter) ⇒ `Contact`
+  * [.topic\(\)](room-invitation.md#RoomInvitation+topic) ⇒ `str`
+  * [~~.roomTopic\(\)~~](room-invitation.md#RoomInvitation+roomTopic) ⇒ `str`
+  * [.date\(\)](room-invitation.md#RoomInvitation+date) ⇒ `datetime`
+  * [.age\(\)](room-invitation.md#RoomInvitation+age) ⇒ `int`
 
-### roomInvitation.accept\(\) ⇒ `Promise <void>`
+### async def accept\(self\) ⇒ `None`
 
-Accept Room Invitation
+接受群聊邀请
 
-**Kind**: instance method of [`RoomInvitation`](room-invitation.md#RoomInvitation)  
+**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
 
-#### Example
+#### 示例
 
-```javascript
-const bot = new Wechaty()
-bot.on('room-invite', async roomInvitation => {
-  try {
-    console.log(`received room-invite event.`)
-    await roomInvitation.accept()
-  } catch (e) {
-    console.error(e)
-  }
-}
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, RoomInvitation
+
+
+class MyBot(Wechaty):
+
+    async def on_room_invite(self, room_invitation: RoomInvitation) -> None:
+        try:
+            print("收到群聊邀请事件")
+            await room_invitation.accept()
+            print("已经自动接受")
+        except Exception as e:
+            print(e)
+
+asyncio.run(MyBot().start())
 ```
 
-### roomInvitation.inviter\(\) ⇒ `Promise <Contact>`
+### async def inviter\(self\) ⇒ `Contact`
 
-Get the inviter from room invitation
+获取群聊邀请的邀请人
 
-**Kind**: instance method of [`RoomInvitation`](room-invitation.md#RoomInvitation)  
+**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
 
-#### Example
+#### 示例
 
-```javascript
-const bot = new Wechaty()
-bot.on('room-invite', async roomInvitation => {
-  const inviter = await roomInvitation.inviter()
-  const name = inviter.name()
-  console.log(`received room invitation event from ${name}`)
-}
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, RoomInvitation
+
+
+class MyBot(Wechaty):
+
+    async def on_room_invite(self, room_invitation: RoomInvitation) -> None:
+        try:
+            print("收到群聊邀请事件")
+            inviter = await room_invitation.inviter()
+            inviter_name = inviter.name
+            print(f"收到来自{inviter_name}的群聊邀请")
+        except Exception as e:
+            print(e)
+
+asyncio.run(MyBot().start())
 ```
 
-### roomInvitation.topic\(\) ⇒ `Promise <string>`
+### async def topic\(self\) ⇒ `str`
 
-Get the room topic from room invitation
+获取群聊邀请的群聊名
 
-**Kind**: instance method of [`RoomInvitation`](room-invitation.md#RoomInvitation)  
+**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
 
-#### Example
+#### 示例
 
-```javascript
-const bot = new Wechaty()
-bot.on('room-invite', async roomInvitation => {
-  const topic = await roomInvitation.topic()
-  console.log(`received room invitation event from room ${topic}`)
-}
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, RoomInvitation
+
+
+class MyBot(Wechaty):
+
+    async def on_room_invite(self, room_invitation: RoomInvitation) -> None:
+        try:
+            room_name = await room_invitation.topic()
+            print(f"收到来自{room_name}的群聊邀请")
+        except Exception as e:
+            print(e)
+
+asyncio.run(MyBot().start())
 ```
 
-### ~~roomInvitation.roomTopic\(\)~~
+### ~~async def roomTopic\(\)~~
 
-**Kind**: instance method of [`RoomInvitation`](room-invitation.md#RoomInvitation)  
-**Deprecated:**: use topic\(\) instead
+**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
+**已弃用:**: 请使用 topic\(\)
 
-### roomInvitation.date\(\) ⇒ `Promise <Date>`
+### async def date\(self\) ⇒ `datetime`
 
-Get the invitation time
+获取群聊邀请的日期
 
-**Kind**: instance method of [`RoomInvitation`](room-invitation.md#RoomInvitation)
+**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
 
-### roomInvitation.age\(\) ⇒ `Promise <number>`
+### async def age\(self\) ⇒ `int`
 
-Returns the roopm invitation age in seconds.
+获取当前距离已接收到的这条群聊邀请的时间的间隔, 单位为秒
 
-For example, the invitation is sent at time `8:43:01`, and when we received it in Wechaty, the time is `8:43:15`, then the age\(\) will return `8:43:15 - 8:43:01 = 14 (seconds)`
+举个例子, 有条群聊邀请是`8:43:01`发送的, 而当我们在Wechaty中接收到它的时候时间已经为 `8:43:15`, 那么这时 `age()`返回的值为 `8:43:15 - 8:43:01 = 14 (秒)`
 
-**Kind**: instance method of [`RoomInvitation`](room-invitation.md#RoomInvitation)
+**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  

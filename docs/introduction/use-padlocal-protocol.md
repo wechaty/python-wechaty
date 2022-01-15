@@ -14,7 +14,7 @@
 
 ### 2.2 PadLocal
 
-当然也有一定的解决方案：商家可以换对应的IP池，通过不定期的购买新的IP来减少消息扎堆的问题。这种方法虽然是缓解了这个问题，可是羊毛出在羊身上，维护成本打了，`TOKEN`肯定就贵了，对于双方来说都不太好。于是社区就基于Pad协议提出了`Local`的概念：[wechaty-puppet-padlocal](https://github.com/wechaty/wechaty-puppet-padlocal).
+当然也有一定的解决方案：商家可以换对应的IP池，通过不定期的购买新的IP来减少消息扎堆的问题。这种方法虽然是缓解了这个问题，可是羊毛出在羊身上，维护成本大了，`TOKEN`肯定就贵了，对于双方来说都不太好。于是社区就基于Pad协议提出了`Local`的概念：[wechaty-puppet-padlocal](https://github.com/wechaty/wechaty-puppet-padlocal).
 
 要使用此协议，必须在本地开启一个Gateway来发送和接受官方服务器发送过来的消息，这样消息的来源和发送目的地都是由开发者自己决定，就类似于电脑的客户端接受和发送消息，这样就极大程度上减小了账号风险系数，这也是协议中`Local`的原因。
 

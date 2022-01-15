@@ -38,7 +38,7 @@ python-wechaty理论上能够对接所有IM平台，目前已经对接微信、�
 
 创建机器人实例：
 
-| Param | Type | Default |
+| 参数 | 类型 | 默认值 |
 | :--- | :--- | :--- |
 | \[options\] | [`WechatyOptions`](wechaty.md#WechatyOptions) | `{}` |
 
@@ -55,26 +55,26 @@ bot.start()
 
 ### wechaty.on\(event, listener\) ⇒ [`Wechaty`](wechaty.md#Wechaty)
 
-When the bot get message, it will emit the following Event.
+当机器人获取到信息, 它会触发下面的事件
 
-You can do anything you want when in these events functions. The main Event name as follows:
+在这些事件函数中，您可以做任何您想做的事情。 主要事件名称如下：
 
-* **scan**: Emit when the bot needs to show you a QR Code for scanning. After scan the qrcode, you can login
-* **login**: Emit when bot login full successful.
-* **logout**: Emit when bot detected log out.
-* **message**: Emit when there's a new message.
+* **scan**: 当机器人需要向您出示二维码来扫码登入的时候触发. 当您扫描二维码之后, 您便可以登入
+* **login**: 当Bot成功登入时触发
+* **logout**: 当机器人探测到账号登出时触发
+* **message**: 当机器人收到新消息的时候触发
 
-see more in [WechatyEventName](wechaty.md#WechatyEventName)
+更多详见[WechatyEventName](wechaty.md#WechatyEventName)
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)  
-**Returns**: [`Wechaty`](wechaty.md#Wechaty) - - this for chaining, see advanced [chaining usage](https://github.com/wechaty/wechaty-getting-started/wiki/FAQ-EN#36-why-wechatyonevent-listener-return-wechaty)
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
+**返回值**: [`Wechaty`](wechaty.md#Wechaty) - - this for chaining, see advanced [chaining usage](https://github.com/wechaty/wechaty-getting-started/wiki/FAQ-EN#36-why-wechatyonevent-listener-return-wechaty)
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| event | [`WechatyEventName`](wechaty.md#WechatyEventName) | Emit WechatyEvent |
-| listener | [`WechatyEventFunction`](wechaty.md#WechatyEventFunction) | Depends on the WechatyEvent |
+| event | [`WechatyEventName`](wechaty.md#WechatyEventName) | 触发wechaty事件(WechatyEvent) |
+| listener | [`WechatyEventFunction`](wechaty.md#WechatyEventFunction) | WechatyEvent绑定的触发函数 |
 
-**Example** _\(Event:scan\)_
+**示例** _\(Event:scan\)_
 
 ```javascript
 // Scan Event will emit when the bot needs to show you a QR Code for scanning
@@ -84,7 +84,7 @@ bot.on('scan', (url, code) => {
 })
 ```
 
-**Example** _\(Event:login \)_
+**示例** _\(Event:login \)_
 
 ```javascript
 // Login Event will emit when bot login full successful.
@@ -94,7 +94,7 @@ bot.on('login', (user) => {
 })
 ```
 
-**Example** _\(Event:logout \)_
+**示例** _\(Event:logout \)_
 
 ```javascript
 // Logout Event will emit when bot detected log out.
@@ -104,7 +104,7 @@ bot.on('logout', (user) => {
 })
 ```
 
-**Example** _\(Event:message \)_
+**示例** _\(Event:message \)_
 
 ```javascript
 // Message Event will emit when there's a new message.
@@ -114,7 +114,7 @@ wechaty.on('message', (message) => {
 })
 ```
 
-**Example** _\(Event:friendship \)_
+**示例** _\(Event:friendship \)_
 
 ```javascript
 // Friendship Event will emit when got a new friend request, or friendship is confirmed.
@@ -134,7 +134,7 @@ bot.on('friendship', async (friendship) => {
 })
 ```
 
-**Example** _\(Event:room-join \)_
+**示例** _\(Event:room-join \)_
 
 ```javascript
 // room-join Event will emit when someone join the room.
@@ -145,7 +145,7 @@ bot.on('room-join', async (room, inviteeList, inviter) => {
 })
 ```
 
-**Example** _\(Event:room-leave \)_
+**示例** _\(Event:room-leave \)_
 
 ```javascript
 // room-leave Event will emit when someone leave the room.
@@ -156,7 +156,7 @@ bot.on('room-leave', async (room, leaverList, remover) => {
 })
 ```
 
-**Example** _\(Event:room-topic \)_
+**示例** _\(Event:room-topic \)_
 
 ```javascript
 // room-topic Event will emit when someone change the room's topic.
@@ -166,7 +166,7 @@ bot.on('room-topic', async (room, topic, oldTopic, changer) => {
 })
 ```
 
-**Example** _\(Event:room-invite, RoomInvitation has been encapsulated as a RoomInvitation Class. \)_
+**示例** _\(Event:room-invite, RoomInvitation 已经封装为一个 RoomInvitation类. \)_
 
 ```javascript
 // room-invite Event will emit when there's an room invitation.
@@ -181,7 +181,7 @@ bot.on('room-invite', async roomInvitation => {
 }
 ```
 
-**Example** _\(Event:error \)_
+**示例** _\(Event:error \)_
 
 ```javascript
 // error Event will emit when there's an error occurred.
@@ -191,50 +191,57 @@ bot.on('error', (error) => {
 })
 ```
 
-### wechaty.start\(\) ⇒ `Promise <void>`
+### wechaty.start\(\) ⇒ `None`
 
-When you start the bot, bot will begin to login, need you wechat scan qrcode to login
+当您启动机器人时，机器人便开始尝试登录，您需要微信扫描二维码登录
 
-> Tips: All the bot operation needs to be triggered after start\(\) is done
+> 提示: 所有的bot操作都需要在start\(\)完成之后才可以触发
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
 
-#### Example
+#### 示例
 
-```javascript
-await bot.start()
-// do other stuff with bot here
+```python
+from wechaty import Wechaty
+import asyncio
+
+async def main():
+    bot = Wechaty()
+    await bot.start()
+
+asyncio.run(main())
 ```
 
-### wechaty.stop\(\) ⇒ `Promise <void>`
+### wechaty.stop\(\) ⇒ `None`
 
-Stop the bot
+停止机器人
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)  
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
 
-#### Example
+#### 示例
 
-```javascript
+```python
 await bot.stop()
 ```
 
-### wechaty.logout\(\) ⇒ `Promise <void>`
+### wechaty.logout\(\) ⇒ `None`
 
-Logout the bot
+让Bot登出微信
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)  
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
 
-#### Example
+#### 示例
 
-```javascript
+```python
 await bot.logout()
 ```
 
-### wechaty.logonoff\(\) ⇒ `boolean`
+### wechaty.logonoff\(\) ⇒ `bool`
 
-Get the logon / logoff state
+获取机器人的登入或者登出的状态, 返回一个布尔值
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)  
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
+**返回值**: 登入状态则返回True, 登出则返回False
 
 #### Example
 
@@ -248,11 +255,11 @@ if (bot.logonoff()) {
 
 ### wechaty.userSelf\(\) ⇒ `ContactSelf`
 
-Get current user
+获取当前用户
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)  
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
 
-#### Example
+#### 示例
 
 ```javascript
 const contact = bot.userSelf()
@@ -261,17 +268,17 @@ console.log(`Bot is ${contact.name()}`)
 
 ### wechaty.say\(textOrContactOrFileOrUrl\) ⇒ `Promise <void>`
 
-Send message to userSelf, in other words, bot send message to itself.
+向 userSelf 发送消息，换句话说，bot 向自己发送消息。
 
-> Tips: This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
+> 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
-**Kind**: instance method of [`Wechaty`](wechaty.md#Wechaty)
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
 
-| Param | Type | Description |
+| 参数 | 类型 | 描述 |
 | :--- | :--- | :--- |
-| textOrContactOrFileOrUrl | `string` \| `Contact` \| `FileBox` \| `UrlLink` | send text, Contact, file or Link to bot. &lt;/br&gt; You can use [FileBox](https://www.npmjs.com/package/file-box) to send file |
+| 文本, 联系人对象, 文件对象, 链接或者小程序对象 | `str` \| [`Contact`](contact.md#Contact) \| `FileBox` \| `UrlLink` \| `MiniProgram` | 发送文本、联系人名片、文件或链接到目标联系人。  您可以使用 [FileBox](https://github.com/wechaty/python-wechaty-puppet/tree/master/src/wechaty_puppet/file_box) 类来发送文件。 |
 
-#### Example
+#### 示例
 
 ```javascript
 const bot = new Wechaty()
@@ -309,25 +316,29 @@ await bot.say(linkPayload)
 
 Get the global instance of Wechaty
 
-**Kind**: static method of [`Wechaty`](wechaty.md#Wechaty)
+**类型**: [`Wechaty`](wechaty.md#Wechaty)的实例方法
 
-| Param | Type | Default |
+| 参数 | 类型 | 默认值 |
 | :--- | :--- | :--- |
 | \[options\] | [`WechatyOptions`](wechaty.md#WechatyOptions) | `{}` |
 
-**Example** _\(The World's Shortest ChatBot Code: 6 lines of JavaScript\)_
+**示例** _\(世界上最短的Python ChatBot：9行代码\)_
 
-```javascript
-const { Wechaty } = require('wechaty')
+```python
+from wechaty import Wechaty
 
-Wechaty.instance() // Global instance
-.on('scan', (url, code) => console.log(`Scan QR Code to login: ${code}\n${url}`))
-.on('login',       user => console.log(`User ${user} logined`))
-.on('message',  message => console.log(`Message: ${message}`))
-.start()
+import asyncio
+async def main():
+    bot = Wechaty()
+    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://wechaty.js.org/qrcode/{}'.format(status, qrcode)))
+    bot.on('login', lambda user: print('User {} logged in'.format(user)))
+    bot.on('message', lambda message: print('Message: {}'.format(message)))
+    await bot.start()
+
+asyncio.run(main())
 ```
 
-## PuppetName
+## Puppet名称
 
 The term [Puppet](https://github.com/wechaty/wechaty/wiki/Puppet) in Wechaty is an Abstract Class for implementing protocol plugins. The plugins are the component that helps Wechaty to control the Wechat\(that's the reason we call it puppet\). The plugins are named PuppetXXX, for example:
 
