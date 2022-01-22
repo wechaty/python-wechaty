@@ -3,7 +3,7 @@ version unit test
 """
 # import pytest   # type: ignore
 
-from .version import VERSION
+from wechaty.version import VERSION
 
 
 def test_version() -> None:

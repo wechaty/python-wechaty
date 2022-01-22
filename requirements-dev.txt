@@ -6,6 +6,7 @@ pylint
 pylint-quotes
 pytest
 pytest-asyncio
+pytest-cov
 pytype>=2021.3.3
 semver
 pyee

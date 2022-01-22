@@ -13,7 +13,7 @@ from typing import (
 )
 import pytest
 
-from .accessory import (
+from wechaty.accessory import (
     Accessory,
 )
 
