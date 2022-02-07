@@ -3,6 +3,7 @@
 ## 一、介绍
 
 python原生支持paimon协议，不需要Token Gateway，简单方便。
+[免费申请7天试用Token](https://wechaty.js.org/docs/puppet-services/paimon)
 
 
 ## 二、连接服务
