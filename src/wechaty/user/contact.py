@@ -35,8 +35,7 @@ from typing import (
     Callable,
 )
 
-from pyee import AsyncIOEventEmitter  # type: ignore
-
+from pyee import AsyncIOEventEmitter
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
 from wechaty.config import PARALLEL_TASK_NUM
 from wechaty.utils.async_helper import gather_with_concurrency

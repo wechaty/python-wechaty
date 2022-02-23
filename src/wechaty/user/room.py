@@ -36,7 +36,7 @@ from typing import (
     TYPE_CHECKING
 )
 import json
-from pyee import AsyncIOEventEmitter  # type: ignore
+from pyee import AsyncIOEventEmitter
 from wechaty.exceptions import WechatyOperationError, WechatyPayloadError
 from wechaty_puppet import (
     FileBox,

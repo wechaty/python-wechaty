@@ -40,7 +40,7 @@ from typing import (
 
 import requests.exceptions
 from grpclib.exceptions import StreamTerminatedError
-from pyee import AsyncIOEventEmitter  # type: ignore
+from pyee import AsyncIOEventEmitter
 
 from wechaty_puppet import (
     Puppet,
@@ -274,7 +274,7 @@ class Wechaty(AsyncIOEventEmitter):
         super().on(event, f)
         return self
 
-    def emit(self, event: str, *args: Any, **kwargs: Any) -> None:
+    def emit(self, event: str, *args: Any, **kwargs: Any) -> bool:
         """
         emit wechaty event
         :param event:
@@ -285,7 +285,7 @@ class Wechaty(AsyncIOEventEmitter):
         log.debug('emit() event <%s> <%s>',
                   [str(item) for item in args],
                   kwargs)
-        super().emit(event, *args, **kwargs)
+        return super().emit(event, *args, **kwargs)
 
     async def on_error(self, payload: EventErrorPayload) -> None:
         """
@@ -735,6 +735,11 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         """
         user_id = self.puppet.self_id()
         user = self.ContactSelf.load(user_id)
+
+        # load ContactSelf instance
+        if not isinstance(user, ContactSelf):
+            user = ContactSelf(user.contact_id)
+
         return user
 
     def self(self) -> ContactSelf:
