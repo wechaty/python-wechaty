@@ -1,6 +1,6 @@
 """ContactSelf"""
-from typing import Any, Optional
-import asyncio
+from __future__ import annotations
+from typing import Any, Optional, Type
 
 from wechaty import FileBox, get_logger
 from wechaty.exceptions import WechatyOperationError
