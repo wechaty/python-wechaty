@@ -29,6 +29,9 @@ from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
+from telnetlib import Telnet
+import socket
+
 from typing import (
     TYPE_CHECKING,
     List,
@@ -66,7 +69,33 @@ if TYPE_CHECKING:
 log: logging.Logger = get_logger(__name__)
 
 
-def _list_routes_txt(app: Quart) -> str:
+def _check_local_port(port: int) -> bool:
+    """
+    check if the local port is in use
+    Args:
+        port (int): port
+
+    Return:
+        return True if the local port is valid, otherwise False
+
+    Examples:
+        >>> assert _check_local_port(5000)
+
+    """
+    # 1. extract host & port
+    tn = Telnet()
+
+    # 2. test host:port with socket
+    res = True
+    try:
+        tn.open('127.0.0.1', port=port, timeout=3)
+    except socket.error:
+        res = False
+
+    return res
+
+
+def _list_routes_txt(app: Quart) -> List[str]:
     """
     refer to: https://gitlab.com/pgjones/quart/-/blob/main/src/quart/cli.py#L283
     Args:
@@ -95,12 +124,12 @@ def _list_routes_txt(app: Quart) -> str:
     # pylint: disable=C0209
     row = "{{0:<{0}}} | {{1:<{1}}} | {{2:<{2}}} | {{3:<{3}}}".format(*widths)
 
-    routes_txt = ''
-    routes_txt += row.format(*headers).strip()
-    routes_txt += row.format(*("-" * width for width in widths))
+    routes_txt: List[str] = []
+    routes_txt.append(row.format(*headers).strip())
+    routes_txt.append(row.format(*("-" * width for width in widths)))
 
     for rule, methods in zip(rules, rule_methods):
-        routes_txt += row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip()
+        routes_txt.append(row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip())
     return routes_txt
 
 
@@ -402,19 +431,29 @@ class WechatyPluginManager:
 
         # pylint: disable=W0212
         host, port = self.endpoint[0], self.endpoint[1]
+        if _check_local_port(port):
+            raise WechatyPluginError(
+                f'local port<{port}> is in use, can"t start plugin server. So please use the another valid port'
+            )
 
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
+        # must add shutdown trigger to receive ctrl+c singal
+        async def shutdown_func():
+            log.info('shutdown trigger info ...........................')
+
         task = self.app.run_task(
             host=host,
-            port=port
+            port=port,
+            shutdown_trigger=shutdown_func
         )
         asyncio.create_task(task)
 
         # 3. list all valid endpoints in web service
         routes_txt = _list_routes_txt(self.app)
-        log.info(routes_txt)
+        for route_txt in routes_txt:
+            log.info(route_txt)
 
         log.info('============================web service has started========================')
 
