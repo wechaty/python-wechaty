@@ -106,7 +106,7 @@ def _list_routes_txt(app: Quart) -> List[str]:
     """
     rules = list(app.url_map.iter_rules())
     if len(rules) == 0:
-        return 'No routes were registered.'
+        return []
 
     rules = list(sorted(rules, key=lambda rule: rule.endpoint))
 
@@ -129,7 +129,9 @@ def _list_routes_txt(app: Quart) -> List[str]:
     routes_txt.append(row.format(*("-" * width for width in widths)))
 
     for rule, methods in zip(rules, rule_methods):
-        routes_txt.append(row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip())
+        routes_txt.append(
+            row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip()
+        )
     return routes_txt
 
 
@@ -433,14 +435,15 @@ class WechatyPluginManager:
         host, port = self.endpoint[0], self.endpoint[1]
         if _check_local_port(port):
             raise WechatyPluginError(
-                f'local port<{port}> is in use, can"t start plugin server. So please use the another valid port'
+                f'local port<{port}> is in use, can"t start plugin server. '
+                'So please use the another valid port'
             )
 
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
         # must add shutdown trigger to receive ctrl+c singal
-        async def shutdown_func():
+        async def shutdown_func() -> None:
             log.info('shutdown trigger info ...........................')
 
         task = self.app.run_task(
