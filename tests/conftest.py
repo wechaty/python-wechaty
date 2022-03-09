@@ -2,6 +2,7 @@ import sys
 from os.path import abspath, dirname, join
 
 from typing import Dict, List, MutableMapping, Optional, Tuple
+from uuid import uuid4
 import pytest
 from wechaty_grpc.wechaty.puppet import MessageType
 from wechaty_puppet.puppet import Puppet
@@ -32,6 +33,8 @@ class FakePuppet(Puppet):
         self.fake_rooms: MutableMapping[str, RoomPayload] = {}
         self.fake_contacts: MutableMapping[str, ContactPayload] = {}
         self.fake_room_members: Dict[Tuple[str, str], RoomMemberPayload] = {}
+
+        self.login_user_id = str(uuid4())
 
     def add_message(self, payload: MessagePayload) -> None:
         """Manually add a message that can be looked up later"""
@@ -78,6 +81,8 @@ class FakePuppet(Puppet):
     async def contact_payload(self, contact_id: str) -> ContactPayload:
         return self.fake_contacts[contact_id]
 
+    def self_id(self) -> str:
+        return self.login_user_id 
 
 @pytest.fixture
 async def test_bot() -> Wechaty:
