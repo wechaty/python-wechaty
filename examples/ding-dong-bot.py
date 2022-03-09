@@ -22,7 +22,7 @@ async def message(msg: Message) -> None:
     from_contact = msg.talker()
     text = msg.text()
     room = msg.room()
-    if text == '#ding':
+    if text == 'ding':
         conversation: Union[
             Room, Contact] = from_contact if room is None else room
         await conversation.ready()
