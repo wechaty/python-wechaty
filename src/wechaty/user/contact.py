@@ -458,7 +458,8 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         check if it's the self account
         """
-        return self.wechaty.contact_id == self.contact_id
+        login_user = self.wechaty.user_self()
+        return login_user.contact_id == self.contact_id
 
     def weixin(self) -> Optional[str]:
         """

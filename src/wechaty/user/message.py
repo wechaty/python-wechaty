@@ -39,6 +39,7 @@ from wechaty_puppet import (
 )
 
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
+from wechaty.user.contact_self import ContactSelf
 from wechaty.utils import timestamp_to_date
 
 from ..accessory import Accessory
@@ -366,11 +367,11 @@ class Message(Accessory[MessagePayload]):
         Check if a message is sent by self
         :return:
         """
-        user_id = self.wechaty.contact_id
+        login_user: ContactSelf = self.wechaty.user_self()
         talker = self.talker()
         if talker is None:
             return False
-        return talker.contact_id == user_id
+        return talker.contact_id == login_user.contact_id
 
     async def mention_list(self) -> List[Contact]:
         """
@@ -438,7 +439,7 @@ class Message(Accessory[MessagePayload]):
         Check if a message is mention self.
         :return:
         """
-        self_id = self.wechaty.contact_id
+        user_self: ContactSelf = self.wechaty.user_self()
 
         # check and ready for message payload
         await self.ready()
@@ -446,7 +447,7 @@ class Message(Accessory[MessagePayload]):
         # check by mention_ids not mention_list
         if self.payload is None or self.payload.mention_ids is None:
             return False
-        return self_id in self.payload.mention_ids
+        return user_self.contact_id in self.payload.mention_ids
 
     async def ready(self) -> None:
         """

@@ -1,10 +1,11 @@
 """ContactSelf"""
+
 from __future__ import annotations
 from typing import Any, Optional, Type
 
 from wechaty import FileBox, get_logger
 from wechaty.exceptions import WechatyOperationError
-from .contact import Contact
+from wechaty.user.contact import Contact
 
 log = get_logger('ContactSelf')
 
@@ -12,21 +13,27 @@ log = get_logger('ContactSelf')
 class ContactSelf(Contact):
     """ContactSelf"""
 
-    async def avatar(self, file: Optional[FileBox] = None) -> FileBox:
-        """
+    async def avatar(self, file_box: Optional[FileBox] = None) -> FileBox:
+        """get avatar of ContactSelf
 
-        :param file:
-        :return:
+        Args:
+            file_box (Optional[FileBox], optional): i. Defaults to None.
+
+        Raises:
+            WechatyOperationError: _description_
+
+        Returns:
+            FileBox: _description_
         """
-        log.info('avatar(%s)' % file.name if file else '')
-        if not file:
+        log.info('avatar(%s)' % file_box.name if file_box else '')
+        if not file_box:
             file_box = await super().avatar(None)
             return file_box
 
         if self.contact_id != self.puppet.self_id():
             raise WechatyOperationError('set avatar only available for user self')
 
-        await self.puppet.contact_avatar(self.contact_id, file)
+        await self.puppet.contact_avatar(self.contact_id, file_box)
 
     async def qr_code(self) -> str:
         """

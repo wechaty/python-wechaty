@@ -45,6 +45,8 @@ from wechaty_puppet import (
     RoomPayload,
     get_logger
 )
+
+from wechaty.user.contact_self import ContactSelf
 # from wechaty.utils import type_check
 from ..accessory import Accessory
 from ..config import AT_SEPARATOR, PARALLEL_TASK_NUM
@@ -413,6 +415,7 @@ class Room(Accessory[RoomPayload]):
         log.info('Room topic (%s)', new_topic)
 
         await self.ready()
+        login_user: ContactSelf = self.wechaty.user_self()
 
         if new_topic is None:
             if self.payload is not None and self.payload.topic is not None:
@@ -424,7 +427,7 @@ class Room(Accessory[RoomPayload]):
             # filter member_ids
             member_ids = [member_id for member_id in
                           room_member_ids
-                          if member_id != self.wechaty.contact_id]
+                          if member_id != login_user.contact_id]
 
             members: List[Contact] = [
                 self.wechaty.Contact.load(member_id)

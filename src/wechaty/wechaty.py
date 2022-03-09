@@ -35,7 +35,8 @@ from typing import (
     Optional,
     Type,
     List,
-    Union
+    Union,
+    cast
 )
 
 import requests.exceptions
@@ -735,11 +736,8 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         """
         user_id = self.puppet.self_id()
         user = self.ContactSelf.load(user_id)
-
-        # load ContactSelf instance
-        if not isinstance(user, ContactSelf):
-            user = ContactSelf(user.contact_id)
-
+        # cast Contact -> ContactSelf
+        user = cast(ContactSelf, user)
         return user
 
     def self(self) -> ContactSelf:
