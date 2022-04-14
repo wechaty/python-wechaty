@@ -34,7 +34,6 @@ from typing import (
     Union,
     Callable,
 )
-from loguru import logger
 
 from pyee import AsyncIOEventEmitter
 from wechaty_puppet import (
@@ -430,11 +429,11 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             Optional[bool]: if the contact is friend, return True, otherwise return False
         """
         if not self.payload:
-            logger.warning('please call `ready()` before `is_friend()`')
+            log.warning('please call `ready()` before `is_friend()`')
             return False
 
         if not hasattr(self.payload, 'friend'):
-            logger.warning('contact payload has no friend property, please post an issue to describe this problem, thanks!')
+            log.warning('contact payload has no friend property, please post an issue to describe this problem, thanks!')
             return False
         return self.payload.friend
 
