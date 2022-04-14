@@ -34,21 +34,22 @@ from typing import (
     Union,
     Callable,
 )
+from loguru import logger
 
 from pyee import AsyncIOEventEmitter
-from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
-from wechaty.config import PARALLEL_TASK_NUM
-from wechaty.utils.async_helper import gather_with_concurrency
 from wechaty_puppet import (
     ContactGender,
     ContactPayload,
     ContactQueryFilter,
     ContactType,
-
     get_logger,
     FileBox
 )
+
 # from wechaty.utils import type_check
+from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
+from wechaty.config import PARALLEL_TASK_NUM
+from wechaty.utils.async_helper import gather_with_concurrency
 
 from ..accessory import Accessory
 
@@ -59,6 +60,8 @@ if TYPE_CHECKING:
     from .message import Message
     # pytype: disable=pyi-error
     from .url_link import UrlLink
+    from .mini_program import MiniProgram
+    
 
 log = get_logger('Contact')
 
@@ -71,34 +74,56 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     _pool: Dict[str, 'Contact'] = {}
 
     def __init__(self, contact_id: str):
-        """
-        initialization
+        """init Contact object with id which will not be cached,
+            so we suggest that you use load method to get a cached contact object
+
+        Examples:
+            >>> contact = bot.Contact(contact_id)
+            >>> # but the following method is suggested
+            >>> contact = bot.Contact.load(contact_id)
+
+        Args:
+            contact_id (str): the union identifier of contact
         """
         super().__init__()
         self.contact_id: str = contact_id
         self.payload: Optional[ContactPayload] = None
 
     def get_id(self) -> str:
-        """
-        get contact_id
-        :return:
+        """get the contact_id
+
+        Examples:
+            >>> contact_id = contact.get_id()
+
+        Returns:
+            str: the contact_id
         """
         return self.contact_id
 
     @classmethod
     def load(cls: Type[Contact], contact_id: str) -> Contact:
-        """
-        load contact by contact_id
-        :param contact_id:
-        :return: created contact instance
-        """
-        # create new contact and set to pool
+        """load contact object, if it's not cached, create a new one and cache it.
 
+        If you load it manually, you should call `ready()` to load the full info from puppet.
+
+        Examples:
+            >>> contact = bot.Contact.load(contact_id)
+            >>> await contact.ready()
+            >>> is_friend = contact.is_friend()
+
+        Args:
+            cls (Type[Contact]): the type of Contact
+            contact_id (str): the union identifier of contact
+
+        Returns:
+            Contact: the contact object
+        """
+        # 1. check if it's cached
         if contact_id in cls._pool:
             return cls._pool[contact_id]
 
-        # create new contact object
-        new_contact = cls(contact_id)  # , *args, **kwargs)
+        # 2. create new contact object
+        new_contact = cls(contact_id)
         cls._pool[contact_id] = new_contact
         return new_contact
 
@@ -238,11 +263,18 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return contacts
 
     async def ready(self, force_sync: bool = False) -> None:
-        """
-        load contact object from puppet
-        :return:
-        """
+        """make contact ready for use which will load contact payload info.
 
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> await await contact.ready()
+
+        Args:
+            force_sync (bool, optional): if true, it will re-fetch the data although it exist. Defaults to False.
+
+        Raises:
+            WechatyPayloadError: when payload can"t be loaded
+        """
         if force_sync or not self.is_ready():
             try:
                 self.payload = await self.puppet.contact_payload(
@@ -272,11 +304,25 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             identity = 'loading ...'
         return 'Contact <%s> <%s>' % (self.contact_id, identity)
 
-    async def say(self, message: Union[str, Message, FileBox, Contact, UrlLink]
+    async def say(self, message: Union[str, Message, FileBox, Contact, UrlLink, MiniProgram]
                   ) -> Optional[Message]:
-        """
-        say something
-        :param message: message content
+        """say something to contact, which can be text, image, file, contact, url
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> await contact.say('hello')
+            >>> await contact.say(FileBox.from_file('/path/to/file'))
+            >>> await contact.say(contact)
+            >>> await contact.say(UrlLink('https://wechaty.js.org'))
+
+            >>> # the data format of mini program should pre-stored
+            >>> await contact.say(MiniProgram('username', 'appid'))
+
+        Args:
+            message (Union[str, Message, FileBox, Contact, UrlLink, MiniProgram]): the message object to be sended to contact
+
+        Returns:
+            Optional[Message]: if the message is send successfully, return the message object, otherwise return None 
         """
         if not message:
             log.error('can"t say nothing')
@@ -286,7 +332,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             await self.ready()
 
         # import some class because circular dependency
-        from wechaty.user.url_link import UrlLink
+        from wechaty.user.url_link import UrlLink   # pylint: disable=import-outside-toplevel
 
         if isinstance(message, str):
             # say text
@@ -310,11 +356,13 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             # use this way to resolve circulation dependency import
             msg_id = await self.puppet.message_send_url(
                 conversation_id=self.contact_id,
-                url=json.dumps(dataclasses.asdict(message.payload))
+                url=json.dumps(dataclasses.asdict(message.payload), ensure_ascii=False)
             )
-        # elif isinstance(message, MiniProgram):
-        #     msg_id = await self.puppet.message_send_mini_program(
-        #         self.contact_id, message.payload)
+        elif isinstance(message, MiniProgram):
+            msg_id = await self.puppet.message_send_mini_program(
+                conversation_id=self.contact_id,
+                mini_program=message.payload
+            )
 
         else:
             log.info('unsupported tags %s', message)
@@ -329,8 +377,10 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
     @property
     def name(self) -> str:
-        """
-        get contact name
+        """get name of contact
+
+        Returns:
+            str: name of contact, if the payload is None, return empty string
         """
         if not self.payload:
             return ''
@@ -339,8 +389,15 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     async def alias(self,
                     new_alias: Optional[str] = None
                     ) -> Union[None, str]:
-        """
-        get/set alias
+        """get or set alias of contact.
+            If new_alias is given, it will set alias to new_alias,
+            otherwise return current alias
+
+        Args:
+            new_alias (Optional[str], optional): the new alias of contact. Defaults to None.
+
+        Returns:
+            Union[None, str]: the current alias of contact
         """
         log.info('Contact alias <%s>', new_alias)
         if not self.is_ready():
@@ -363,84 +420,121 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return None
 
     def is_friend(self) -> Optional[bool]:
-        """
-        Check if contact is friend
+        """check if the contact is friend
 
-        False for not friend of the bot, null for unknown.
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> is_friend = contact.is_friend()
+
+        Returns:
+            Optional[bool]: if the contact is friend, return True, otherwise return False
         """
-        if not self.payload or not self.payload.friend:
-            return None
-        return self.payload.friends
+        if not self.payload:
+            logger.warning('please call `ready()` before `is_friend()`')
+            return False
+
+        if not hasattr(self.payload, 'friend'):
+            logger.warning('contact payload has no friend property, please post an issue to describe this problem, thanks!')
+            return False
+        return self.payload.friend
 
     def is_offical(self) -> bool:
-        """
-        Check if it's a offical account
-        :params:
-        :return:
+        """check if the contact is offical account
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> is_offical = contact.is_offical()
+
+        Returns:
+            bool: if the contact is offical account, return True, otherwise return False
         """
         if self.payload is None:
             return False
         return self.payload.type == ContactType.CONTACT_TYPE_OFFICIAL
 
     def is_personal(self) -> bool:
-        """
-        Check if it's a personal account
+        """check if the contact is personal account
+
+        Returns:
+            bool: if the contact is personal account, return True, otherwise return False
         """
         if self.payload is None:
             return False
         return self.payload.type == ContactType.CONTACT_TYPE_PERSONAL
 
     def type(self) -> ContactType:
-        """
-        get contact type
+        """get type of contact, which can person, official, corporation, and unspecified.
+
+        Returns:
+            ContactType: the type of contact.
         """
         if self.payload is None:
             raise WechatyPayloadError('contact payload not found')
         return self.payload.type
 
     def star(self) -> Optional[bool]:
-        """
-        check if it's a star account
+        """check if the contact is a stared contact
+
+        Returns:
+            Optional[bool]: if the contact is a stared contact, return True, otherwise return False.
         """
         if self.payload is None:
             return None
         return self.payload.star
 
     def gender(self) -> ContactGender:
-        """
-        get contact gender info
+        """return the gender of contact
+
+        Returns:
+            ContactGender: the object of contact gender
         """
         if self.payload is not None:
             return self.payload.gender
         return ContactGender.CONTACT_GENDER_UNSPECIFIED
 
     def province(self) -> Optional[str]:
-        """
-        get the province of the account
+        """get the province of contact
+
+        Returns:
+            Optional[str]: the province info in contact public info
         """
         if self.payload is None:
             return None
         return self.payload.province
 
     def city(self) -> Optional[str]:
-        """
-        get the city of the account
+        """get the city of contact
+
+        Returns:
+            Optional[str]: the city info in contact public info
         """
         if self.payload is None:
             return None
         return self.payload.city
 
     async def avatar(self, file_box: Optional[FileBox] = None) -> FileBox:
-        """
-        get the avatar of the account
+        """get or set the avatar of contact, which is a FileBox object
+
+        Args:
+            file_box (Optional[FileBox], optional): If given, it will set it as new avatar,
+                else get the current avatar. Defaults to None.
+
+        Returns:
+            FileBox: the avatar of contact
         """
         avatar = await self.puppet.contact_avatar(
             contact_id=self.contact_id, file_box=file_box)
         return avatar
 
     async def tags(self) -> List[Tag]:
-        """
-        Get all tags of contact
+        """get the tags of contact which is a list of Tag object
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> tags = await contact.tags()
+
+        Returns:
+            List[Tag]: the tags of contact
         """
         log.info('load contact tags for %s', self)
         tag_ids = await self.puppet.tag_contact_list(self.contact_id)
@@ -449,21 +543,29 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return tags
 
     async def sync(self) -> None:
-        """
-        sync the contact data
+        """sync the contact info, this method will be deprecated in future,
+            so we suggest use `ready()` instead
         """
         await self.ready()
 
     def is_self(self) -> bool:
-        """
-        check if it's the self account
+        """check if the contact is self
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> is_self = contact.is_self()
+
+        Returns:
+            bool: if the contact is self, return True, otherwise return False
         """
         login_user = self.wechaty.user_self()
         return login_user.contact_id == self.contact_id
 
     def weixin(self) -> Optional[str]:
-        """
-        Get the weixin number from a contact.
+        """get the weixin union identifier of contact, which is specific for wechat account.
+
+        Returns:
+            Optional[str]: the weixin union identifier of contact
         """
         if self.payload is None:
             return None
