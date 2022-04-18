@@ -442,16 +442,13 @@ class WechatyPluginManager:
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
-        # must add shutdown trigger to receive ctrl+c singal
-        async def shutdown_func() -> None:
-            log.info('shutdown trigger info ...........................')
-
         task = self.app.run_task(
             host=host,
             port=port,
-            shutdown_trigger=shutdown_func
+            use_reloader=False
         )
-        asyncio.create_task(task)
+        loop = asyncio.get_event_loop()
+        loop.create_task(task)
 
         # 3. list all valid endpoints in web service
         routes_txt = _list_routes_txt(self.app)
