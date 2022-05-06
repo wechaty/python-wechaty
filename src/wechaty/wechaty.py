@@ -69,6 +69,7 @@ from wechaty_puppet.schemas.puppet import PUPPET_EVENT_DICT, PuppetOptions
 from wechaty_puppet.state_switch import StateSwitch
 
 from wechaty.user.url_link import UrlLink
+from wechaty.utils.async_helper import SingleIdContainer
 
 from .utils import (
     qr_terminal
@@ -519,6 +520,10 @@ I suggest that you should follow the template code from: https://wechaty.readthe
 
             elif event_name == 'message':
                 async def message_listener(payload: EventMessagePayload) -> None:
+                    # sometimes, it will receive the specific message with two/three times
+                    if SingleIdContainer.instance().exist(payload.message_id):
+                        return
+
                     log.debug('receive <message> event <%s>', payload)
                     msg = self.Message.load(payload.message_id)
                     await msg.ready()
