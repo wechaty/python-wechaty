@@ -156,11 +156,12 @@ await bot.start()
 # 等待机器人登入
 room = await bot.Room.find("event-room") # 把`event-room`改为您在微信中加入的任意群聊的群聊名称
 
-async def on_leave(leaver_list, remover):
-    log.info('Bot' + 'Room EVENT: leave - "%s" leave(remover "%s"), bye bye' % (','.join(leaver_list), remover or 'unknown'))
+async def on_join(invitees, inviter):
+    log.info('Bot' + 'EVENT: room-join - Room "%s" got new member "%s", invited by "%s"' %
+                 (await room.topic(), ','.join(map(lambda c: c.name, invitees)), inviter.name))
 
 if room:
-    room.on('leave', on_leave)
+    room.on('join', on_join)
 ```
 
 #### 示例 _\(Event:leave \)_
