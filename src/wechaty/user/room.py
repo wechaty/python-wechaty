@@ -390,7 +390,7 @@ class Room(Accessory[RoomPayload]):
 
     async def delete(self, contact: Contact) -> None:
         """
-        delete room
+        Delete contact in a room
         """
         log.info('Room delete<%s>', contact)
 
@@ -402,7 +402,7 @@ class Room(Accessory[RoomPayload]):
 
     async def quit(self) -> None:
         """
-        Add contact in a room
+        Robot quit a room
         """
         log.info('Room quit <%s>', self)
 
