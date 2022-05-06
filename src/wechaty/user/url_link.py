@@ -7,9 +7,11 @@ from typing import (
     Optional,
     Type
 )
-import requests
-from lxml import etree
 from wechaty_puppet import UrlLinkPayload, get_logger
+
+from wechaty.utils.link import get_url_metadata
+
+
 
 log = get_logger('UrlLink')
 
@@ -32,31 +34,23 @@ class UrlLink:
     @classmethod
     def create(
         cls: Type[UrlLink],
-        url: str, title: Optional[str], thumbnail_url: Optional[str], description: Optional[str]
+        url: str,
+        title: Optional[str] = None,
+        thumbnail_url: Optional[str] = None,
+        description: Optional[str] = None
     ) -> UrlLink:
         """
         create urllink from url string
         """
         log.info('create url_link for %s', url)
-        html = etree.HTML(requests.get(url).text)
-        if not title:
-            title = html.xpath('//meta[@property="og:title"]/@content')
-            assert title is not None
-            title = title[0] if len(title) else url
-        if not thumbnail_url:
-            thumbnail_url = html.xpath('//meta[@property="og:image"]/@content')
-            assert thumbnail_url is not None
-            thumbnail_url = thumbnail_url[0] if len(thumbnail_url) else ""
-        if not description:
-            description = html.xpath('//meta[@property="og:description"]/@content')
-            assert description is not None
-            description = description[0] if len(description) else ""
-        payload = UrlLinkPayload(
-            title=title,
-            url=url,
-            thumbnailUrl=thumbnail_url,
-            description=description
-        )
+
+        metadata = get_url_metadata(url)
+
+        payload = UrlLinkPayload()
+        payload.title = title or metadata.get('title', None)
+        payload.thumbnailUrl = thumbnail_url or metadata.get('image', None)
+        payload.description = description or metadata.get('description', None)
+        payload.url = url
         return UrlLink(payload)
 
     def __str__(self) -> str:
@@ -72,9 +66,7 @@ class UrlLink:
         get UrlLink title
         :return:
         """
-        if self.payload.title is None:
-            return ''
-        return self.payload.title
+        return self.payload.title or ''
 
     @property
     def thumbnailUrl(self) -> str:
@@ -82,9 +74,7 @@ class UrlLink:
         get thumbnail url
         :return:
         """
-        if self.payload.thumbnailUrl is None:
-            return ''
-        return self.payload.thumbnailUrl
+        return self.payload.thumbnailUrl or ''
 
     @property
     def description(self) -> str:
@@ -92,9 +82,7 @@ class UrlLink:
         get description
         :return:
         """
-        if self.payload.description is None:
-            return ''
-        return self.payload.description
+        return self.payload.description or ''
 
     @property
     def url(self) -> str:
@@ -102,6 +90,4 @@ class UrlLink:
         get url
         :return:
         """
-        if self.payload.url is None:
-            return ''
-        return self.payload.url
+        return self.payload.url or ''

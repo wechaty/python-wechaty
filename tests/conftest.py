@@ -1,3 +1,4 @@
+from collections import defaultdict
 import sys
 from os.path import abspath, dirname, join
 
@@ -7,7 +8,6 @@ import pytest
 from wechaty_grpc.wechaty.puppet import MessageType
 from wechaty_puppet.puppet import Puppet
 from wechaty_puppet.schemas.message import MessageQueryFilter
-from wechaty_puppet.schemas.room import RoomQueryFilter
 from wechaty_puppet.schemas.types import (
     MessagePayload,
     RoomPayload,
@@ -32,7 +32,7 @@ class FakePuppet(Puppet):
         self.fake_messages: MutableMapping[str, MessagePayload] = {}
         self.fake_rooms: MutableMapping[str, RoomPayload] = {}
         self.fake_contacts: MutableMapping[str, ContactPayload] = {}
-        self.fake_room_members: Dict[Tuple[str, str], RoomMemberPayload] = {}
+        self.fake_room_members: Dict[str, List[RoomMemberPayload]] = defaultdict(list)
 
         self.login_user_id = str(uuid4())
 
@@ -51,7 +51,7 @@ class FakePuppet(Puppet):
 
     def add_room_member(self, room_id: str, payload: RoomMemberPayload) -> None:
         """Manually add a room member that can be looked up later"""
-        self.fake_room_members[(room_id, payload.id)] = payload
+        self.fake_room_members[room_id].append(payload)
 
     async def message_search(self, query: Optional[MessageQueryFilter] = None) -> List[str]:
         return [query.id]
@@ -60,12 +60,8 @@ class FakePuppet(Puppet):
         return self.fake_rooms[query.id] if query else self.fake_rooms.keys()
 
     async def room_members(self, room_id: str) -> List[str]:
-        return [
-            room_member
-            for (key, room_member) in self.fake_room_members.items()
-            if key[0] == room_id
-        ]
-
+        return [member.id for member in self.fake_room_members[room_id]]
+        
     async def message_payload(self, message_id: str) -> MessagePayload:
         print(f"Finding {message_id}")
         return self.fake_messages[message_id]
@@ -73,7 +69,10 @@ class FakePuppet(Puppet):
     async def room_member_payload(
         self, room_id: str, contact_id: str
     ) -> Optional[RoomMemberPayload]:
-        return self.fake_room_members.get((room_id, contact_id))
+        for member in self.fake_room_members[room_id]:
+            if member.id == contact_id:
+                return member
+        return None
 
     async def room_payload(self, room_id: str) -> RoomPayload:
         return self.fake_rooms[room_id]
