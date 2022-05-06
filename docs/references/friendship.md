@@ -34,30 +34,32 @@ title: Friendship
 
 #### 示例
 
-```javascript
-const bot = new Wechaty()
-bot.on('friendship', async friendship => {
-  try {
-    console.log(`received friend event.`)
-    switch (friendship.type()) {
+```python
+import asyncio
+from wechaty import Wechaty, Friendship
 
-    // 1. New Friend Request
 
-    case bot.Friendship.Type.Receive:
-      await friendship.accept()
-      break
+class MyBot(Wechaty):
 
-    // 2. Friend Ship Confirmed
+    async on_friendship(self, friendship: Friendship) -> None:
+        contact = friendship.contact()
+        await contact.ready()
 
-    case bot.Friendship.Type.Confirm:
-      console.log(`friend ship confirmed`)
-      break
-    }
-  } catch (e) {
-    console.error(e)
-  }
-})
-.start()
+        if friendship.type() == FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
+            log_msg = 'accepted automatically'
+            await friendship.accept()
+            # if want to send msg, you need to delay sometimes
+
+            print('waiting to send message ...')
+            await asyncio.sleep(3)
+            await contact.say('hello from wechaty ...')
+            print('after accept ...')
+        elif friendship.type() == FriendshipType.FRIENDSHIP_TYPE_CONFIRM:
+            log_msg = 'friend ship confirmed with ' + contact.name
+
+        print(log_msg)
+
+asyncio.run(MyBot().start())
 ```
 
 ### friendship.hello\(\) ⇒ `str`
@@ -70,19 +72,28 @@ Get verify message from
 
 _\(If request content is \`ding\`, then accept the friendship\)_
 
-```javascript
-const bot = new Wechaty()
-bot.on('friendship', async friendship => {
-  try {
-    console.log(`received friend event from ${friendship.contact().name()}`)
-    if (friendship.type() === bot.Friendship.Type.Receive && friendship.hello() === 'ding') {
-      await friendship.accept()
-    }
-  } catch (e) {
-    console.error(e)
-  }
-}
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, Friendship
+
+
+class MyBot(Wechaty):
+
+    async on_friendship(self, friendship: Friendship) -> None:
+        contact = friendship.contact()
+        await contact.ready()
+
+        if friendship.type() == FriendshipType.FRIENDSHIP_TYPE_RECEIVE and friendship.hello() == 'ding':
+            log_msg = 'accepted automatically because verify messsage is "ding"'
+            await friendship.accept()
+            # if want to send msg, you need to delay sometimes
+
+            print('waiting to send message ...')
+            await asyncio.sleep(3)
+            await contact.say('hello from wechaty ...')
+            print('after accept ...')
+
+asyncio.run(MyBot().start())
 ```
 
 ### friendship.contact\(\) ⇒ `Contact`
@@ -93,14 +104,21 @@ bot.on('friendship', async friendship => {
 
 #### 示例
 
-```javascript
-const bot = new Wechaty()
-bot.on('friendship', friendship => {
-  const contact = friendship.contact()
-  const name = contact.name()
-  console.log(`received friend event from ${name}`)
-}
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, Friendship
+
+
+class MyBot(Wechaty):
+
+    async on_friendship(self, friendship: Friendship) -> None:
+        contact = friendship.contact()
+        await contact.ready()
+        log_msg = f'receive "friendship" message from {contact.name}'
+        print(log_msg)
+
+
+asyncio.run(MyBot().start())
 ```
 
 ### friendship.type\(\) ⇒ `FriendshipType`
@@ -118,18 +136,28 @@ bot.on('friendship', friendship => {
 
 **示例** _\(If request content is \`ding\`, then accept the friendship\)_
 
-```javascript
-const bot = new Wechaty()
-bot.on('friendship', async friendship => {
-  try {
-    if (friendship.type() === bot.Friendship.Type.Receive && friendship.hello() === 'ding') {
-      await friendship.accept()
-    }
-  } catch (e) {
-    console.error(e)
-  }
-}
-.start()
+```python
+import asyncio
+from wechaty import Wechaty, Friendship
+
+
+class MyBot(Wechaty):
+
+    async on_friendship(self, friendship: Friendship) -> None:
+        contact = friendship.contact()
+        await contact.ready()
+
+        if friendship.type() == FriendshipType.FRIENDSHIP_TYPE_RECEIVE and friendship.hello() == 'ding':
+            log_msg = 'accepted automatically because verify messsage is "ding"'
+            await friendship.accept()
+            # if want to send msg, you need to delay sometimes
+
+            print('waiting to send message ...')
+            await asyncio.sleep(3)
+            await contact.say('hello from wechaty ...')
+            print('after accept ...')
+
+asyncio.run(MyBot().start())
 ```
 
 ### ~~Friendship.send\(\)~~
@@ -155,9 +183,9 @@ The best practice is to send friend request once per minute. Remeber not to do t
 
 #### Example
 
-```javascript
-const memberList = await room.memberList()
-for (let i = 0; i < memberList.length; i++) {
-  await bot.Friendship.add(member, 'Nice to meet you! I am wechaty bot!')
-}
+```python
+memberList = await room.memberList()
+for member in memberList:
+    await bot.Friendship.add(member, 'Nice to meet you! I am wechaty bot!')
+
 ```
