@@ -51,11 +51,11 @@ curl https://api.chatie.io/v0/hosties/$WECHATY_TOKEN (个人随机token)
 ```shell
 #1  默认配置
 export WECHATY_PUPPET="wechaty-puppet-service"
-export WECHATY_PUPPET_SERVICE_TOKEN="puppet_padlocal_XXXXXX"
+export WECHATY_PUPPET_SERVICE_TOKEN="1fe5f846-3cfb-401d-b20c-XXXXX"
 
 #2  主机是部署在内网服务器上
 export WECHATY_PUPPET="wechaty-puppet-service"
-export WECHATY_PUPPET_SERVICE_TOKEN="puppet_padlocal_XXXXXX"
+export WECHATY_PUPPET_SERVICE_TOKEN="1fe5f846-3cfb-401d-b20c-XXXXX"
 export WECHATY_PUPPET_SERVICE_ENDPOINT="192.168.1.56:9001"
 ```
 
@@ -68,7 +68,7 @@ git clone https://github.com/wj-Mcat/python-wechaty-getting-started
 cd python-wechaty-getting-started
 
 export WECHATY_PUPPET="wechaty-puppet-service"
-export WECHATY_PUPPET_SERVICE_TOKEN="puppet_padlocal_XXXXXX"
+export WECHATY_PUPPET_SERVICE_TOKEN="1fe5f846-3cfb-401d-b20c-XXXXX"
 
 python examples/ding-dong-bot.py
 ```
