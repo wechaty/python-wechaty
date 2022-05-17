@@ -42,6 +42,7 @@ from typing import (
     cast, Tuple
 )
 from quart import Quart
+from quart_cors import cors
 
 from wechaty_puppet import (
     get_logger,
@@ -318,7 +319,8 @@ class WechatyPluginManager:
         # supported now.
         self._dependency_tree: PluginTree = defaultdict()
 
-        self.app: Quart = Quart('Wechaty Server')
+        self.app: Quart= cors(Quart('Wechaty Server', static_folder=None))
+
         self.dependency_tree: PluginTree = defaultdict()
         self.endpoint: Tuple[str, int] = endpoint
 

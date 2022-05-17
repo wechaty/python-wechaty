@@ -2,6 +2,7 @@ import asyncio
 import pytest
 from wechaty.utils.async_helper import gather_with_concurrency
 from wechaty.utils.link import fetch_github_user_avatar_url, get_url_metadata
+from wechaty.utils.async_helper import SingleIdContainer
 
 
 async def number_task(num: int):
@@ -29,3 +30,13 @@ def test_fetch_github_user_avatar():
     avatar = fetch_github_user_avatar_url('wj-Mcat')
     assert avatar is not None
     assert 'avatars.githubusercontent.com' in avatar
+
+
+def test_single_id_container():
+    assert not SingleIdContainer.instance().exist('-1')
+    assert SingleIdContainer.instance().exist('-1')
+
+    for index in range(SingleIdContainer.instance().max_size):
+        assert not SingleIdContainer.instance().exist(index)
+    
+    assert len(SingleIdContainer.instance().ids) == 0

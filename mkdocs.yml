@@ -54,3 +54,5 @@ google_analytics:
 
 plugins:
     - search
+    - mkdocstrings
+    
