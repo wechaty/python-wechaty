@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 import re
 from abc import ABCMeta
 from collections import defaultdict, OrderedDict
@@ -190,6 +191,16 @@ class WechatyPlugin(metaclass=ABCMeta):
             self.options.name = self.__class__.__name__
 
         return self.options.name
+    
+    def cache_dir(self) -> str:
+        """
+        cache dir for plugin
+
+        this is friendly for code typing
+        """
+        _cache_dir = os.path.join('.wechaty', self.name)
+        os.makedirs(_cache_dir, exist_ok=True)
+        return _cache_dir
 
     @staticmethod
     def get_dependency_plugins() -> List[str]:
