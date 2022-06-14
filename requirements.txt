@@ -2,7 +2,7 @@ pyee
 requests
 qrcode
 lxml
-wechaty-puppet>=0.4.12
+wechaty-puppet>=0.4.19
 wechaty-puppet-service>=0.8.9
 quart
 opengraph_py3
