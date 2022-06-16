@@ -18,3 +18,5 @@ pre-commit
 mkdocs
 mkdocs-material
 types-requests
+mkdocstrings
+mkdocstrings-python-legacy
