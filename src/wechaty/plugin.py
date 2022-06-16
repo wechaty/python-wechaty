@@ -191,7 +191,7 @@ class WechatyPlugin(metaclass=ABCMeta):
             self.options.name = self.__class__.__name__
 
         return self.options.name
-    
+
     def cache_dir(self) -> str:
         """
         cache dir for plugin
@@ -330,7 +330,7 @@ class WechatyPluginManager:
         # supported now.
         self._dependency_tree: PluginTree = defaultdict()
 
-        self.app: Quart= cors(Quart('Wechaty Server', static_folder=None))
+        self.app: Quart = cors(Quart('Wechaty Server', static_folder=None))
 
         self.dependency_tree: PluginTree = defaultdict()
         self.endpoint: Tuple[str, int] = endpoint
