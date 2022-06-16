@@ -62,3 +62,5 @@ pysilk.decode_file(open("brainpower.pcm", "rb"), to_wav=False)
 # 根据文本生成音频文件
 
 此过程推荐使用[paddlespeech](https://github.com/PaddlePaddle/PaddleSpeech/tree/develop/demos/streaming_tts_server)直接**根据文本生成wav音频文件**，然后使用`pysilk`转化成可发送的目标音频文件。
+
+给大家推荐一个宝藏Repo： [PaddleSpeechDemo](https://github.com/iftaken/PaddleSpeechDemo)，此作者为届时PaddleSpeech PM，目前处于开发阶段，以后也会持续更新，有需求的小伙伴可以持续关注。
