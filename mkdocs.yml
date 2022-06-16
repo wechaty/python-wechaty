@@ -15,6 +15,7 @@ nav:
     - 开箱即用:
       - '如何添加好友': 'how-to/add-friendship.md'
       - '关键字入群': 'how-to/create-room-inviter.md'
+      - '发送语音': 'how-to/send-voice.md'
     - 插件系统:
       - '介绍': 'plugins/introduction.md'
       - '关键字入群插件': 'plugins/keywords.md'
