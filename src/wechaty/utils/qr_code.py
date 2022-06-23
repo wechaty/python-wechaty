@@ -8,35 +8,18 @@ import qrcode
 
 
 def qr_terminal(data: str, version: Any = None) -> None:
-    """
-    create qr_code
-    :param data: qrcode data
-    :param version:1-40 or None
-    :return:
-    """
-    if platform.system() == 'Windows':
-        white_block = '▇'
-        black_block = '  '
-        new_line = '\n'
-    else:
-        white_block = '\033[0;37;47m  '
-        black_block = '\033[0;37;40m  '
-        new_line = '\033[0m\n'
+    """print the qrcode to the terminal using the python-qrcode tools
 
-    qr = qrcode.QRCode(version)
+    https://github.com/lincolnloop/python-qrcode
+
+    Args:
+        data (str): the data of the qrcode
+        version (Any, optional): the qrcode version. Defaults to None.
+    """
+    qr = qrcode.QRCode(version, border=2)
     qr.add_data(data)
     if version:
         qr.make()
     else:
         qr.make(fit=True)
-    output = white_block * (qr.modules_count + 2) + new_line
-    for mn in qr.modules:
-        output += white_block
-        for m in mn:
-            if m:
-                output += black_block
-            else:
-                output += white_block
-        output += white_block + new_line
-    output += white_block * (qr.modules_count + 2) + new_line
-    print(output)
+    qr.print_ascii()
