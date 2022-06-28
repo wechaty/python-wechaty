@@ -16,7 +16,7 @@ ignore_missing_imports = true
 # refer to: https://docs.pytest.org/en/stable/mark.html
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov-report term-missing --cov-report xml --cov=src/"
+# addopts = "--cov-report term-missing --cov-report xml --cov=src/"
 testpaths = [
     "tests",
 ]

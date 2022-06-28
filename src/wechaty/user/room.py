@@ -268,7 +268,7 @@ class Room(Accessory[RoomPayload]):
 
         return 'Room <%s - %s>' % (self.room_id, self.payload.topic)
 
-    async def ready(self, force_sync: bool = False) -> None:
+    async def ready(self, force_sync: bool = False, load_members: bool = False) -> None:
         """
         Please not to use `ready()` at the user land.
         """
@@ -286,6 +286,9 @@ class Room(Accessory[RoomPayload]):
 
         if self.payload is None:
             raise WechatyPayloadError('Room Payload can"t be ready')
+
+        if not load_members:
+            return
 
         member_ids = await self.puppet.room_members(self.room_id)
 
