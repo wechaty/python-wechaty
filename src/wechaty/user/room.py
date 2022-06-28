@@ -137,7 +137,7 @@ class Room(Accessory[RoomPayload]):
                 payload = room.payload
                 if not payload:
                     return False
-                if query == payload.id or query in payload.topic:
+                if query == payload.id or (query.lower() in payload.topic.lower()):
                     return True
                 return False
             func = filter_func
@@ -149,7 +149,7 @@ class Room(Accessory[RoomPayload]):
                 if not payload:
                     return False
 
-                if query.id == payload.id or query.topic in payload.topic:
+                if query.id == payload.id or (query.topic.lower() in payload.topic.lower()):
                     return True
                 return False
             func = filter_func
