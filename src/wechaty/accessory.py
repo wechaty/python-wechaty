@@ -27,6 +27,7 @@ from typing import (
     Optional,
     TypeVar,
     Generic,
+    Type
 )
 
 from wechaty_puppet import (
@@ -45,6 +46,9 @@ log = get_logger('Accessory')
 PayloadType = TypeVar('PayloadType')
 
 
+SubAccessory = TypeVar('SubAccessory')
+
+
 class Accessory(Generic[PayloadType]):
     """
     Translate the function from TypeScript to Python
@@ -53,11 +57,28 @@ class Accessory(Generic[PayloadType]):
 
     _puppet: Optional[Puppet] = None
     _wechaty: Optional[Wechaty] = None
+    
+    @classmethod
+    def cloned_class(cls: Type[SubAccessory], wechaty: Wechaty) -> Type[SubAccessory]:
+        """clone the class which have different static property
 
-    abstract: bool = True
+        Args:
+            cls (Type[SubAccessory]): the sub class of Accessory, eg: Room, Contact, and so on 
+
+        Returns:
+            Type[SubAccessory]: New Class of sub class
+        """
+        class Sub(cls):
+            __wechaty__ = 'python-wechaty'
+            __class__ = cls
+            __name__ = cls.__name__
+
+        Sub.set_puppet(wechaty.puppet)
+        Sub.set_wechaty(wechaty)
+        return Sub
 
     def __init__(self) -> None:
-        if self.abstract:
+        if getattr(self, '__wechaty__', None) is None:
             raise WechatyAccessoryBindingError(
                 'Do not instantiate class {cls} directly, sse with bot.{cls} instead. '
                 'See https://github.com/wechaty/wechaty/issues/1217'.format(

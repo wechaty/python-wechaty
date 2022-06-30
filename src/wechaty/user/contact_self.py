@@ -13,32 +13,6 @@ log = get_logger('ContactSelf')
 class ContactSelf(Contact):
     """ContactSelf"""
 
-    async def avatar(self, file_box: Optional[FileBox] = None) -> FileBox:
-        """get avatar of ContactSelf
-
-        Args:
-            file_box (Optional[FileBox], optional): i. Defaults to None.
-
-        Examples:
-            >>> contact_self = bot.contact_self()
-            >>> file_box = await contact_self.avatar()
-
-        Raises:
-            WechatyOperationError: _description_
-
-        Returns:
-            FileBox: _description_
-        """
-        log.info('avatar(%s)' % file_box.name if file_box else '')
-        if not file_box:
-            file_box = await super().avatar(None)
-            return file_box
-
-        if self.contact_id != self.puppet.self_id():
-            raise WechatyOperationError('set avatar only available for user self')
-
-        await self.puppet.contact_avatar(self.contact_id, file_box)
-
     async def qr_code(self) -> str:
         """return the qrcode of ContactSelf
 
@@ -60,20 +34,6 @@ class ContactSelf(Contact):
             raise WechatyOperationError('only can get qr_code for the login user self')
         qr_code_value = await self.puppet.contact_self_qr_code()
         return qr_code_value
-
-    @property
-    def name(self) -> str:
-        """
-        get the name of login contact
-
-        Examples:
-            >>> contact_self = bot.contact_self()
-            >>> name = contact_self.name
-
-        Returns:
-            the name of Login User
-        """
-        return super().name
 
     async def set_name(self, name: str) -> None:
         """

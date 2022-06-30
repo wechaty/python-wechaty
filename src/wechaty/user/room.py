@@ -69,7 +69,7 @@ class Room(Accessory[RoomPayload]):
 
     def __init__(self, room_id: str) -> None:
         """docs"""
-        super().__init__()
+        super(Room, self).__init__()
 
         self.room_id = room_id
 

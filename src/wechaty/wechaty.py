@@ -42,6 +42,7 @@ from typing import (
 import requests.exceptions
 from grpclib.exceptions import StreamTerminatedError
 from pyee import AsyncIOEventEmitter
+import urllib3
 
 from wechaty_puppet import (
     Puppet,
@@ -710,18 +711,17 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         self._puppet = self._load_puppet(self._options)
 
         # Using metaclass to create a dynamic subclass to server multi bot instances.
-        meta_info = dict(_puppet=self.puppet, _wechaty=self, abstract=False)
-        self.Contact = type('Contact', (Contact,), meta_info)
-        self.ContactSelf = type('ContactSelf', (ContactSelf,), meta_info)
-        self.Favorite = type('Favorite', (Favorite,), meta_info)
-        self.Friendship = type('Friendship', (Friendship,), meta_info)
-        self.Image = type('Image', (Image,), meta_info)
-        self.Message = type('Message', (Message,), meta_info)
-        self.MiniProgram = type('MiniProgram', (MiniProgram,), meta_info)
-        self.UrlLink = type('UrlLink', (UrlLink,), meta_info)
-        self.Room = type('Room', (Room,), meta_info)
-        self.RoomInvitation = type('RoomInvitation', (RoomInvitation,), meta_info)
-        self.Tag = type('Tag', (Tag,), meta_info)
+        self.Contact: Contact = Contact.cloned_class(self.puppet)
+        self.ContactSelf: ContactSelf = ContactSelf.cloned_class(self.puppet) 
+        self.Favorite: Favorite = Favorite
+        self.Friendship: Friendship = Friendship.cloned_class(self.puppet)
+        self.Image: Image = Image.cloned_class(self.puppet)
+        self.Message: Message = Message.cloned_class(self.puppet)
+        self.MiniProgram = MiniProgram.cloned_class(self.puppet)
+        self.UrlLink = UrlLink
+        self.Room = Room.cloned_class(self.puppet)
+        self.RoomInvitation = RoomInvitation.cloned_class(self.puppet)
+        self.Tag = Tag.cloned_class(self.puppet)
 
     async def stop(self) -> None:
         """
