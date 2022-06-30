@@ -451,6 +451,12 @@ class WechatyPluginManager:
                 f'local port<{port}> is in use, can"t start plugin server. '
                 'So please use the another valid port'
             )
+        # 3. list all valid endpoints in web service
+        # checking the number of registered blueprints
+        routes_txt = _list_routes_txt(self.app)
+        if len(routes_txt) == 0:
+            log.warning('there is not registed blueprint in the plugins, so bot will not start the web service')
+            return
 
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
@@ -463,8 +469,6 @@ class WechatyPluginManager:
         loop = asyncio.get_event_loop()
         loop.create_task(task)
 
-        # 3. list all valid endpoints in web service
-        routes_txt = _list_routes_txt(self.app)
         for route_txt in routes_txt:
             log.info(route_txt)
 
