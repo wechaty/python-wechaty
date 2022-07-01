@@ -455,7 +455,9 @@ class WechatyPluginManager:
         # checking the number of registered blueprints
         routes_txt = _list_routes_txt(self.app)
         if len(routes_txt) == 0:
-            log.warning('there is not registed blueprint in the plugins, so bot will not start the web service')
+            log.warning(
+                'there is not registed blueprint in the plugins, so bot will not start the web service'
+            )
             return
 
         log.info('============================starting web service========================')
