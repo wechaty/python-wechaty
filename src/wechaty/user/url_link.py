@@ -46,11 +46,11 @@ class UrlLink:
 
         metadata = get_url_metadata(url)
 
-        payload = UrlLinkPayload()
+        payload = UrlLinkPayload(url=url)
+     
         payload.title = title or metadata.get('title', None)
         payload.thumbnailUrl = thumbnail_url or metadata.get('image', None)
         payload.description = description or metadata.get('description', None)
-        payload.url = url
         return UrlLink(payload)
 
     def __str__(self) -> str:
