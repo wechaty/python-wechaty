@@ -59,8 +59,29 @@ pysilk.encode_file(open("mopemope.pcm", "rb"), 24000)
 pysilk.decode_file(open("brainpower.pcm", "rb"), to_wav=False)
 ```
 
+# silk文件转成 pcm & wav
+
+silk语音文件编解码过程可以使用[pilk](https://github.com/foyoux/pilk)，编解码也非常方便
+
+
+```python
+import pilk
+def silk2pcm(input_silk, out_pcm, pcm_rate = 24000):
+    duration = pilk.decode(input_silk, out_pcm, pcm_rate=pcm_rate)
+    return duration, out_pcm
+```
+
+将silk文件转成pcm后，可以直接读取pcm数据也可以使用ffmpeg将其转换成wav文件，这里推荐使用ffmpeg
+
+```python
+import os
+def pcm2wav(input_pcm, out_wav, sr):
+    cmd = f"ffmpeg -y -f s16le -ar {sr} -ac 1 -i {input_pcm} {out_wav}"
+    os.system(cmd)
+```
+
 # 根据文本生成音频文件
 
 此过程推荐使用[paddlespeech](https://github.com/PaddlePaddle/PaddleSpeech/tree/develop/demos/streaming_tts_server)直接**根据文本生成wav音频文件**，然后使用`pysilk`转化成可发送的目标音频文件。
 
-给大家推荐一个宝藏Repo： [PaddleSpeechDemo](https://github.com/iftaken/PaddleSpeechDemo)，此作者为届时PaddleSpeech PM，目前处于开发阶段，以后也会持续更新，有需求的小伙伴可以持续关注。
+给大家推荐一个宝藏Repo： [PaddleSpeechDemo](https://github.com/PaddlePaddle/PaddleSpeech/tree/develop/demos/speech_web)，此作者为届时PaddleSpeech PM，目前处于开发阶段，以后也会持续更新，有需求的小伙伴可以持续关注。
