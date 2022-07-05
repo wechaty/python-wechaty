@@ -53,6 +53,6 @@ asyncio.run(MyBot().start())
 
 ## 快速上手
 
-- [使用padlocal协议](./use-padlocal-protocol.md)
-- [使用web协议](./use-web-protocol.md)
-- [使用Paimon协议](./use-paimon-protocol.md)
+- [使用padlocal协议](./use_padlocal_getting_started.md)
+- [使用web协议](./use_web_getting_started.md)
+- [使用Paimon协议](./use_paimon_getting_started.md)

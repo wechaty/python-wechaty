@@ -1,34 +1,8 @@
----
-title: "插件系统"
-author: wj-mcat
-categories: tutorial
-tags:
-  - news
-  - python
-image: /img/plugin.png
----
-
-## 插件系统
-
-插件系统提供了模块化的管理，能够让不同业务的代码隔离开，特别是针对于复杂的业务。
-
-在处理不同业务时，通常选择将指定业务封装成一个插件，wechaty社区也欢迎大家贡献自己的插件，从而快速实现某些简单功能。
-
-### 一、插件列表
-
-- [关键字入群插件](/plugins/keywords/)
-- [自动回复插件](/plugins/auto-reply)
-- [任务调度插件](/plugins/auto-reply)
-- [群消息同步插件](/plugins/message-forward.md)
-- [Rasa Rest Connector](/plugins/rasa)
-- [Github Webhook插件](/plugins/github-webhook)
-- [Gitlab Webhook插件](/plugins/gitlab-webhook)
-
-### 二、Finder
+### 一、Finder
 
 插件中的部分业务功能通常是只针对于指定群聊或联系人，于是如何检索到指定对象，就成为开发的第一个问题。在此，我给大家介绍Finder，一个用于检索群聊，联系人的功能模块。
 
-#### 2.1 Contact Finder
+#### 1.1 Contact Finder
 
 有很多种方式筛选联系人，比如最常见的通过`contact_id`、`contact name/alias`、`callback_func`等方法。使用方法如下所示：
 
@@ -66,7 +40,7 @@ async def contact_finders(bot: Wechaty) -> List[Contact]:
     return contacts
 ```
 
-#### 2.2 Room Finder
+#### 1.2 Room Finder
 
 ```python
 from __future__ import annotations
@@ -99,11 +73,10 @@ async def room_finders(bot: Wechaty) -> List[Room]:
     return rooms
 ```
 
-### 三、Matcher
+### 二、Matcher
 
-### 3.1 Contact Matcher
+### 2.1 Contact Matcher
 
-### 3.2 Room Matcher
+### 2.2 Room Matcher
 
-### 3.3 Message Matcher
-
+### 2.3 Message Matcher

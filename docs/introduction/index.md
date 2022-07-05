@@ -39,7 +39,7 @@ import os
 os.environ['WECHATY_PUPPET_SERVICE_TOKEN'] = 'your-token'
 ```
 
-那如何获取长期Token呢？详细请看：[Everything-about-Wechaty](https://github.com/juzibot/Welcome/wiki/Everything-about-Wechaty)
+那如何获取长期Token呢？详细请看：[Everything-about-Wechaty](https://github.com/juzibot/Welcome/wiki/Everything-about-Wech aty)
 
 ### 3. 编写最简单的机器人代码
 

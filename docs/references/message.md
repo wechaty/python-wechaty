@@ -1,14 +1,27 @@
 ---
 title: Message
 ---
+<!-- ::: wechaty.user.message.Message.talker
+    handlers: python
+    selection:
+      members: 
+        - __init__
+        - to
+        - talker
+    rendering:
+      show_root_heading: yes
+      show_root_full_path: false
+      members_order: source
+      heading_level: 1 -->
 
-消息处理对象。
 
-## Message
+<!-- 消息处理对象。 -->
 
-接受和发送的消息都封装成`Message`对象。
+## ::: wechaty.user.message.Message
 
-[示例/Ding-Dong-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/ding-dong-bot.py)
+<!-- 接受和发送的消息都封装成`Message`对象。 -->
+
+<!-- [示例/Ding-Dong-Bot](https://github.com/wechaty/python-wechaty-getting-started/blob/master/examples/ding-dong-bot.py)
 
 **类型**: 全局对象
 
@@ -39,14 +52,14 @@ title: Message
     * [.recall\(\)](contact.md#Message+recall) ⇒ `bool`
   * _静态方法_
     * [.find\(\)](message.md#Message.find) ⇒ `Optional[Message]`
-    * [.find_all\(\)](message.md#Message.findAll) ⇒ `List[Message]`
+    * [.find_all\(\)](message.md#Message.findAll) ⇒ `List[Message]` -->
     
 
-### ~~def from\(self\)~~ ⇒ `Contact`
+<!-- ### ~~def from\(self\)~~ ⇒ `Contact`
 
-已弃用, 详见[message.talker\(\)](message.md#Message+talker)
+已弃用, 详见[message.talker\(\)](message.md#Message+talker) -->
 
-### def talker\(self\) ⇒ `Contact`
+<!-- ### def talker\(self\) ⇒ `Contact`
 
 获取消息的发送者。
 
@@ -92,9 +105,8 @@ class MyBot(Wechaty):
 
 
 asyncio.run(MyBot().start())
-```
-
-### def room\(self\) ⇒ `Optional[Room]`
+``` -->
+<!-- ### def room\(self\) ⇒ `Optional[Room]`
 
 获取消息来自的群聊. 如果消息不是来自群聊, 则返回None
 
@@ -523,4 +535,4 @@ _**已弃用**_
 
 在缓存中查找消息
 
-**类型**: [`Message`](message.md#Message)的静态方法
+**类型**: [`Message`](message.md#Message)的静态方法 -->

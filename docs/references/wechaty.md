@@ -28,6 +28,8 @@ python-wechaty理论上能够对接所有IM平台，目前已经对接微信、�
 * [wechaty-puppet-teams](https://github.com/wechaty/wechaty-puppet-dingtalk): 微软Teams协议
 * ......
 
+### ::: wechaty.Wechaty.__init__
+
 
 ## 二、Wechaty 模块详解
 
@@ -52,6 +54,8 @@ bot.on('login',   user => console.log(`User ${user} logined`))
 bot.on('message', message => console.log(`Message: ${message}`))
 bot.start()
 ```
+
+
 
 ### wechaty.on\(event, listener\) ⇒ [`Wechaty`](wechaty.md#Wechaty)
 
