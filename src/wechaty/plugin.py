@@ -591,7 +591,7 @@ class WechatyPluginManager:
             # there must be four arguments: room, leavers, remover, date
             if not args or len(args) != 4:
                 raise WechatyPluginError(
-                    f'the plugin args of room-join is invalid, the source args:'
+                    f'the plugin args of room-leave is invalid, the source args:'
                     f'<{args}>, but expected args is room, invitees, inviter, '
                     f'date')
 
