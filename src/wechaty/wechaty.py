@@ -629,7 +629,7 @@ I suggest that you should follow the template code from: https://wechaty.readthe
 
                     # emit the room-leave event to plugins
                     await self._plugin_manager.emit_events(
-                        'room-leave', leavers, remover, date
+                        'room-leave', room, leavers, remover, date
                     )
 
                 puppet.on('room-leave', room_leave_listener)
