@@ -2,7 +2,6 @@
 """
 qr_code helper utils
 """
-import platform
 from typing import Any
 import qrcode
 
@@ -22,4 +21,4 @@ def qr_terminal(data: str, version: Any = None) -> None:
         qr.make()
     else:
         qr.make(fit=True)
-    qr.print_ascii()
+    qr.print_ascii(invert=True)
