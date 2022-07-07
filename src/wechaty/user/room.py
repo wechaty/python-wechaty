@@ -331,6 +331,7 @@ class Room(Accessory[RoomPayload]):
                     await mention_contact.ready()
                     alias = await mention_contact.alias()
                     name = mention_contact.name
+                    logger.info('name:%s, alias:%s',name,alias)
                     mention_info.append('@' + (alias or name))
 
                 mention_text = AT_SEPARATOR.join(mention_info)
