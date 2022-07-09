@@ -12,7 +12,16 @@
 [![PyPI](https://github.com/wechaty/python-wechaty/actions/workflows/pypi.yml/badge.svg)](https://github.com/wechaty/python-wechaty/actions/workflows/pypi.yml)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/wechaty?color=blue)
 
-[📄 Chinese Document](https://wechaty.readthedocs.io/zh_CN/latest/)
+[📄 Chinese Document](https://wechaty.readthedocs.io/zh_CN/latest/)  [python-wechaty-template](https://github.com/wechaty/python-wechaty-template)
+
+## Getting Started
+
+* [Python Wechaty Quick Start Project Template](https://github.com/wechaty/python-wechaty-template)
+* [Padlocal机器人](https://wechaty.readthedocs.io/zh_CN/latest/introduction/use-padlocal-protocol/)
+* 钉钉机器人
+* 微信公众号机器人
+* 飞书机器人
+* ...
 
 ## Connecting Chatbots
 
