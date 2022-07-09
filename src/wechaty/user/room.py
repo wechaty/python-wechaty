@@ -329,9 +329,8 @@ class Room(Accessory[RoomPayload]):
                 for mention_id in mention_ids:
                     mention_contact: Contact = self.wechaty.Contact.load(mention_id)
                     await mention_contact.ready()
-                    alias = await mention_contact.alias()
                     name = mention_contact.name
-                    mention_info.append('@' + (alias or name))
+                    mention_info.append('@' + name)
 
                 mention_text = AT_SEPARATOR.join(mention_info)
                 some_thing = mention_text + ' ' + some_thing
