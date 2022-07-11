@@ -84,16 +84,20 @@ google_analytics:
 plugins:
   - search
   - mkdocstrings:
+      default_handler: python
       handlers:
         python:
-          selection:
+          options:
             filters:
               - "!^_"  # exlude all members starting with _
               - "^__init__$"  # but always include __init__ modules and methods
-          rendering:
-            show_root_heading: yes
+            show_root_heading: no
+            show_root_toc_entry: no
             show_root_full_path: false
+            show_source: no
+            show_bases: no
             members_order: source
             heading_level: 2
-      watch:
-        - ./src
+            docstring_options:
+watch:
+  - ./src

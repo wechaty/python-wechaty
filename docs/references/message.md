@@ -16,8 +16,67 @@ title: Message
 
 
 <!-- 消息处理对象。 -->
+# say
+<!-- ## async def say(self, msg: `Union[str, Contact, FileBox, UrlLink, MiniProgram]`, mention_ids: `Optional[List[str]]` = None)  ⇒ `Optional[Message]` -->
+向联系人或群聊发送一段文字, 名片, 媒体文件或者链接.
 
-## ::: wechaty.user.message.Message
+> 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wikiPuppet#3-puppet-compatible-table)
+
+### 参数 
+::: wechaty.user.message.Message.say
+### 示例代码:
+```python
+import asyncio
+from wechaty import Wechaty, Message
+from wechaty import Wechaty, Contact, FileBox, UrlLink
+class MyBot(Wechaty):
+
+    async def on_message(self, msg: Message) -> None:
+        text = msg.text()
+        # 1. 发送文字到联系人
+        if text == "叮":
+            await msg.say('咚')
+            return
+        # 2. 发送媒体文件到联系人
+        if text == "媒体":
+            file_box1 = FileBox.from_url('https://wechaty.github.io/wechaty/images/bot-qr-code.png', "bot-qr-code.png")
+            file_box2 = FileBox.from_file('text.txt', "text.txt")
+            await msg.say(file_box1)
+            await msg.say(file_box2)
+            return
+        # 3. 发送名片到联系人
+        if text == "名片":
+            contact_card = self.Contact.load('lijiarui')  # 把`lijiarui`更改为您在微信中的任意联系人的姓名
+            await msg.say(contact_card)
+            return
+        # 4. 发送链接到联系人
+        if text == "链接":
+            url_link = UrlLink.create(
+                description='WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love',
+                thumbnail_url='https://avatars0.githubusercontent.com/u/25162437?s=200&v=4',
+                title='Welcome to Wechaty',
+                url='https://github.com/wechaty/wechaty',
+            )
+            await msg.say(url_link)
+            return
+        # 5. 发送小程序 (暂时只有`wechaty-puppet-macpro`支持该服务)
+        if text == "小程序":
+            miniProgram = self.MiniProgram.create_from_json({
+                "appid": 'gh_0aa444a25adc',
+                "title": '我正在使用Authing认证身份，你也来试试吧',
+                "pagePath": 'routes/explore.html',
+                "description": '身份管家',
+                "thumbUrl": '30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400',
+                "thumbKey": '42f8609e62817ae45cf7d8fefb532e83',
+            })
+            await msg.say(miniProgram)
+            return
+asyncio.run(MyBot().start())
+```
+
+
+# talker
+## ::: wechaty.user.message.Message.talker
 
 <!-- 接受和发送的消息都封装成`Message`对象。 -->
 

@@ -89,14 +89,14 @@ class Message(Accessory[MessagePayload]):
     def message_type(self) -> MessageType:
         """
         get the message type
-        for more details, please refer to : https://github.com/wechaty/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
+        Notes:
+            for more details, please refer to : https://github.com/wechaty/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
         """
         return self.payload.type
 
     def __str__(self) -> str:
         """
         format string for message, which keep consistant with wechaty/wechaty
-
         refer to : https://github.com/wechaty/wechaty/blob/master/src/user/message.ts#L195
         """
         if not self.is_ready():
@@ -124,11 +124,6 @@ class Message(Accessory[MessagePayload]):
         If this message is from room, so you can send message to this room.
 
         If this message is from contact, so you can send message to this contact, not to room.
-
-        向联系人或群聊发送一段文字, 名片, 媒体文件或者链接.
-
-        > 注意: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
-
         Args:
             msg: the message object which can be type of str/Contact/FileBox/UrlLink/MiniProgram
             mention_ids: you can send message with `@person`, the only things you should do is to
@@ -139,55 +134,6 @@ class Message(Accessory[MessagePayload]):
             >>> message.say(FileBox('file_path'))
             >>> message.say(UrlLink('url'))
             >>> message.say(MiniProgram('app_id'))
-
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message
-            from wechaty import Wechaty, Contact, FileBox, UrlLink
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    text = msg.text()
-                    # 1. 发送文字到联系人
-                    if text == "叮":
-                        await msg.say('咚')
-                        return
-                    # 2. 发送媒体文件到联系人
-                    if text == "媒体":
-                        file_box1 = FileBox.from_url('https://wechaty.github.io/wechaty/images/bot-qr-code.png', "bot-qr-code.png")
-                        file_box2 = FileBox.from_file('text.txt', "text.txt")
-                        await msg.say(file_box1)
-                        await msg.say(file_box2)
-                        return
-                    # 3. 发送名片到联系人
-                    if text == "名片":
-                        contact_card = self.Contact.load('lijiarui')  # 把`lijiarui`更改为您在微信中的任意联系人的姓名
-                        await msg.say(contact_card)
-                        return
-                    # 4. 发送链接到联系人
-                    if text == "链接":
-                        url_link = UrlLink.create(
-                            description='WeChat Bot SDK for Individual Account, Powered by TypeScript, Docker, and Love',
-                            thumbnail_url='https://avatars0.githubusercontent.com/u/25162437?s=200&v=4',
-                            title='Welcome to Wechaty',
-                            url='https://github.com/wechaty/wechaty',
-                        )
-                        await msg.say(url_link)
-                        return
-                    # 5. 发送小程序 (暂时只有`wechaty-puppet-macpro`支持该服务)
-                    if text == "小程序":
-                        miniProgram = self.MiniProgram.create_from_json({
-                            "appid": 'gh_0aa444a25adc',
-                            "title": '我正在使用Authing认证身份，你也来试试吧',
-                            "pagePath": 'routes/explore.html',
-                            "description": '身份管家',
-                            "thumbUrl": '30590201000452305002010002041092541302033d0af802040b30feb602045df0c2c5042b777875706c6f61645f31373533353339353230344063686174726f6f6d3131355f313537363035393538390204010400030201000400',
-                            "thumbKey": '42f8609e62817ae45cf7d8fefb532e83',
-                        })
-                        await msg.say(miniProgram)
-                        return
-            asyncio.run(MyBot().start())
-            ```
         Returns:
             Optional[Message]: if the message is sent successfully, return the message object.
         """
