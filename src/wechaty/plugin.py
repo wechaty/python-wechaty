@@ -21,7 +21,7 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
-import logging
+from logging import Logger
 import os
 import re
 from abc import ABCMeta
@@ -68,7 +68,7 @@ if TYPE_CHECKING:
         Contact,
         Message,
     )
-log: logging.Logger = get_logger(__name__)
+log: Logger = get_logger(__name__)
 
 
 def _check_local_port(port: int) -> bool:
@@ -165,6 +165,8 @@ class WechatyPlugin(metaclass=ABCMeta):
             options = WechatyPluginOptions()
         self.options = options
 
+        self._default_logger: Optional[Logger] = None
+
     def set_bot(self, bot: Wechaty) -> None:
         """set bot instance to WechatyPlugin
 
@@ -192,6 +194,7 @@ class WechatyPlugin(metaclass=ABCMeta):
 
         return self.options.name
 
+    @property
     def cache_dir(self) -> str:
         """
         cache dir for plugin
@@ -201,6 +204,42 @@ class WechatyPlugin(metaclass=ABCMeta):
         _cache_dir = os.path.join('.wechaty', self.name)
         os.makedirs(_cache_dir, exist_ok=True)
         return _cache_dir
+
+    @property
+    def logger(self) -> Logger:
+        """get the default logger of plugin which will automaticly
+        log info into the plugin cache dir
+
+        Returns:
+            Logger: Instance of Logger
+
+        Examples:
+            ding_dong_plugin = DingDongPlugin()
+            ding_dong_plugin.logger.info('log info ...')
+        """
+        if self._default_logger:
+            return self._default_logger
+
+        self._default_logger = get_logger(
+            self.name,
+            file=os.path.join(self.cache_dir, 'log.log')
+        )
+        assert self._default_logger is not None, 'can not set default logger'
+
+        return self._default_logger
+
+    def set_logger(self, logger: Logger) -> None:
+        """if you want to change the behavior of logger, all of you need is to set a new logger
+
+        Args:
+            logger (Logger): the new instance of logger
+        """
+        if self._default_logger:
+            self._default_logger.warning(
+                'there is already a logger in the plugin, but you set a new logger.'
+                'Anyway, do all things  you like.'
+            )
+        self._default_logger = logger
 
     @staticmethod
     def get_dependency_plugins() -> List[str]:
