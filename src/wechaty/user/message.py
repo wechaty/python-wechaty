@@ -205,7 +205,8 @@ class Message(Accessory[MessagePayload]):
             text (Optional[str], optional): you can search message by sub-string of the text.
             to_id (Optional[str], optional): the id of receiver.
             message_type (Optional[MessageType], optional): the type of the message
-
+        Examples:
+            >>> message = Message.find(message_id='message_id')
         Returns:
             Optional[Message]: if find the messages, return the first of it.
                                if can't find message, return None
@@ -247,7 +248,8 @@ class Message(Accessory[MessagePayload]):
             text (Optional[str], optional): you can search message by sub-string of the text.
             to_id (Optional[str], optional): the id of receiver.
             message_type (Optional[MessageType], optional): the type of the message
-
+        Examples:
+            >>> message = Message.find_all(message_id='message_id')
         Returns:
             List[Message]: return all of the searched messages
         """
@@ -268,23 +270,12 @@ class Message(Accessory[MessagePayload]):
 
     def talker(self) -> Contact:
         """get the talker of the message
-
-        获取消息的发送者。
         Args:
             None
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    print(msg.talker())
-            asyncio.run(MyBot().start())
-            ```
+            >>> message.talker()
         Raises:
             WechatyPayloadError: can't find the talker information from the payload
-
         Returns:
             Contact: the talker contact object
         """
@@ -295,27 +286,10 @@ class Message(Accessory[MessagePayload]):
 
     def to(self) -> Optional[Contact]:
         """get the receiver, which is the Contact type, of the message
-
-        获取消息的接收者, 如果消息是在群聊发出的Message.to()会返回None, 请使用 Message.room() 获取群聊对象。
         Args:
             None
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message, Contact
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    talker: Contact = msg.talker()
-                    text: str = msg.text()
-                    to_contact = msg.to()
-                    if to_contact:
-                        name = to_contact.name
-                        print(f"接收者: {name} 联系人: {talker.name} 内容: {text}")
-                    else:
-                        print(f"联系人: {talker.name} 内容: {text}")
-            asyncio.run(MyBot().start())
-            ```
+            >>> message.to()
         Returns:
             Optional[Contact]: if the message is private to contact, return the contact object
                 else return None
@@ -327,30 +301,10 @@ class Message(Accessory[MessagePayload]):
 
     def room(self) -> Optional[Room]:
         """get the room from the messge
-
-        获取消息来自的群聊. 如果消息不是来自群聊, 则返回None.
         Args:
             None
         Examples:
             >>> msg.room()
-
-            ```python
-                import asyncio
-                from wechaty import Wechaty, Message, Contact
-
-                class MyBot(Wechaty):
-                
-                    async def on_message(self, msg: Message) -> None:
-                        talker: Contact = msg.talker()
-                        text: str = msg.text()
-                        room = msg.room()
-                        if room:
-                            room_name = await room.topic()
-                            print(f"群聊名: {room_name} 联系人(消息发送者): {talker.name} 内容: {text}")
-                        else:
-                            print(f"联系人: {talker.name} 内容: {text}")
-                asyncio.run(MyBot().start())
-            ```
         Returns:
             Optional[Room]: if the message is from room, return the contact object.
                 else return .
@@ -361,9 +315,13 @@ class Message(Accessory[MessagePayload]):
         return self.wechaty.Room.load(room_id)
 
     def chatter(self) -> Union[Room, Contact]:
-        """return the chat container object of the message. If the message is from room,
-        return the Room object. else return Contact object
+        """return the chat container object of the message. 
 
+        If the message is from room,return the Room object. else return Contact object
+        Args:
+            None
+        Examples:
+            >>> msg.chatter()
         Returns:
             Optional[Room, Contact]: return the room/contact object
         """
@@ -381,26 +339,7 @@ class Message(Accessory[MessagePayload]):
         Args:
             None
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message, Contact
-
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    talker: Contact = msg.talker()
-                    text: str = msg.text()
-                    room = msg.room()
-                    if room:
-                        room_name = await room.topic()
-                        print(f"群聊名: {room_name} 联系人(消息发送者): {talker.name} 内容: {text}")
-                    else:
-                        print(f"联系人: {talker.name} 内容: {text}")
-
-            asyncio.run(MyBot().start())
-            ```
-        Raises:
-            WechatyPayloadError: can't find the text from the payload
+            >>> msg.text()
         Returns:
             str: the message text
         """
@@ -412,22 +351,10 @@ class Message(Accessory[MessagePayload]):
         """
         Get the recalled message
 
-        获取撤回的信息的文本
         Args:
             None
         Examples:
-            ```python
-                import asyncio
-                from wechaty import Wechaty, Message
-                from wechaty_puppet import MessageType
-                class MyBot(Wechaty):
-                
-                    async def on_message(self, msg: Message) -> None:
-                        if msg.type() == MessageType.MESSAGE_TYPE_RECALLED:
-                            recalled_message = await msg.to_recalled()
-                            print(f"{recalled_message}被撤回")
-                asyncio.run(MyBot().start())
-            ```
+            >>> msg.to_recalled()
         Returns:
             Message: the recalled message
         """
@@ -457,13 +384,10 @@ class Message(Accessory[MessagePayload]):
         """
         Recall a message.
 
-        撤回这条信息
         Args:
             None
         Example:
-            ```python
             >>> msg.recall()
-            ```
         Returns:
             bool: True if recall success, else False
         """
@@ -482,46 +406,10 @@ class Message(Accessory[MessagePayload]):
         """
         Get the type from the message.
 
-        获取消息的类型
-        Notes:
-            注意: `MessageType`是枚举类型; <br/>
-            `from wechaty_puppet import MessageType`
-
-            * MessageType.MESSAGE_TYPE_UNSPECIFIED
-            * MessageType.MESSAGE_TYPE_ATTACHMENT
-            * MessageType.MESSAGE_TYPE_AUDIO
-            * MessageType.MESSAGE_TYPE_CONTACT
-            * MessageType.MESSAGE_TYPE_EMOTICON
-            * MessageType.MESSAGE_TYPE_IMAGE
-            * MessageType.MESSAGE_TYPE_TEXT
-            * MessageType.MESSAGE_TYPE_VIDEO
-            * MessageType.MESSAGE_TYPE_CHAT_HISTORY
-            * MessageType.MESSAGE_TYPE_LOCATION
-            * MessageType.MESSAGE_TYPE_MINI_PROGRAM 
-            * MessageType.MESSAGE_TYPE_TRANSFER 
-            * MessageType.MESSAGE_TYPE_RED_ENVELOPE 
-            * MessageType.MESSAGE_TYPE_RECALLED 
-            * MessageType.MESSAGE_TYPE_URL 
-
         Args:
             None
         Examples:
-            ```python
             >>> msg.type()
-            ```
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message
-            from wechaty_puppet import MessageType
-
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    if msg.type() == MessageType.MESSAGE_TYPE_TEXT:
-                        print(f"这是个文本消息")
-
-            asyncio.run(MyBot().start())
-            ```
         Returns:
             MessageType: the message type
         """
@@ -531,26 +419,10 @@ class Message(Accessory[MessagePayload]):
         """
         Check if a message is sent by self
 
-        检查这个消息是否是由自己发出的
-
         Args:
             None
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message
-            from wechaty_puppet import MessageType
-
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    if msg.is_self():
-                        print("这个是Bot自己发出的消息")
-                    else:
-                        print("这是由别人发出的消息")
-
-            asyncio.run(MyBot().start())
-            ```
+            >>> msg.is_self()
         Returns:
             bool: True if message is sent by self, else False
         """
@@ -564,23 +436,10 @@ class Message(Accessory[MessagePayload]):
         """
         Get message mentioned contactList.
 
-        以列表的形式获取消息所提及(@)的人.
-
         Args:
             None
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty,  Message
-
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    contact_mention_list = await msg.mention_list()
-                    print(contact_mention_list)
-
-            asyncio.run(MyBot().start())
-            ```
+            >>> msg.mention_list()
         Returns:
             List[Contact]: the contact list mentioned in the message
         """
@@ -611,19 +470,8 @@ class Message(Accessory[MessagePayload]):
         """
         get mention text
 
-        返回过滤掉@name后的消息
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty, Message
-
-            class MyBot(Wechaty):
-                # 原消息为 `@Gary Helloworld`
-                async def on_message(self, msg: Message) -> None:
-                    print(await msg.mention_text()) # 打印`Helloworld`
-
-            asyncio.run(MyBot().start())
-            ```
+            >>> msg.mention_text()
         Returns:
             str: the message text without mention
         """
@@ -658,7 +506,10 @@ class Message(Accessory[MessagePayload]):
     async def mention_self(self) -> bool:
         """
         Check if a message is mention self.
-        :return:
+        Examples:
+            >>> msg.mention_self()
+        Returns:
+            bool: True if message is mention self, else False
         """
         user_self: ContactSelf = self.wechaty.user_self()
 
@@ -673,6 +524,8 @@ class Message(Accessory[MessagePayload]):
     async def ready(self) -> None:
         """
         sync load message
+        Examples:
+            >>> msg.ready()
         """
         log.debug('Message ready <%s>', self)
         if self.is_ready():
@@ -692,24 +545,12 @@ class Message(Accessory[MessagePayload]):
 
     async def forward(self, to: Union[Room, Contact]) -> None:
         """
-        转发接收到的信息. 此操作不会触发on-message事件.
+        Forward a message to a room or a contact.
         Args:
-            to: 转发到的目标对象
+            to: the room or contact to forward to
         Examples:
-            ```python
-            import asyncio
-            from wechaty import Wechaty,  Message
-
-            class MyBot(Wechaty):
-            
-                async def on_message(self, msg: Message) -> None:
-                    room = await self.Room.find("wechaty")
-                    if room:
-                        await msg.forward(room)
-                        print("成功转发消息到wechaty群聊")
-
-            asyncio.run(MyBot().start())
-            ```
+            >>> msg.forward(room)
+            >>> msg.forward(contact)
         """
         log.info('forward() <%s>', to)
         if to is None:
@@ -734,21 +575,10 @@ class Message(Accessory[MessagePayload]):
 
     def date(self) -> datetime:
         """
-        Message sent date
+        Message sent date.
 
-        获取消息发送的时间
-        Notes:
-            Python2.7: https://docs.python.org/2.7/library/datetime.html#datetime.datetime
-
-            Python3+ ：https://docs.python.org/3.7/library/datetime.html#datetime.datetime
-
-            for datetime.fromtimestamp. It’s common for this to be restricted to years from 1970 through 2038.
-
-            2145888000 is 2038-01-01 00:00:00 UTC for second
-
-            2145888000 is 1970-01-26 04:04:48 UTC for millisecond
         Examples:
-            举个例子, 有条消息是`8:43:01`发送的, 而当我们在Wechaty中接收到它的时候时间已经为 `8:43:15`, 那么这时 `age()`返回的值为 `8:43:15 - 8:43:01 = 14 (秒)`
+            >>> msg.date()
         Returns:
             datetime: message sent date
         """
@@ -761,7 +591,8 @@ class Message(Accessory[MessagePayload]):
     def age(self) -> int:
         """
         Returns the message age in seconds.
-        :return:
+        Returns:
+            int: message age in seconds
         """
         return (datetime.now() - self.date()).seconds // 1000
 
@@ -772,22 +603,11 @@ class Message(Accessory[MessagePayload]):
         Extract the Media File from the Message, and put it into the FileBox.
 
         Notes:
-            文件类型的消息包括:
-
-            * MESSAGE_TYPE_ATTACHMENT
-            * MESSAGE_TYPE_EMOTICON
-            * MESSAGE_TYPE_IMAGE
-            * MESSAGE_TYPE_VIDEO
-
-            提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
 
         Examples:
-            ```python
             >>> msg.to_file_box()
-            ```
         Returns:
             FileBox: file box
-
         """
         log.info('Message to FileBox')
         if self.type() not in SUPPORTED_MESSAGE_FILE_TYPES:
@@ -805,16 +625,10 @@ class Message(Accessory[MessagePayload]):
 
     def to_image(self) -> Image:
         """
-        从消息中提取图像文件，以便我们可以使用不同的图像大小。
-
         Extract the Image File from the Message, so that we can use
         different image sizes.
-        Note:
-            提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
         Examples:
-            ```python
             >>> msg.to_image()
-            ```
         Returns:
             Image: image
         """
@@ -828,18 +642,11 @@ class Message(Accessory[MessagePayload]):
 
     async def to_contact(self) -> Contact:
         """
-        获取消息中的联系人卡片, 并从卡片中提取联系人将其封装到联系人类中返回
-
         Get Share Card of the Message
         Extract the Contact Card from the Message, and encapsulate it into
          Contact class
-
-        Notes:
-            提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
         Examples:
-            ```python
             >>> msg.to_contact()
-            ```
         Returns:
             Contact: contact
         """
@@ -858,15 +665,9 @@ class Message(Accessory[MessagePayload]):
 
     async def to_url_link(self) -> UrlLink:
         """
-        获取消息的UrlLink, 从消息中提取UrlLink，并封装到UrlLink类中返回
-
         get url_link from message
-        Notes:
-            提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
         Examples:
-            ```python
             >>> msg.to_url_link()
-            ```
         Returns:
             UrlLink: url_link
         """
@@ -885,16 +686,9 @@ class Message(Accessory[MessagePayload]):
 
     async def to_mini_program(self) -> MiniProgram:
         """
-        从消息中提取小程序卡片，并将其封装为MiniProgram类返回。
-
         get message mini_program
-
-        Notes:
-            提示: 此功能取决于Puppet的实现, 详见 [Puppet兼容表](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table)
         Examples:
-            ```python
             >>> msg.to_mini_program()
-            ```
         Returns:
             MiniProgram: mini_program
         """
