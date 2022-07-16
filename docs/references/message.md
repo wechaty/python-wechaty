@@ -271,11 +271,6 @@ asyncio.run(MyBot().start())
 ### 示例代码
 >举个例子, 有条消息是`8:43:01`发送的, 而当我们在Wechaty中接收到它的时候时间已经为 `8:43:15`, 那么这时 `age()`返回的值为`8:43:15 - 8:43:01 = 14 (秒)`
 
-- [Python2](https://docs.python.org/2.7/library/datetime.html#datetime.datetime)和[Python3](https://docs.python.org/3.7library/datetime.html#datetime.datetime)的区别请看具体详细文档
-- for datetime.fromtimestamp. It’s common forthis to be restricted to years from 1970through 2038.
-- `2145888000` is `2038-01-01 00:00:00 UTC` forsecond
-- `2145888000` is `1970-01-26 04:04:48 UTC` formillisecond
-
 
 ::: wechaty.user.message.Message.age
 

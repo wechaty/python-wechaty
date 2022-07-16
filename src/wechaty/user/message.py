@@ -23,7 +23,6 @@ from __future__ import annotations
 import dataclasses
 import json
 import re
-
 from typing import (
     Optional,
     Union,
@@ -577,6 +576,18 @@ class Message(Accessory[MessagePayload]):
         """
         Message sent date.
 
+        Note:
+            For difference between python2 and python3, please check the following link:
+            
+            - https://docs.python.org/2.7/library/datetime.html#datetime.datetime
+            - https://docs.python.org/3.7library/datetime.html#datetime.datetime
+            
+            for datetime.fromtimestamp. It’s common forthis to be restricted to years from 1970through 2038.
+            
+            `2145888000` is `2038-01-01 00:00:00 UTC` forsecond
+            
+            `2145888000` is `1970-01-26 04:04:48 UTC` formillisecond
+        
         Examples:
             >>> msg.date()
         Returns:
@@ -598,12 +609,17 @@ class Message(Accessory[MessagePayload]):
 
     async def to_file_box(self) -> FileBox:
         """
-        从消息中提取媒体文件，并将其封装为FileBox类返回。
-
         Extract the Media File from the Message, and put it into the FileBox.
 
         Notes:
-
+            ```
+            File MessageType is : {
+                MESSAGE_TYPE_ATTACHMENT,
+                MESSAGE_TYPE_EMOTICON,
+                MESSAGE_TYPE_IMAGE,
+                MESSAGE_TYPE_VIDEO
+            }
+            ```
         Examples:
             >>> msg.to_file_box()
         Returns:

@@ -74,6 +74,8 @@ theme:
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - toc:
       baselevel: 2
 
@@ -98,6 +100,5 @@ plugins:
             show_bases: no
             members_order: source
             heading_level: 2
-            docstring_options:
 watch:
   - ./src
