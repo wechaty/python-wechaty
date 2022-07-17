@@ -468,6 +468,10 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         """
         log.info('init_puppet_event_bridge() <%s>', puppet)
         event_names = PUPPET_EVENT_DICT.keys()
+        
+        # prevent once time event to emit twice and more ...
+        once_event = set()
+
         for event_name in event_names:
             if event_name == 'dong':
                 def dong_listener(payload: EventDongPayload) -> None:
@@ -521,6 +525,9 @@ I suggest that you should follow the template code from: https://wechaty.readthe
 
             elif event_name == 'login':
                 async def login_listener(payload: EventLoginPayload) -> None:
+                    if 'login' in once_event:
+                        return
+                    once_event.add('login')
 
                     # init the plugins
                     await self._plugin_manager.start()
@@ -576,6 +583,10 @@ I suggest that you should follow the template code from: https://wechaty.readthe
 
             elif event_name == 'ready':
                 async def ready_listener(payload: EventReadyPayload) -> None:
+                    if 'ready' in once_event:
+                        return
+                    once_event.add('ready')
+                    
                     log.info('receive <ready> event <%s>', payload)
                     self.emit('ready', payload)
                     self._ready_state.on(True)
