@@ -8,3 +8,4 @@ quart
 opengraph_py3
 Quart-CORS
 APScheduler
+SQLAlchemy
