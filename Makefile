@@ -102,6 +102,10 @@ test: check-python-version lint pytest
 check-python-version:
 	./scripts/check_python_version.py
 
+.PHONY: format
+format:
+	yapf $(SOURCE_GLOB)	
+
 code:
 	code .
 
