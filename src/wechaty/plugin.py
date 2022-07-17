@@ -44,6 +44,7 @@ from typing import (
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 from quart import Quart
 from quart_cors import cors
 
@@ -205,6 +206,34 @@ class WechatySchedulerMixin:
 
         trigger = CronTrigger(
             hour=hour
+        )
+
+        self.scheduler.add_job(
+            func=handler,
+            trigger=trigger,
+            args=args,
+            kwargs=kwargs
+        )
+
+    def add_interval_job(
+        self, minutes: int,
+        handler: Any,
+        job_id: Optional[Union[str, int]] = None,
+        args: Optional[set] = None,
+        kwargs: Optional[dict] = None
+    ) -> None:
+        """add interval jobs which will trigger the job every minutes
+
+        Args:
+            minutes (int): the await time which will trigger the event
+        """
+        if not job_id:
+            job_id = f'interval-job-{minutes}'
+
+        job_id = str(job_id)
+
+        trigger = IntervalTrigger(
+            minutes=minutes
         )
 
         self.scheduler.add_job(
