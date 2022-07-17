@@ -73,23 +73,26 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     _pool: Dict[str, 'Contact'] = {}
 
     def __init__(self, contact_id: str):
-        """init Contact object with id which will not be cached,
-            so we suggest that you use load method to get a cached contact object
+        """
+        Init Contact object with id which will not be cached,
+
+        so we suggest that you use load method to get a cached contact object
+
+        Args:
+            contact_id (str): the union identifier of contact
 
         Examples:
             >>> contact = bot.Contact(contact_id)
             >>> # but the following method is suggested
             >>> contact = bot.Contact.load(contact_id)
-
-        Args:
-            contact_id (str): the union identifier of contact
         """
         super().__init__()
         self.contact_id: str = contact_id
         self.payload: Optional[ContactPayload] = None
 
     def get_id(self) -> str:
-        """get the contact_id
+        """
+        Get the contact_id
 
         Examples:
             >>> contact_id = contact.get_id()
@@ -101,18 +104,19 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
     @classmethod
     def load(cls: Type[Contact], contact_id: str) -> Contact:
-        """load contact object, if it's not cached, create a new one and cache it.
+        """
+        Load contact object, if it's not cached, create a new one and cache it.
 
         If you load it manually, you should call `ready()` to load the full info from puppet.
+
+        Args:
+            cls: the type of Contact
+            contact_id: the union identifier of contact
 
         Examples:
             >>> contact = bot.Contact.load(contact_id)
             >>> await contact.ready()
             >>> is_friend = contact.is_friend()
-
-        Args:
-            cls (Type[Contact]): the type of Contact
-            contact_id (str): the union identifier of contact
 
         Returns:
             Contact: the contact object
@@ -181,13 +185,11 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                    query: Union[str, ContactQueryFilter, Callable[[Contact], bool]]
                    ) -> Optional[Contact]:
         """
-        find the first of contacts based on query, which can be string, ContactQueryFilter, or callable<filter> function
+        Find the first of contacts based on query, which can be string, ContactQueryFilter, or callable<filter> function.
 
         Args:
             query: the query body to build filter
-        Args:
-            query:
-
+            
         Examples:
             >>> # 1. find contacts based query string, will match one of: contact_id, weixin, name and alias
             >>> # what's more, contact_id and weixin will follow extract match, name and alias will follow fuzzy match
@@ -205,7 +207,8 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             >>>         return True
             >>>     return False
             >>> Contact.find(filter_contacts)
-        Returns: filtered contact, None or Contact
+        Returns:
+            Contact: the contact object filtered by query or None
         """
         log.info('find() <%s, %s>', cls, query)
 
@@ -219,12 +222,10 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                        query: Optional[Union[str, ContactQueryFilter, Callable[[Contact], bool]]] = None
                        ) -> List[Contact]:
         """
-        find all contacts based on query, which can be string, ContactQueryFilter, or callable<filter> function
+        Find all contacts based on query, which can be string, ContactQueryFilter, or callable<filter> function.
 
         Args:
             query: the query body to build filter
-        Args:
-            query:
 
         Examples:
             >>> # 1. find contacts based query string, will match one of: contact_id, weixin, name and alias
@@ -243,7 +244,9 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             >>>         return True
             >>>     return False
             >>> Contact.find_all(filter_contacts)
-        Returns: filtered contacts/
+
+        Returns:
+            Contact: the contact object filtered by query
         """
         log.info('find_all() <%s, %s>', cls, query)
 
@@ -262,14 +265,15 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return contacts
 
     async def ready(self, force_sync: bool = False) -> None:
-        """make contact ready for use which will load contact payload info.
+        """
+        Make contact ready for use which will load contact payload info.
+
+        Args:
+            force_sync: if true, it will re-fetch the data although it exist.
 
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> await await contact.ready()
-
-        Args:
-            force_sync (bool, optional): if true, it will re-fetch the data although it exist. Defaults to False.
 
         Raises:
             WechatyPayloadError: when payload can"t be loaded
@@ -288,7 +292,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
     def __str__(self) -> str:
         """
-        get contact string representation
+        Get contact string representation.
         """
         if not self.is_ready() or not self.payload:
             return 'Contact <{}>'.format(self.contact_id)
@@ -307,6 +311,13 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                   ) -> Optional[Message]:
         """say something to contact, which can be text, image, file, contact, url
 
+        Note:
+            Its implementation depends on the puppet, so if you want to use this method, please check
+            [Puppet](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table).
+
+        Args:
+            message: the message object to be sended to contact
+        
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> await contact.say('hello')
@@ -317,11 +328,8 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             >>> # the data format of mini program should pre-stored
             >>> await contact.say(MiniProgram('username', 'appid'))
 
-        Args:
-            message (Union[str, Message, FileBox, Contact, UrlLink, MiniProgram]): the message object to be sended to contact
-
         Returns:
-            Optional[Message]: if the message is send successfully, return the message object, otherwise return None 
+            Message: if the message is send successfully, return the message object, otherwise return None 
         """
         if not message:
             log.error('can"t say nothing')
@@ -377,7 +385,10 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     @property
     def name(self) -> str:
         """get name of contact
-
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> name: str = contact.name
+        
         Returns:
             str: name of contact, if the payload is None, return empty string
         """
@@ -388,15 +399,20 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     async def alias(self,
                     new_alias: Optional[str] = None
                     ) -> Union[None, str]:
-        """get or set alias of contact.
-            If new_alias is given, it will set alias to new_alias,
-            otherwise return current alias
+        """
+        Get or set alias of contact.
+        
+        If new_alias is given, it will set alias to new_alias,
+        otherwise return current alias
+
+        Notes:
+            Setting aliases too often will result in failure (60 times per minute).
 
         Args:
-            new_alias (Optional[str], optional): the new alias of contact. Defaults to None.
+            new_alias: the new alias of contact.
 
         Returns:
-            Union[None, str]: the current alias of contact
+            alias: the current alias of contact
         """
         log.info('Contact alias <%s>', new_alias)
         if not self.is_ready():
@@ -419,14 +435,15 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return None
 
     def is_friend(self) -> Optional[bool]:
-        """check if the contact is friend
+        """
+        Check if the contact is friend.
 
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> is_friend = contact.is_friend()
 
         Returns:
-            Optional[bool]: if the contact is friend, return True, otherwise return False
+            bool: if the contact is friend, return True, otherwise return False
         """
         if not self.payload:
             log.warning('please call `ready()` before `is_friend()`')
@@ -438,7 +455,12 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return self.payload.friend
 
     def is_offical(self) -> bool:
-        """check if the contact is offical account
+        """
+        Check if the contact is offical account.
+
+        Notes:
+            Its implementation depends on the puppet, so if you want to use this method, please check
+            [Puppet](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table).
 
         Examples:
             >>> contact = Contact.load('contact-id')
@@ -452,7 +474,16 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return self.payload.type == ContactType.CONTACT_TYPE_OFFICIAL
 
     def is_personal(self) -> bool:
-        """check if the contact is personal account
+        """
+        Check if the contact is personal account.
+
+        Notes:
+            Its implementation depends on the puppet, so if you want to use this method, please check
+            [Puppet](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table).
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> is_personal = contact.is_personal()
 
         Returns:
             bool: if the contact is personal account, return True, otherwise return False
@@ -462,7 +493,12 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return self.payload.type == ContactType.CONTACT_TYPE_PERSONAL
 
     def type(self) -> ContactType:
-        """get type of contact, which can person, official, corporation, and unspecified.
+        """
+        Get type of contact, which can person, official, corporation, and unspecified.
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> contact_type = contact.type()
 
         Returns:
             ContactType: the type of contact.
@@ -472,18 +508,24 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return self.payload.type
 
     def star(self) -> Optional[bool]:
-        """check if the contact is a stared contact
+        """
+        Check if the contact is a stared contact.
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> is_star = contact.star()
 
         Returns:
-            Optional[bool]: if the contact is a stared contact, return True, otherwise return False.
+            bool: if the contact is a stared contact, return True, otherwise return False.
         """
         if self.payload is None:
             return None
         return self.payload.star
 
     def gender(self) -> ContactGender:
-        """return the gender of contact
-
+        """
+        Return the gender of contact.
+        
         Returns:
             ContactGender: the object of contact gender
         """
@@ -492,7 +534,11 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return ContactGender.CONTACT_GENDER_UNSPECIFIED
 
     def province(self) -> Optional[str]:
-        """get the province of contact
+        """
+        Get the province of contact.
+
+        Examples:
+            >>> province: str = contact.province()
 
         Returns:
             Optional[str]: the province info in contact public info
@@ -502,7 +548,12 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return self.payload.province
 
     def city(self) -> Optional[str]:
-        """get the city of contact
+        """
+        Get the city of contact.
+
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> city: str = contact.city()
 
         Returns:
             Optional[str]: the city info in contact public info
@@ -512,11 +563,16 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return self.payload.city
 
     async def avatar(self, file_box: Optional[FileBox] = None) -> FileBox:
-        """get or set the avatar of contact, which is a FileBox object
+        """
+        Get or set the avatar of contact, which is a FileBox object
 
         Args:
-            file_box (Optional[FileBox], optional): If given, it will set it as new avatar,
+            file_box: If given, it will set it as new avatar,
                 else get the current avatar. Defaults to None.
+        
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> avatar = contact.avatar()
 
         Returns:
             FileBox: the avatar of contact
@@ -526,14 +582,15 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return avatar
 
     async def tags(self) -> List[Tag]:
-        """get the tags of contact which is a list of Tag object
+        """
+        Get the tags of contact which is a list of Tag object.
 
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> tags = await contact.tags()
 
         Returns:
-            List[Tag]: the tags of contact
+            List: the tags of contact
         """
         log.info('load contact tags for %s', self)
         tag_ids = await self.puppet.tag_contact_list(self.contact_id)
@@ -548,7 +605,8 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         await self.ready()
 
     def is_self(self) -> bool:
-        """check if the contact is self
+        """
+        Check if the contact is self.
 
         Examples:
             >>> contact = Contact.load('contact-id')
@@ -561,10 +619,15 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         return login_user.contact_id == self.contact_id
 
     def weixin(self) -> Optional[str]:
-        """get the weixin union identifier of contact, which is specific for wechat account.
+        """
+        Get the weixin union identifier of contact, which is specific for wechat account.
 
+        Examples:
+            >>> contact = Contact.load('contact-id')
+            >>> weixin = contact.weixin()
+            
         Returns:
-            Optional[str]: the weixin union identifier of contact
+            identifier: the weixin union identifier of contact
         """
         if self.payload is None:
             return None
