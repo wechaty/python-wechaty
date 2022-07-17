@@ -7,3 +7,4 @@ wechaty-puppet-service>=0.8.9
 quart
 opengraph_py3
 Quart-CORS
+APScheduler
