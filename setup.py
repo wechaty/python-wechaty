@@ -77,7 +77,6 @@ setuptools.setup(
     license='Apache-2.0',
     url='https://github.com/wechaty/python-wechaty',
     packages=["wechaty"],
-    package_data={"wechaty": ["py.typed", "**/*.pyi"]},
     package_dir={'wechaty': 'src/wechaty'},
     install_requires=get_install_requires(),
     classifiers=[
