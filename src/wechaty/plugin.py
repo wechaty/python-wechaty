@@ -24,15 +24,14 @@ import asyncio
 from logging import Logger
 import os
 import re
-from abc import ABCMeta
-from collections import defaultdict, OrderedDict
+from abc import ABC
+from collections import OrderedDict
 from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from telnetlib import Telnet
 import socket
-
 from typing import (
     TYPE_CHECKING,
     List,
@@ -42,10 +41,15 @@ from typing import (
     Any,
     cast, Tuple
 )
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.interval import IntervalTrigger
 from quart import Quart
 from quart_cors import cors
 
 from wechaty_puppet import (
+    WechatyPuppetError,
     get_logger,
     EventErrorPayload,
     EventHeartbeatPayload,
@@ -150,104 +154,98 @@ class PluginStatus(Enum):
     Stopped = 1
 
 
-class WechatyPlugin(metaclass=ABCMeta):
+class WechatySchedulerMixin:
+    """scheduler mixin for wechaty
     """
-    abstract wechaty plugin base class
+    _scheduler_field: str = "_scheduler"
 
-    listen events from
+    @property
+    def scheduler(self) -> AsyncIOScheduler:
+        """get the scheduler"""
+        scheduler_instance = getattr(self, self._scheduler_field, None)
+        if scheduler_instance is None:
+            raise WechatyPluginError('there is an error')
 
-    """
+        assert isinstance(scheduler_instance, AsyncIOScheduler)
+        return scheduler_instance
 
-    def __init__(self, options: Optional[WechatyPluginOptions] = None):
-        self.output: Dict[str, Any] = {}
-        self.bot: Optional[Wechaty] = None
-        if options is None:
-            options = WechatyPluginOptions()
-        self.options = options
-
-        self._default_logger: Optional[Logger] = None
-
-    def set_bot(self, bot: Wechaty) -> None:
-        """set bot instance to WechatyPlugin
+    @scheduler.setter
+    def scheduler(self, scheduler_instance: AsyncIOScheduler) -> None:
+        """set the scheduler
 
         Args:
-            bot (Wechaty): the instance of Wechaty
+            scheduler_instance (AsyncIOScheduler): the instance of the scheduler
         """
-        self.bot = bot
-
-    async def init_plugin(self, wechaty: Wechaty) -> None:
-        """set wechaty to the plugin"""
-
-    async def blueprint(self, app: Quart) -> None:
-        """register blueprint into default web server"""
-
-    @property
-    def name(self) -> str:
-        """you must give a name for wechaty plugin
-
-        the name of the plugin should not be a required field,
-        and the name of plugin class can be the default name field.
-        """
-        if not self.options.name:
-            # set the class name as the name of the plugin
-            self.options.name = self.__class__.__name__
-
-        return self.options.name
-
-    @property
-    def cache_dir(self) -> str:
-        """
-        cache dir for plugin
-
-        this is friendly for code typing
-        """
-        _cache_dir = os.path.join('.wechaty', self.name)
-        os.makedirs(_cache_dir, exist_ok=True)
-        return _cache_dir
-
-    @property
-    def logger(self) -> Logger:
-        """get the default logger of plugin which will automaticly
-        log info into the plugin cache dir
-
-        Returns:
-            Logger: Instance of Logger
-
-        Examples:
-            ding_dong_plugin = DingDongPlugin()
-            ding_dong_plugin.logger.info('log info ...')
-        """
-        if self._default_logger:
-            return self._default_logger
-
-        self._default_logger = get_logger(
-            self.name,
-            file=os.path.join(self.cache_dir, 'log.log')
-        )
-        assert self._default_logger is not None, 'can not set default logger'
-
-        return self._default_logger
-
-    def set_logger(self, logger: Logger) -> None:
-        """if you want to change the behavior of logger, all of you need is to set a new logger
-
-        Args:
-            logger (Logger): the new instance of logger
-        """
-        if self._default_logger:
-            self._default_logger.warning(
-                'there is already a logger in the plugin, but you set a new logger.'
-                'Anyway, do all things  you like.'
+        if getattr(self, self._scheduler_field, None) is not None:
+            raise WechatyPuppetError(
+                "can't set scheduler twice"
             )
-        self._default_logger = logger
+        setattr(self, self._scheduler_field, scheduler_instance)
 
-    @staticmethod
-    def get_dependency_plugins() -> List[str]:
+    def add_daily_job(
+        self,
+        hour: int,
+        handler: Any,
+        job_id: Optional[Union[str, int]] = None,
+        args: Optional[set] = None,
+        kwargs: Optional[dict] = None
+    ) -> None:
+        """add daily scheduler job
+        Args:
+            hour (int): the target hour of daily time
+            handler (callable): the target callable function
+            job_id (Optional[Union[str, int]], optional):
+                the job id stored in the stored. Defaults to None.
+            args (Optional[set]): default args of handler
+            kwargs (Optional[dict]): default kwargs of handler
         """
-        get dependency plugins
-        """
-        return []
+        if not job_id:
+            job_id = f'daily-job-{hour}'
 
+        job_id = str(job_id)
+
+        trigger = CronTrigger(
+            hour=hour
+        )
+
+        self.scheduler.add_job(
+            func=handler,
+            trigger=trigger,
+            args=args,
+            kwargs=kwargs
+        )
+
+    def add_interval_job(
+        self, minutes: int,
+        handler: Any,
+        job_id: Optional[Union[str, int]] = None,
+        args: Optional[set] = None,
+        kwargs: Optional[dict] = None
+    ) -> None:
+        """add interval jobs which will trigger the job every minutes
+
+        Args:
+            minutes (int): the await time which will trigger the event
+        """
+        if not job_id:
+            job_id = f'interval-job-{minutes}'
+
+        job_id = str(job_id)
+
+        trigger = IntervalTrigger(
+            minutes=minutes
+        )
+
+        self.scheduler.add_job(
+            func=handler,
+            trigger=trigger,
+            args=args,
+            kwargs=kwargs
+        )
+
+
+class WechatyEventMixin:
+    """wechaty event relative functions mixin"""
     async def on_error(self, payload: EventErrorPayload) -> None:
         """
         listen error event for puppet
@@ -339,11 +337,110 @@ class WechatyPlugin(metaclass=ABCMeta):
         this is friendly for code typing
         """
 
+
+class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
+    """
+    abstract wechaty plugin base class
+
+    listen events from
+    """
+
+    def __init__(self, options: Optional[WechatyPluginOptions] = None):
+        self.output: Dict[str, Any] = {}
+        self.bot: Optional[Wechaty] = None
+        if options is None:
+            options = WechatyPluginOptions()
+        self.options = options
+        self._default_logger: Optional[Logger] = None
+
+    def set_bot(self, bot: Wechaty) -> None:
+        """set bot instance to WechatyPlugin
+
+        Args:
+            bot (Wechaty): the instance of Wechaty
+        """
+        self.bot = bot
+
+    async def init_plugin(self, wechaty: Wechaty) -> None:
+        """set wechaty to the plugin"""
+
+    async def blueprint(self, app: Quart) -> None:
+        """register blueprint into default web server"""
+
+    @property
+    def name(self) -> str:
+        """you must give a name for wechaty plugin
+
+        the name of the plugin should not be a required field,
+        and the name of plugin class can be the default name field.
+        """
+        if not self.options.name:
+            # set the class name as the name of the plugin
+            self.options.name = self.__class__.__name__
+
+        return self.options.name
+
+    @property
+    def cache_dir(self) -> str:
+        """
+        cache dir for plugin
+
+        this is friendly for code typing
+        """
+        _cache_dir = os.path.join('.wechaty', self.name)
+        os.makedirs(_cache_dir, exist_ok=True)
+        return _cache_dir
+
+    @property
+    def logger(self) -> Logger:
+        """get the default logger of plugin which will automaticly
+        log info into the plugin cache dir
+
+        Returns:
+            Logger: Instance of Logger
+
+        Examples:
+            ding_dong_plugin = DingDongPlugin()
+            ding_dong_plugin.logger.info('log info ...')
+        """
+        if self._default_logger:
+            return self._default_logger
+
+        self._default_logger = get_logger(
+            self.name,
+            file=os.path.join(self.cache_dir, 'log.log')
+        )
+        assert self._default_logger is not None, 'can not set default logger'
+
+        return self._default_logger
+
+    def set_logger(self, logger: Logger) -> None:
+        """if you want to change the behavior of logger, all of you need is to set a new logger
+
+        Args:
+            logger (Logger): the new instance of logger
+        """
+        if self._default_logger:
+            self._default_logger.warning(
+                'there is already a logger in the plugin, but you set a new logger.'
+                'Anyway, do all things  you like.'
+            )
+        self._default_logger = logger
+
     def get_output(self) -> dict:
         """if necessary , get the output of the plugin"""
         final_output = deepcopy(self.output)
         self.output = {}
         return final_output
+
+    async def on_loaded(self) -> None:
+        """hook the plugin when loaded"""
+
+    async def on_stoped(self) -> None:
+        """hook the plugin when stoped"""
+
+    async def on_running(self) -> None:
+        """hook the plugin event when active"""
 
 
 PluginTree = Dict[str, Union[str, List[str]]]
@@ -358,21 +455,18 @@ def _load_default_plugins() -> List[WechatyPlugin]:
     # TODO: to be implemented
 
 
-class WechatyPluginManager:
+class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
     """manage the wechaty plugin, It will support some features."""
 
     def __init__(self, wechaty: Wechaty, endpoint: EndPoint):
         self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
         self._plugin_status: Dict[str, PluginStatus] = {}
-        # plugins can be a topological graph pattern, this feature is not
-        # supported now.
-        self._dependency_tree: PluginTree = defaultdict()
 
         self.app: Quart = cors(Quart('Wechaty Server', static_folder=None))
 
-        self.dependency_tree: PluginTree = defaultdict()
         self.endpoint: Tuple[str, int] = endpoint
+        self.scheduler: AsyncIOScheduler = AsyncIOScheduler()
 
     # pylint: disable=R1711
     @staticmethod
@@ -385,13 +479,23 @@ class WechatyPluginManager:
     @staticmethod
     def _load_plugin_from_github_url(github_url: str
                                      ) -> Optional[WechatyPlugin]:
-        """load plugin from github url, but, this is dangerous"""
+        """load plugin from github url, but, this is dangerous
+
+        TODO(wj-Mcat): this feature is the final way for project.
+        """
         log.info('load plugin from github url <%s>', github_url)
         return None
 
     def add_plugin(self, plugin: Union[str, WechatyPlugin]) -> None:
         """add plugin to the manager, if the plugin name exist, it will not to
-        be installed"""
+        be installed
+
+        TODO(wj-Mcat): should support:
+            - [ ] load plugin from local dir
+            - [ ] load plugin from plugin contrib store
+            - [ ] load plugin from github url
+
+        """
         if isinstance(plugin, str):
             regex = re.compile(
                 r'^(?:http|ftp)s?://'  # http:// or https://
@@ -418,6 +522,9 @@ class WechatyPluginManager:
         # default wechaty plugin status is Running
         self._plugin_status[plugin_instance.name] = PluginStatus.Running
 
+        # TODO(wj-Mcat): disable this event hook
+        # await plugin_instance.on_loaded()
+
     def remove_plugin(self, name: str) -> None:
         """remove plugin"""
         if name not in self._plugins:
@@ -432,7 +539,7 @@ class WechatyPluginManager:
         if name not in self._plugins and name not in self._plugin_status:
             raise WechatyPluginError(f'plugins <{name}> not exist')
 
-    def stop_plugin(self, name: str) -> None:
+    async def stop_plugin(self, name: str) -> None:
         """stop the plugin"""
         log.info('stopping the plugin <%s>', name)
         self._check_plugins(name)
@@ -440,12 +547,14 @@ class WechatyPluginManager:
         if self._plugin_status[name] == PluginStatus.Stopped:
             log.warning('plugins <%s> has stopped', name)
         self._plugin_status[name] = PluginStatus.Stopped
+        await self._plugins[name].on_stoped()
 
-    def start_plugin(self, name: str) -> None:
+    async def start_plugin(self, name: str) -> None:
         """starting the plugin"""
         log.info('starting the plugin <%s>', name)
         self._check_plugins(name)
         self._plugin_status[name] = PluginStatus.Running
+        await self._plugins[name].on_running()
 
     def plugin_status(self, name: str) -> PluginStatus:
         """get the plugin status"""
@@ -493,23 +602,28 @@ class WechatyPluginManager:
         # 3. list all valid endpoints in web service
         # checking the number of registered blueprints
         routes_txt = _list_routes_txt(self.app)
-        if len(routes_txt) == 0:
-            log.warning(
-                'there is not registed blueprint in the plugins, '
-                'so bot will not start the web service'
-            )
-            return
+        # if len(routes_txt) == 0:
+        #     log.warning(
+        #         'there is not registed blueprint in the plugins, '
+    #         'so bot will not start the web service'
+        #     )
+        #     return
 
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
+        # shutdown_trigger = await get_shutdown_trigger()
         task = self.app.run_task(
             host=host,
             port=port,
-            use_reloader=False
+            use_reloader=False,
+            # shutdown_trigger=shutdown_trigger
         )
         loop = asyncio.get_event_loop()
         loop.create_task(task)
+        # loop.create_task(
+        #     shutdown(shutdown_trigger)
+        # )
 
         for route_txt in routes_txt:
             log.info(route_txt)

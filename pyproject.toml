@@ -9,7 +9,8 @@ module = [
     "wechaty_puppet.*",
     "pytest.*",
     "grpclib.*",
-    "lxml.*"
+    "lxml.*",
+    "apscheduler.*"
 ]
 ignore_missing_imports = true
 
