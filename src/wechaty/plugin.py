@@ -45,6 +45,7 @@ from typing import (
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from quart import Quart
 from quart_cors import cors
 
@@ -148,6 +149,13 @@ class WechatyPluginOptions:
     metadata: Optional[dict] = None
 
 
+@dataclass
+class WechatySchedulerOptions:
+    """options for wechaty scheduler"""
+    job_store: Union[str, SQLAlchemyJobStore] = 'sqlite:///.wechaty/job.db'
+    job_store_alias: str = 'wechaty-scheduler'
+
+
 class PluginStatus(Enum):
     """plugin running status"""
     Running = 0
@@ -158,6 +166,9 @@ class WechatySchedulerMixin:
     """scheduler mixin for wechaty
     """
     _scheduler_field: str = "_scheduler"
+
+    scheduler_job_alias: str = 'wechaty_scheduler'
+    scheduler_db_file: str = '.wechaty/job.db'
 
     @property
     def scheduler(self) -> AsyncIOScheduler:
@@ -458,7 +469,11 @@ def _load_default_plugins() -> List[WechatyPlugin]:
 class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
     """manage the wechaty plugin, It will support some features."""
 
-    def __init__(self, wechaty: Wechaty, endpoint: EndPoint):
+    def __init__(
+        self, wechaty: Wechaty,
+        endpoint: EndPoint,
+        scheduler_options: Optional[Union[AsyncIOScheduler, WechatySchedulerOptions]] = None
+    ):
         self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
         self._plugin_status: Dict[str, PluginStatus] = {}
@@ -466,7 +481,18 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         self.app: Quart = cors(Quart('Wechaty Server', static_folder=None))
 
         self.endpoint: Tuple[str, int] = endpoint
-        self.scheduler: AsyncIOScheduler = AsyncIOScheduler()
+
+        if scheduler_options is None:
+            scheduler_options = WechatySchedulerOptions()
+
+        if isinstance(scheduler_options, WechatySchedulerOptions):
+            scheduler = AsyncIOScheduler()
+
+            if isinstance(scheduler_options.job_store, str):
+                scheduler_options.job_store = SQLAlchemyJobStore(scheduler_options.job_store)
+
+            scheduler.add_jobstore(scheduler_options.job_store, scheduler_options.job_store_alias)
+        self.scheduler: AsyncIOScheduler = scheduler
 
     # pylint: disable=R1711
     @staticmethod
