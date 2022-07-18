@@ -78,7 +78,6 @@ setuptools.setup(
     url='https://github.com/wechaty/python-wechaty',
     packages=setuptools.find_packages('src'),
     package_dir={'wechaty': 'src/wechaty'},
-    include_package_data=True,
     install_requires=get_install_requires(),
     classifiers=[
         'Programming Language :: Python :: 3.7',
