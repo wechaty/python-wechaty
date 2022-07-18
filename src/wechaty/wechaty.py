@@ -45,6 +45,7 @@ import signal
 import requests.exceptions
 from grpclib.exceptions import StreamTerminatedError
 from pyee import AsyncIOEventEmitter
+from apscheduler.schedulers.base import BaseScheduler
 
 from wechaty_puppet import (
     Puppet,
@@ -74,11 +75,7 @@ from wechaty_puppet.state_switch import StateSwitch
 from wechaty.user.url_link import UrlLink
 from wechaty.utils.async_helper import SingleIdContainer
 
-from .utils import (
-    qr_terminal
-)
-
-from .user import (
+from wechaty.user import (
     Contact,
     Friendship,
     Message,
@@ -91,18 +88,20 @@ from .user import (
     ContactSelf
 )
 
-from .plugin import (
+from wechaty.plugin import (
     WechatyPlugin,
-    WechatyPluginManager
+    WechatyPluginManager,
+    WechatySchedulerOptions
 )
 
-from .exceptions import (
+from wechaty.exceptions import (
     WechatyStatusError,
     WechatyConfigurationError,
     WechatyOperationError,
 )
 
-from .utils import timestamp_to_date
+from wechaty.utils import timestamp_to_date, qr_terminal
+
 
 log: logging.Logger = get_logger('Wechaty')
 
@@ -137,6 +136,7 @@ async def shutdown(trigger: Callable[[], Coroutine[Any, Any, Any]]) -> None:
     sys.exit(0)
 
 
+# pylint: disable=too-many-instance-attributes
 @dataclass
 class WechatyOptions:
     """
@@ -148,6 +148,12 @@ class WechatyOptions:
 
     host: str = '0.0.0.0'
     port: int = 5000
+
+    # expose the puppet options at here to make it easy to user
+    token: Optional[str] = None
+    endpoint: Optional[str] = None
+
+    scheduler: Optional[Union[WechatySchedulerOptions, BaseScheduler]] = None
 
 
 # pylint:disable=R0902,R0904
@@ -169,11 +175,18 @@ class Wechaty(AsyncIOEventEmitter):
         """
         super().__init__()
 
+        # 1. int the puppet options
         if options is None:
             options = WechatyOptions(puppet='wechaty-puppet-service')
+
         if options.puppet_options is None:
             options.puppet_options = PuppetOptions()
 
+        options.puppet_options.token = options.puppet_options.token or options.token
+        options.puppet_options.end_point = options.puppet_options.end_point or options.endpoint
+        options.puppet = self._load_puppet(options)
+
+        # 2. init the scheduler options
         self._options = options
 
         # pylint: disable=C0103
@@ -204,7 +217,7 @@ class Wechaty(AsyncIOEventEmitter):
         self.state = StateSwitch()
         self._ready_state = StateSwitch()
 
-        self._puppet: Optional[Puppet] = None
+        self._puppet: Puppet = options.puppet
         self._plugin_manager: WechatyPluginManager = WechatyPluginManager(
             self,
             (options.host, options.port)
@@ -468,7 +481,7 @@ I suggest that you should follow the template code from: https://wechaty.readthe
         """
         log.info('init_puppet_event_bridge() <%s>', puppet)
         event_names = PUPPET_EVENT_DICT.keys()
-        
+
         # prevent once time event to emit twice and more ...
         once_event = set()
 
@@ -586,7 +599,7 @@ I suggest that you should follow the template code from: https://wechaty.readthe
                     if 'ready' in once_event:
                         return
                     once_event.add('ready')
-                    
+
                     log.info('receive <ready> event <%s>', payload)
                     self.emit('ready', payload)
                     self._ready_state.on(True)
