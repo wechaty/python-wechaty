@@ -14,20 +14,22 @@ class ContactSelf(Contact):
     """ContactSelf"""
 
     async def avatar(self, file_box: Optional[FileBox] = None) -> FileBox:
-        """get avatar of ContactSelf
+        """
+        Get or set avatar of ContactSelf.
 
         Args:
-            file_box (Optional[FileBox], optional): i. Defaults to None.
+            file_box: FileBox object, if not provided, it will return a FileBox object
 
         Examples:
             >>> contact_self = bot.contact_self()
             >>> file_box = await contact_self.avatar()
+            >>> file_box = await contact_self.avatar(file_box)
 
         Raises:
-            WechatyOperationError: _description_
+            WechatyOperationError: if the contact is not self, it will not get the avatar
 
         Returns:
-            FileBox: _description_
+            FileBox: file_box
         """
         log.info('avatar(%s)' % file_box.name if file_box else '')
         if not file_box:
@@ -40,7 +42,12 @@ class ContactSelf(Contact):
         await self.puppet.contact_avatar(self.contact_id, file_box)
 
     async def qr_code(self) -> str:
-        """return the qrcode of ContactSelf
+        """
+        Return the qrcode of ContactSelf
+        
+        Examples:
+            >>> contact_self = bot.contact_self()
+            >>> qr_code = await contact_self.qr_code()
 
         Raises:
             WechatyOperationError: if there is login exception, it will not get the qrcode
@@ -64,32 +71,48 @@ class ContactSelf(Contact):
     @property
     def name(self) -> str:
         """
-        get the name of login contact
+        Get the name of login contact.
 
         Examples:
             >>> contact_self = bot.contact_self()
             >>> name = contact_self.name
 
         Returns:
-            the name of Login User
+            str: the name of Login User
         """
         return super().name
 
     async def set_name(self, name: str) -> None:
         """
-        set the name of login contact
+        Set the name of login contact.
 
         Args:
             name: new name
+
+        Examples:
+            >>> contact_self = bot.contact_self()
+            >>> await contact_self.set_name('new name')
         """
         await self.puppet.contact_self_name(name)
         await self.ready(force_sync=True)
 
     async def signature(self, signature: str) -> Any:
         """
+        Set the signature of login contact.
 
-        :param signature:
-        :return:
+        Args:
+            signature: new signature
+
+        Examples:
+            >>> contact_self = bot.contact_self()
+            >>> await contact_self.signature('new signature')
+        
+        Raises:
+            WechatyOperationError: if there is login exception, it will not set the signature
+            WechatyOperationError: if the contact is not self, it will not set the signature
+        
+        Returns:
+            Any: the signature of login user
         """
         puppet_id = self.puppet.self_id()
 
