@@ -10,7 +10,8 @@ module = [
     "pytest.*",
     "grpclib.*",
     "lxml.*",
-    "apscheduler.*"
+    "apscheduler.*",
+    "pyee.*"
 ]
 ignore_missing_imports = true
 

@@ -23,6 +23,7 @@ from __future__ import annotations
 import asyncio
 from logging import Logger
 import os
+import sys
 import re
 from abc import ABC
 from collections import OrderedDict
@@ -39,8 +40,11 @@ from typing import (
     Dict,
     Union,
     Any,
-    cast, Tuple
+    cast, Tuple,
+    Callable,
+    Coroutine
 )
+import signal
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -140,6 +144,32 @@ def _list_routes_txt(app: Quart) -> List[str]:
             row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip()
         )
     return routes_txt
+
+
+async def get_shutdown_trigger() -> Callable[[], Coroutine[Any, Any, Any]]:
+    """register the system shutdown trigger event"""
+    signal_event = asyncio.Event()
+    loop = asyncio.get_event_loop()
+
+    def _signal_handler(*_: Any) -> None:  # noqa: N803
+        print('receive signal event ...')
+        signal_event.set()
+
+    for signal_name in ["SIGINT", "SIGTERM", "SIGBREAK"]:
+        if hasattr(signal, signal_name):
+            try:
+                loop.add_signal_handler(getattr(signal, signal_name), _signal_handler)
+            except NotImplementedError:
+                # Add signal handler may not be implemented on Windows
+                signal.signal(getattr(signal, signal_name), _signal_handler)
+
+    return signal_event.wait
+
+
+async def shutdown(trigger: Callable[[], Coroutine[Any, Any, Any]]) -> None:
+    """when trigger the shutdown, it will call sys.exit"""
+    await trigger()
+    sys.exit(0)
 
 
 @dataclass
@@ -638,18 +668,19 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
-        # shutdown_trigger = await get_shutdown_trigger()
+        shutdown_trigger = await get_shutdown_trigger()
         task = self.app.run_task(
             host=host,
             port=port,
             use_reloader=False,
-            # shutdown_trigger=shutdown_trigger
+            shutdown_trigger=shutdown_trigger
         )
         loop = asyncio.get_event_loop()
         loop.create_task(task)
-        # loop.create_task(
-        #     shutdown(shutdown_trigger)
-        # )
+
+        loop.create_task(
+            shutdown(shutdown_trigger)
+        )
 
         for route_txt in routes_txt:
             log.info(route_txt)

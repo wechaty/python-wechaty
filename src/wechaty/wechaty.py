@@ -25,7 +25,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import sys
 import traceback
 from datetime import datetime
 from dataclasses import dataclass
@@ -33,14 +32,12 @@ from typing import (
     # TYPE_CHECKING,
     Any,
     Callable,
-    Coroutine,
     Optional,
     Type,
     List,
     Union,
     cast,
 )
-import signal
 
 import requests.exceptions
 from grpclib.exceptions import StreamTerminatedError
@@ -108,32 +105,6 @@ log: logging.Logger = get_logger('Wechaty')
 DEFAULT_TIMEOUT = 300
 
 PuppetModuleName = str
-
-
-async def get_shutdown_trigger() -> Callable[[], Coroutine[Any, Any, Any]]:
-    """register the system shutdown trigger event"""
-    signal_event = asyncio.Event()
-    loop = asyncio.get_event_loop()
-
-    def _signal_handler(*_: Any) -> None:  # noqa: N803
-        print('receive signal event ...')
-        signal_event.set()
-
-    for signal_name in ["SIGINT", "SIGTERM", "SIGBREAK"]:
-        if hasattr(signal, signal_name):
-            try:
-                loop.add_signal_handler(getattr(signal, signal_name), _signal_handler)
-            except NotImplementedError:
-                # Add signal handler may not be implemented on Windows
-                signal.signal(getattr(signal, signal_name), _signal_handler)
-
-    return signal_event.wait
-
-
-async def shutdown(trigger: Callable[[], Coroutine[Any, Any, Any]]) -> None:
-    """when trigger the shutdown, it will call sys.exit"""
-    await trigger()
-    sys.exit(0)
 
 
 # pylint: disable=too-many-instance-attributes
