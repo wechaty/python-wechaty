@@ -67,6 +67,8 @@ SUPPORTED_MESSAGE_FILE_TYPES: List[MessageType] = [
 # pylint: disable=R0904,R0903
 class Message(Accessory[MessagePayload]):
     """
+    接受和发送的消息都封装成Message对象。
+
     All of wechaty messages will be encapsulated as a Message object.
 
     you can get all of message attribute through publish method.
@@ -86,14 +88,14 @@ class Message(Accessory[MessagePayload]):
     def message_type(self) -> MessageType:
         """
         get the message type
-        for more details, please refer to : https://github.com/wechaty/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
+        Notes:
+            for more details, please refer to : https://github.com/wechaty/grpc/blob/master/proto/wechaty/puppet/message.proto#L9
         """
         return self.payload.type
 
     def __str__(self) -> str:
         """
         format string for message, which keep consistant with wechaty/wechaty
-
         refer to : https://github.com/wechaty/wechaty/blob/master/src/user/message.ts#L195
         """
         if not self.is_ready():
@@ -119,12 +121,20 @@ class Message(Accessory[MessagePayload]):
         send the message to the conversation envrioment which is source of this message.
 
         If this message is from room, so you can send message to this room.
-        If this message is from contact, so you can send message to this contact, not to room.
 
+        If this message is from contact, so you can send message to this contact, not to room.
         Args:
             msg: the message object which can be type of str/Contact/FileBox/UrlLink/MiniProgram
             mention_ids: you can send message with `@person`, the only things you should do is to
                 set contact_id to mention_ids.
+        Examples:
+            >>> message.say('hello')
+            >>> message.say(Contact('contact_id'))
+            >>> message.say(FileBox('file_path'))
+            >>> message.say(UrlLink('url'))
+            >>> message.say(MiniProgram('app_id'))
+        Returns:
+            Optional[Message]: if the message is sent successfully, return the message object.
         """
         log.info('say() <%s>', msg)
 
@@ -194,7 +204,8 @@ class Message(Accessory[MessagePayload]):
             text (Optional[str], optional): you can search message by sub-string of the text.
             to_id (Optional[str], optional): the id of receiver.
             message_type (Optional[MessageType], optional): the type of the message
-
+        Examples:
+            >>> message = Message.find(message_id='message_id')
         Returns:
             Optional[Message]: if find the messages, return the first of it.
                                if can't find message, return None
@@ -236,7 +247,8 @@ class Message(Accessory[MessagePayload]):
             text (Optional[str], optional): you can search message by sub-string of the text.
             to_id (Optional[str], optional): the id of receiver.
             message_type (Optional[MessageType], optional): the type of the message
-
+        Examples:
+            >>> message = Message.find_all(message_id='message_id')
         Returns:
             List[Message]: return all of the searched messages
         """
@@ -257,10 +269,12 @@ class Message(Accessory[MessagePayload]):
 
     def talker(self) -> Contact:
         """get the talker of the message
-
+        Args:
+            None
+        Examples:
+            >>> message.talker()
         Raises:
             WechatyPayloadError: can't find the talker information from the payload
-
         Returns:
             Contact: the talker contact object
         """
@@ -271,7 +285,10 @@ class Message(Accessory[MessagePayload]):
 
     def to(self) -> Optional[Contact]:
         """get the receiver, which is the Contact type, of the message
-
+        Args:
+            None
+        Examples:
+            >>> message.to()
         Returns:
             Optional[Contact]: if the message is private to contact, return the contact object
                 else return None
@@ -283,7 +300,10 @@ class Message(Accessory[MessagePayload]):
 
     def room(self) -> Optional[Room]:
         """get the room from the messge
-
+        Args:
+            None
+        Examples:
+            >>> msg.room()
         Returns:
             Optional[Room]: if the message is from room, return the contact object.
                 else return .
@@ -294,9 +314,13 @@ class Message(Accessory[MessagePayload]):
         return self.wechaty.Room.load(room_id)
 
     def chatter(self) -> Union[Room, Contact]:
-        """return the chat container object of the message. If the message is from room,
-        return the Room object. else return Contact object
+        """return the chat container object of the message. 
 
+        If the message is from room,return the Room object. else return Contact object
+        Args:
+            None
+        Examples:
+            >>> msg.chatter()
         Returns:
             Optional[Room, Contact]: return the room/contact object
         """
@@ -309,6 +333,14 @@ class Message(Accessory[MessagePayload]):
     def text(self) -> str:
         """
         get message text
+
+        获取对话的消息文本.
+        Args:
+            None
+        Examples:
+            >>> msg.text()
+        Returns:
+            str: the message text
         """
         if self.payload.text:
             return self.payload.text
@@ -317,6 +349,13 @@ class Message(Accessory[MessagePayload]):
     async def to_recalled(self) -> Message:
         """
         Get the recalled message
+
+        Args:
+            None
+        Examples:
+            >>> msg.to_recalled()
+        Returns:
+            Message: the recalled message
         """
         if self.message_type() != MessageType.MESSAGE_TYPE_RECALLED:
             raise WechatyOperationError(
@@ -343,6 +382,13 @@ class Message(Accessory[MessagePayload]):
     async def recall(self) -> bool:
         """
         Recall a message.
+
+        Args:
+            None
+        Example:
+            >>> msg.recall()
+        Returns:
+            bool: True if recall success, else False
         """
         log.info('Message recall')
         success = await self.puppet.message_recall(self.message_id)
@@ -358,14 +404,26 @@ class Message(Accessory[MessagePayload]):
     def type(self) -> MessageType:
         """
         Get the type from the message.
-        :return:
+
+        Args:
+            None
+        Examples:
+            >>> msg.type()
+        Returns:
+            MessageType: the message type
         """
         return self.payload.type
 
     def is_self(self) -> bool:
         """
         Check if a message is sent by self
-        :return:
+
+        Args:
+            None
+        Examples:
+            >>> msg.is_self()
+        Returns:
+            bool: True if message is sent by self, else False
         """
         login_user: ContactSelf = self.wechaty.user_self()
         talker = self.talker()
@@ -376,7 +434,13 @@ class Message(Accessory[MessagePayload]):
     async def mention_list(self) -> List[Contact]:
         """
         Get message mentioned contactList.
-        :return:
+
+        Args:
+            None
+        Examples:
+            >>> msg.mention_list()
+        Returns:
+            List[Contact]: the contact list mentioned in the message
         """
         log.info('Message mention_list')
         room = self.room()
@@ -404,7 +468,11 @@ class Message(Accessory[MessagePayload]):
     async def mention_text(self) -> str:
         """
         get mention text
-        :return:
+
+        Examples:
+            >>> msg.mention_text()
+        Returns:
+            str: the message text without mention
         """
         text = self.text()
         room = self.room()
@@ -437,7 +505,10 @@ class Message(Accessory[MessagePayload]):
     async def mention_self(self) -> bool:
         """
         Check if a message is mention self.
-        :return:
+        Examples:
+            >>> msg.mention_self()
+        Returns:
+            bool: True if message is mention self, else False
         """
         user_self: ContactSelf = self.wechaty.user_self()
 
@@ -452,6 +523,8 @@ class Message(Accessory[MessagePayload]):
     async def ready(self) -> None:
         """
         sync load message
+        Examples:
+            >>> msg.ready()
         """
         log.debug('Message ready <%s>', self)
         if self.is_ready():
@@ -471,9 +544,12 @@ class Message(Accessory[MessagePayload]):
 
     async def forward(self, to: Union[Room, Contact]) -> None:
         """
-        doc
-        :param to:
-        :return:
+        Forward a message to a room or a contact.
+        Args:
+            to: the room or contact to forward to
+        Examples:
+            >>> msg.forward(room)
+            >>> msg.forward(contact)
         """
         log.info('forward() <%s>', to)
         if to is None:
@@ -498,13 +574,24 @@ class Message(Accessory[MessagePayload]):
 
     def date(self) -> datetime:
         """
-        Message sent date
-        Python2.7: https://docs.python.org/2.7/library/datetime.html#datetime.datetime
-        Python3+ ：https://docs.python.org/3.7/library/datetime.html#datetime.datetime
-        for datetime.fromtimestamp. It’s common for this to be restricted to years from 1970 through 2038.
-        2145888000 is 2038-01-01 00:00:00 UTC for second
-        2145888000 is 1970-01-26 04:04:48 UTC for millisecond
-        :return:
+        Message sent date.
+
+        Note:
+            For difference between python2 and python3, please check the following link:
+            
+            - https://docs.python.org/2.7/library/datetime.html#datetime.datetime
+            - https://docs.python.org/3.7library/datetime.html#datetime.datetime
+            
+            for datetime.fromtimestamp. It’s common forthis to be restricted to years from 1970through 2038.
+            
+            `2145888000` is `2038-01-01 00:00:00 UTC` forsecond
+            
+            `2145888000` is `1970-01-26 04:04:48 UTC` formillisecond
+        
+        Examples:
+            >>> msg.date()
+        Returns:
+            datetime: message sent date
         """
         if self.payload.timestamp > 2145888000:
             time = datetime.fromtimestamp(self.payload.timestamp / 1000)
@@ -515,7 +602,8 @@ class Message(Accessory[MessagePayload]):
     def age(self) -> int:
         """
         Returns the message age in seconds.
-        :return:
+        Returns:
+            int: message age in seconds
         """
         return (datetime.now() - self.date()).seconds // 1000
 
@@ -523,12 +611,19 @@ class Message(Accessory[MessagePayload]):
         """
         Extract the Media File from the Message, and put it into the FileBox.
 
-        File MessageType is : {
-            MESSAGE_TYPE_ATTACHMENT,
-            MESSAGE_TYPE_EMOTICON,
-            MESSAGE_TYPE_IMAGE,
-            MESSAGE_TYPE_VIDEO
-        }
+        Notes:
+            ```
+            File MessageType is : {
+                MESSAGE_TYPE_ATTACHMENT,
+                MESSAGE_TYPE_EMOTICON,
+                MESSAGE_TYPE_IMAGE,
+                MESSAGE_TYPE_VIDEO
+            }
+            ```
+        Examples:
+            >>> msg.to_file_box()
+        Returns:
+            FileBox: file box
         """
         log.info('Message to FileBox')
         if self.type() not in SUPPORTED_MESSAGE_FILE_TYPES:
@@ -548,7 +643,10 @@ class Message(Accessory[MessagePayload]):
         """
         Extract the Image File from the Message, so that we can use
         different image sizes.
-        :return:
+        Examples:
+            >>> msg.to_image()
+        Returns:
+            Image: image
         """
         log.info('Message to Image() for message %s', self.message_id)
         if self.type() != MessageType.MESSAGE_TYPE_IMAGE:
@@ -563,7 +661,10 @@ class Message(Accessory[MessagePayload]):
         Get Share Card of the Message
         Extract the Contact Card from the Message, and encapsulate it into
          Contact class
-        :return:
+        Examples:
+            >>> msg.to_contact()
+        Returns:
+            Contact: contact
         """
         log.info('Message to Contact')
         if self.type() != MessageType.MESSAGE_TYPE_CONTACT:
@@ -581,7 +682,10 @@ class Message(Accessory[MessagePayload]):
     async def to_url_link(self) -> UrlLink:
         """
         get url_link from message
-        :return:
+        Examples:
+            >>> msg.to_url_link()
+        Returns:
+            UrlLink: url_link
         """
         log.info('Message to UrlLink')
         if self.type() != MessageType.MESSAGE_TYPE_URL:
@@ -599,7 +703,10 @@ class Message(Accessory[MessagePayload]):
     async def to_mini_program(self) -> MiniProgram:
         """
         get message mini_program
-        :return:
+        Examples:
+            >>> msg.to_mini_program()
+        Returns:
+            MiniProgram: mini_program
         """
         log.info('Message to MiniProgram <%s>', self.message_id)
 
