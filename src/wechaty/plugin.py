@@ -441,7 +441,9 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
             value (str): the new cache dir
         """
         if not self._cache_dir:
-            self.logger.warning(f'there is already cache_dir<{self._cache_dir}>')
+            self.logger.warning(
+                'there is already cache_dir<%s>', self._cache_dir
+            )
 
         os.makedirs(value, exist_ok=True)
         self._cache_dir = value
