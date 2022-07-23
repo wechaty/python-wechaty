@@ -393,6 +393,7 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
             options = WechatyPluginOptions()
         self.options = options
         self._default_logger: Optional[Logger] = None
+        self._cache_dir: Optional[str] = None
 
     def set_bot(self, bot: Wechaty) -> None:
         """set bot instance to WechatyPlugin
@@ -431,6 +432,19 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         _cache_dir = os.path.join('.wechaty', self.name)
         os.makedirs(_cache_dir, exist_ok=True)
         return _cache_dir
+
+    @cache_dir.setter
+    def cache_dir(self, value: str) -> None:
+        """set the cache dir although there is already set
+
+        Args:
+            value (str): the new cache dir
+        """
+        if not self._cache_dir:
+            self.logger.warning(f'there is already cache_dir<{self._cache_dir}>')
+
+        os.makedirs(value, exist_ok=True)
+        self._cache_dir = value
 
     @property
     def logger(self) -> Logger:
