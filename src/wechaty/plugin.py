@@ -512,7 +512,7 @@ def _load_default_plugins() -> List[WechatyPlugin]:
     # TODO: to be implemented
 
 
-class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
+class WechatyPluginManager(WechatyEventMixin, WechatySchedulerMixin):     # pylint: disable=too-many-instance-attributes
     """manage the wechaty plugin, It will support some features."""
 
     def __init__(
