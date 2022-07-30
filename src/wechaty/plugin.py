@@ -512,7 +512,7 @@ def _load_default_plugins() -> List[WechatyPlugin]:
     # TODO: to be implemented
 
 
-class WechatyPluginManager(WechatyEventMixin, WechatySchedulerMixin):     # pylint: disable=too-many-instance-attributes
+class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
     """manage the wechaty plugin, It will support some features."""
 
     def __init__(
@@ -589,7 +589,9 @@ class WechatyPluginManager(WechatyEventMixin, WechatySchedulerMixin):     # pyli
                 log.warning('plugin : %s has exist', plugin.name)
                 return
             plugin_instance = plugin
-
+        
+        # set the scheduler
+        plugin.scheduler = self.scheduler
         self._plugins[plugin_instance.name] = plugin_instance
         # default wechaty plugin status is Running
         self._plugin_status[plugin_instance.name] = PluginStatus.Running
@@ -662,6 +664,7 @@ class WechatyPluginManager(WechatyEventMixin, WechatySchedulerMixin):     # pyli
             plugin.set_bot(self._wechaty)
             await plugin.init_plugin(self._wechaty)
             await plugin.blueprint(self.app)
+        self.scheduler.start()
         # check the host & port configuration
 
         # pylint: disable=W0212
