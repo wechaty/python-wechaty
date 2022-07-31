@@ -23,14 +23,12 @@ from enum import Enum
 import os
 from typing import Any, Optional, List, Dict, Union
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 from quart import jsonify, Response
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from wechaty.config import config
 
 
-@dataclass_json
 @dataclass
 class NavMetadata:
     """nav metadata"""
@@ -41,7 +39,6 @@ class NavMetadata:
     icon: Optional[str] = None    # avatar of author
 
 
-@dataclass_json
 @dataclass
 class NavDTO:
     """the data transfer object of plugin list"""
