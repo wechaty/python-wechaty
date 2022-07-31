@@ -62,6 +62,8 @@ from wechaty_puppet import (
     ScanStatus
 )
 
+from .config import config
+
 from .exceptions import (
     WechatyPluginError,
 )
@@ -182,7 +184,7 @@ class WechatyPluginOptions:
 @dataclass
 class WechatySchedulerOptions:
     """options for wechaty scheduler"""
-    job_store: Union[str, SQLAlchemyJobStore] = 'sqlite:///.wechaty/job.db'
+    job_store: Union[str, SQLAlchemyJobStore] = f'sqlite:///{config.cache_dir}/job.db'
     job_store_alias: str = 'wechaty-scheduler'
 
 
@@ -198,7 +200,7 @@ class WechatySchedulerMixin:
     _scheduler_field: str = "_scheduler"
 
     scheduler_job_alias: str = 'wechaty_scheduler'
-    scheduler_db_file: str = '.wechaty/job.db'
+    scheduler_db_file: str = f'{config.cache_dir}/job.db'
 
     @property
     def scheduler(self) -> AsyncIOScheduler:
@@ -429,7 +431,7 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
 
         this is friendly for code typing
         """
-        _cache_dir = os.path.join('.wechaty', self.name)
+        _cache_dir = os.path.join(config.cache_dir, self.name)
         os.makedirs(_cache_dir, exist_ok=True)
         return _cache_dir
 
