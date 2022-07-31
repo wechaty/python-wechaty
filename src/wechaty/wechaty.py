@@ -740,8 +740,8 @@ I suggest that you should follow the template code from: https://wechaty.readthe
 
         # Using metaclass to create a dynamic subclass to server multi bot instances.
         meta_info = dict(_puppet=self.puppet, _wechaty=self, abstract=False)
-        self.Contact = type('Contact', (Contact,), meta_info)
         self.ContactSelf = type('ContactSelf', (ContactSelf,), meta_info)
+        self.Contact = type('Contact', (Contact,), meta_info)
         self.Favorite = type('Favorite', (Favorite,), meta_info)
         self.Friendship = type('Friendship', (Friendship,), meta_info)
         self.Image = type('Image', (Image,), meta_info)

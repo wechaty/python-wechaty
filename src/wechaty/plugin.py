@@ -21,6 +21,8 @@ limitations under the License.
 from __future__ import annotations
 
 import asyncio
+from dataclasses import asdict
+import inspect
 from logging import Logger
 import os
 import sys
@@ -28,11 +30,10 @@ import re
 from abc import ABC
 from collections import OrderedDict
 from copy import deepcopy
-from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 from telnetlib import Telnet
 import socket
+import json
 from typing import (
     TYPE_CHECKING,
     Iterable,
@@ -51,7 +52,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from quart import Quart
+from quart import Quart, request, send_file, Response
 from quart_cors import cors
 
 from wechaty_puppet import (
@@ -62,6 +63,18 @@ from wechaty_puppet import (
     EventReadyPayload,
     ScanStatus
 )
+
+from wechaty.schema import (
+    NavDTO,
+    NavMetadata,
+    PluginStatus,
+    StaticFileCacher,
+    WechatyPluginOptions,
+    WechatySchedulerOptions,
+    success,
+    error
+)
+from wechaty.types import EndPoint
 
 from .config import config
 
@@ -173,26 +186,6 @@ async def shutdown(trigger: Callable[[], Coroutine[Any, Any, Any]]) -> None:
     """when trigger the shutdown, it will call sys.exit"""
     await trigger()
     sys.exit(0)
-
-
-@dataclass
-class WechatyPluginOptions:
-    """options for wechaty plugin"""
-    name: Optional[str] = None
-    metadata: Optional[dict] = None
-
-
-@dataclass
-class WechatySchedulerOptions:
-    """options for wechaty scheduler"""
-    job_store: Union[str, SQLAlchemyJobStore] = f'sqlite:///{config.cache_dir}/job.db'
-    job_store_alias: str = 'wechaty-scheduler'
-
-
-class PluginStatus(Enum):
-    """plugin running status"""
-    Running = 0
-    Stopped = 1
 
 
 class WechatySchedulerMixin:
@@ -388,6 +381,12 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
 
     listen events from
     """
+    AUTHOR = "wechaty"
+    AVATAR = 'https://avatars.githubusercontent.com/u/10242208?v=4'
+    AUTHOR_LINK = "https://github.com/wj-Mcat"
+    ICON = "https://wechaty.js.org/img/wechaty-icon.svg"
+    VIEW_URL = None
+    UI_DIR = None
 
     def __init__(self, options: Optional[WechatyPluginOptions] = None):
         self.output: Dict[str, Any] = {}
@@ -397,6 +396,60 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         self.options = options
         self._default_logger: Optional[Logger] = None
         self._cache_dir: Optional[str] = None
+
+        self.setting_file: str = os.path.join(self.cache_dir, 'setting.json')
+
+    def metadata(self) -> NavMetadata:
+        """get the default nav metadata
+
+        Returns:
+            NavMetadata: the instance of metadata
+        """
+        return NavMetadata(
+            author=self.AUTHOR,
+            author_link=self.AUTHOR_LINK,
+            icon=self.ICON,
+            avatar=self.AVATAR,
+            view_url=self.VIEW_URL
+        )
+
+    @property
+    def setting(self) -> dict:
+        """get the setting of a plugin"""
+        with open(self.setting_file, 'r', encoding='utf-8') as f:
+            setting = json.load(f)
+        return setting
+
+    @setting.setter
+    def setting(self, value: dict) -> None:
+        """update the plugin setting"""
+        with open(self.setting_file, 'w', encoding='utf-8') as f:
+            json.dump(value, f, ensure_ascii=True)
+
+    def get_ui_dir(self) -> Optional[str]:
+        """get the ui asset dir
+        """
+        # 1. get the customized ui dir according to the static UI_DIR attribute
+        if self.UI_DIR:
+            if os.path.exists(self.UI_DIR):
+                self.logger.info("finding the UI_DIR<%s> for plugin<%s>", self.UI_DIR, type(self))
+                return self.UI_DIR
+
+        # 2. get the default uidir: ui/dist
+        plugin_dir_path = inspect.getsourcefile(self.__class__)
+        if plugin_dir_path is None:
+            return None
+        plugin_dir = os.path.dirname(str(plugin_dir_path))
+        ui_dir = os.path.join(plugin_dir, 'ui')
+        if os.path.exists(ui_dir):
+            self.logger.info("finding the UI_DIR<%s> for plugin<%s>", ui_dir, type(self))
+            return ui_dir
+
+        self.logger.warning(
+            'the registered UI_DIR<%s> not exist, so to fetch default ui dir',
+            self.UI_DIR
+        )
+        return None
 
     def set_bot(self, bot: Wechaty) -> None:
         """set bot instance to WechatyPlugin
@@ -503,18 +556,6 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         """hook the plugin event when active"""
 
 
-PluginTree = Dict[str, Union[str, List[str]]]
-EndPoint = Tuple[str, int]
-
-
-def _load_default_plugins() -> List[WechatyPlugin]:
-    """
-    load the system default plugins to enable more default features
-    Returns:
-    """
-    # TODO: to be implemented
-
-
 class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
     """manage the wechaty plugin, It will support some features."""
 
@@ -542,6 +583,83 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
 
             scheduler.add_jobstore(scheduler_options.job_store, scheduler_options.job_store_alias)
         self.scheduler: AsyncIOScheduler = scheduler
+
+        self.static_file_cacher = StaticFileCacher()
+
+    async def register_ui_view(self, app: Quart) -> None:
+        """register the system ui view"""
+        @app.route('/plugins/list')
+        async def get_plugins_nav() -> Response:
+
+            navs = []
+            for plugin in self.plugins():
+                nav = NavDTO(
+                    name=plugin.name,
+                    status=int(
+                        self._plugin_status[plugin.name] == PluginStatus.Running
+                    ))
+                nav.update_metadata(plugin.metadata())
+                navs.append(asdict(nav))
+            return success(navs)
+
+        @app.route('/plugins/status', methods=["POST", 'PUT'])
+        async def change_status() -> Response:
+            data = await request.get_json()
+            name = data.get('plugin_name', None)
+            status = data.get('status', None)
+            if name is None or status is None:
+                return error('the plugin_name and status field is required ...')
+            status = int(status)
+            if status == 0:
+                await self.stop_plugin(name)
+            elif status == 1:
+                await self.start_plugin(name)
+            else:
+                return error("unexpected plugin status, which should be one of<Stopped, Running>")
+            return success('changes success ...')
+
+        @app.route('/plugins/setting', methods=['GET'])
+        async def get_plugin_setting() -> Response:
+            name = request.args.get('plugin_name', None)
+            if name is None:
+                return error('plugin_name field is required')
+
+            if name not in self._plugins:
+                return error(f'plugin<{name}> not exist ...')
+            plugin: WechatyPlugin = self._plugins[name]
+
+            config_entry = 'get_setting'
+            if not hasattr(plugin, config_entry):
+                return error(f'this plugin<{name}> contains no setting ...')
+
+            return success(plugin.setting)
+
+        @app.route('/plugins/setting', methods=['POST', 'PUT'])
+        async def update_plugin_setting() -> Response:
+            data: dict = await request.get_json()
+            if 'setting' not in data:
+                return error("setting field is required ...")
+
+            name = data.get('plugin_name', None)
+            if not name:
+                return error("plugin_name field is required ...")
+
+            if name not in self._plugins:
+                return error(f'plugin<{name}> not exist ...')
+
+            plugin: WechatyPlugin = self._plugins[name]
+            plugin.setting = data['setting']
+            return success(None)
+
+        @app.route("/js/<string:name>", methods=['GET'])
+        @app.route("/css/<string:name>", methods=['GET'])
+        @app.route("/img/<string:name>", methods=['GET'])
+        async def get_all_static_file(name: str) -> Response:
+            file_path = self.static_file_cacher.find_file_path(name)
+            if not file_path:
+                return Response('')
+            response = await send_file(file_path)
+            return response
 
     # pylint: disable=R1711
     @staticmethod
@@ -594,6 +712,8 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
             plugin_instance = plugin
 
         # set the scheduler
+        self.static_file_cacher.add_dir(plugin_instance.cache_dir)
+
         plugin_instance.scheduler = self.scheduler
         self._plugins[plugin_instance.name] = plugin_instance
         # default wechaty plugin status is Running
@@ -689,12 +809,16 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         # 3. list all valid endpoints in web service
         # checking the number of registered blueprints
         routes_txt = _list_routes_txt(self.app)
-        # if len(routes_txt) == 0:
-        #     log.warning(
-        #         'there is not registed blueprint in the plugins, '
-        #         'so bot will not start the web service'
-        #     )
-        #     return
+        if len(routes_txt) == 0:
+            log.warning(
+                'there is not registed blueprint in the plugins, '
+                'so bot will not start the web service'
+            )
+            return
+
+        await self.register_ui_view(self.app)
+        # re-fetch the routes info
+        routes_txt = _list_routes_txt(self.app)
 
         log.info('============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
