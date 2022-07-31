@@ -29,7 +29,6 @@ from wechaty_puppet import (
     get_logger
 )
 
-from wechaty.exceptions import WechatyConfigurationError
 
 log = get_logger('Config')
 
@@ -37,6 +36,7 @@ log = get_logger('Config')
 # log.info('test logging info')
 
 
+# TODO(wj-Mcat): there is no reference usage, so need to be removed
 _FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_PATH = os.path.realpath(
     os.path.join(
@@ -90,40 +90,23 @@ def valid_api_host(api_host: str) -> bool:
 
 class Config:
     """
-    store python-wechaty configuration
+    get the configuration from the environment variables
     """
-    # pylint: disable=R0913
-    def __init__(self,
-                 api_host: Optional[str] = None,
-                 token: Optional[str] = None,
-                 protocol: Optional[str] = None,
-                 http_port: Optional[int] = None,
-                 name: str = 'python-wechaty',
-                 debug: bool = True,
-                 docker: bool = False):
+    def __init__(self) -> None:
+        self._cache_dir: Optional[str] = None
+
+    @property
+    def cache_dir(self) -> str:
+        """get the cache dir in the lazy loading mode
+
+        Returns:
+            str: the path of cache dir
         """
-        initialize the configuration
-        """
-        self.default = DefaultSetting
-
-        self.api_host = api_host if api_host is not None \
-            else DefaultSetting.default_api_host
-
-        self.http_port = http_port if http_port is not None \
-            else DefaultSetting.default_port
-
-        self.protocol = protocol if protocol is not None \
-            else DefaultSetting.default_protocol
-
-        if token is None:
-            raise WechatyConfigurationError('token can"t be None')
-
-        self.name = name
-        self.debug = debug
-        self.docker = docker
-
-        if self.api_host is not None and not valid_api_host(self.api_host):
-            raise WechatyConfigurationError(f'api host %s is not valid {self.api_host}')
+        if self._cache_dir is not None:
+            return self._cache_dir
+        self._cache_dir = os.environ.get("CACHE_DIR", '.wechaty')
+        assert self._cache_dir is not None
+        return self._cache_dir
 
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
@@ -141,3 +124,6 @@ def qr_code_for_chatie() -> FileBox:
     chatie_official_account_qr_code: str = \
         'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
     return FileBox.from_qr_code(chatie_official_account_qr_code)
+
+
+config = Config()
