@@ -584,10 +584,24 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
             scheduler.add_jobstore(scheduler_options.job_store, scheduler_options.job_store_alias)
         self.scheduler: AsyncIOScheduler = scheduler
 
-        self.static_file_cacher = StaticFileCacher()
+        self.static_file_cacher = StaticFileCacher([
+            os.path.join(os.path.dirname(__file__), 'ui')
+        ])
 
     async def register_ui_view(self, app: Quart) -> None:
         """register the system ui view"""
+        @app.route('/')
+        async def wechaty_ui_home_page() -> Response:
+            """home page of wechaty ui"""
+            response = await send_file(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    'ui',
+                    'index.html'
+                )
+            )
+            return response
+
         @app.route('/plugins/list')
         async def get_plugins_nav() -> Response:
 
