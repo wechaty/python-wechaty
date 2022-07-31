@@ -1,4 +1,4 @@
 include LICENSE README.md VERSION
 recursive-include src **/*.py
-recursive-include src **/*.pyi
-recursive-exclude src **/*_test.py
+recursive-include src **/*.pyi **/ui/
+recursive-exclude src **/*_test.py **/__pycache__ **/.mypy_cache

@@ -20,7 +20,7 @@ all : clean lint
 
 .PHONY: clean
 clean:
-	rm -fr dist/* .pytype ./src/wechaty/**/*.pyi ./src/wechaty/*.pyi
+	rm -fr dist/* .pytype src/wechaty/ui ui/
 
 .PHONY: lint
 lint: pylint pycodestyle flake8 mypy
@@ -112,6 +112,10 @@ code:
 .PHONY: run
 run:
 	python3 bin/run.py
+
+.PHONY: ui
+ui:
+	./scripts/build_ui.sh
 
 .PHONY: dist
 dist:

@@ -92,9 +92,6 @@ class Config:
     """
     get the configuration from the environment variables
     """
-    def __init__(self) -> None:
-        self._cache_dir: Optional[str] = None
-
     @property
     def cache_dir(self) -> str:
         """get the cache dir in the lazy loading mode
@@ -102,11 +99,20 @@ class Config:
         Returns:
             str: the path of cache dir
         """
-        if self._cache_dir is not None:
-            return self._cache_dir
-        self._cache_dir = os.environ.get("CACHE_DIR", '.wechaty')
-        assert self._cache_dir is not None
-        return self._cache_dir
+        return os.environ.get("CACHE_DIR", '.wechaty')
+    
+    @property
+    def ui_dir(self) -> str:
+        """get the ui directory
+
+        Returns:
+            str: the path of the ui dir 
+        """
+        default_ui_dir = os.path.join(
+            os.path.dirname(__file__),
+            'ui'
+        )
+        return os.environ.get("UI_DIR", default_ui_dir)
 
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
