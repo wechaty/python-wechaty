@@ -3,7 +3,7 @@
 make clean
 git clone https://github.com/wechaty/wechaty-ui ui 
 cd ui
-cnpm i && cnpm run build
+npm i && npm run build
 
 # move the dist files to 
 echo "starting to copy files to the package ..."

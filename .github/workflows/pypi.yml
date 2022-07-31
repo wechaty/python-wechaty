@@ -71,7 +71,11 @@ jobs:
               echo ::set-output name=match::true
           fi  # See: https://stackoverflow.com/a/58869470/1123955
 
-      - name: Check Branch
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Building Wechaty-ui 
         id: build-ui
         run: |
           make ui
