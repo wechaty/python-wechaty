@@ -591,7 +591,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
                 log.warning('plugin : %s has exist', plugin.name)
                 return
             plugin_instance = plugin
-        
+
         # set the scheduler
         plugin.scheduler = self.scheduler
         self._plugins[plugin_instance.name] = plugin_instance

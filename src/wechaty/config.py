@@ -100,13 +100,13 @@ class Config:
             str: the path of cache dir
         """
         return os.environ.get("CACHE_DIR", '.wechaty')
-    
+
     @property
     def ui_dir(self) -> str:
         """get the ui directory
 
         Returns:
-            str: the path of the ui dir 
+            str: the path of the ui dir
         """
         default_ui_dir = os.path.join(
             os.path.dirname(__file__),
