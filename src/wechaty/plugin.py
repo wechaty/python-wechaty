@@ -593,7 +593,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
             plugin_instance = plugin
 
         # set the scheduler
-        plugin.scheduler = self.scheduler
+        plugin_instance.scheduler = self.scheduler
         self._plugins[plugin_instance.name] = plugin_instance
         # default wechaty plugin status is Running
         self._plugin_status[plugin_instance.name] = PluginStatus.Running
