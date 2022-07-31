@@ -35,6 +35,7 @@ from telnetlib import Telnet
 import socket
 from typing import (
     TYPE_CHECKING,
+    Iterable,
     List,
     Optional,
     Dict,
@@ -601,6 +602,15 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         # TODO(wj-Mcat): disable this event hook
         # await plugin_instance.on_loaded()
 
+    def plugins(self) -> Iterable[WechatyPlugin]:
+        """get all of registered plugins
+
+        Returns:
+            List[WechatyPlugin]: the list of wechaty plugins
+        """
+        for plugin in self._plugins.values():
+            yield plugin
+
     def remove_plugin(self, name: str) -> None:
         """remove plugin"""
         if name not in self._plugins:
@@ -682,7 +692,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         # if len(routes_txt) == 0:
         #     log.warning(
         #         'there is not registed blueprint in the plugins, '
-    #         'so bot will not start the web service'
+        #         'so bot will not start the web service'
         #     )
         #     return
 
