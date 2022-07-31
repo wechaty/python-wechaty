@@ -72,7 +72,7 @@ jobs:
           fi  # See: https://stackoverflow.com/a/58869470/1123955
 
       - name: Check Branch
-        id: check-branch
+        id: build-ui
         run: |
           make ui
 
