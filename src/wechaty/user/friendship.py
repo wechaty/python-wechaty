@@ -69,8 +69,10 @@ class Friendship(Accessory, Acceptable):
     def load(cls, friendship_id: str) -> Friendship:
         """
         load friendship without payload, which loads in a lazy way
-        :param friendship_id:
-        :return: initialized friendship
+        Args:
+            friendship_id: the id of the friendship
+        Returns:
+            Friendship: initialized friendship
         """
         return cls(friendship_id)
 
@@ -79,10 +81,18 @@ class Friendship(Accessory, Acceptable):
                      phone: Optional[str] = None) -> Optional[Contact]:
         """
         * Search a Friend by phone or weixin.
-        *
-        * The best practice is to search friend request once per minute.
-        * Remeber not to do this too frequently, or your account
-        * may be blocked.
+        * The best practice is to search friend request once per minute.\
+            Remeber not to do this too frequently, or your account \
+            will be blocked.
+
+        Args:
+            weixin: the weixin id of the contact
+            phone: the phone of the contact
+        Examples:
+            >>> friendship = await Friendship.search('phone')
+            >>> friendship.contact()
+        Returns:
+            Contact: the contact found
         """
         log.info('search() <%s, %s, %s>', cls, weixin, phone)
         friend_id = await cls.get_puppet().friendship_search(weixin=weixin,
@@ -97,6 +107,15 @@ class Friendship(Accessory, Acceptable):
     async def add(cls, contact: Contact, hello: str) -> None:
         """
         add friendship
+
+        Args:
+            contact: the contact to be added
+            hello: the hello message
+        Examples:
+            >>> contact = Contact.load('contact_id')
+            >>> await Friendship.add(contact, 'hello')
+        Returns:
+            None
         """
         log.info('add() <%s, %s>', contact.contact_id, hello)
         await cls.get_puppet().friendship_add(
@@ -135,14 +154,25 @@ class Friendship(Accessory, Acceptable):
     def contact(self) -> Contact:
         """
         get the contact of the friendship
+        Args:
+            None
+        Examples:
+            >>> contact = friendship.contact()
+        Returns:
+            Contact: the contact of the friendship
         """
-
         contact = self.wechaty.Contact.load(self.payload.contact_id)
         return contact
 
     async def accept(self) -> None:
         """
         accept friendship
+        Args:
+            None
+        Examples:
+            >>> await friendship.accept()
+        Returns:
+            None
         """
         log.info('accept friendship, friendship_id: <%s>', self.friendship_id)
         if self.type() != FriendshipType.FRIENDSHIP_TYPE_RECEIVE:
@@ -167,8 +197,13 @@ class Friendship(Accessory, Acceptable):
 
     def hello(self) -> str:
         """
-        TODO ->
-        Get verify message from
+        Get verify message from received friendship request
+        Args:
+            None
+        Examples:
+            >>> hello_msg = friendship.hello()
+        Returns:
+            str: the hello message
         """
         if self.payload.hello is None:
             hello_msg = ''
@@ -182,6 +217,19 @@ class Friendship(Accessory, Acceptable):
     def type(self) -> FriendshipType:
         """
         Return the Friendship Type
+        Note:
+            `FriendshipType` is an enumeration type
+
+             * FriendshipType.FriendshipTypeFRIENDSHIP_TYPE_UNSPECIFIED
+             * FriendshipType.FRIENDSHIP_TYPE_CONFIRM
+             * FriendshipType.FRIENDSHIP_TYPE_RECEIVE
+             * FriendshipType.FRIENDSHIP_TYPE_VERIFY
+        Args:
+            None
+        Examples:
+            >>> friendship.type()
+        Returns:
+            FriendshipType: the type of the friendship
         """
         if self.payload is None:
             return FriendshipType.FRIENDSHIP_TYPE_UNSPECIFIED
@@ -207,6 +255,12 @@ class Friendship(Accessory, Acceptable):
     ) -> Friendship:
         """
         create friendShip by friendshipJson
+        Args:
+            json_data: the json data of the friendship
+        Examples:
+            >>> friendship = Friendship.from_json(friendshipJson)
+        Returns:
+            Friendship: the friendship created
         """
         log.info('from_json() <%s>', json_data)
         if isinstance(json_data, str):
