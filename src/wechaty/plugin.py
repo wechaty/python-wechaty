@@ -642,10 +642,6 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
                 return error(f'plugin<{name}> not exist ...')
             plugin: WechatyPlugin = self._plugins[name]
 
-            config_entry = 'get_setting'
-            if not hasattr(plugin, config_entry):
-                return error(f'this plugin<{name}> contains no setting ...')
-
             return success(plugin.setting)
 
         @app.route('/plugins/setting', methods=['POST', 'PUT'])
