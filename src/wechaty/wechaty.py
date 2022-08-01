@@ -130,7 +130,11 @@ class WechatyOptions:
 # pylint:disable=R0902,R0904
 class Wechaty(AsyncIOEventEmitter):
     """
-    docstring
+    A robot is a Wechaty instance, \
+    and all user-related modules should be accessed through the instance, \
+    which ensures consistency of service connections. \
+    In addition, all logic should be organized in the form of plug-ins and \
+    event subscriptions to ensure isolation between different businesses.
     """
 
     _global_instance: Optional['Wechaty'] = None
@@ -142,7 +146,12 @@ class Wechaty(AsyncIOEventEmitter):
 
     def __init__(self, options: Optional[WechatyOptions] = None):
         """
-        docstring
+        init Wechaty instance
+        Args:
+            options: WechatyOptions
+        Examples:
+            >>> from wechaty import Wechaty
+            >>> bot = Wechaty()
         """
         super().__init__()
 
@@ -198,7 +207,10 @@ class Wechaty(AsyncIOEventEmitter):
     def puppet(self) -> Puppet:
         """
         Always expected to return a non-null puppet instance, or raise an error.
-        :return:
+        Args:
+            None
+        Returns:
+            Puppet: puppet instance
         """
         if not self._puppet:
             raise WechatyStatusError('Wechaty puppet not loaded!')
@@ -208,8 +220,10 @@ class Wechaty(AsyncIOEventEmitter):
     def _load_puppet(options: WechatyOptions) -> Puppet:
         """
         dynamic load puppet
-        :param options:
-        :return:
+        Args:
+            options: WechatyOptions
+        Returns:
+            Puppet: puppet instance
         """
         if options.puppet is None:
             raise WechatyConfigurationError('puppet not exist')
@@ -248,8 +262,11 @@ class Wechaty(AsyncIOEventEmitter):
     def instance(cls: Type[Wechaty], options: Optional[WechatyOptions] = None
                  ) -> Wechaty:
         """
-        get or create global wechaty instance
-        :return:
+        get or create global wechaty instance.
+        Args:
+            options: WechatyOptions
+        Returns:
+            Wechaty: global wechaty instance
         """
         log.info('instance()')
 
@@ -262,7 +279,12 @@ class Wechaty(AsyncIOEventEmitter):
         # return cls._global_instance
 
     def use(self, plugin: Union[WechatyPlugin, List[WechatyPlugin]]) -> Wechaty:
-        """register the plugin"""
+        """register the plugin
+        Args:
+            plugin: WechatyPlugin or List[WechatyPlugin]
+        Returns:
+            Wechaty: self
+        """
         if isinstance(plugin, WechatyPlugin):
             plugins = [plugin]
         else:
@@ -281,9 +303,15 @@ class Wechaty(AsyncIOEventEmitter):
     def on(self, event: str, f: Callable[..., Any] = None) -> Wechaty:
         """
         listen wechaty event
-        :param event:
-        :param f:
-        :return:
+        Args:
+            event: the event name, see at `WechatyEventName`.
+            listener: the function bind to event name, see at `WechatyEventFunction`.
+        Examples:
+            Event:scan
+            >>> bot.on('scan', lambda qrcode, status: print(qrcode, status))
+            >>> bot.start()
+        Returns:
+            Wechaty: self
         """
         log.info('on() listen event <%s> with <%s>', event, f)
         super().on(event, f)
@@ -292,10 +320,10 @@ class Wechaty(AsyncIOEventEmitter):
     def emit(self, event: str, *args: Any, **kwargs: Any) -> bool:
         """
         emit wechaty event
-        :param event:
-        :param args:
-        :param kwargs:
-        :return:
+        Args:
+            event: the event name need to emit, see at `WechatyEventName`.
+        Returns:
+            bool: True if emit success, False if emit failed.
         """
         log.debug('emit() event <%s> <%s>',
                   [str(item) for item in args],
@@ -395,7 +423,14 @@ class Wechaty(AsyncIOEventEmitter):
     async def start(self) -> None:
         """
         start wechaty bot
-        :return:
+        Args:
+            None
+        Examples:
+            >>> from wechaty import Wechaty
+            >>> bot = Wechaty()
+            >>> await bot.start()
+        Returns:
+            None
         """
 
         # If the network is shut-down, we should catch the connection
@@ -440,7 +475,17 @@ I suggest that you should follow the template code from: https://wechaty.readthe
             print(e)
 
     async def restart(self) -> None:
-        """restart the wechaty bot"""
+        """
+        restart the wechaty bot
+        Args:
+            None
+        Examples:
+            >>> from wechaty import Wechaty
+            >>> bot = Wechaty()
+            >>> await bot.restart()
+        Returns:
+            None
+        """
         log.info('restarting the bot ...')
         await self.stop()
         await self.start()
@@ -754,7 +799,13 @@ I suggest that you should follow the template code from: https://wechaty.readthe
 
     async def stop(self) -> None:
         """
-        stop the wechaty
+        stop the wechaty bot
+        Args:
+            None
+        Examples:
+            >>> await bot.stop()
+        Returns:
+            None
         """
         log.info('wechaty is stopping ...')
         await self.puppet.stop()
@@ -766,7 +817,14 @@ I suggest that you should follow the template code from: https://wechaty.readthe
     def user_self(self) -> ContactSelf:
         """
         get user self
-        :return:
+        Args:
+            None
+        Examples:
+            >>> from wechaty import Wechaty
+            >>> bot = Wechaty()
+            >>> contact = bot.user_self()
+        Returns:
+            ContactSelf: user self
         """
         user_id = self.puppet.self_id()
         user = self.ContactSelf.load(user_id)
@@ -777,6 +835,13 @@ I suggest that you should follow the template code from: https://wechaty.readthe
     def self(self) -> ContactSelf:
         """
         get user self
-        :return: user_self
+        Args:
+            None
+        Examples:
+            >>> from wechaty import Wechaty
+            >>> bot = Wechaty()
+            >>> contact = bot.self()
+        Returns:
+            ContactSelf: user self
         """
         return self.user_self()
