@@ -68,7 +68,12 @@ class Room(Accessory[RoomPayload]):
     _pool: Dict[str, 'Room'] = defaultdict()
 
     def __init__(self, room_id: str) -> None:
-        """docs"""
+        """
+        Room constructor, init room instance and set room_id.
+        The room_id depends on the puppet implementation.
+        Args:
+            room_id: room id
+        """
         super().__init__()
 
         self.room_id = room_id
@@ -78,13 +83,27 @@ class Room(Accessory[RoomPayload]):
     def on(self, event_name: str, func: Callable[..., Any]) -> None:
         """
         listen event for contact
-        event_name:
+        Args:
+            event_name: event name
+            func: callback function trigger by event
+        Examples:
+            >>> async def on_join(invitees, inviter):
+            >>>     print('on_join', invitees, inviter)
+            >>> room.on('join', on_join)
+        Returns:
+            None
         """
         self._event_stream.on(event_name, func)
 
     def emit(self, event_name: str, *args: Any, **kwargs: Any) -> None:
         """
         emit event for a specific
+        Args:
+            event_name: event name
+        Examples:
+            >>> room.emit('join')
+        Returns:
+            None
         """
         self._event_stream.emit(event_name, *args, **kwargs)
 
@@ -92,6 +111,13 @@ class Room(Accessory[RoomPayload]):
     async def create(cls, contacts: List[Contact], topic: str) -> Room:
         """
         create room instance
+        Args:
+            contacts: contact list
+            topic: room topic
+        Examples:
+            >>> room = await Room.create([contact1, contact2], 'topic')
+        Returns:
+            Room instance
         """
         if not hasattr(contacts, '__len__'):
             raise WechatyOperationError('contacts should be list type')
@@ -124,11 +150,12 @@ class Room(Accessory[RoomPayload]):
                       ) -> List[Room]:
         """
         filter rooms with query which can be string, RoomQueryFilter, or callable<filter> function
-
+        inner function for Room.find_all()
         Args:
             rooms: list of room
             query:  the query message
-        Returns: the filtered contacts
+        Returns:
+            the filtered contacts
         """
         func: Callable[[Room], bool]
 
@@ -190,8 +217,8 @@ class Room(Accessory[RoomPayload]):
             >>>         return True
             >>>     return False
 
-        Returns: the filtered rooms
-
+        Returns:
+            the filtered rooms
         """
         log.info('Room find_all <%s>', query)
 
@@ -247,6 +274,10 @@ class Room(Accessory[RoomPayload]):
     def load(cls, room_id: str) -> Room:
         """
         dynamic load room instance
+        Args:
+            room_id: the room id
+        Returns:
+            Room: the room instance
         """
         room = cls._pool.get(room_id)
         if room is not None:
@@ -259,6 +290,8 @@ class Room(Accessory[RoomPayload]):
     def __str__(self) -> str:
         """
         string format for room instance
+        Returns:
+            str: the string format of room instance
         """
         if self.payload is None:
             return self.__class__.__name__
@@ -271,6 +304,13 @@ class Room(Accessory[RoomPayload]):
     async def ready(self, force_sync: bool = False, load_members: bool = False) -> None:
         """
         Please not to use `ready()` at the user land.
+        Args:
+            force_sync: force sync the room data from puppet
+            load_members: load members of the room
+        Examples:
+            >>> await room.ready()
+        Returns:
+            None
         """
         if self.is_ready():
             return
@@ -310,7 +350,17 @@ class Room(Accessory[RoomPayload]):
                   mention_ids: Optional[List[str]] = None
                   ) -> Union[None, Message]:
         """
-        Room Say(%s, %s)
+        send message to room
+        Args:
+            some_thing: the message content
+            mention_ids: the list of contact id to be mentioned(@)
+        Examples:
+            >>> await room.say('Hello world!')
+            >>> await room.say(file_box)
+            >>> await room.say(contact_card)
+            >>> await room.say(urlLink)
+        Returns:
+            Message: the sent message or None if send failed
         """
         log.info('Room say <%s, %s>', some_thing, mention_ids)
 
@@ -378,11 +428,15 @@ class Room(Accessory[RoomPayload]):
     # TODO -> Event emit : on
     # '''
 
-    # async def on(self, event: str, listener: Callable):
-
     async def add(self, contact: Contact) -> None:
         """
         Add contact in a room
+        Args:
+            contact: the contact to be added
+        Examples:
+            >>> await room.add(contact)
+        Returns:
+            None
         """
         log.info('Room add <%s>', contact)
 
@@ -393,6 +447,14 @@ class Room(Accessory[RoomPayload]):
     async def delete(self, contact: Contact) -> None:
         """
         Delete contact in a room
+
+        It only works when bot is the owner of the room.
+        Args:
+            contact: the contact to be deleted
+        Examples:
+            >>> await room.delete(contact)
+        Returns:
+            None
         """
         log.info('Room delete<%s>', contact)
 
@@ -405,6 +467,10 @@ class Room(Accessory[RoomPayload]):
     async def quit(self) -> None:
         """
         Robot quit a room
+        Examples:
+            >>> await room.quit()
+        Returns:
+            None
         """
         log.info('Room quit <%s>', self)
 
@@ -413,6 +479,13 @@ class Room(Accessory[RoomPayload]):
     async def topic(self, new_topic: str = None) -> Optional[str]:
         """
         get/set room topic
+        Args:
+            new_topic: the new topic
+        Examples:
+            >>> old_topic = await room.topic()
+            >>> new_topic = await room.topic('Wechaty!')
+        Returns:
+            Optional[str]: the room topic
         """
         log.info('Room topic (%s)', new_topic)
 
@@ -460,6 +533,13 @@ class Room(Accessory[RoomPayload]):
         SET/GET announce from the room
 
         It only works when bot is the owner of the room.
+        Args:
+            announce_text: the new announce text
+        Examples:
+            >>> old_announce = await room.announce()
+            >>> new_announce = await room.announce('new wechaty!')
+        Returns:
+            Optional[str]: the room announce
         """
 
         log.info('Room announce (%s)', announce_text)
@@ -478,9 +558,15 @@ class Room(Accessory[RoomPayload]):
         Get QR Code Value of the Room from the room, which can be used as
         scan and join the room.
 
-        'Wechaty Puppet Unsupported API Error. Learn More At
-        https://github.com/wechaty/wechaty-puppet/wiki/Compatibility', None)>
+        Wechaty Puppet Unsupported API Error. Learn More At \
+            [this URL](https://github.com/wechaty/wechaty-puppet/wiki/Compatibility)
 
+        Args:
+            None
+        Examples:
+            >>> qr_code = await room.qr_code()
+        Returns:
+            str: the qr code value of the room
         """
         log.info('qr_code()')
         qr_code_str = await self.puppet.room_qr_code(self.room_id)
@@ -490,10 +576,17 @@ class Room(Accessory[RoomPayload]):
         """
         Return contact's roomAlias in the room
 
-        TODO -> 'Wechaty Puppet Unsupported API Error. Learn More At
-        https://github.com/wechaty/wechaty-puppet/wiki/Compatibility', None)>
+        TODO -> 'Wechaty Puppet Unsupported API Error. Learn More At \
+            [this URL](https://github.com/wechaty/wechaty-puppet/wiki/Compatibility)
 
         the result of the function will always return an empty string
+
+        Args:
+            member: the contact in the room
+        Examples:
+            >>> room_alias = await room.alias(member)
+        Returns:
+            Optional[str]: the alias of the contact in the room
         """
         if member is None:
             raise WechatyOperationError('member can"t be none')
@@ -509,6 +602,12 @@ class Room(Accessory[RoomPayload]):
         """
         Check if the room has member `contact`, the return is a Promise and
         must be `await`-ed
+        Args:
+            contact: the contact to be checked
+        Examples:
+            >>> res = await room.has(contact)
+        Returns:
+            bool: True if the room has member `contact`, False otherwise
         """
         if self.payload is None:
             await self.ready()
@@ -520,6 +619,12 @@ class Room(Accessory[RoomPayload]):
                           ) -> List[Contact]:
         """
         Get all room member from the room
+        Args:
+            query: the query filter
+        Examples:
+            >>> members = await room.member_list()
+        Returns:
+            List[Contact]: the list of all room member
         """
         log.info('Get room <%s> all members', self)
 
@@ -569,8 +674,13 @@ class Room(Accessory[RoomPayload]):
         """
         Find all contacts in a room, if get many, return the first one.
 
-        # TODO -> need to refactoring this function
-
+        TODO -> need to refactoring this function
+        Args:
+            query: the query filter
+        Examples:
+            >>> member = await room.member('lijiarui')
+        Returns:
+            Optional[Contact]: the first contact in the room
         """
         log.info('Room member search <%s>', query)
 
@@ -582,6 +692,12 @@ class Room(Accessory[RoomPayload]):
     async def owner(self) -> Optional[Contact]:
         """
         get room owner
+        Args:
+            None
+        Examples:
+            >>> owner = await room.owner()
+        Returns:
+            Optional[Contact]: the room owner
         """
         log.info('Room <%s> owner', self)
         await self.ready()
@@ -596,6 +712,12 @@ class Room(Accessory[RoomPayload]):
     async def avatar(self) -> FileBox:
         """
         get the avatar of the room
+        Args:
+            None
+        Examples:
+            >>> avatar = await room.avatar()
+        Returns:
+            FileBox: the avatar of the room
         """
         log.info('avatar() <%s>', self)
 
