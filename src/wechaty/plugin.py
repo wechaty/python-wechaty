@@ -75,6 +75,7 @@ from wechaty.schema import (
     error
 )
 from wechaty.types import EndPoint
+from wechaty.utils import HookDict
 
 from .config import config
 
@@ -396,8 +397,10 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         self.options = options
         self._default_logger: Optional[Logger] = None
         self._cache_dir: Optional[str] = None
-
         self.setting_file: str = os.path.join(self.cache_dir, 'setting.json')
+
+        if not os.path.exists(self.setting_file):
+            self.setting = {}   # type: ignore
 
     def metadata(self) -> NavMetadata:
         """get the default nav metadata
@@ -414,17 +417,26 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         )
 
     @property
-    def setting(self) -> dict:
+    def setting(self) -> HookDict[str, Any]:
         """get the setting of a plugin"""
         with open(self.setting_file, 'r', encoding='utf-8') as f:
             setting = json.load(f)
-        return setting
 
-    @setting.setter
-    def setting(self, value: dict) -> None:
+        def set_item_hooks(_: str, __: Any, value: dict) -> None:
+            """hook set_item event, and save the setting"""
+            self._save_setting(value)
+
+        return HookDict(setting, set_item_hooks=set_item_hooks)
+
+    def _save_setting(self, value: dict) -> None:
         """update the plugin setting"""
         with open(self.setting_file, 'w', encoding='utf-8') as f:
             json.dump(value, f, ensure_ascii=True)
+
+    @setting.setter     # type: ignore
+    def setting(self, value: dict) -> None:
+        """update the plugin setting"""
+        self._save_setting(value)
 
     def get_ui_dir(self) -> Optional[str]:
         """get the ui asset dir
@@ -658,7 +670,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
                 return error(f'plugin<{name}> not exist ...')
 
             plugin: WechatyPlugin = self._plugins[name]
-            plugin.setting = data['setting']
+            plugin.setting = data['setting']    # type: ignore
             return success(None)
 
         @app.route("/js/<string:name>", methods=['GET'])
