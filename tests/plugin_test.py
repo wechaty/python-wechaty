@@ -11,6 +11,7 @@ def test_setting():
         plugin = WechatyPlugin()
         
         plugin.setting['unk'] = 11
+        plugin.setting['count'] += 20
 
         # load the setting file
         assert os.path.exists(plugin.setting_file)
@@ -19,3 +20,5 @@ def test_setting():
             data = json.load(f)
 
         assert data['unk'] == 11
+        assert data['count'] == 20
+

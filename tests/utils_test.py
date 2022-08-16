@@ -57,3 +57,6 @@ def test_hook_dict():
 
     data['1'] = 20
     assert data['1'] == 30
+
+    data['2'] += 10
+    assert data['2'] == 20
