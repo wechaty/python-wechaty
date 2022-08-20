@@ -71,3 +71,7 @@ class HookDict(MutableMapping[_KT, _VT], Generic[_KT, _VT]):
     def __len__(self) -> int:
         """get the length of dict data"""
         return len(self._dict_data)
+
+    def to_dict(self) -> dict:
+        """get the source dict data"""
+        return self._dict_data

@@ -654,7 +654,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
                 return error(f'plugin<{name}> not exist ...')
             plugin: WechatyPlugin = self._plugins[name]
 
-            return success(plugin.setting)
+            return success(plugin.setting.to_dict())
 
         @app.route('/plugins/setting', methods=['POST', 'PUT'])
         async def update_plugin_setting() -> Response:
