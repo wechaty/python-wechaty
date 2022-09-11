@@ -54,7 +54,7 @@ from wechaty_puppet.schemas.types import (
     PayloadType
 
 )
-from pyee.asyncio import AsyncIOEventEmitter
+from pyee import AsyncIOEventEmitter
 
 
 class FakePuppet(Puppet):
