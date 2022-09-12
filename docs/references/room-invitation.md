@@ -2,30 +2,12 @@
 title: RoomInvitation
 ---
 
-对群聊邀请事件的封装
+> 对群聊邀请事件的封装
 
-## RoomInvitation
+::: wechaty.user.room_invitation.RoomInvitation.load
 
-接受群聊的邀请
-
-**类型**: 全局类
-
-* [RoomInvitation](room-invitation.md#RoomInvitation)
-  * [.accept\(\)](room-invitation.md#RoomInvitation+accept) ⇒ `None`
-  * [.inviter\(\)](room-invitation.md#RoomInvitation+inviter) ⇒ `Contact`
-  * [.topic\(\)](room-invitation.md#RoomInvitation+topic) ⇒ `str`
-  * [~~.roomTopic\(\)~~](room-invitation.md#RoomInvitation+roomTopic) ⇒ `str`
-  * [.date\(\)](room-invitation.md#RoomInvitation+date) ⇒ `datetime`
-  * [.age\(\)](room-invitation.md#RoomInvitation+age) ⇒ `int`
-
-### async def accept\(self\) ⇒ `None`
-
-接受群聊邀请
-
-**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
-
-#### 示例
-
+::: wechaty.user.room_invitation.RoomInvitation.accept
+### 示例代码
 ```python
 import asyncio
 from wechaty import Wechaty, RoomInvitation
@@ -44,14 +26,8 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### async def inviter\(self\) ⇒ `Contact`
-
-获取群聊邀请的邀请人
-
-**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
-
-#### 示例
-
+::: wechaty.user.room_invitation.RoomInvitation.inviter
+### 示例代码
 ```python
 import asyncio
 from wechaty import Wechaty, RoomInvitation
@@ -71,14 +47,8 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### async def topic\(self\) ⇒ `str`
-
-获取群聊邀请的群聊名
-
-**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
-
-#### 示例
-
+::: wechaty.user.room_invitation.RoomInvitation.topic
+### 示例代码
 ```python
 import asyncio
 from wechaty import Wechaty, RoomInvitation
@@ -96,21 +66,15 @@ class MyBot(Wechaty):
 asyncio.run(MyBot().start())
 ```
 
-### ~~async def roomTopic\(\)~~
+::: wechaty.user.room_invitation.RoomInvitation.member_count
 
-**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
-**已弃用:**: 请使用 topic\(\)
+::: wechaty.user.room_invitation.RoomInvitation.member_list
 
-### async def date\(self\) ⇒ `datetime`
+::: wechaty.user.room_invitation.RoomInvitation.date
 
-获取群聊邀请的日期
+::: wechaty.user.room_invitation.RoomInvitation.age
+> 举个例子, 有条群聊邀请是`8:43:01`发送的, 而当我们在Wechaty中接收到它的时候时间已经为 `8:43:15`, 那么这时 `age()`返回的值为 `8:43:15 - 8:43:01 = 14 (秒)`
 
-**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
+::: wechaty.user.room_invitation.RoomInvitation.from_json
 
-### async def age\(self\) ⇒ `int`
-
-获取当前距离已接收到的这条群聊邀请的时间的间隔, 单位为秒
-
-举个例子, 有条群聊邀请是`8:43:01`发送的, 而当我们在Wechaty中接收到它的时候时间已经为 `8:43:15`, 那么这时 `age()`返回的值为 `8:43:15 - 8:43:01 = 14 (秒)`
-
-**类型**: [`RoomInvitation`](room-invitation.md#RoomInvitation)的实例方法  
+::: wechaty.user.room_invitation.RoomInvitation.to_json
