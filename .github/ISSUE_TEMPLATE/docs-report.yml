@@ -1,0 +1,35 @@
+name: 🐛 Docs Report
+description: Report the bug in the docs
+title: "[Docs]: "
+labels: 
+  - documentation
+
+body: 
+  - type: textarea
+    attributes:
+      label: Environment
+      description: |
+        * please give the following wechaty related package info:
+          ```sh
+          pip list | grep paddle
+          ```
+        * the type of token do you use
+        * the version of wechaty docker gateway
+      value: |
+          - wechaty:
+          - wechaty-puppet: 
+          - wechaty-puppet-service: 
+          - wechaty-plugin-contrib: 
+          - token type: padlocal|wxwork|xp
+          - the version of wechaty docker container: [0.65]
+      render: Markdown
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: |
+        please post a detailed description for your issue, you can use the text or screen-shot to show your errors.
+      render: Markdown
+    validations:
+      required: true
