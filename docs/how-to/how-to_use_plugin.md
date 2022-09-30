@@ -7,10 +7,10 @@
 ### 一、插件列表
 > 以下只是列表，具体的使用方法以及在前几篇文章中进行了说明，此处只是声明可能存在的插件，以及插件的调用方式。
 
-- [关键字入群插件](/plugins/keywords/)
-- [自动回复插件](/plugins/auto-reply)
-- [任务调度插件](/plugins/auto-reply)
-- [群消息同步插件](/plugins/message-forward.md)
-- [Rasa Rest Connector](/plugins/rasa)
-- [Github Webhook插件](/plugins/github-webhook)
-- [Gitlab Webhook插件](/plugins/gitlab-webhook)
+- [关键字入群插件](./how-to_room_inviter.md)
+- [自动回复插件](./how-to_auto_reply.md)
+- [任务调度插件](./how-to_scheduler.md)
+- [群消息同步插件](./how-to_message_forward.md)
+- [Rasa Rest Connector](./how-to_rasa.md)
+- [Github Webhook插件](./how-to_github_webhook.md)
+- [Gitlab Webhook插件](./how-to_gitlab_webhook.md)
