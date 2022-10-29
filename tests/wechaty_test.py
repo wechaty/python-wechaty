@@ -8,7 +8,8 @@ from wechaty import Wechaty, WechatyOptions
 
 def test_constructor():
     # remove environment variables
-    os.environ.pop("token")
+    os.environ.pop("token", None)
+    os.environ.pop("WECHATY_TOKEN", None)
     
     with pytest.raises(WechatyPuppetConfigurationError):
         bot = Wechaty()

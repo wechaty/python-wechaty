@@ -3,7 +3,7 @@ import pytest
 from wechaty.utils.async_helper import gather_with_concurrency
 from wechaty.utils.link import fetch_github_user_avatar_url, get_url_metadata
 from wechaty.utils.async_helper import SingleIdContainer
-from wechaty.utils.data_util import HookDict
+from wechaty.utils.data_util import WechatySetting
 
 
 async def number_task(num: int):
@@ -42,21 +42,3 @@ def test_single_id_container():
     
     assert len(SingleIdContainer.instance().ids) == 0
 
-
-def test_hook_dict():
-    
-    def change_value(key: str, _: int, data: HookDict):
-        data[key] += 10
-    
-    data = HookDict({}, default_type=int, set_item_hooks=change_value)
-
-    assert data['unk-key'] == 0
-    
-    data['1'] = 1
-    assert data['1'] == 11
-
-    data['1'] = 20
-    assert data['1'] == 30
-
-    data['2'] += 10
-    assert data['2'] == 20

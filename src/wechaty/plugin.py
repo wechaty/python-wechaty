@@ -33,7 +33,6 @@ from copy import deepcopy
 from datetime import datetime
 from telnetlib import Telnet
 import socket
-import json
 from typing import (
     TYPE_CHECKING,
     Iterable,
@@ -75,7 +74,7 @@ from wechaty.schema import (
     error
 )
 from wechaty.types import EndPoint
-from wechaty.utils import HookDict
+from wechaty.utils import WechatySetting
 
 from .config import config
 
@@ -139,7 +138,8 @@ def _list_routes_txt(app: Quart) -> List[str]:
     rules = list(sorted(rules, key=lambda rule: rule.endpoint))
 
     headers = ("Endpoint", "Methods", "Websocket", "Rule")
-    rule_methods = [", ".join(sorted(rule.methods)) for rule in rules if rule.methods]
+    rule_methods = [", ".join(sorted(rule.methods))
+                    for rule in rules if rule.methods]
 
     widths = [
         max(len(rule.endpoint) for rule in rules),
@@ -147,7 +147,8 @@ def _list_routes_txt(app: Quart) -> List[str]:
         len("Websocket"),
         max(len(rule.rule) for rule in rules),
     ]
-    widths = [max(len(header), width) for header, width in zip(headers, widths)]
+    widths = [max(len(header), width)
+              for header, width in zip(headers, widths)]
 
     # pylint: disable=C0209
     row = "{{0:<{0}}} | {{1:<{1}}} | {{2:<{2}}} | {{3:<{3}}}".format(*widths)
@@ -158,7 +159,8 @@ def _list_routes_txt(app: Quart) -> List[str]:
 
     for rule, methods in zip(rules, rule_methods):
         routes_txt.append(
-            row.format(rule.endpoint, methods, str(rule.websocket), rule.rule).rstrip()
+            row.format(rule.endpoint, methods, str(
+                rule.websocket), rule.rule).rstrip()
         )
     return routes_txt
 
@@ -175,7 +177,8 @@ async def get_shutdown_trigger() -> Callable[[], Coroutine[Any, Any, Any]]:
     for signal_name in ["SIGINT", "SIGTERM", "SIGBREAK"]:
         if hasattr(signal, signal_name):
             try:
-                loop.add_signal_handler(getattr(signal, signal_name), _signal_handler)
+                loop.add_signal_handler(
+                    getattr(signal, signal_name), _signal_handler)
             except NotImplementedError:
                 # Add signal handler may not be implemented on Windows
                 signal.signal(getattr(signal, signal_name), _signal_handler)
@@ -397,10 +400,9 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         self.options = options
         self._default_logger: Optional[Logger] = None
         self._cache_dir: Optional[str] = None
-        self.setting_file: str = os.path.join(self.cache_dir, 'setting.json')
 
-        if not os.path.exists(self.setting_file):
-            self.setting = {}   # type: ignore
+        self.setting_file: str = os.path.join(self.cache_dir, 'setting.json')
+        self._setting_wechaty_setting: WechatySetting = WechatySetting(self.setting_file)
 
     def metadata(self) -> NavMetadata:
         """get the default nav metadata
@@ -417,26 +419,18 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         )
 
     @property
-    def setting(self) -> HookDict[str, Any]:
+    def setting(self) -> WechatySetting:
         """get the setting of a plugin"""
-        with open(self.setting_file, 'r', encoding='utf-8') as f:
-            setting = json.load(f)
+        return self._setting_wechaty_setting
 
-        def set_item_hooks(_: str, __: Any, value: dict) -> None:
-            """hook set_item event, and save the setting"""
-            self._save_setting(value)
-
-        return HookDict(setting, set_item_hooks=set_item_hooks)
-
-    def _save_setting(self, value: dict) -> None:
-        """update the plugin setting"""
-        with open(self.setting_file, 'w', encoding='utf-8') as f:
-            json.dump(value, f, ensure_ascii=False)
-
-    @setting.setter     # type: ignore
+    @setting.setter
     def setting(self, value: dict) -> None:
-        """update the plugin setting"""
-        self._save_setting(value)
+        """update setting with value
+
+        Args:
+            value (dict): the value of setting dict
+        """
+        self._setting_wechaty_setting.save_setting(value)
 
     def get_ui_dir(self) -> Optional[str]:
         """get the ui asset dir
@@ -444,7 +438,8 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         # 1. get the customized ui dir according to the static UI_DIR attribute
         if self.UI_DIR:
             if os.path.exists(self.UI_DIR):
-                self.logger.info("finding the UI_DIR<%s> for plugin<%s>", self.UI_DIR, type(self))
+                self.logger.info(
+                    "finding the UI_DIR<%s> for plugin<%s>", self.UI_DIR, type(self))
                 return self.UI_DIR
 
         # 2. get the default uidir: ui/dist
@@ -454,7 +449,8 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
         plugin_dir = os.path.dirname(str(plugin_dir_path))
         ui_dir = os.path.join(plugin_dir, 'ui')
         if os.path.exists(ui_dir):
-            self.logger.info("finding the UI_DIR<%s> for plugin<%s>", ui_dir, type(self))
+            self.logger.info(
+                "finding the UI_DIR<%s> for plugin<%s>", ui_dir, type(self))
             return ui_dir
 
         self.logger.warning(
@@ -574,7 +570,8 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
     def __init__(
         self, wechaty: Wechaty,
         endpoint: EndPoint,
-        scheduler_options: Optional[Union[AsyncIOScheduler, WechatySchedulerOptions]] = None
+        scheduler_options: Optional[Union[AsyncIOScheduler,
+                                          WechatySchedulerOptions]] = None
     ):
         self._plugins: Dict[str, WechatyPlugin] = OrderedDict()
         self._wechaty: Wechaty = wechaty
@@ -591,9 +588,11 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
             scheduler = AsyncIOScheduler()
 
             if isinstance(scheduler_options.job_store, str):
-                scheduler_options.job_store = SQLAlchemyJobStore(scheduler_options.job_store)
+                scheduler_options.job_store = SQLAlchemyJobStore(
+                    scheduler_options.job_store)
 
-            scheduler.add_jobstore(scheduler_options.job_store, scheduler_options.job_store_alias)
+            scheduler.add_jobstore(
+                scheduler_options.job_store, scheduler_options.job_store_alias)
         self.scheduler: AsyncIOScheduler = scheduler
 
         self.static_file_cacher = StaticFileCacher([
@@ -670,7 +669,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
                 return error(f'plugin<{name}> not exist ...')
 
             plugin: WechatyPlugin = self._plugins[name]
-            plugin.setting = data['setting']    # type: ignore
+            plugin.setting = data['setting']
             return success(None)
 
         @app.route("/js/<string:name>", methods=['GET'])
@@ -842,7 +841,8 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         # re-fetch the routes info
         routes_txt = _list_routes_txt(self.app)
 
-        log.info('============================starting web service========================')
+        log.info(
+            '============================starting web service========================')
         log.info('starting web service at endpoint: <{%s}:{%d}>', host, port)
 
         shutdown_trigger = await get_shutdown_trigger()
@@ -861,7 +861,8 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         for route_txt in routes_txt:
             log.info(route_txt)
 
-        log.info('============================web service has started========================')
+        log.info(
+            '============================web service has started========================')
 
     # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     async def emit_events(self, event_name: str, *args: Any, **kwargs: Any) -> None:
