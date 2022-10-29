@@ -431,7 +431,7 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
     def _save_setting(self, value: dict) -> None:
         """update the plugin setting"""
         with open(self.setting_file, 'w', encoding='utf-8') as f:
-            json.dump(value, f, ensure_ascii=True)
+            json.dump(value, f, ensure_ascii=False)
 
     @setting.setter     # type: ignore
     def setting(self, value: dict) -> None:
