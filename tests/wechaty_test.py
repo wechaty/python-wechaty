@@ -2,10 +2,14 @@
 Unit test
 """
 import pytest
+import os
 from wechaty_puppet import WechatyPuppetConfigurationError
 from wechaty import Wechaty, WechatyOptions 
 
 def test_constructor():
+    # remove environment variables
+    os.environ.pop("token")
+    
     with pytest.raises(WechatyPuppetConfigurationError):
         bot = Wechaty()
 

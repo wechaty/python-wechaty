@@ -849,7 +849,6 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
         task = self.app.run_task(
             host=host,
             port=port,
-            use_reloader=False,
             shutdown_trigger=shutdown_trigger
         )
         loop = asyncio.get_event_loop()
