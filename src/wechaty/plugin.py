@@ -389,6 +389,7 @@ class WechatyPlugin(ABC, WechatySchedulerMixin, WechatyEventMixin):
     AVATAR = 'https://avatars.githubusercontent.com/u/10242208?v=4'
     AUTHOR_LINK = "https://github.com/wj-Mcat"
     ICON = "https://wechaty.js.org/img/wechaty-icon.svg"
+    VISIABLE = True
     VIEW_URL = None
     UI_DIR = None
 
@@ -618,6 +619,9 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
 
             navs = []
             for plugin in self.plugins():
+                if not plugin.VISIABLE:
+                    continue
+
                 nav = NavDTO(
                     name=plugin.name,
                     status=int(
