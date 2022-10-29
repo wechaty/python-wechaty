@@ -43,8 +43,9 @@ class WechatySetting(UserDict):
     def _init_setting(self):
         """init setting file"""
         # 1. init setting dir
-        setting_dir = os.path.dirname(self.setting_file)
-        os.makedirs(setting_dir, exist_ok=True)
+        setting_dir = os.path.dirname(self.setting_file).strip()
+        if setting_dir:
+            os.makedirs(setting_dir, exist_ok=True)
 
         # 2. init setting file
         if not os.path.exists(self.setting_file):
