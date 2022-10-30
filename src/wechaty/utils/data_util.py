@@ -82,4 +82,4 @@ class WechatySetting(UserDict):
 
     def to_dict(self) -> dict:
         """return the dict data"""
-        return self.data
+        return self.read_setting()
