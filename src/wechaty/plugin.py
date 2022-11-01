@@ -25,6 +25,7 @@ from dataclasses import asdict
 import inspect
 from logging import Logger
 import os
+from ssl import SSLEOFError
 import sys
 import re
 from abc import ABC
@@ -248,10 +249,14 @@ class WechatySchedulerMixin:
         trigger = CronTrigger(
             hour=hour
         )
+        job = self.scheduler.get_job(job_id=job_id)
+        if job is not None:
+            self.scheduler.remove_job(job_id=job_id)
 
         self.scheduler.add_job(
             func=handler,
             trigger=trigger,
+            id=job_id,
             args=args,
             kwargs=kwargs
         )
