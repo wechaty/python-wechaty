@@ -248,6 +248,7 @@ class WechatySchedulerMixin:
         trigger = CronTrigger(
             hour=hour
         )
+
         job = self.scheduler.get_job(job_id=job_id)
         if job is not None:
             self.scheduler.remove_job(job_id=job_id)
@@ -289,7 +290,8 @@ class WechatySchedulerMixin:
             func=handler,
             trigger=trigger,
             args=args,
-            kwargs=kwargs
+            kwargs=kwargs,
+            id=job_id
         )
 
 
