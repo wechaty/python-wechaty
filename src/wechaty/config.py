@@ -114,8 +114,12 @@ class Config:
             'ui'
         )
         return os.environ.get("UI_DIR", default_ui_dir)
-    
-    def get_environment_variable(self, name: str, default_value: Optional[Any] = None):
+
+    def get_environment_variable(
+        self,
+        name: str,
+        default_value: Optional[Any] = None
+    ) -> Optional[Any]:
         """get environment variable
 
         Args:

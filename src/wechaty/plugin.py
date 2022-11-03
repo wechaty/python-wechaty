@@ -25,7 +25,6 @@ from dataclasses import asdict
 import inspect
 from logging import Logger
 import os
-from ssl import SSLEOFError
 import sys
 import re
 from abc import ABC
@@ -277,11 +276,11 @@ class WechatySchedulerMixin:
             job_id = f'interval-job-{minutes}'
 
         job_id = str(job_id)
-        
+
         job = self.scheduler.get_job(job_id=job_id)
         if job is not None:
             self.scheduler.remove_job(job_id=job_id)
-            
+
         trigger = IntervalTrigger(
             minutes=minutes
         )
