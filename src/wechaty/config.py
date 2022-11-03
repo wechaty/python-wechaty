@@ -22,6 +22,7 @@ import os
 import re
 from typing import (
     Optional,
+    Any
 )
 
 from wechaty_puppet import (
@@ -113,7 +114,17 @@ class Config:
             'ui'
         )
         return os.environ.get("UI_DIR", default_ui_dir)
+    
+    def get_environment_variable(self, name: str, default_value: Optional[Any] = None):
+        """get environment variable
 
+        Args:
+            name (str): the name of environment
+            default_value (Optional[Any], optional): default Value. Defaults to None.
+        """
+        if name not in os.environ:
+            return default_value
+        return os.environ[name]
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
 # chatie_official_account_id = 'gh_051c89260e5d'

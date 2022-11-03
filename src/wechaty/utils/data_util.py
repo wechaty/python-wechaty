@@ -26,6 +26,7 @@ from typing import (
     Any,
 )
 from collections import UserDict
+from wechaty.config import config
 
 
 class WechatySetting(UserDict):
@@ -83,3 +84,30 @@ class WechatySetting(UserDict):
     def to_dict(self) -> dict:
         """return the dict data"""
         return self.read_setting()
+
+
+# class QCloudSetting(WechatySetting):
+#     """Tencent Cloud Object Storaging"""
+#     def __init__(self, setting_file: str):
+#         super().__init__(setting_file)
+
+#         from qcloud_cos import CosConfig
+#         from qcloud_cos import CosS3Client
+        
+#         secret_id = config.get_environment_variable("q_secret_id")
+#         secret_key = config.get_environment_variable("q_secret_key")
+#         region = config.get_environment_variable("q_secret_region")
+#         self.bucket_name = config.get_environment_variable("bucket_name")
+#         self.bucket_path_prefix: str = config.get_environment_variable("bucket_prefix", "")
+
+#         cos_config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key)
+#         self.client = CosS3Client(cos_config)
+    
+#     def read_setting(self) -> dict:
+#         """read setting from q-cloud
+
+#         Returns:
+#             dict: the object of setting
+#         """
+#         remote_path = os.path.join(self.bucket_path_prefix, self.setting_file)   
+#         self.client
