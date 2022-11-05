@@ -98,6 +98,10 @@ test-unit: pytest
 .PHONY: test
 test: check-python-version lint pytest
 
+.PHONY: format
+format:
+	yapf -q $(SOURCE_GLOB)
+
 .PHONY: check-python-version
 check-python-version:
 	./scripts/check_python_version.py
