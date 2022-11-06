@@ -132,34 +132,49 @@ class Config:
             return default_value
         return os.environ[name]
     
+    @property
     def cache_rooms(self) -> bool:
         """whether cache all of payloads of rooms
 
         Returns:
             bool: whether cache the paylaod of rooms
         """
-        return os.environ.get('CACHE_ROOMS', True)
+        env_key = 'CACHE_ROOMS'
+        true_strings = ['true', '1']
+        if env_key not in os.environ:
+            return True
+        value = os.environ[env_key]
+        return value in true_strings
 
+    @property
     def cache_room_path(self) -> str:
         """get the room pickle path"""
-        env_key = "CACHE_CONTACTS_PATH" 
+        env_key = "CACHE_ROOMS_PATH"
         if env_key in os.environ:
             return os.environ[env_key]
 
         default_path = os.path.join(
             self.cache_dir,
-            "contact_payloads.pkl"
+            "room_payloads.pkl"
         )
         return default_path
 
+    @property
     def cache_contacts(self) -> bool:
         """whether cache all of payloads of contact
 
         Returns:
             bool: whether cache the paylaod of contact
         """
-        return os.environ.get('CACHE_ROOMS', True)
 
+        env_key = 'CACHE_CONTACTS'
+        true_strings = ['true', '1']
+        if env_key not in os.environ:
+            return True
+        value = os.environ[env_key]
+        return value in true_strings
+
+    @property
     def cache_contact_path(self) -> str:
         """get the contact pickle path"""
         env_key = "CACHE_CONTACTS_PATH"

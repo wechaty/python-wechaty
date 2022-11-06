@@ -12,7 +12,6 @@ from wechaty_puppet import UrlLinkPayload, get_logger
 
 from wechaty.utils.link import get_url_metadata
 
-from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List
 from abc import abstractmethod

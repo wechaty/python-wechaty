@@ -1,3 +1,4 @@
+# type: ignore
 """
 Python Wechaty - https://github.com/wechaty/python-wechaty
 
@@ -59,76 +60,151 @@ from wechaty_puppet.schemas.types import (
 from pyee import AsyncIOEventEmitter
 
 
-class FakeMixin:
-    def get_fake_emitter(self) -> AsyncIOEventEmitter:
-        """get fake emitter
+class FakeMessageManagerMixin:
+    """_summary_
 
-        Returns:
-            AsyncIOEventEmitter: get fake emitter
-        """
-        emitter = getattr(self, 'emitter', None)
-        assert emitter is not None, 'emitter not found'
-        assert isinstance(emitter, AsyncIOEventEmitter)
-        return emitter
-
-class FakeMessageManagerMixin(FakeMixin):
+    Args:
+        FakeMixin (_type_): _description_
+    """
     def __init__(self) -> None:
+        """_summary_
+        """
         super().__init__(self)
 
         self._message_payloads: Dict[str, MessagePayload] = {}
 
     def add_fake_message(self, payload: MessagePayload):
+        """_summary_
+
+        Args:
+            payload (MessagePayload): _description_
+        """
         self._message_payloads[payload.id] = payload
     
-    def get_fake_message(self, id: str) -> Optional[MessagePayload]:
-        return self._message_payloads.get(id, None)
+    def get_fake_message(self, message_id: str) -> Optional[MessagePayload]:
+        """_summary_
+
+        Args:
+            id (str): _description_
+
+        Returns:
+            Optional[MessagePayload]: _description_
+        """
+        return self._message_payloads.get(message_id, None)
     
-    def remove_fake_message(self, id: str):
-        self._message_payloads.pop(id, None)
+    def remove_fake_message(self, message_id: str):
+        """_summary_
+
+        Args:
+            id (str): _description_
+        """
+        self._message_payloads.pop(message_id, None)
     
     def get_all_fake_messages(self) -> List[MessagePayload]:
-        return list(self._message_payloads.values())
-    
-    def emit_fake_message(self, id: str):
-        emitter = self.get_fake_emitter()
-        message = self.get_fake_message(id)
-        emitter.emit('message', message)
+        """_summary_
 
-class FakeRoomManagerMixin(FakeMixin):
+        Returns:
+            List[MessagePayload]: _description_
+        """
+        return list(self._message_payloads.values())
+
+
+class FakeRoomManagerMixin:
+    """_summary_
+
+    Args:
+        FakeMixin (_type_): _description_
+    """
     def __init__(self) -> None:
+        """_summary_
+        """
         super().__init__(self)
 
         self._room_payloads: Dict[str, RoomPayload] = {}
 
     def get_all_fake_messages(self) -> List[RoomPayload]:
+        """_summary_
+
+        Returns:
+            List[RoomPayload]: _description_
+        """
         return list(self._room_payloads.values())
 
     def add_fake_room(self, payload: RoomPayload):
+        """_summary_
+
+        Args:
+            payload (RoomPayload): _description_
+        """
         self._room_payloads[payload.id] = payload
     
-    def get_fake_room(self, id: str) -> Optional[RoomPayload]:
-        return self._room_payloads.get(id, None)
-    
-    def remove_fake_room(self, id: str):
-        self._room_payloads.pop(id, None)
+    def get_fake_room(self, room_id: str) -> Optional[RoomPayload]:
+        """_summary_
 
-class FakeContactManagerMixin(FakeMixin):
+        Args:
+            id (str): _description_
+
+        Returns:
+            Optional[RoomPayload]: _description_
+        """
+        return self._room_payloads.get(room_id, None)
+    
+    def remove_fake_room(self, room_id: str):
+        """_summary_
+
+        Args:
+            id (str): _description_
+        """
+        self._room_payloads.pop(room_id, None)
+
+
+class FakeContactManagerMixin:
+    """_summary_
+
+    Args:
+        FakeMixin (_type_): _description_
+    """
     def __init__(self) -> None:
+        """_summary_
+        """
         super().__init__(self)
 
         self._contact_payloads: Dict[str, ContactPayload] = {}
 
     def get_all_fake_messages(self) -> List[ContactPayload]:
+        """_summary_
+
+        Returns:
+            List[ContactPayload]: _description_
+        """
         return list(self._contact_payloads.values())
 
     def add_fake_contact(self, payload: ContactPayload):
+        """_summary_
+
+        Args:
+            payload (ContactPayload): _description_
+        """
         self._contact_payloads[payload.id] = payload
     
-    def get_fake_contact(self, id: str) -> Optional[ContactPayload]:
-        return self._contact_payloads.get(id, None)
+    def get_fake_contact(self, contact_id: str) -> Optional[ContactPayload]:
+        """_summary_
+
+        Args:
+            id (str): _description_
+
+        Returns:
+            Optional[ContactPayload]: _description_
+        """
+        return self._contact_payloads.get(contact_id, None)
     
-    def remove_fake_contact(self, id: str):
-        self._contact_payloads.pop(id, None)
+    def remove_fake_contact(self, contact_id: str):
+        """_summary_
+
+        Args:
+            id (str): _description_
+        """
+        self._contact_payloads.pop(contact_id, None)
 
 
 class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeRoomManagerMixin):
@@ -139,12 +215,31 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
     """
 
     def __init__(self, options: PuppetOptions, name: str = 'puppet') -> None:
+        """_summary_
+
+        Args:
+            options (PuppetOptions): _description_
+            name (str, optional): _description_. Defaults to 'puppet'.
+        """
         super().__init__(options, name)
         self.name: str = name
         self.options = options
         self.emitter = AsyncIOEventEmitter()
     
-    def add_random_fake_contact_message(self, msg: Optional[str] = None, contact_id: Optional[str] = None) -> str:
+    def add_random_fake_contact_message(
+        self,
+        msg: Optional[str] = None,
+        contact_id: Optional[str] = None
+    ) -> str:
+        """_summary_
+
+        Args:
+            msg (Optional[str], optional): _description_. Defaults to None.
+            contact_id (Optional[str], optional): _description_. Defaults to None.
+
+        Returns:
+            str: _description_
+        """
         if not msg:
             msg = str(uuid4())
         if not contact_id:
@@ -158,7 +253,22 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
         self.add_fake_message(message)
         return message.id
     
-    def add_random_fake_room_message(self, msg: Optional[str] = None, contact_id: Optional[str] = None, room_id: Optional[str] = None) -> str:
+    def add_random_fake_room_message(
+        self,
+        msg: Optional[str] = None,
+        contact_id: Optional[str] = None,
+        room_id: Optional[str] = None
+    ) -> str:
+        """_summary_
+
+        Args:
+            msg (Optional[str], optional): _description_. Defaults to None.
+            contact_id (Optional[str], optional): _description_. Defaults to None.
+            room_id (Optional[str], optional): _description_. Defaults to None.
+
+        Returns:
+            str: _description_
+        """
         if not msg:
             msg = str(uuid4())
         if not contact_id and not room_id:
@@ -183,6 +293,11 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
         return message_payload.id
     
     def add_random_fake_contact(self) -> str:
+        """_summary_
+
+        Returns:
+            str: _description_
+        """
         payload = ContactPayload(
             id=str(uuid4()),
             name=str(uuid4()),
@@ -192,6 +307,11 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
         return payload.id
     
     def add_random_fake_room(self) -> str:
+        """_summary_
+
+        Returns:
+            str: _description_
+        """
         contact_ids = random.choices(list(self._contact_payloads.keys()), k=5)
         payload = RoomPayload(
             id=str(uuid4()),
@@ -426,7 +546,7 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
             contact.alias = alias
             self.add_fake_contact(contact)
             return alias
-        
+
         return contact.alias
 
     async def contact_payload_dirty(self, contact_id: str) -> None:

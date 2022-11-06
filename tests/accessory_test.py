@@ -5,17 +5,22 @@ Huan(202003):
 """
 from __future__ import annotations
 
+import os
+from uuid import uuid4
 from typing import (
     Any,
     Generator,
     Type,
     cast,
 )
+import tempfile
 import pytest
 
 from wechaty.accessory import (
     Accessory,
 )
+from wechaty import ContactPayload
+from wechaty.utils.data_util import save_pickle_data, load_pickle_data
 
 EXPECTED_PUPPET1 = cast(Any, {'p': 1})
 EXPECTED_PUPPET2 = cast(Any, {'p': 2})
@@ -208,3 +213,23 @@ def test_accessory_classmethod_access_wechaty() -> None:
 
     assert user_class1.get_wechaty() != user_class2.get_wechaty(), \
         'user_class1 & user_class2 get_wechaty() should be different'
+
+
+def test_payload_pickle():
+    """test save/load pickle payload"""
+    with tempfile.TemporaryDirectory() as tempdir:
+        contact_payload = ContactPayload(
+            id=str(uuid4()),
+            name="fake-name"
+        )
+        cache_path = os.path.join(tempdir, 'contact.pkl')
+        save_pickle_data(contact_payload, cache_path)
+
+        payload = load_pickle_data(cache_path)
+        assert payload.id == contact_payload.id
+
+        # save list
+        save_pickle_data([contact_payload], cache_path)
+        payloads = load_pickle_data(cache_path)
+        assert len(payloads) == 1
+        assert payloads[0].id == contact_payload.id
