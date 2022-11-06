@@ -19,6 +19,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from __future__ import annotations
+import os
 import types
 import asyncio
 import dataclasses
@@ -38,6 +39,7 @@ from typing import (
 import json
 from pyee import AsyncIOEventEmitter
 from wechaty.exceptions import WechatyOperationError, WechatyPayloadError
+from wechaty.config import config
 from wechaty_puppet import (
     FileBox,
     RoomQueryFilter,
@@ -50,6 +52,7 @@ from wechaty.user.contact_self import ContactSelf
 # from wechaty.utils import type_check
 from ..accessory import Accessory
 from ..config import AT_SEPARATOR, PARALLEL_TASK_NUM
+from wechaty.utils.data_util import save_pickle_data, load_pickle_data
 from wechaty.utils.async_helper import gather_with_concurrency
 
 if TYPE_CHECKING:
@@ -222,11 +225,31 @@ class Room(Accessory[RoomPayload]):
         """
         log.info('Room find_all <%s>', query)
 
-        # 1. load rooms with concurrent tasks
-        room_ids = await cls.get_puppet().room_search()
-        rooms: List[Room] = [cls.load(room_id) for room_id in room_ids]
-        tasks: List[Task] = [asyncio.create_task(room.ready()) for room in rooms]
-        await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
+        # 0. load from local cache file
+        if config.cache_rooms and os.path.exists(config.cache_room_path):
+            room_payloads = load_pickle_data(config.cache_room_path)
+            assert isinstance(room_payloads, list)
+            assert isinstance(room_payloads[0], RoomPayload)
+
+            room_payloads: List[RoomPayload] = room_payloads
+            rooms = []
+            for room_payload in room_payloads:
+                room = cls.load(room_payload.id)
+
+                # type: ignore
+                room._payload = room_payload
+                rooms.append(room)
+        else:
+
+            # 1. load rooms with concurrent tasks
+            room_ids = await cls.get_puppet().room_search()
+            rooms: List[Room] = [cls.load(room_id) for room_id in room_ids]
+            tasks: List[Task] = [asyncio.create_task(room.ready()) for room in rooms]
+            await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
+        
+        if config.cache_rooms:
+            room_payloads = [room.payload for room in rooms if room.payload is not None]
+            save_pickle_data(room_payloads, config.cache_contact_path)
 
         # 2. filter the rooms
         if not query:

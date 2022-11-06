@@ -21,6 +21,7 @@ limitations under the License.
 from __future__ import annotations
 
 import types
+import os
 import asyncio
 import dataclasses
 import json
@@ -47,8 +48,9 @@ from wechaty_puppet import (
 
 # from wechaty.utils import type_check
 from wechaty.exceptions import WechatyPayloadError, WechatyOperationError
-from wechaty.config import PARALLEL_TASK_NUM
+from wechaty.config import PARALLEL_TASK_NUM, config
 from wechaty.utils.async_helper import gather_with_concurrency
+from wechaty.utils.data_util import save_pickle_data, load_pickle_data
 
 from ..accessory import Accessory
 
@@ -63,7 +65,6 @@ if TYPE_CHECKING:
     
 
 log = get_logger('Contact')
-
 
 # pylint:disable=R0904
 class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
@@ -250,6 +251,22 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         log.info('find_all() <%s, %s>', cls, query)
 
+        # 0. load from local cache file
+        if config.cache_contacts and os.path.exists(config.cache_contact_path):
+            contact_payloads = load_pickle_data(config.cache_contact_path)
+            assert isinstance(contact_payloads, list)
+            assert isinstance(contact_payloads[0], ContactPayload)
+
+            contact_payloads: List[ContactPayload] = contact_payloads
+            contacts = []
+            for contact_payload in contact_payloads:
+                contact = cls.load(contact_payload.id)
+
+                # type: ignore
+                contact._payload = contact_payload
+                contacts.append(contact)
+            return contacts
+
         # 1. load contacts with concurrent tasks
         contact_ids: List[str] = await cls.get_puppet().contact_list()
 
@@ -257,11 +274,16 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         tasks: List[Task] = [asyncio.create_task(contact.ready()) for contact in contacts]
         await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
 
+        if config.cache_contacts:
+            contact_payloads = [contact.payload for contact in contacts if contact.payload is not None]
+            save_pickle_data(contact_payloads, config.cache_contact_path)
+
         # 2. filter contacts
         if not query:
             return contacts
 
         contacts = cls._filter_contacts(contacts, query)
+
         return contacts
 
     async def ready(self, force_sync: bool = False) -> None:

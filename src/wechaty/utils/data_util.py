@@ -26,7 +26,31 @@ from typing import (
     Any,
 )
 from collections import UserDict
-from wechaty.config import config
+import pickle
+
+
+def save_pickle_data(obj: object, path: str):
+    """save pickle data
+
+    Args:
+        obj (object): the pickled data
+        path (str): the path of pickle data
+    """
+    with open(path, 'wb') as f:
+        pickle.dump(obj, f)
+
+def load_pickle_data(path: str) -> object:
+    """load pickle data from path
+
+    Args:
+        path (str): the path of pickle data
+
+    Returns:
+        object: the final data
+    """
+    with open(path, 'rb') as f:
+        data = pickle.load(f)
+    return data
 
 
 class WechatySetting(UserDict):
