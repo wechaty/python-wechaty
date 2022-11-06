@@ -20,8 +20,10 @@ limitations under the License.
 """
 from __future__ import annotations
 
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 import asyncio
+from uuid import uuid4
+import random
 
 from wechaty_puppet.file_box import FileBox
 
@@ -57,7 +59,79 @@ from wechaty_puppet.schemas.types import (
 from pyee import AsyncIOEventEmitter
 
 
-class FakePuppet(Puppet):
+class FakeMixin:
+    def get_fake_emitter(self) -> AsyncIOEventEmitter:
+        """get fake emitter
+
+        Returns:
+            AsyncIOEventEmitter: get fake emitter
+        """
+        emitter = getattr(self, 'emitter', None)
+        assert emitter is not None, 'emitter not found'
+        assert isinstance(emitter, AsyncIOEventEmitter)
+        return emitter
+
+class FakeMessageManagerMixin(FakeMixin):
+    def __init__(self) -> None:
+        super().__init__(self)
+
+        self._message_payloads: Dict[str, MessagePayload] = {}
+
+    def add_fake_message(self, payload: MessagePayload):
+        self._message_payloads[payload.id] = payload
+    
+    def get_fake_message(self, id: str) -> Optional[MessagePayload]:
+        return self._message_payloads.get(id, None)
+    
+    def remove_fake_message(self, id: str):
+        self._message_payloads.pop(id, None)
+    
+    def get_all_fake_messages(self) -> List[MessagePayload]:
+        return list(self._message_payloads.values())
+    
+    def emit_fake_message(self, id: str):
+        emitter = self.get_fake_emitter()
+        message = self.get_fake_message(id)
+        emitter.emit('message', message)
+
+class FakeRoomManagerMixin(FakeMixin):
+    def __init__(self) -> None:
+        super().__init__(self)
+
+        self._room_payloads: Dict[str, RoomPayload] = {}
+
+    def get_all_fake_messages(self) -> List[RoomPayload]:
+        return list(self._room_payloads.values())
+
+    def add_fake_room(self, payload: RoomPayload):
+        self._room_payloads[payload.id] = payload
+    
+    def get_fake_room(self, id: str) -> Optional[RoomPayload]:
+        return self._room_payloads.get(id, None)
+    
+    def remove_fake_room(self, id: str):
+        self._room_payloads.pop(id, None)
+
+class FakeContactManagerMixin(FakeMixin):
+    def __init__(self) -> None:
+        super().__init__(self)
+
+        self._contact_payloads: Dict[str, ContactPayload] = {}
+
+    def get_all_fake_messages(self) -> List[ContactPayload]:
+        return list(self._contact_payloads.values())
+
+    def add_fake_contact(self, payload: ContactPayload):
+        self._contact_payloads[payload.id] = payload
+    
+    def get_fake_contact(self, id: str) -> Optional[ContactPayload]:
+        return self._contact_payloads.get(id, None)
+    
+    def remove_fake_contact(self, id: str):
+        self._contact_payloads.pop(id, None)
+
+
+class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeRoomManagerMixin):
     """
     puppet interface class, which is the abstract of puppet implementation.
 
@@ -69,6 +143,65 @@ class FakePuppet(Puppet):
         self.name: str = name
         self.options = options
         self.emitter = AsyncIOEventEmitter()
+    
+    def add_random_fake_contact_message(self, msg: Optional[str] = None, contact_id: Optional[str] = None) -> str:
+        if not msg:
+            msg = str(uuid4())
+        if not contact_id:
+            contact_id = random.choice(list(self._contact_payloads.keys()))
+        
+        message = MessagePayload(
+            id=str(uuid4()),
+            from_id=contact_id,
+            text=msg
+        )
+        self.add_fake_message(message)
+        return message.id
+    
+    def add_random_fake_room_message(self, msg: Optional[str] = None, contact_id: Optional[str] = None, room_id: Optional[str] = None) -> str:
+        if not msg:
+            msg = str(uuid4())
+        if not contact_id and not room_id:
+            payload: RoomPayload = random.choice(self._room_payloads.values())
+            room_id = payload.id
+            contact_id = random.choice(payload.member_ids)
+        elif contact_id:
+            for payload in self._room_payloads.values():
+                if contact_id in payload.member_ids:
+                    room_id = payload.id
+                    break
+        elif room_id:
+            contact_id = self.get_fake_room(room_id).member_ids[0]
+                
+        message_payload = MessagePayload(
+            id=str(uuid4()),
+            from_id=contact_id,
+            room_id=room_id,
+            text=msg
+        )
+        self.add_fake_message(message_payload)
+        return message_payload.id
+    
+    def add_random_fake_contact(self) -> str:
+        payload = ContactPayload(
+            id=str(uuid4()),
+            name=str(uuid4()),
+            friend=True
+        )
+        self.add_fake_contact(payload)
+        return payload.id
+    
+    def add_random_fake_room(self) -> str:
+        contact_ids = random.choices(list(self._contact_payloads.keys()), k=5)
+        payload = RoomPayload(
+            id=str(uuid4()),
+            topic=str(uuid4()),
+            member_ids=contact_ids,
+            admin_ids=contact_ids[:2],
+            owner_id=contact_ids[0],
+        )
+        self.add_fake_room(payload)
+        return payload.id
 
     async def message_image(
             self,
@@ -88,6 +221,7 @@ class FakePuppet(Puppet):
         :param data:
         :return:
         """
+        self.emitter.emit('dong')
 
     def on(self, event_name: str, caller: Any) -> None:
         """register the event
@@ -102,6 +236,7 @@ class FakePuppet(Puppet):
         """
         get the count of a specific event listener
         """
+        return len(self.emitter.listeners(event_name))
 
     async def start(self) -> None:
         """
@@ -124,6 +259,7 @@ class FakePuppet(Puppet):
         """
         get all contact list
         """
+        return list(self._contact_payloads.keys())
 
     async def tag_contact_delete(self, tag_id: str) -> None:
         """
@@ -170,6 +306,7 @@ class FakePuppet(Puppet):
         :param message: message content
         :return: message_id
         """
+        return 'static-id'
 
     async def message_send_contact(
             self,
@@ -180,6 +317,7 @@ class FakePuppet(Puppet):
         :param conversation_id:
         :param contact_id: person contact_id
         """
+        return 'static-id'
 
     async def message_send_file(self, conversation_id: str, file: FileBox
                                 ) -> str:
@@ -188,6 +326,7 @@ class FakePuppet(Puppet):
         :param conversation_id:
         :param file: filebox instance
         """
+        return 'static-id'
 
     async def message_send_url(
             self,
@@ -198,6 +337,7 @@ class FakePuppet(Puppet):
         :param conversation_id:
         :param url: UrlLink instance
         """
+        return 'static-id'
 
     async def message_send_mini_program(
             self,
@@ -209,6 +349,7 @@ class FakePuppet(Puppet):
         :param mini_program:
         :return:
         """
+        return 'static-id'
 
     async def message_search(
             self,
@@ -216,6 +357,7 @@ class FakePuppet(Puppet):
         """
         search message
         """
+        return list(self._message_payloads.keys())
 
     async def message_recall(self, message_id: str) -> bool:
         """
@@ -223,6 +365,7 @@ class FakePuppet(Puppet):
         :param message_id:
         :return:
         """
+        return True
 
     async def message_payload(self, message_id: str) -> MessagePayload:
         """
@@ -230,6 +373,7 @@ class FakePuppet(Puppet):
         :param message_id:
         :return:
         """
+        return self.get_fake_message(message_id)
 
     async def message_forward(self, to_id: str, message_id: str) -> None:
         """
@@ -245,6 +389,9 @@ class FakePuppet(Puppet):
         :param message_id:
         :return:
         """
+        payload = self.get_fake_message(message_id)
+        file_box = FileBox.from_json(payload.text)
+        return file_box
 
     async def message_contact(self, message_id: str) -> str:
         """
@@ -252,6 +399,8 @@ class FakePuppet(Puppet):
         :param message_id:
         :return:
         """
+        payload = self.get_fake_message(message_id)
+        return payload.from_id
 
     async def message_url(self, message_id: str) -> UrlLinkPayload:
         """
@@ -272,6 +421,13 @@ class FakePuppet(Puppet):
         """
         set contact alias
         """
+        contact = self.get_fake_contact(contact_id)
+        if alias is not None:
+            contact.alias = alias
+            self.add_fake_contact(contact)
+            return alias
+        
+        return contact.alias
 
     async def contact_payload_dirty(self, contact_id: str) -> None:
         """
@@ -282,6 +438,7 @@ class FakePuppet(Puppet):
         """
         get contact payload
         """
+        return self.get_fake_contact(contact_id)
 
     async def contact_avatar(self, contact_id: str,
                              file_box: Optional[FileBox] = None
@@ -332,17 +489,27 @@ class FakePuppet(Puppet):
         get room list
         :return:
         """
+        return list(self._room_payloads.keys())
 
     async def room_create(self, contact_ids: List[str], topic: str = None
                           ) -> str:
         """
         create room with contact_ids and topic
         """
+        room_payload = RoomPayload(
+            id=str(uuid4()),
+            topic=topic,
+            member_ids=contact_ids,
+            admin_ids=contact_ids[:1],
+            owner_id=contact_ids[0]
+        )
+        self.add_fake_room(room_payload)
 
     async def room_search(self, query: RoomQueryFilter = None) -> List[str]:
         """
         search room by query filter
         """
+        return list(self._room_payloads.keys())
 
     async def room_invitation_payload(self, room_invitation_id: str,
                                       payload: Optional[RoomInvitationPayload]
@@ -375,31 +542,48 @@ class FakePuppet(Puppet):
         """
         get room payload
         """
+        return self.get_fake_room(room_id)
 
     async def room_members(self, room_id: str) -> List[str]:
         """
         get room members
         """
+        payload = self.get_fake_room(room_id)
+        return payload.member_ids
 
     async def room_add(self, room_id: str, contact_id: str) -> None:
         """
         add contact to a room
         """
+        payload = self.get_fake_room(room_id)
+        if contact_id not in payload.member_ids:
+            payload.member_ids.append(contact_id)
+        self.add_fake_room(payload)
 
     async def room_delete(self, room_id: str, contact_id: str) -> None:
         """
         delete room
         """
+        payload = self.get_fake_room(room_id)
+        if contact_id in payload.member_ids:
+            index = payload.member_ids.index(contact_id)
+            payload.member_ids.pop(index)
+            self.add_fake_room(payload)
 
     async def room_quit(self, room_id: str) -> None:
         """
         quit from
         """
+        self.remove_fake_room(room_id)
 
     async def room_topic(self, room_id: str, new_topic: str) -> None:
         """
         set room topic
         """
+        payload = self.get_fake_room(room_id)
+        if new_topic:
+            payload.topic = new_topic
+            self.add_fake_room(payload)
 
     async def room_announce(
             self,
@@ -421,6 +605,7 @@ class FakePuppet(Puppet):
         """
         get room member payload
         """
+        return self.get_fake_contact(contact_id)
 
     async def room_avatar(self, room_id: str) -> FileBox:
         """

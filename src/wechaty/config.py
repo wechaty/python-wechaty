@@ -100,7 +100,9 @@ class Config:
         Returns:
             str: the path of cache dir
         """
-        return os.environ.get("CACHE_DIR", '.wechaty')
+        path = os.environ.get("CACHE_DIR", '.wechaty')
+        os.makedirs(path, exist_ok=True)
+        return path
 
     @property
     def ui_dir(self) -> str:
@@ -129,6 +131,46 @@ class Config:
         if name not in os.environ:
             return default_value
         return os.environ[name]
+    
+    def cache_rooms(self) -> bool:
+        """whether cache all of payloads of rooms
+
+        Returns:
+            bool: whether cache the paylaod of rooms
+        """
+        return os.environ.get('CACHE_ROOMS', True)
+
+    def cache_room_path(self) -> str:
+        """get the room pickle path"""
+        env_key = "CACHE_CONTACTS_PATH" 
+        if env_key in os.environ:
+            return os.environ[env_key]
+
+        default_path = os.path.join(
+            self.cache_dir,
+            "contact_payloads.pkl"
+        )
+        return default_path
+
+    def cache_contacts(self) -> bool:
+        """whether cache all of payloads of contact
+
+        Returns:
+            bool: whether cache the paylaod of contact
+        """
+        return os.environ.get('CACHE_ROOMS', True)
+
+    def cache_contact_path(self) -> str:
+        """get the contact pickle path"""
+        env_key = "CACHE_CONTACTS_PATH"
+        if env_key in os.environ:
+            return os.environ[env_key]
+
+        default_path = os.path.join(
+            self.cache_dir,
+            "contact_payloads.pkl"
+        )
+        return default_path
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
 # chatie_official_account_id = 'gh_051c89260e5d'
