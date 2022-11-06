@@ -225,32 +225,12 @@ class Room(Accessory[RoomPayload]):
         """
         log.info('Room find_all <%s>', query)
 
-        # 0. load from local cache file
-        if config.cache_rooms and os.path.exists(config.cache_room_path):
-            room_payloads = load_pickle_data(config.cache_room_path)
-            assert isinstance(room_payloads, list)
-            assert isinstance(room_payloads[0], RoomPayload)
-
-            room_payloads: List[RoomPayload] = room_payloads
-            rooms = []
-            for room_payload in room_payloads:
-                room = cls.load(room_payload.id)
-
-                # type: ignore
-                room._payload = room_payload
-                rooms.append(room)
-        else:
-
-            # 1. load rooms with concurrent tasks
-            room_ids = await cls.get_puppet().room_search()
-            rooms: List[Room] = [cls.load(room_id) for room_id in room_ids]
-            tasks: List[Task] = [asyncio.create_task(room.ready()) for room in rooms]
-            await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
+        # 1. load rooms with concurrent tasks
+        room_ids = await cls.get_puppet().room_search()
+        rooms: List[Room] = [cls.load(room_id) for room_id in room_ids]
+        tasks: List[Task] = [asyncio.create_task(room.ready()) for room in rooms]
+        await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
         
-        if config.cache_rooms:
-            room_payloads = [room.payload for room in rooms if room.payload is not None]
-            save_pickle_data(room_payloads, config.cache_contact_path)
-
         # 2. filter the rooms
         if not query:
             return rooms

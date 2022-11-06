@@ -251,32 +251,12 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         """
         log.info('find_all() <%s, %s>', cls, query)
 
-        # 0. load from local cache file
-        if config.cache_contacts and os.path.exists(config.cache_contact_path):
-            contact_payloads = load_pickle_data(config.cache_contact_path)
-            assert isinstance(contact_payloads, list)
-            assert isinstance(contact_payloads[0], ContactPayload)
-
-            contact_payloads: List[ContactPayload] = contact_payloads
-            contacts = []
-            for contact_payload in contact_payloads:
-                contact = cls.load(contact_payload.id)
-
-                # type: ignore
-                contact._payload = contact_payload
-                contacts.append(contact)
-            return contacts
-
         # 1. load contacts with concurrent tasks
         contact_ids: List[str] = await cls.get_puppet().contact_list()
 
         contacts: List[Contact] = [cls.load(contact_id) for contact_id in contact_ids]
         tasks: List[Task] = [asyncio.create_task(contact.ready()) for contact in contacts]
         await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
-
-        if config.cache_contacts:
-            contact_payloads = [contact.payload for contact in contacts if contact.payload is not None]
-            save_pickle_data(contact_payloads, config.cache_contact_path)
 
         # 2. filter contacts
         if not query:
