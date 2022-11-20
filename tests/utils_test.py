@@ -22,7 +22,7 @@ async def test_gather_tasks_with_n_concurrency():
 
 
 def test_fetch_metadata():
-    metadata = get_url_metadata('http://github.com/')
+    metadata = get_url_metadata('https://github.com/')
     assert 'title' in metadata
     assert 'image' in metadata
 

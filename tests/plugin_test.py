@@ -3,8 +3,10 @@ import json
 import os
 import tempfile
 import unittest
+from wechaty import Wechaty, WechatyOptions
 from wechaty.plugin import WechatyPlugin
 from wechaty.utils.data_util import WechatySetting
+from wechaty.fake_puppet import FakePuppet
 
 
 def test_setting():
@@ -25,6 +27,7 @@ def test_setting():
 
         assert data['unk'] == 11
         assert data['count'] == 20
+
 
 class TestWechatySetting(unittest.TestCase):
 
@@ -70,3 +73,24 @@ class TestWechatySetting(unittest.TestCase):
         wechaty_setting.save_setting({"c": "c"})
         assert 'a' not in wechaty_setting
         assert 'c' in wechaty_setting
+
+
+    async def test_finder(self):
+        fake_puppet = FakePuppet()
+        bot = Wechaty(options=WechatyOptions(puppet=fake_puppet))
+
+        contact_id = fake_puppet.add_random_fake_contact()
+
+        contact_payload = await fake_puppet.contact_payload(contact_id)
+        from wechaty_plugin_contrib.finders.contact_finder import ContactFinder
+        finder = ContactFinder(
+            contact_id
+        )
+        contacts = await finder.match(bot)
+        assert len(contacts) == 1
+        
+        contact = contacts[0]
+        await contact.ready()
+        
+        assert contact.payload.name == contact_payload.name
+        
