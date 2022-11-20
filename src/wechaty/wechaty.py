@@ -301,7 +301,7 @@ class Wechaty(AsyncIOEventEmitter):
             return 'default_puppet'
         return self._name
 
-    def on(self, event: str, f: Callable[..., Any] = None) -> Wechaty:
+    def on(self, event: str, f: Callable[..., Any] = None) -> Wechaty:  # type: ignore
         """
         listen wechaty event
         Args:

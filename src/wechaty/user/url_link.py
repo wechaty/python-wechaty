@@ -187,9 +187,6 @@ class GithubUrlLinkParser(UrlLinkParser):
         return payload
 
 
-
-
-
 class UrlLink:
     """
     url_link object which handle the url_link content
