@@ -200,7 +200,8 @@ class Wechaty(AsyncIOEventEmitter):
         self._puppet: Puppet = options.puppet
         self._plugin_manager: WechatyPluginManager = WechatyPluginManager(
             self,
-            (options.host, options.port)
+            (options.host, options.port),
+            scheduler_options=options.scheduler
         )
 
     @property

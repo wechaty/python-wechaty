@@ -594,6 +594,7 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
 
         if scheduler_options is None:
             scheduler_options = WechatySchedulerOptions()
+        self.scheduler_options = scheduler_options
 
         if isinstance(scheduler_options, WechatySchedulerOptions):
             scheduler = AsyncIOScheduler()
@@ -604,6 +605,14 @@ class WechatyPluginManager:     # pylint: disable=too-many-instance-attributes
 
             scheduler.add_jobstore(
                 scheduler_options.job_store, scheduler_options.job_store_alias)
+        elif isinstance(scheduler_options, AsyncIOScheduler):
+            scheduler = scheduler_options
+        else:
+            raise ValueError(
+                "the value type of scheduler_options should be one of "
+                "WechatySchedulerOptions or AsyncIOScheduler"
+            )
+
         self.scheduler: AsyncIOScheduler = scheduler
 
         self.static_file_cacher = StaticFileCacher([

@@ -25,6 +25,7 @@ from typing import List, Optional, Any, Dict
 import asyncio
 from uuid import uuid4
 import random
+from collections import defaultdict
 
 from wechaty_puppet.file_box import FileBox
 
@@ -69,7 +70,7 @@ class FakeMessageManagerMixin:
     def __init__(self) -> None:
         """_summary_
         """
-        super().__init__(self)
+        super().__init__()
 
         self._message_payloads: Dict[str, MessagePayload] = {}
 
@@ -118,11 +119,12 @@ class FakeRoomManagerMixin:
     def __init__(self) -> None:
         """_summary_
         """
-        super().__init__(self)
+        super().__init__()
 
-        self._room_payloads: Dict[str, RoomPayload] = {}
+        self._room_payloads: Dict[str, RoomPayload] = defaultdict(RoomPayload)
+        self._room_member_payloads: Dict[str, List[RoomMemberPayload]] = defaultdict(list)
 
-    def get_all_fake_messages(self) -> List[RoomPayload]:
+    def get_all_fake_rooms(self) -> List[RoomPayload]:
         """_summary_
 
         Returns:
@@ -148,7 +150,24 @@ class FakeRoomManagerMixin:
             Optional[RoomPayload]: _description_
         """
         return self._room_payloads.get(room_id, None)
-    
+
+    def add_fake_room_members(self, room_id: str, members: List[RoomMemberPayload]):
+        """add fake room members
+
+        Args:
+            room_id (str): the id of room
+            members (List[RoomMemberPayload]): the members info of the room
+        """
+        if room_id not in self._room_payloads:
+            raise ValueError(f"room<{room_id}> not found")
+        room_payload = self._room_payloads[room_id]
+        room_payload.member_ids = list(
+            set(room_payload.member_ids + [member.id for member in members])
+        )
+        
+        for member in members:
+            self._room_member_payloads[member.id] = member
+
     def remove_fake_room(self, room_id: str):
         """_summary_
 
@@ -167,7 +186,7 @@ class FakeContactManagerMixin:
     def __init__(self) -> None:
         """_summary_
         """
-        super().__init__(self)
+        super().__init__()
 
         self._contact_payloads: Dict[str, ContactPayload] = {}
 
@@ -221,10 +240,12 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
             options (PuppetOptions): _description_
             name (str, optional): _description_. Defaults to 'puppet'.
         """
-        super().__init__(options, name)
+        super().__init__(options=options, name=name)
         self.name: str = name
         self.options = options
         self.emitter = AsyncIOEventEmitter()
+        
+        self.login_user_id = self.add_random_fake_contact()
     
     def add_random_fake_contact_message(
         self,
@@ -576,6 +597,7 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
         """
         get self_id
         """
+        return self.login_user_id
 
     async def friendship_search(self, weixin: Optional[str] = None,
                                 phone: Optional[str] = None
@@ -725,7 +747,7 @@ class FakePuppet(Puppet, FakeContactManagerMixin, FakeMessageManagerMixin, FakeR
         """
         get room member payload
         """
-        return self.get_fake_contact(contact_id)
+        return self._room_member_payloads.pop(contact_id, None)
 
     async def room_avatar(self, room_id: str) -> FileBox:
         """
