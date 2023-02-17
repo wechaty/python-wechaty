@@ -10,3 +10,4 @@ Quart-CORS
 APScheduler
 SQLAlchemy
 PyGithub
+markupsafe==2.0.1
