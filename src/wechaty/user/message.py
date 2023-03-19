@@ -457,9 +457,11 @@ class Message(Accessory[MessagePayload]):
                 return contact
 
             # TODO -> change to python async best practice
-            contacts = [
-                await id_to_contact(contact_id)
-                for contact_id in self.payload.mention_ids]
+            contacts = []
+            for contact_id in self.payload.mention_ids:
+                if contact_id:
+                    contact = await id_to_contact(contact_id)
+                    contacts.append(contact)
             return contacts
 
         # TODO -> have to check that mention_id is not in room situation
