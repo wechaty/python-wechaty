@@ -450,22 +450,24 @@ class Message(Accessory[MessagePayload]):
         # Use mention list if mention list is available
         # otherwise, process the message and get the mention list
 
-        if self.payload is not None and self.payload.mention_ids is not None:
-            async def id_to_contact(contact_id: str) -> Contact:
-                contact = self.wechaty.Contact.load(contact_id)
-                await contact.ready()
-                return contact
 
-            # TODO -> change to python async best practice
-            contacts = []
-            for contact_id in self.payload.mention_ids:
-                if contact_id:
-                    contact = await id_to_contact(contact_id)
-                    contacts.append(contact)
+        if self.payload is not None and self.payload.mention_ids is not None:
+            mention_ids = self.payload.mention_ids
+            contact_list = await self.get_cached_contacts()
+            contacts = [contact for contact in contact_list if contact.contact_id in mention_ids]
             return contacts
 
         # TODO -> have to check that mention_id is not in room situation
         return []
+
+    async def get_cached_contacts(self) -> List[Contact]:
+        """
+        Get cached contacts or load them from Wechaty.
+        """
+        if not hasattr(self, '_cached_contacts'):
+            contact_list = await self.wechaty.Contact.find_all()
+            self._cached_contacts = {contact.contact_id: contact for contact in contact_list}
+        return list(self._cached_contacts.values())
 
     async def mention_text(self) -> str:
         """
