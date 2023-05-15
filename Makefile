@@ -3,6 +3,7 @@
 # 	GitHb: https://github.com/wechaty/python-wechaty
 # 	Author: Huan LI <zixia@zixia.net> https://github.com/huan
 #
+export GLOBIGNORE=src/wechaty/fake_puppet.py
 
 SOURCE_GLOB=$(wildcard bin/*.py src/**/*.py tests/**/*.py examples/*.py)
 
@@ -10,7 +11,7 @@ SOURCE_GLOB=$(wildcard bin/*.py src/**/*.py tests/**/*.py examples/*.py)
 # Huan(202003)
 # 	F811: https://github.com/PyCQA/pyflakes/issues/320#issuecomment-469337000
 #
-IGNORE_PEP=E203,E221,E241,E272,E501,F811
+IGNORE_PEP=E203,E221,E241,E272,E501,F811,W293
 
 # help scripts to find the right place of wechaty module
 export PYTHONPATH=src/
@@ -20,7 +21,7 @@ all : clean lint
 
 .PHONY: clean
 clean:
-	rm -fr dist/* .pytype ./src/wechaty/**/*.pyi ./src/wechaty/*.pyi
+	rm -fr dist/* .pytype src/wechaty/ui ui/ scripts/ui
 
 .PHONY: lint
 lint: pylint pycodestyle flake8 mypy
@@ -98,9 +99,17 @@ test-unit: pytest
 .PHONY: test
 test: check-python-version lint pytest
 
+.PHONY: format
+format:
+	yapf -q $(SOURCE_GLOB)
+
 .PHONY: check-python-version
 check-python-version:
 	./scripts/check_python_version.py
+
+.PHONY: format
+format:
+	yapf $(SOURCE_GLOB)	
 
 code:
 	code .
@@ -108,6 +117,10 @@ code:
 .PHONY: run
 run:
 	python3 bin/run.py
+
+.PHONY: ui
+ui:
+	./scripts/build_ui.sh
 
 .PHONY: dist
 dist:

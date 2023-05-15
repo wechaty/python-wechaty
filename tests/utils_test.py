@@ -3,6 +3,7 @@ import pytest
 from wechaty.utils.async_helper import gather_with_concurrency
 from wechaty.utils.link import fetch_github_user_avatar_url, get_url_metadata
 from wechaty.utils.async_helper import SingleIdContainer
+from wechaty.utils.data_util import WechatySetting
 
 
 async def number_task(num: int):
@@ -21,7 +22,7 @@ async def test_gather_tasks_with_n_concurrency():
 
 
 def test_fetch_metadata():
-    metadata = get_url_metadata('http://github.com/')
+    metadata = get_url_metadata('https://github.com/')
     assert 'title' in metadata
     assert 'image' in metadata
 
@@ -40,3 +41,4 @@ def test_single_id_container():
         assert not SingleIdContainer.instance().exist(index)
     
     assert len(SingleIdContainer.instance().ids) == 0
+

@@ -25,6 +25,7 @@ from typing import (
     Optional,
     Union,
     TYPE_CHECKING,
+    Tuple
 )
 from abc import ABC
 
@@ -60,3 +61,6 @@ class Acceptable(ABC):
         derived classes must implement this function
         """
         raise NotImplementedError
+
+
+EndPoint = Tuple[str, int]

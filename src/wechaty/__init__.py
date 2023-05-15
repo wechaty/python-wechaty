@@ -48,8 +48,9 @@ from .config import (
 from .accessory import Accessory
 from .plugin import (
     WechatyPlugin,
-    WechatyPluginOptions
 )
+from .schema import WechatyPluginOptions
+
 from .wechaty import (
     Wechaty,
     WechatyOptions,

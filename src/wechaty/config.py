@@ -22,6 +22,7 @@ import os
 import re
 from typing import (
     Optional,
+    Any
 )
 
 from wechaty_puppet import (
@@ -29,7 +30,6 @@ from wechaty_puppet import (
     get_logger
 )
 
-from wechaty.exceptions import WechatyConfigurationError
 
 log = get_logger('Config')
 
@@ -37,6 +37,7 @@ log = get_logger('Config')
 # log.info('test logging info')
 
 
+# TODO(wj-Mcat): there is no reference usage, so need to be removed
 _FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_PATH = os.path.realpath(
     os.path.join(
@@ -90,41 +91,101 @@ def valid_api_host(api_host: str) -> bool:
 
 class Config:
     """
-    store python-wechaty configuration
+    get the configuration from the environment variables
     """
-    # pylint: disable=R0913
-    def __init__(self,
-                 api_host: Optional[str] = None,
-                 token: Optional[str] = None,
-                 protocol: Optional[str] = None,
-                 http_port: Optional[int] = None,
-                 name: str = 'python-wechaty',
-                 debug: bool = True,
-                 docker: bool = False):
+    @property
+    def cache_dir(self) -> str:
+        """get the cache dir in the lazy loading mode
+
+        Returns:
+            str: the path of cache dir
         """
-        initialize the configuration
+        path = os.environ.get("CACHE_DIR", '.wechaty')
+        os.makedirs(path, exist_ok=True)
+        return path
+
+    @property
+    def ui_dir(self) -> str:
+        """get the ui directory
+
+        Returns:
+            str: the path of the ui dir
         """
-        self.default = DefaultSetting
+        default_ui_dir = os.path.join(
+            os.path.dirname(__file__),
+            'ui'
+        )
+        return os.environ.get("UI_DIR", default_ui_dir)
 
-        self.api_host = api_host if api_host is not None \
-            else DefaultSetting.default_api_host
+    def get_environment_variable(
+        self,
+        name: str,
+        default_value: Optional[Any] = None
+    ) -> Optional[Any]:
+        """get environment variable
 
-        self.http_port = http_port if http_port is not None \
-            else DefaultSetting.default_port
+        Args:
+            name (str): the name of environment
+            default_value (Optional[Any], optional): default Value. Defaults to None.
+        """
+        if name not in os.environ:
+            return default_value
+        return os.environ[name]
+    
+    @property
+    def cache_rooms(self) -> bool:
+        """whether cache all of payloads of rooms
 
-        self.protocol = protocol if protocol is not None \
-            else DefaultSetting.default_protocol
+        Returns:
+            bool: whether cache the paylaod of rooms
+        """
+        env_key = 'CACHE_ROOMS'
+        true_strings = ['true', '1']
+        if env_key not in os.environ:
+            return True
+        value = os.environ[env_key]
+        return value in true_strings
 
-        if token is None:
-            raise WechatyConfigurationError('token can"t be None')
+    @property
+    def cache_room_path(self) -> str:
+        """get the room pickle path"""
+        env_key = "CACHE_ROOMS_PATH"
+        if env_key in os.environ:
+            return os.environ[env_key]
 
-        self.name = name
-        self.debug = debug
-        self.docker = docker
+        default_path = os.path.join(
+            self.cache_dir,
+            "room_payloads.pkl"
+        )
+        return default_path
 
-        if self.api_host is not None and not valid_api_host(self.api_host):
-            raise WechatyConfigurationError(f'api host %s is not valid {self.api_host}')
+    @property
+    def cache_contacts(self) -> bool:
+        """whether cache all of payloads of contact
 
+        Returns:
+            bool: whether cache the paylaod of contact
+        """
+
+        env_key = 'CACHE_CONTACTS'
+        true_strings = ['true', '1']
+        if env_key not in os.environ:
+            return True
+        value = os.environ[env_key]
+        return value in true_strings
+
+    @property
+    def cache_contact_path(self) -> str:
+        """get the contact pickle path"""
+        env_key = "CACHE_CONTACTS_PATH"
+        if env_key in os.environ:
+            return os.environ[env_key]
+
+        default_path = os.path.join(
+            self.cache_dir,
+            "contact_payloads.pkl"
+        )
+        return default_path
 
 # export const CHATIE_OFFICIAL_ACCOUNT_ID = 'gh_051c89260e5d'
 # chatie_official_account_id = 'gh_051c89260e5d'
@@ -141,3 +202,6 @@ def qr_code_for_chatie() -> FileBox:
     chatie_official_account_qr_code: str = \
         'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
     return FileBox.from_qr_code(chatie_official_account_qr_code)
+
+
+config = Config()

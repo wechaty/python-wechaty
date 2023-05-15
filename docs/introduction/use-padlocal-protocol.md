@@ -52,7 +52,7 @@ docker run -ti \
   -e WECHATY_PUPPET_SERVER_PORT \
   -e WECHATY_TOKEN \
   -p "$WECHATY_PUPPET_SERVER_PORT:$WECHATY_PUPPET_SERVER_PORT" \
-  wechaty/wechaty:0.56
+  wechaty/wechaty:0.65
 ```
 
 > 在此我默认所有的人都对[Docker](https://www.docker.com)的基本使用已经有了一定的了解，否则可以花几分钟去看看其[文档](https://www.docker.com/get-started)熟悉一下。

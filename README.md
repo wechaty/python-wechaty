@@ -14,39 +14,25 @@
 
 [📄 Chinese Document](https://wechaty.readthedocs.io/zh_CN/latest/)  [python-wechaty-template](https://github.com/wechaty/python-wechaty-template)
 
-## Getting Started
+## What's Python Wechaty
 
-* [Python Wechaty Quick Start Project Template](https://github.com/wechaty/python-wechaty-template)
-* [Padlocal机器人](https://wechaty.readthedocs.io/zh_CN/latest/introduction/use-padlocal-protocol/)
-* 钉钉机器人
-* 微信公众号机器人
-* 飞书机器人
+Python Wechaty is an Open Source software application for building chatbots. It is a modern Conversational RPA SDK which Chatbot makers can use to create a bot in a few lines of code.
+
+You can use Wechaty to build a chatbot which automates conversations and interact with people through instant messaging platforms such as WhatsApp, WeChat, WeCom, Gitter and Lark among others.
+
+## Features
+
+* **Message Processing**: You can use the simple code, similar to natural language, to process the message receving & sending.
+* **Plugin System**: You can use the community-contributed plugins to handle your scenario.
+* **Write onece, run multi IM platform**: python wechaty support many IM platforms with one code, all of you need to do is switch the token token type.
+* **Wechaty UI**: you can use the powerful wechaty-ui to create interactive chatbot
 * ...
 
-## Connecting Chatbots
 
-[![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/Wechaty/wechaty)
+## Getting Started
 
-Wechaty is a Conversational SDK for Chatbot Makers that can help you create a bot in 9 lines of Python.
+There are few steps to start your bot, and we give a [bot-template](https://github.com/wechaty/python-wechaty-template) for you to getting started quickly. 
 
-## Voice of the Developers
-
-> "Wechaty is a great solution, I believe there would be much more users recognize it." [link](https://github.com/Wechaty/wechaty/pull/310#issuecomment-285574472)  
-> &mdash; <cite>@Gcaufy, Tencent Engineer, Author of [WePY](https://github.com/Tencent/wepy)</cite>
->
-> "太好用，好用的想哭"  
-> &mdash; <cite>@xinbenlv, Google Engineer, Founder of HaoShiYou.org</cite>
->
-> "最好的微信开发库" [link](http://weibo.com/3296245513/Ec4iNp9Ld?type=comment)  
-> &mdash; <cite>@Jarvis, Baidu Engineer</cite>
->
-> "Wechaty让运营人员更多的时间思考如何进行活动策划、留存用户，商业变现" [link](http://mp.weixin.qq.com/s/dWHAj8XtiKG-1fIS5Og79g)  
-> &mdash; <cite>@lijiarui, Founder & CEO of Juzi.BOT.</cite>
->
-> "If you know js ... try Wechaty, it's easy to use."  
-> &mdash; <cite>@Urinx Uri Lee, Author of [WeixinBot(Python)](https://github.com/Urinx/WeixinBot)</cite>
-
-See more at [Wiki:Voice Of Developer](https://github.com/Wechaty/wechaty/wiki/Voice%20Of%20Developer)
 
 ## Join Us
 
@@ -56,177 +42,6 @@ Wechaty is used in many ChatBot projects by thousands of developers. If you want
 
 Scan now, because other Wechaty Python developers want to talk with you too! (secret code: _python wechaty_)
 
-## The World's Shortest Python ChatBot: 9 lines of Code
-
-```python
-from wechaty import Wechaty
-
-import asyncio
-async def main():
-    bot = Wechaty()
-    bot.on('scan', lambda status, qrcode, data: print('Scan QR Code to login: {}\nhttps://wechaty.js.org/qrcode/{}'.format(status, qrcode)))
-    bot.on('login', lambda user: print('User {} logged in'.format(user)))
-    bot.on('message', lambda message: print('Message: {}'.format(message)))
-    await bot.start()
-
-asyncio.run(main())
-```
-
-## Python Wechaty Developing Plan
-
-We already have Wechaty in TypeScript, It will be not too hard to translate the TypeScript(TS) to Python(PY) because [wechaty](https://github.com/wechaty/wechaty) has only 3,000 lines of the TS code, they are well designed and de-coupled by the [wechaty-puppet](https://github.com/wechaty/wechaty-puppet/) abstraction. So after we have translated those 3,000 lines of TypeScript code, we will almost be done.
-
-As we have already a ecosystem of Wechaty in TypeScript, so we will not have to implement everything in Python, especially, in the Feb 2020, we have finished the [wechaty-grpc](https://github.com/wechaty/grpc) service abstracting module with the [wechaty-puppet-service](https://github.com/wechaty/wechaty-puppet-service) implmentation.
-
-The following diagram shows out that we can reuse almost everything in TypeScript, and what we need to do is only the block located at the top right of the diagram: `Wechaty (Python)`.
-
-```ascii
-  +--------------------------+ +--------------------------+
-  |                          | |                          |
-  |   Wechaty (TypeScript)   | |    Wechaty (Python)      |
-  |                          | |                          |
-  +--------------------------+ +--------------------------+
-
-  +-------------------------------------------------------+
-  |                 Wechaty Puppet Service                |
-  |                                                       |
-  |                (wechaty-puppet-service)               |
-  +-------------------------------------------------------+
-
-+---------------------  wechaty-grpc  ----------------------+
-
-  +-------------------------------------------------------+
-  |                Wechaty Puppet Abstract                |
-  |                                                       |
-  |                   (wechaty-puppet)                    |
-  +-------------------------------------------------------+
-
-  +--------------------------+ +--------------------------+
-  |      Pad Protocol        | |      Web Protocol        |
-  |                          | |                          |
-  | wechaty-puppet-padplus   | |(wechaty-puppet-puppeteer)|
-  +--------------------------+ +--------------------------+
-  +--------------------------+ +--------------------------+
-  |    Windows Protocol      | |       Mac Protocol       |
-  |                          | |                          |
-  | (wechaty-puppet-windows) | | (wechaty-puppet-macpro)  |
-  +--------------------------+ +--------------------------+
-```
-
-## Example: How to Translate TypeScript to Python
-
-There's a 100 lines class named `Image` in charge of downloading the WeChat image to different sizes.
-
-It is a great example for demonstrating how do we translate the TypeScript to Python in Wechaty Way:
-
-### Image Class Source Code
-
-- TypeScript: <https://github.com/wechaty/wechaty/blob/master/src/user/image.ts>
-- Python: <https://github.com/wechaty/python-wechaty/blob/master/src/wechaty/user/image.py>
-
-If you are interested in the translation and want to look at how it works, it will be a good start from reading and comparing those two `Image` class files in TypeScript and Python at the same time.
-
-## To-do List
-
-- TS: TypeScript
-- SLOC: Source Lines Of Code
-
-### Wechaty Internal Modules
-
-1. [ ] Class Wechaty @wj-mCat
-    - TS SLOC(1160): <https://github.com/wechaty/wechaty/blob/master/src/wechaty.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Contact
-    - TS SLOC(804): <https://github.com/wechaty/wechaty/blob/master/src/user/contact.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class ContactSelf
-    - TS SLOC(199): <https://github.com/wechaty/wechaty/blob/master/src/user/contact-self.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Message
-    - TS SLOC(1054): <https://github.com/wechaty/wechaty/blob/master/src/user/message.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Room
-    - TS SLOC(1194): <https://github.com/wechaty/wechaty/blob/master/src/user/room.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Image @wj-mCat
-    - TS SLOC(60): <https://github.com/wechaty/wechaty/blob/master/src/user/image.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [x] Class Accessory @huan
-    - TS SLOC(179): <https://github.com/wechaty/wechaty/blob/master/src/accessory.ts>
-    - [x] Code
-    - [x] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Config @wj-mCat
-    - TS SLOC(187): <https://github.com/wechaty/wechaty/blob/master/src/config.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Favorite
-    - TS SLOC(52): <https://github.com/wechaty/wechaty/blob/master/src/user/favorite.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Friendship
-    - TS SLOC(417): <https://github.com/wechaty/wechaty/blob/master/src/user/friendship.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class MiniProgram
-    - TS SLOC(70): <https://github.com/wechaty/wechaty/blob/master/src/user/mini-program.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class RoomInvitation
-    - TS SLOC(317): <https://github.com/wechaty/wechaty/blob/master/src/user/room-invitation.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class Tag
-    - TS SLOC(190): <https://github.com/wechaty/wechaty/blob/master/src/user/tag.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class UrlLink
-    - TS SLOC(107): <https://github.com/wechaty/wechaty/blob/master/src/user/url-link.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-
-### Wechaty External Modules
-
-1. [ ] Class FileBox
-    - TS SLOC(638): <https://github.com/huan/file-box/blob/master/src/file-box.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class MemoryCard
-    - TS SLOC(376): <https://github.com/huan/memory-card/blob/master/src/memory-card.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class WechatyPuppet
-    - TS SLOC(1115): <https://github.com/wechaty/wechaty-puppet/blob/master/src/puppet.ts>
-    - [ ] Code
-    - [ ] Unit Tests
-    - [ ] Documentation
-1. [ ] Class WechatyPuppetHostie
-    - TS SLOC(909): <https://github.com/wechaty/wechaty-puppet-service/blob/master/src/client/puppet-service.ts>
-
-## Usage
-
-WIP...
 
 ## Requirements
 

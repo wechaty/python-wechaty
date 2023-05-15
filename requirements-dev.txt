@@ -1,3 +1,5 @@
+# use the latest version of setuptools
+setuptools>=63.2.0
 flake8
 mypy
 mypy_extensions
@@ -5,10 +7,12 @@ pycodestyle
 pylint
 pylint-quotes
 pytest
-pytest-asyncio
+
+# TODO(wj-Mcat): find out why latest pytest-asyncio will make test failed
+pytest-asyncio==0.18.3
 pytest-cov
 pytype
-semver
+semver==3.0.0.dev3
 pyee
 requests
 qrcode
@@ -20,3 +24,4 @@ mkdocs-material
 types-requests
 mkdocstrings
 mkdocstrings-python-legacy
+yapf

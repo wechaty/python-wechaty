@@ -1,3 +1,5 @@
 include LICENSE README.md VERSION
-recursive-include src *.py
-recursive-exclude src *_test.py
+recursive-include src **/*.py
+recursive-include src **/*.pyi
+recursive-include src/wechaty/ui **/*
+recursive-exclude src **/*_test.py **/__pycache__ **/.mypy_cache
