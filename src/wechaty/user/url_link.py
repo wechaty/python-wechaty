@@ -7,12 +7,12 @@ from typing import (
     Optional,
     Type
 )
-from urllib3 import get_host
-from wechaty_puppet import UrlLinkPayload, get_logger
+from urllib3.util.url import parse_url
+
+from wechaty_puppet import get_logger, UrlLinkPayload
 
 from wechaty.utils.link import get_url_metadata
 
-from dataclasses import dataclass
 from typing import Dict, List
 from abc import abstractmethod
 from github import Github
@@ -24,8 +24,6 @@ from github.PullRequestComment import PullRequestComment
 from github.Issue import Issue
 from github.IssueComment import IssueComment
 
-from wechaty_puppet.schemas.url_link import UrlLinkPayload
-
 
 log = get_logger('UrlLink')
 
@@ -33,13 +31,13 @@ log = get_logger('UrlLink')
 class UrlLinkParser:
     # valid host-name of one parser
     host_names: List[str] = []
-    
+
     @classmethod
     def can_parser(cls, url: str) -> bool:
         if not cls.host_names:
             raise ValueError(f"please set valid host-names for parser, eg: ['github']")
-        
-        _, host_name, _ = get_host(url)
+
+        host_name = parse_url(url).hostname
         return host_name in cls.host_names
 
     @abstractmethod
@@ -55,7 +53,7 @@ class GithubUrlLinkParser(UrlLinkParser):
     def __init__(self, token: Optional[str] = None):
         self._github = Github(login_or_token=token)
         self._repositories: Dict[str, Repository] = {}
-    
+
     @staticmethod
     def can_parser(url: str) -> bool:
         """the source of url
@@ -64,11 +62,10 @@ class GithubUrlLinkParser(UrlLinkParser):
             url (str): github urllink
 
         Returns:
-            bool: wheter is github based urll
+            bool: whether is github based url
         """
-        _, host_name, _ = get_host(url)
-        return host_name
-        
+        return parse_url(url).hostname
+
     def parse(self, url: str) -> UrlLinkPayload:
         """parse url-link as payload
 
@@ -115,7 +112,7 @@ class GithubUrlLinkParser(UrlLinkParser):
             thumbnailUrl=pull_request.user.avatar_url
         )
         return payload
-    
+
     def get_pr_comment_payload(self, repo_name: str, pr_id: int, comment_id: int, comment_type: str = 'issue') -> UrlLinkPayload:
         """get comment of pull-request, which can be issue or review comment
 
@@ -218,7 +215,7 @@ class UrlLink:
         metadata = get_url_metadata(url)
 
         payload = UrlLinkPayload(url=url)
-     
+
         payload.title = title or metadata.get('title', None)
         payload.thumbnailUrl = thumbnail_url or metadata.get('image', None)
         payload.description = description or metadata.get('description', None)
