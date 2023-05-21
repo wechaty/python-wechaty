@@ -7,7 +7,8 @@ from typing import (
     Optional,
     Type
 )
-from urllib3 import get_host
+# from urllib3 import get_host
+from urllib3.util import parse_url as get_host
 from wechaty_puppet import UrlLinkPayload, get_logger
 
 from wechaty.utils.link import get_url_metadata
