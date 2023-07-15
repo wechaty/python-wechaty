@@ -32,7 +32,7 @@ lint: pylint pycodestyle flake8 mypy
 pylint:
 	pylint \
 		--load-plugins pylint_quotes \
-		--disable=W0511,R0801,cyclic-import,C4001 \
+		--disable=W0511,R0801,cyclic-import,C4001,R1735 \
 		$(SOURCE_GLOB)
 
 .PHONY: pycodestyle
@@ -109,7 +109,7 @@ check-python-version:
 
 .PHONY: format
 format:
-	yapf $(SOURCE_GLOB)	
+	yapf $(SOURCE_GLOB)
 
 code:
 	code .
