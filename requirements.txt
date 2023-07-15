@@ -10,3 +10,4 @@ Quart-CORS
 APScheduler
 SQLAlchemy
 PyGithub
+urllib3<2
