@@ -4,7 +4,7 @@ flake8
 mypy
 mypy_extensions
 pycodestyle
-pylint
+pylint==2.17.7
 pylint-quotes
 pytest
 
@@ -13,7 +13,7 @@ pytest-asyncio==0.18.3
 pytest-cov
 pytype
 semver==3.0.0.dev3
-pyee
+pyee==11.0.0
 requests
 qrcode
 apscheduler
@@ -25,3 +25,4 @@ types-requests
 mkdocstrings
 mkdocstrings-python-legacy
 yapf
+urllib3==1.26

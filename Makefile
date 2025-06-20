@@ -11,7 +11,7 @@ SOURCE_GLOB=$(wildcard bin/*.py src/**/*.py tests/**/*.py examples/*.py)
 # Huan(202003)
 # 	F811: https://github.com/PyCQA/pyflakes/issues/320#issuecomment-469337000
 #
-IGNORE_PEP=E203,E221,E241,E272,E501,F811,W293
+IGNORE_PEP=E203,E221,E241,E272,E501,F811,W293,F824
 
 # help scripts to find the right place of wechaty module
 export PYTHONPATH=src/
