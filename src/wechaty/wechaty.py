@@ -529,7 +529,7 @@ I suggest that you should follow the template code from: https://wechaty.readthe
                     self.emit('heartbeat', payload.data)
                     await self.on_heartbeat(payload)
 
-                puppet.on('heart-beat', heartbeat_listener)
+                puppet.on('heartbeat', heartbeat_listener)
 
             elif event_name == 'friendship':
                 async def friendship_listener(payload: EventFriendshipPayload) -> None:

@@ -62,7 +62,7 @@ if TYPE_CHECKING:
     # pytype: disable=pyi-error
     from .url_link import UrlLink
     from .mini_program import MiniProgram
-    
+
 
 log = get_logger('Contact')
 
@@ -190,7 +190,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
         Args:
             query: the query body to build filter
-            
+
         Examples:
             >>> # 1. find contacts based query string, will match one of: contact_id, weixin, name and alias
             >>> # what's more, contact_id and weixin will follow extract match, name and alias will follow fuzzy match
@@ -319,7 +319,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
 
         Args:
             message: the message object to be sended to contact
-        
+
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> await contact.say('hello')
@@ -331,7 +331,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
             >>> await contact.say(MiniProgram('username', 'appid'))
 
         Returns:
-            Message: if the message is send successfully, return the message object, otherwise return None 
+            Message: if the message is send successfully, return the message object, otherwise return None
         """
         if not message:
             log.error('can"t say nothing')
@@ -360,7 +360,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                 conversation_id=self.contact_id,
                 file=message
             )
-
+            return None
         elif isinstance(message, UrlLink):
             # use this way to resolve circulation dependency import
             msg_id = await self.puppet.message_send_url(
@@ -390,7 +390,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> name: str = contact.name
-        
+
         Returns:
             str: name of contact, if the payload is None, return empty string
         """
@@ -403,7 +403,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                     ) -> Union[None, str]:
         """
         Get or set alias of contact.
-        
+
         If new_alias is given, it will set alias to new_alias,
         otherwise return current alias
 
@@ -527,7 +527,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
     def gender(self) -> ContactGender:
         """
         Return the gender of contact.
-        
+
         Returns:
             ContactGender: the object of contact gender
         """
@@ -571,7 +571,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         Args:
             file_box: If given, it will set it as new avatar,
                 else get the current avatar. Defaults to None.
-        
+
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> avatar = contact.avatar()
@@ -627,7 +627,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
         Examples:
             >>> contact = Contact.load('contact-id')
             >>> weixin = contact.weixin()
-            
+
         Returns:
             identifier: the weixin union identifier of contact
         """

@@ -196,7 +196,7 @@ class Room(Accessory[RoomPayload]):
 
     @classmethod
     async def find_all(cls,
-                       query: Optional[Union[str, RoomQueryFilter, Callable[[Contact], bool]]] = None) -> List[Room]:
+                       query: Optional[Union[str, RoomQueryFilter, Callable[[Contact], bool]]] = None,force_sync:bool=False) -> List[Room]:
         """
         find all rooms based on query, which can be string, RoomQueryFilter, or callable<filter> function
 
@@ -230,7 +230,7 @@ class Room(Accessory[RoomPayload]):
         # 1. load rooms with concurrent tasks
         room_ids = await cls.get_puppet().room_search()
         rooms: List[Room] = [cls.load(room_id) for room_id in room_ids]
-        tasks: List[Task] = [asyncio.create_task(room.ready()) for room in rooms]
+        tasks: List[Task] = [asyncio.create_task(room.ready(force_sync)) for room in rooms]
         await gather_with_concurrency(PARALLEL_TASK_NUM, tasks)
 
         # 2. filter the rooms
@@ -331,7 +331,7 @@ class Room(Accessory[RoomPayload]):
         Returns:
             None
         """
-        if self.is_ready():
+        if not force_sync and self.is_ready():
             return
 
         if force_sync:
