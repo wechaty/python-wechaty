@@ -145,7 +145,7 @@ class Contact(Accessory[ContactPayload], AsyncIOEventEmitter):
                     return False
                 if query in payload.alias or query in payload.name:
                     return True
-                if query == payload.id or quit == payload.weixin:
+                if query == payload.id or query == payload.weixin:
                     return True
                 return False
             func = filter_func
